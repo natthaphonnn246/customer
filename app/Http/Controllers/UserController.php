@@ -103,7 +103,6 @@ Class UserController
     {
         
         $id = $request->user()->admin_area;
-        // test
         $code = $request->user()->user_code;
         
         $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->get();
