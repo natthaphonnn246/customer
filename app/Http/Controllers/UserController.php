@@ -8,92 +8,85 @@ use Illuminate\Support\Facades\DB;
 Class UserController
 {
     
-    public function create()
+    public function create(Request $request)
     {
        //timestamp;
-       date_default_timezone_set("Asia/Bangkok");
-        
-       if (isset($_POST['submit_form']) != '')
-        {
-           $code = $_POST['code'];
-           $name = $_POST['admin_name'];
-           $role = $_POST['role'];
-           $status_checked = 'inactive';
-           $email = $_POST['email'];
-           $password = ($_POST['password']);
-           $telephone = $_POST['telephone'];
-           $address = $_POST['address'];
-           $province = $_POST['province'];
-           $amphur = $_POST['amphur'];
-           $district = $_POST['district'];
-           $zipcode = $_POST['zipcode'];
-           $email_login = $_POST['email_login'];
-           $text_add = $_POST['text_add'];
+    date_default_timezone_set("Asia/Bangkok");
+    
+                $code = $request->code;
+                $name = $request->admin_name;
+                $role = $request->role;
+                $email = $request->email;
+                $password = $request->password;
+                $telephone = $request->telephone;
+                $address = $request->address;
+                $province = $request->province;
+                $amphur = $request->amphur;
+                $district = $request->district;
+                $zipcode = $request->zipcode;
+                $email_login = $request->email_login;
+                if($request->text_add == '') {
+                    $text_add = '';
+                } else {
+                    $text_add = $request->text_add;
+                }
 
-           $province_master = DB::table('provinces')->select('id', 'name_th')->whereIn('id', [$province])->get();
-           foreach ($province_master as $row)
-           {
-               $province_row = $row->name_th;
-           }
+                $province_master = DB::table('provinces')->select('id', 'name_th')->where('id', $province)->first();
+                $province_row = $province_master->name_th;
 
-           $user = User::create([
+                User::create([
 
-                       'user_code' => $code,
-                       'user_id' => $code,
-                       'admin_area' => '',
-                       'name' => $name,
-                       'role' => $role,
-                       'status_checked' => $status_checked,
-                       'email' => $email,
-                       'password' => $password,
-                       'telephone' => $telephone,
-                       'address' => $address,
-                       'province' => $province_row,
-                       'amphur' => $amphur,
-                       'district' => $district,
-                       'zipcode' => $zipcode,
-                       'email_login' => $email_login,
-                       'text_add' => $text_add,
+                                'user_code' => $code,
+                                'user_id' => $code,
+                                'admin_area' => '',
+                                'name' => $name,
+                                'role' => $role,
+                                'status_checked' => '',
+                                'email' => $email,
+                                'password' => $password,
+                                'telephone' => $telephone,
+                                'address' => $address,
+                                'province' => $province_row,
+                                'amphur' => $amphur,
+                                'district' => $district,
+                                'zipcode' => $zipcode,
+                                'email_login' => $email_login,
+                                'text_add' => $text_add,
 
-                          
-           ]);
+                            ]);
 
-           $admins = Admin::create([
+                Admin::create([
 
-                        'admin_name' => $name,
-                        'admin_id' => $code,
-                        'code' => $code,
-                        'admin_area' => '',
-                        'role' => $role,
-                        'status_checked' => $status_checked,
-                        'email' => $email,
-                        'telephone' => $telephone,
-                        'address' => $address,
-                        'province' => $province_row,
-                        'amphur' => $amphur,
-                        'district' => $district,
-                        'zipcode' => $zipcode,
-                        'email_login' => $email_login,
-                        'password' => $password,
-                        'text_add' => $text_add,
-                
-            ]);
-        }
-       
-           $check_tb = DB::table('users')->select('user_code')->get();
-           foreach ($check_tb as $row)
-           {
-               $check_code = $row->user_code;
-           }
+                                'admin_name' => $name,
+                                'admin_id' => $code,
+                                'code' => $code,
+                                'admin_area' => '',
+                                'role' => $role,
+                                'status_checked' => '',
+                                'email' => $email,
+                                'telephone' => $telephone,
+                                'address' => $address,
+                                'province' => $province_row,
+                                'amphur' => $amphur,
+                                'district' => $district,
+                                'zipcode' => $zipcode,
+                                'email_login' => $email_login,
+                                'password' => $password,
+                                'text_add' => $text_add,
+                        
+                            ]);
 
-           if($code == $check_code)
-               {
-               return redirect('/webpanel/admin');
+                    $check_tb = User::select('user_code')->where('user_code', $code)->first();
+                    $check_code = $check_tb->user_code;
 
-               } else {
-                   
-               return view('/webpanel/admin-create');
-               }
+                    if($code == $check_code)
+                        {
+                        return redirect('/webpanel/admin');
+
+                        } else {
+                            
+                        return view('/webpanel/admin-create');
+                        } 
     }
     public function admin()
     {
