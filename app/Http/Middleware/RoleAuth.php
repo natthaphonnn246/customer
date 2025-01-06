@@ -30,7 +30,7 @@ class RoleAuth
             Auth::guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return redirect('/');
+            return redirect('/')->with('error_active', 'กรุณาติดต่อผู้ดูแล');
         }
     }
 }

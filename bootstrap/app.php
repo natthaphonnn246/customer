@@ -28,6 +28,14 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
 
+    ->withMiddleware(function (Middleware $middleware) {
+
+        $middleware->alias([
+            'rights_area' => \App\Http\Middleware\RightsArea::class,
+        ]);
+    })
+
+
     //check role user if role == 0 ;
     ->withMiddleware(function (Middleware $middleware) {
 

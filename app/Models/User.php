@@ -73,7 +73,7 @@ class User extends Authenticatable
 
     public static function adminEdit ($code)
     {
-        $admin = User::select('user_code', 'name','admin_area', 'email','email_login', 'role','telephone', 'address','province', 'amphur', 'district', 'zipcode', 'created_at', 'text_add')
+        $admin = User::select('user_code', 'name','admin_area', 'email','email_login', 'role','rights_area', 'telephone', 'address','province', 'amphur', 'district', 'zipcode', 'created_at', 'text_add')
                 ->where('user_code', [$code])
                 ->get();
         return [$admin];

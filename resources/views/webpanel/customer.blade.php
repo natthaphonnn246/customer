@@ -381,7 +381,6 @@
                         });
                 </script>
 
-                <!--- delete --->–
                 <script>
                     $(document).ready(function() {
                         $('#trash').click(function() {

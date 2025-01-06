@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -18,16 +19,28 @@ class AdminArea
 
         public function handle(Request $request, Closure $next): Response
         {
+
             $admin_check = $request->user()->admin_area;
-            $user = DB::table('customers')->select('admin_area')->where('admin_area', $admin_check)->first();
-            $admin_area = $user->admin_area;
-    
-            if(!Auth::user()->admin_area == $admin_area)
+            $user = Customer::select('admin_area')->where('admin_area', $admin_check)->first();
+
+            // check admin_area between customers and users;
+            if($user != null) 
             {
-                return back();
+                $admin_area = $user->admin_area;
                 
+                    if(!Auth::user()->admin_area == $admin_area) {
+
+                        return back();
+
+                    } else {
+                        return $next($request);
+                    }
+
+            } else {
+                return back()->with('error_login', 'ไม่พบข้อมูลลงทะเบียน');
             }
-            return $next($request);
+
         }
+
     
 }

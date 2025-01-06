@@ -40,7 +40,7 @@ class CustomerController
      */
     public function create(Request $request)
     {
-        dd($request);
+        // dd($request->customer_code);
         // date_default_timezone_set("Asia/Bangkok");
 
         if(isset($_POST['submit_form']) != '')

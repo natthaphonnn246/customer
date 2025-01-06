@@ -13,6 +13,8 @@ Class UserController
        //timestamp;
     date_default_timezone_set("Asia/Bangkok");
     
+            if (isset($request['submit_form']) != '')
+            {
                 $code = $request->code;
                 $name = $request->admin_name;
                 $role = $request->role;
@@ -25,11 +27,14 @@ Class UserController
                 $district = $request->district;
                 $zipcode = $request->zipcode;
                 $email_login = $request->email_login;
-                if($request->text_add == '') {
+                $text_add = $request['text_add'];
+                
+               /*  if($request->text_add == '') {
                     $text_add = '';
                 } else {
                     $text_add = $request->text_add;
-                }
+                } */
+            }
 
                 $province_master = DB::table('provinces')->select('id', 'name_th')->where('id', $province)->first();
                 $province_row = $province_master->name_th;
@@ -79,14 +84,13 @@ Class UserController
                     $check_tb = User::select('user_code')->where('user_code', $code)->first();
                     $check_code = $check_tb->user_code;
 
-                    if($code == $check_code)
-                        {
-                        return redirect('/webpanel/admin');
+                    if($code == $check_code) {
 
-                        } else {
+                        return redirect('/webpanel/admin');
+                    } else {
                             
                         return view('/webpanel/admin-create');
-                        } 
+                    } 
     }
     public function admin()
     {
@@ -104,29 +108,29 @@ Class UserController
         return view('portal/customer', compact('admin_area', 'user_name'));
     }
 
-    public function statusAct()
+    public function statusAct(Request $request)
     {
-        if(isset($_POST['id']) == 2 && $_POST['status'] == 'active')
+        if($request->id == 2 && $request->status == 'active')
         {
-            $user_code = $_POST['user_code'];
-            //your database query here
-            DB::table('users')
-            ->where('user_code', [$user_code])
-            ->update(['status_checked' => 'active']);
+            $user_code = $request->user_code;
+    
+            User::where('user_code', [$user_code])
+                ->update(['status_checked' => 'active']);
+
             echo "success".$user_code;
         }
 
     }
 
-    public function statusiAct()
+    public function statusiAct(Request $request)
     {
-        if(isset($_POST['id']) == 1 && $_POST['status_in'] == 'inactive')
+        if($request->id == 1 && $request->status_in == 'inactive')
         {
-            $user_code = $_POST['user_code'];
-            //your database query here
-            DB::table('users')
-            ->where('user_code', [$user_code])
-            ->update(['status_checked' => 'inactive']);
+            $user_code = $request->user_code;
+
+            User::where('user_code', [$user_code])
+                ->update(['status_checked' => 'inactive']);
+
             echo "inactive";
         }
 
@@ -162,34 +166,32 @@ Class UserController
         return view('webpanel/admin-detail', compact('admin_row', 'province', 'amphur', 'district'));
     }
 
-    public function update($id)
+    public function update(Request $request, $id)
     {
+
             date_default_timezone_set("Asia/Bangkok");
 
-            $admin_area = $_POST['admin_area'];
-            $name = $_POST['admin_name'];
-            $role = $_POST['role'];
-            $email = $_POST['email'];
-            $telephone = $_POST['telephone'];
-            $address = $_POST['address'];
-            $province = $_POST['province'];
-            $amphur_post = $_POST['amphur'];
-            $district_post = $_POST['district'];
-            $zipcode_post = $_POST['zipcode'];
-            $email_login = $_POST['email_login'];
-            $text_add = $_POST['text_add'];
+                $admin_area = $request['admin_area'];
+                $name = $request->admin_name;
+                $role = $request->role;
+                $rights_area = $request->rights_area;
+                $email = $request->email;
+                $telephone = $request->telephone;
+                $address = $request->address;
+                $province = $request->province;
+                $amphur_post = $request->amphur;
+                $district_post = $request->district;
+                $zipcode_post = $request->zipcode;
+                $email_login = $request->email_login;
+                $text_add = $request['text_add'];
 
-            $update_time = date('Y-m-d H:i:s');
+                $update_time = date('Y-m-d H:i:s');
 
-            $province_master = DB::table('provinces')->select('id', 'name_th')->whereIn('id', [$province])->get();
-            foreach ($province_master as $row)
-            {
-                $province_row = $row->name_th;
-            }
-          
+                $province_master = DB::table('provinces')->select('id', 'name_th')->where('id', $province)->first();
+                $province_row = $province_master->name_th;
 
             DB::table('users')
-                ->where('user_code', [$id])
+                ->where('user_code', $id)
                 ->update
                 ([
 
@@ -198,6 +200,7 @@ Class UserController
                     'name' => $name,
                     'role' => $role,
                     'admin_area' => $admin_area,
+                    'rights_area' => $rights_area,
                     'email' => $email,
                     'telephone' => $telephone,
                     'address' => $address,
@@ -212,7 +215,7 @@ Class UserController
                 ]);
 
             DB::table('user_tb')
-                ->where('admin_id', [$id])
+                ->where('admin_id', $id)
                 ->update
                 ([
 
@@ -220,6 +223,7 @@ Class UserController
                     'admin_area' => $admin_area,
                     'admin_name' => $name,
                     'role' => $role,
+                    'rights_area' => $rights_area,
                     'email' => $email,
                     'telephone' => $telephone,
                     'address' => $address,
@@ -232,35 +236,27 @@ Class UserController
                     'updated_at' => $update_time,
                 
                 ]);
-
                 // check user id;
-                $check_user_id = DB::table('users')->select('user_id')->whereIn('user_id', [$id])->get();
-                foreach ($check_user_id as $row)
-                {
-                    $user_id = $row->user_id;
-                }
-                if ($user_id == $id)
-                {
+                $check_user_id = User::select('user_id')->where('user_id', $id)->first();
+                $user_id = $check_user_id->user_id;
+
+                if ($user_id == $id) {
                     echo 'success';
+
                 } else {
                     echo 'fail';
                 }
-
-
     }
     
-    public function reset($id_reset)
+    public function reset(Request $request, $id_reset)
     {
-        if(isset($_POST['submit_reset']) != '')
+        if(isset($request['submit_reset']) != '')
         {
-            $password = $_POST['reset_password'];
+            $password = $request->reset_password;
 
-            $check_code_pass = DB::table('users')->select('user_code', 'password')->whereIn('user_code',[$id_reset])->get();
-            foreach ($check_code_pass as $row_pass)
-            {
-                $check_id = $row_pass->user_code;
-                $check_password = $row_pass->password;
-            }
+            $check_code_pass = User::select('user_code')->where('user_code',$id_reset)->first();
+            $check_id = $check_code_pass->user_code;
+
             if($check_id == $id_reset)
             {
                     DB::table('users')
@@ -274,8 +270,6 @@ Class UserController
 
                     return back()->with('success', 'เปลี่ยนรหัสผ่านสำเร็จ');
 
-             
-        
             } else {
                 
                 return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');

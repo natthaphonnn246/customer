@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Customer;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UserController;
 use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,41 +34,61 @@ class AuthenticatedSessionController extends Controller
             'password' => ['required'],
             ]);
     
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials))
+        {
 
             if(Auth::user()->user_id == '0000') {
                 return redirect()->route('webpanel');
                 
             } else {
-            $admin_check = $request->user()->admin_area;
-            $user = DB::table('customers')->select('admin_area')->where('admin_area', $admin_check)->get();
-            $admin_area = $user[0]->admin_area;
-    
-            if(Auth::user()->role == '1')
-            {
-                $request->authenticate();
-                $request->session()->regenerate();
-                return redirect()->route('webpanel');
-    
-            } else {
- 
-                if(Auth::user()->admin_area ==  $admin_area)
+
+                if(Auth::user()->rights_area == 1)
                 {
-               
-                    $request->authenticate();
-                    $request->session()->regenerate();
-                    // return redirect()->route('portal');
-                    return redirect()->action(
-                        [UserController::class, 'portalSignin']
-                    );
+             
+                        $admin_check = $request->user()->admin_area;
+            
 
+                        $user = DB::table('customers')->select('admin_area')->where('admin_area', $admin_check)->first();
+                        // $admin_area = $user->admin_area;
+                        // dd($user);
+
+                        //check admin area between customers and users;
+                        if($user != null)
+                        {
+                            $admin_area = $user->admin_area;
+
+                            if(Auth::user()->role == '1')
+                            {
+                                $request->authenticate();
+                                $request->session()->regenerate();
+                                return redirect()->route('webpanel');
+                    
+                            } else {
+                
+                                if(Auth::user()->admin_area ==  $admin_area) {
+
+                                $request->authenticate();
+                                $request->session()->regenerate();
+                                // return redirect()->route('portal');
+                                return redirect()->action(
+                                    [UserController::class, 'portalSignin']
+                                );
+
+                                } else {
+
+                                    return back();
+                                }
+
+                            }
+                            
+                        } else {
+                            return redirect()->route('portal');
+                        }
+     
                 } else {
-
-                    return back();
-                }
-
+                    return redirect('/portal/signin');
+                } 
             }
-        }
             
         } else {
             

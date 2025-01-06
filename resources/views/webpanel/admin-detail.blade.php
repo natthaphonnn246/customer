@@ -119,10 +119,10 @@
                         <div class="col-sm-6">
                             <ul style="width: 100%;">
                                 <span>สิทธิ์รับผิดชอบ</span>
-                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="admin-role">
+                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="rights_area">
 
-                                    <option value="0">ไม่ระบุ</option>
-                                    <option value="1">ระบุ</option>
+                                    <option {{$row_edit->rights_area == 0 ? 'selected' : '' ; }} value="0">ไม่ระบุ</option>
+                                    <option  {{$row_edit->rights_area == 1 ? 'selected' : '' ; }} value="1">ระบุ</option>
                                     
                                 </select>
                             </ul>

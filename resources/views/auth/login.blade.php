@@ -7,6 +7,12 @@
 
         <!-- Email Address -->
         <div>
+            
+            <img src="/profile/logo.jpeg" class="img-fluid">
+            <hr style="color:rgb(95, 95, 95);">
+            @if (Session::has('error_login'))
+            <div class="alert alert-danger my-2"><i class="fa-solid fa-circle-xmark" style="color: rgb(172, 27, 27);"></i> {{ Session::get('error_login') }}</div>
+            @endif
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
@@ -33,11 +39,13 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
+
+        <!-- reset password -->
+         {{--    @if (Route::has('password.request'))
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
-            @endif
+            @endif --}}
 
             <x-primary-button class="ms-3">
                 {{ __('Log in') }}

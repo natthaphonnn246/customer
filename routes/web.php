@@ -9,16 +9,21 @@
     use App\Http\Middleware\EnsureUserHasRole;
     use Illuminate\Support\Facades\DB;
  
-    Route::get('/portals', function (string $id) {
+    /* Route::get('/portals', function (string $id) {
         // ...
     })->middleware(['check:A02']);
-
+ */
     Route::get('/', function () {
         return view('auth.login');
     });
+
+    Route::get('login', function () {
+        return view('welcome');
+    });
+
    Route::get('/dashboard', function () {
         return view('dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard'); 
+    })->middleware(['auth', 'role','status','rights_area', 'verified'])->name('dashboard'); 
 
     Route::get('/webpanel', function () {
         return view('webpanel/dashboard');
@@ -40,10 +45,10 @@
         return view('webpanel/customer-create');
     })->middleware('auth', 'role','status', 'verified');
 
-    Route::get('webpanel', [UserController::class, 'admin'])->middleware('auth', 'role','status', 'verified')->name('webpanel');
+    Route::get('webpanel', [UserController::class, 'admin'])->middleware('auth', 'role','status', 'rights_area', 'verified')->name('webpanel');
     Route::get('/portal', function () {
         return view('portal/dashboard');
-    })->middleware('auth', 'role','status', 'verified');
+    })->middleware('auth', 'role','status','rightsArea', 'verified');
     Route::get('/portal/signin', function () {
         return view('portal/signin');
     })->middleware('auth', 'status', 'verified');
@@ -82,13 +87,13 @@
     Route::get('/webpanel/admin/{id}', [UserController::class, 'edit'])->middleware('auth', 'role','status', 'verified');
 
     //portal;
-    Route::get('/portal/signin', [ProvinceController::class, 'indexPortal']);
+    Route::get('/portal/signin', [ProvinceController::class, 'indexPortal'])->middleware('auth','userRole', 'status');
     Route::get('/portal/signin/update-amphure', [ProvinceController::class, 'amphure']);
     Route::get('/portal/signin/update-district', [ProvinceController::class, 'district']);
     Route::get('/portal/signin/update-zipcode', [ProvinceController::class, 'zipcode']);
 
     //portal customer;
-    Route::get('/portal/customer', [UserController::class, 'portalSignin'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea');
+    Route::get('/portal/customer', [UserController::class, 'portalSignin'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'rights_area');
     //admin create;
     // Route::post('/webpanel/admin-create/insert', [AdminController::class, 'create']);
 
