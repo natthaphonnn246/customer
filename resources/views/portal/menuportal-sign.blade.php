@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
     
@@ -13,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
 
-    <title>@yield('title') | Develop</title>
+    <title>@yield('title') | Signin</title>
 </head>
 
 <style>
@@ -163,11 +164,12 @@
     <div class="row profile">
         <div class="col-3">
             {{-- <img src="{{asset('/images/profile_img copy.jpg')}}" class="img-fluid" width="50px" alt=""> --}}
-            <img src="/profile/profile_img copy.jpg" class="img-fluid" width="50px" alt="">
+            <img src="/profile/user.png" class="img-fluid" width="50px" alt="">
         </div>
 
         <div class="col-2">
-            <h6 class="mt-1" style="margin-left: 50px; padding-top: 26px;">Natthaphon</h6>
+            {{-- <h6 class="mt-1" style="margin-left: 50px; padding-top: 26px;">user@user.com</h6> --}}
+            <p>@yield('col-2')</p>
         </div>
     </div>
     
@@ -176,43 +178,38 @@
            {{--  <ul class="mainItem">
                 <li><a href="/portal/signin" style="cursor: pointer; margin-right: 15px;" id="sub_product"  class="sub-btn">สมัครสมาชิก (Dashboard) <i class="fas fa-angle-left dropdown_p" style="font-size: 12px;"></i></a></li>
             </ul> --}}
-                <ul class="mainItem">
-                    <li><a href="/webpanel" style="cursor: pointer; margin-right: 15px;" id="sub_product"  class="sub-btn">หน้าแรก (Dashboard)</a></li>
-                </ul>
+            <ul class="mainItem">
+                <li><a href="" style="cursor: pointer; margin-right: 15px;" id="sub_product"  class="sub-btn">ลงทะเบีนนลูกค้าใหม่ (Sigin)</a></li>
+            </ul>
 
 
-                <ul class="mainItem" id="report">
-                    {{-- <li class="sub-menu"><a href="#" style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">รายงาน (Report) <i class="fas fa-angle-left dropdown" style="font-size: 12px;"></i></a></li> --}}
-                    <li><a style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">ข้อมูลแอดมิน (Admin)</a></li>
-                </ul>
-                    <div class="sub-menu" style=" display: none; line-height: 55px;">
-                        
-                        <div class="itemList_menu"><a href="/webpanel/admin" style="line-height: 60px;" href="/webpanel/customer">แอดมินทั้งหมด</a></div>
-                        {{-- <div class="itemList_menu"><a style="line-height: 60px;" href="/webpanel/role">จัดการสิทธิ์</a></div> --}}
+            <ul class="mainItem" id="report">
+                {{-- <li class="sub-menu"><a href="#" style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">รายงาน (Report) <i class="fas fa-angle-left dropdown" style="font-size: 12px;"></i></a></li> --}}
+                {{-- <li><a style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">ข้อมูลลูกค้า (Customer)</a></li> --}}
+            </ul>
+
+                {{-- <div class="sub-menu" style=" display: none; line-height: 55px;">
+                   
+                        <div class="itemList_menu"><a style="line-height: 60px;" href="/portal/signin">สมัครสมาชิก</a></div>
+        
+                </div> --}}
             
-                    </div>
-
-                <ul class="mainItem" id="campaign">
-                    <li><a style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">ข้อมูลลูกค้า (Customer)</a></li>
-                </ul>
+              {{--   <ul class="mainItem" id="campaign">
+                    <li><a style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">ร่วมสนุก (Campaign) <i class="fas fa-angle-left dropdown" style="font-size: 12px;"></i></a></li>
+                </ul> --}}
     
                     <div class="sub-menu" style=" display: none; line-height: 55px;">
                     
-                        <div class="itemList_menu"><a style="line-height: 60px;" href="/webpanel/customer">ลูกค้าทั้งหมด</a></div>
-                        <div class="itemList_menu"><a style="line-height: 60px;" href="/campaign/random">สุ่มผู้โชคดี</a></div>
+                        {{-- <div class="itemList_menu"><a style="line-height: 60px;" href="/campaign/register">ข้อมูลลงทะเบียน</a></div>
+                        <div class="itemList_menu"><a style="line-height: 60px;" href="/campaign/random">สุ่มผู้โชคดี</a></div> --}}
             
                     </div>
 
-                <ul class="mainItem" id="report">
-                    {{-- <li class="sub-menu"><a href="#" style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">รายงาน (Report) <i class="fas fa-angle-left dropdown" style="font-size: 12px;"></i></a></li> --}}
-                    <li><a href="/webpanel/setting" style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">ตั้งค่าระบบ (Settings)</a></li>
-                </ul>
-
         <ul class="item">
-                <li class="logout"><a href="/logout" ><i class="fa-solid fa-power-off"></i>
-                    ออกจากระบบ (Logout)
-                </a>
-                </li>
+            <li class="logout"><a href="/logout" ><i class="fa-solid fa-power-off"></i>
+                ออกจากระบบ (Logout)
+            </a>
+            </li>
         </ul>
     </ul>
 </div>

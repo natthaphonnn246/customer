@@ -35,7 +35,10 @@ class User extends Authenticatable
         'district',
         'zipcode',
         'email_login',
-        'text_add'
+        'text_add',
+        'maintenance_status',
+        'allowed_maintenance_status',
+        'allowed_user_status',
     ];
     protected $table = 'users';
     protected $connection = 'mysql';
@@ -73,9 +76,7 @@ class User extends Authenticatable
 
     public static function adminEdit ($code)
     {
-        $admin = User::select('user_code', 'name','admin_area', 'email','email_login', 'role','rights_area', 'telephone', 'address','province', 'amphur', 'district', 'zipcode', 'created_at', 'text_add')
-                ->where('user_code', [$code])
-                ->get();
-        return [$admin];
+        $admin = User::where('user_code', $code)->first();
+        return $admin;
     }
 }

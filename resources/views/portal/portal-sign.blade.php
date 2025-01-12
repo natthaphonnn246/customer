@@ -12,11 +12,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <title>customer-signin</title>
+    <title>register-form</title>
 </head>
 <body>
 
-    @extends ('portal/menuportal')
+    @extends ('portal/menuportal-sign')
     @section('content')
     @csrf
 
@@ -38,7 +38,7 @@
             background-color: #118C3E;
         }
     </style>
-    
+   
     <div class="contentArea">
 
         @section('col-2')
@@ -49,9 +49,8 @@
         @endif
         <h6 class="mt-1" style="margin-left: 50px; padding-top: 20px;">{{$name}}</h6>
         @endsection
-
-        <form action="/portal/signin/create" method="post" enctype="multipart/form-data">
- 
+        
+        <form action="/portal/portal-sign/create" method="post" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-sm-6">
@@ -99,6 +98,7 @@
                             <ul style="width: 100%;">
                                 <span>CODE</span><span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                 <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="customer_code" required>
+
                             </ul>
                         </div>
                         <div class="col-sm-6">
@@ -122,7 +122,7 @@
                                 <span>เบอร์มือถือ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0812345678)</span>
                                 <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="telephone" required><br>
                                 <span>ที่อยู่จัดส่ง</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address">                              
+                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address" required>                        
                             </ul>
                         </div>
                         <div class="col-sm-6">
@@ -151,7 +151,6 @@
                                             <option value="{{$row->province_id}}">{{$row->name_th}}</option>
                                         @endforeach
                                     @endif
-
                                 </select>
                             </ul>
                         </div>
@@ -159,13 +158,11 @@
                             <ul style="width: 100%;">
                                 <span>ตำบล/เขต</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts">
-
                                     @if(isset($district) != '')
                                         @foreach($district as $row)
                                             <option value="{{$row->amphure_id}}">{{$row->name_th}}</option>
                                         @endforeach
                                     @endif
-
                                 </select>
                             </ul>
                         </div>
@@ -190,14 +187,15 @@
                                 {{-- <input style="margin-top:10px;" type="text" class="form-control" name="admins"><br> --}}
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="admin_area">
                                     @if(isset($admin_area_list) != '')
-                                    {{-- @foreach($admin_area_list as $row) --}}
+                                    @foreach($admin_area_list as $row)
 
-                                        @if($admin_area_list->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
-                                        <option value="{{$admin_area_list->admin_area}}">{{$admin_area_list->name}}</option>
+                                        @if($row->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
+                                        <option value="{{$row->admin_area}}">{{$row->name}}</option>
                                         @endif
 
-                                    {{-- @endforeach --}}
+                                    @endforeach
                                     @endif
+                            
                                     </select><br>
                                 
                                 <span>พนักงานขาย/เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
@@ -234,124 +232,175 @@
                             <p class="textrow py-2" style="text-align: center; font-weight:500; font-size: 16px; color:rgb(72, 72, 72);"><span>ลงทะเบียนแล้ว กรุณาติดต่อผู้ดูแล</span></p>
                             @endif
                         </div>
+
                     </div>
         </form>
     </div>
 
-        <script type="text/javascript">
-   
-                    $(function () {
-                        
-                        $('#province').change(function(e) {
-                        e.preventDefault();
-                        let province_id = $(this).val();
-                        console.log(province_id);
-                        
-                            $.ajax({
-                                url: '/portal/signin/update-amphure',
-                                type: 'get',
-                                data: {province_id: province_id},
-
-                                success: function(data) {
-
-                                    $('#amphures').html(data);
-
-                                }
-                            });
-                        });
-
-                        $('#amphures').change(function(e) {
-                        e.preventDefault();
-                        let amphure_id = $(this).val();
-                        console.log(amphure_id + 'checked');
-                        
-                            $.ajax({
-                                url: '/portal/signin/update-district',
-                                type: 'get',
-                                data: {amphure_id: amphure_id},
-                                success: function(data) {
-
-                                    $('#districts').html(data);
-                                
-                                }
-                            });
-                        });
-
-                        $('#province').on('click', function() {
-
-                        let province_id = $(this).val();
-                        
-                        console.log(province_id);
-                        
+<?php 
+if(isset($ampure_master) != '')
+{
+    foreach ($ampure_master as $amp)
+{
+    $r = $amp->name_th;
+    echo $r;
+}
+}
+?>
+         <script>
+             
+                $('#province').change(function(e) {
+                    e.preventDefault();
+                    let province_id = $(this).val();
+                    console.log(province_id);
+                    
                         $.ajax({
-                            url: '/portal/signin/update-amphure',
+                            url: '/portal/portal-sign/update-amphure',
                             type: 'get',
                             data: {province_id: province_id},
-                        
                             success: function(data) {
 
                                 $('#amphures').html(data);
 
                             }
                         });
+                    });
+
+                    $('#amphures').change(function(e) {
+                    e.preventDefault();
+                    let amphure_id = $(this).val();
+                    console.log(amphure_id + 'checked');
+                    
+                        $.ajax({
+                            url: '/portal/portal-sign/update-district',
+                            type: 'get',
+                            data: {amphure_id: amphure_id},
+                            success: function(data) {
+
+                                $('#districts').html(data);
+                            
+                            }
                         });
+                    });
 
-                        $('#amphures').click(function(e) {
-                        e.preventDefault();
-                        let amphure_id = $(this).val();
-                        console.log(amphure_id);
-                        
-                            $.ajax({
-                                url: '/portal/signin/update-district',
-                                type: 'get',
-                                data: {amphure_id: amphure_id},
-                                success: function(data) {
+                    $('#province').click(function() {
+        
+                    let province_id = $(this).val();
+                    
+                    console.log(province_id);
+                    
+                    $.ajax({
+                        url: '/portal/portal-sign/update-amphure',
+                        type: 'get',
+                        data: {province_id: province_id},
+                        success: function(data) {
 
-                                    $('#districts').html(data);
-                                
-                                }
-                            });
+                            $('#amphures').html(data);
+
+                        }
+                    });
+                    });
+
+                    $('#amphures').click(function(e) {
+                    e.preventDefault();
+                    let amphure_id = $(this).val();
+                    console.log(amphure_id);
+                    
+                        $.ajax({
+                            url: '/portal/portal-sign/update-district',
+                            type: 'get',
+                            data: {amphure_id: amphure_id},
+                            success: function(data) {
+
+                                $('#districts').html(data);
+                            
+                            }
                         });
+                    });
 
-                        $('#districts').change(function(e) {
-                        e.preventDefault();
-                        let amphure_id = $(this).val();
-                        console.log(amphure_id);
-                        
-                            $.ajax({
-                                url: '/portal/signin/update-zipcode',
-                                type: 'get',
-                                data: {amphure_id: amphure_id},
-                                success: function(data) {
+                    $('#districts').change(function(e) {
+                    e.preventDefault();
+                    let amphure_id = $(this).val();
+                    console.log(amphure_id);
+                    
+                        $.ajax({
+                            url: '/portal/portal-sign/update-zipcode',
+                            type: 'get',
+                            data: {amphure_id: amphure_id},
+                            success: function(data) {
 
-                                    $('#zipcode').val(data);
-                                    console.log(data);
-                                
-                                }
-                            });
+                                $('#zipcode').val(data);
+                                console.log(data);
+                            
+                            }
                         });
+                    });
 
-                        $('#districts').click(function(e) {
-                        e.preventDefault();
-                        let amphure_id = $(this).val();
-                        console.log(amphure_id);
-                        
-                            $.ajax({
-                                url: '/portal/signin/update-zipcode',
-                                type: 'get',
-                                data: {amphure_id: amphure_id},
-                                success: function(data) {
+                    $('#districts').click(function(e) {
+                    e.preventDefault();
+                    let amphure_id = $(this).val();
+                    console.log(amphure_id);
+                    
+                        $.ajax({
+                            url: '/portal/portal-sign/update-zipcode',
+                            type: 'get',
+                            data: {amphure_id: amphure_id},
+                            success: function(data) {
 
-                                    $('#zipcode').val(data);
-                                    console.log(data);
-                                
-                                }
-                            });
+                                $('#zipcode').val(data);
+                                console.log(data);
+                            
+                            }
                         });
                     });
 
         </script>
 
+        <!--- php upload ใบอนุญาตขายยาสถานพยาบาล--->
+    <script>
+
+                $(document).ready(function(){
+                    $('#cert_store').click(function(){
+                        // e.preventDefault(); ปิดใช้งาน submit ปกติ
+                        Swal.fire ({
+                            html:
+                            '<p style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล <?php echo 1 ;?></p>'
+                            +'<hr>'
+                            +'<form action="update-swal.php" method="post" enctype="multipart/form-data">'
+                            +'<img src="./upload_store/<?php echo 1 ; ?>" id="fileImage" style="width: 100%";/>'
+                            +'<hr>'
+                            +'<input type="file" id="image" class="form-control" name="certStore[<?php echo 1 ;?>]" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
+                            +'<hr>'
+                            +'<div style="margin-top: 10px; text-align: end;">'
+                            +'<button type="submit" class="btn btn-primary" style="margin: 5px;">บันทึก</button>'
+                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn btn-danger" data-dismiss="modal">ยกเลิก</button>'
+                            +'</div>'
+                            + '</form>',
+                            showConfirmButton: false, 
+
+                            // confirmButtonText: 'บันทึก',
+                            // showCancelButton: true,
+                        
+                        })
+
+                /// preview image swal filre;
+                    let image = document.querySelector('#image');
+                    let fileImage = document.querySelector('#fileImage');
+
+                    image.onchange = evt => {
+                    const [file] = image.files;
+                    if(file) {
+                    fileImage.src = URL.createObjectURL(file);
+                    }
+                    }
+            });
+        });
+        //close window reload window;
+            function closeWin() {
+            Swal.close();
+            // window.location.reload();
+            }
+</script>
 @endsection
 </body>
 </html>

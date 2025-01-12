@@ -16,7 +16,7 @@ class RightsArea
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::user()->rights_area == 0) {
+        if (Auth::user()->rights_area == '0') {
 
             return redirect('dashboard');
 

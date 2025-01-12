@@ -23,6 +23,7 @@ class Customer extends Model
         'amphur',
         'district',
         'zip_code',
+        'geography',
         'admin_area',
         'sale_area',
         'text_area',
@@ -36,6 +37,10 @@ class Customer extends Model
         'cert_expire',
         'status',
         'password',
+        'status_update',
+        'type',
+        // 'maintenance_status',
+        // 'allowed_maintenance',
 
     ];
 
@@ -52,7 +57,7 @@ class Customer extends Model
         $total_page = ceil($count_page / $perpage);
         $start = ($perpage * $page) - $perpage;
 
-        $customer = DB::table('customers')->select('customer_code', 'customer_name', 'email', 'status', 'created_at')
+        $customer = DB::table('customers')->select('customer_code', 'customer_name', 'email', 'status','status_update', 'created_at')
             ->offset($start)
             ->limit($perpage)
             ->get();
@@ -62,7 +67,7 @@ class Customer extends Model
 
     public static function customerEdit($id)
     {
-        $customer_edit = DB::table('customers')->where('customer_id', [$id])->get();
+        $customer_edit = Customer::where('customer_id', $id)->first();
 
         return [$customer_edit];
     }

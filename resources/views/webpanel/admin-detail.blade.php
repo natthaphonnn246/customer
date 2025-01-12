@@ -75,8 +75,8 @@
             <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">แอดมินทั้งหมด (Admin)</a> / รายละเอียด</span>
         </div>
         
-    @if (isset($admin_row) != '')
-    @foreach ($admin_row as $row_edit)
+    @if (isset($admin_master) != '')
+    {{-- @foreach ($admin_row as $row_edit) --}}
         <form id="form">
             {{-- action="/webpanel/admin-detail/update/{{$row_edit->user_code}}" enctype="multipart/form-data" --}}
             @csrf
@@ -91,15 +91,15 @@
                         <div class="col-sm-12">
                             <ul style="width: 100%;">
                                 <span>ชื่อแอดมิน</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="admin_name" value="{{$row_edit->name}}">
+                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="admin_name" value="{{$admin_master->name}}">
                             </ul>
                             <ul style="width: 100%;">
                                 <span>CODE</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="code" value="{{$row_edit->user_code;}}" disabled>
+                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="code" value="{{$admin_master->user_code;}}" disabled>
                             </ul>
                             <ul style="width: 100%;">
                                 <span>Admin area</span> <span style="font-size: 12px; color:red;">*เขตรับผิดชอบ</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="admin_area" value="{{$row_edit->admin_area;}}">
+                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="admin_area" value="{{$admin_master->admin_area;}}">
                             </ul>
                         </div>
                         <div class="col-sm-6">
@@ -107,7 +107,7 @@
                                 <span>สิทธิ์แอดมิน</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="role">
                         
-                                    @if(($row_edit->user_code) == 0000)
+                                    @if(($admin_master->user_code) == 0000)
                                     <option value="1" selected>มี</option>
                                     @else
                                     <option value="0">ไม่ระบุ</option>
@@ -121,20 +121,28 @@
                                 <span>สิทธิ์รับผิดชอบ</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="rights_area">
 
-                                    <option {{$row_edit->rights_area == 0 ? 'selected' : '' ; }} value="0">ไม่ระบุ</option>
-                                    <option  {{$row_edit->rights_area == 1 ? 'selected' : '' ; }} value="1">ระบุ</option>
+                                    <option {{$admin_master->rights_area == 0 ? 'selected' : '' ; }} value="0">ไม่ระบุ</option>
+                                    <option  {{$admin_master->rights_area == 1 ? 'selected' : '' ; }} value="1">ระบุ</option>
                                     
                                 </select>
                             </ul>
                         </div>
                         <div class="col-sm-12">
                             <ul style="width: 100%;">
+                                <span>สิทธิ์ในการทดสอบระบบ</span> <span style="font-size: 12px; color:red;">*เมื่ออยู่ระหว่างปรับปรุงระบบ</span>
+                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="allowed_user_status">
+
+                                    <option {{$admin_master->allowed_user_status == 0 ? 'selected' : '' ; }} value="0">ไม่ระบุ</option>
+                                    <option  {{$admin_master->allowed_user_status == 1 ? 'selected' : '' ; }} value="1">ระบุ</option>
+                                    
+                                </select></br>
+
                                 <span>อีเมล</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" name="email" type="email" class="form-control" name="email" value="{{$row_edit->email}}"><br>
+                                <input style="margin-top:10px; color: rgb(171, 171, 171);" name="email" type="email" class="form-control" name="email" value="{{$admin_master->email}}"><br>
                                 <span>เบอร์ติดต่อ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0904545555)</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$row_edit->telephone}}"><br>
+                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$admin_master->telephone}}"><br>
                                 <span>ที่อยู่</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$row_edit->address}}">                              
+                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$admin_master->address}}">                              
                             </ul>
                         </div>
                         <div class="col-sm-6">
@@ -146,7 +154,7 @@
                                     @if(isset($province) != '')
                                         @foreach($province as $row)
                         
-                                            <option value="{{$row->id}}" {{$row->name_th == $row_edit->province ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->id}}" {{$row->name_th == $admin_master->province ? 'selected' : '' ;}}>{{$row->name_th}}</option>
                                         
                                         @endforeach
                                     @endif
@@ -160,11 +168,11 @@
 
                                     @if(isset($amphur) == '')
                                         @foreach($amphur as $row)
-                                            <option value="{{$row->province_id}}" {{$row->name_th == $row_edit->amphur ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->province_id}}" {{$row->name_th == $admin_master->amphur ? 'selected' : '' ;}}>{{$row->name_th}}</option>
                                         @endforeach
 
                                     @else
-                                    <option>{{$row_edit->amphur}}</option>
+                                    <option>{{$admin_master->amphur}}</option>
                                     @endif
                                 </select>
                             </ul>
@@ -175,11 +183,11 @@
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="district" id="districts">
                                     @if(isset($district) == '')
                                         @foreach($district as $row)
-                                            <option value="{{$row->amphure_id}}" {{$row->name_th == $row_edit->district ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->amphure_id}}" {{$row->name_th == $admin_master->district ? 'selected' : '' ;}}>{{$row->name_th}}</option>
                                         @endforeach
 
                                     @else
-                                    <option>{{$row_edit->district}}</option>
+                                    <option>{{$admin_master->district}}</option>
                                     @endif
                                 </select>
                             </ul>
@@ -187,7 +195,7 @@
                         <div class="col-sm-6">
                             <ul style="width: 100%;">
                                 <span>รหัสไปรษณีย์</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบ</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="zipcode" id="zipcode" value="{{$row_edit->zipcode}}">
+                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="zipcode" id="zipcode" value="{{$admin_master->zipcode}}">
                             </ul>
                         </div>
                     </div>
@@ -202,7 +210,7 @@
                             <ul class="text-muted" style="padding-top: 10px;">
                             <label></label>
                                 <span>อีเมล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" name="email_login" value="{{$row_edit->email_login}}"><br>
+                                <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" name="email_login" value="{{$admin_master->email_login}}"><br>
                                 
                                 <span>รหัสผ่าน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                 <input style="margin-top:10px;" type="text" class="form-control" name="password" disabled><br>
@@ -213,7 +221,7 @@
                     
                         <div class="mb-3 my-4">
                             <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 18px; font-weight: 500;">เพิ่มเติม</label></label>
-                            <textarea class="form-control" style=" color:rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_add">{{$row_edit->text_add}}</textarea>
+                            <textarea class="form-control" style=" color:rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_add">{{$admin_master->text_add}}</textarea>
                         </div>
 
                         <div style="text-align:right;">
@@ -233,7 +241,7 @@
                                 let user = $('#form').serialize();
 
                                 $.ajax({
-                                    url: '/webpanel/admin-detail/update/{{$row_edit->user_code}}',
+                                    url: '/webpanel/admin-detail/update/{{$admin_master->user_code}}',
                                     type: 'post',
                                     data: user,
                                     success: function(data) {
@@ -266,7 +274,7 @@
                             });
                     </script>
 
-    @endforeach
+    {{-- @endforeach --}}
     @endif
 
         <hr style="color:#828282;">
@@ -281,7 +289,7 @@
         @endif
 
         <div class="form-control" style="margin-top: 25px;">
-                    <form action="/webpanel/admin-detail/reset/{{$row_edit->user_code}}" method="POST" enctype="multipart/form-data">
+                    <form action="/webpanel/admin-detail/reset/{{$admin_master->user_code}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <ul class="text-title" style="text-align: start; margin-top: 10px;">
                             <span style="font-size: 16px; font-weight: 500;">เปลี่ยนรหัสผ่าน</span>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,17 +14,26 @@ class ProvinceController
             $provinces = Province::province();
             return view('/webpanel/admin-create', compact('provinces'));
     }
-    public function customerCreate()
+ /*    public function customerCreate()
     {
             $provinces = Province::province();
             return view('/webpanel/customer-create', compact('provinces'));
-    }
+    } */
 
-    public function indexPortal()
+   /*  public function indexPortal()
     {
             $provinces = Province::province();
             return view('/portal/signin', compact('provinces'));
-    }
+    } */
+    /* public function portalSign(Request $request)
+    {
+            $code = $request->user()->user_code;
+        
+            $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->get();
+
+            $provinces = Province::province();
+            return view('portal/portal-sign', compact('provinces', 'user_name'));
+    } */
     
     public function amphure()
     {
@@ -88,6 +98,24 @@ class ProvinceController
                     echo $zipcode;
                    
                 }
+            }
+
+
+    }
+
+    public function geographies()
+    {
+
+            @$province_id = $_GET['province_id'];
+            $georaphy_row = DB::table('provinces')->select('geography_id', 'id')->where('id', $province_id)->first();
+            $geography_id = $georaphy_row->geography_id;
+
+            if($geography_id  != '')
+            {
+                $geography_master = Province::geography($geography_id);
+                $geography_name = $geography_master->name;
+                echo $geography_name;
+                
             }
 
 

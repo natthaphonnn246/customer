@@ -27,13 +27,13 @@ Class UserController
                 $district = $request->district;
                 $zipcode = $request->zipcode;
                 $email_login = $request->email_login;
-                $text_add = $request['text_add'];
                 
-               /*  if($request->text_add == '') {
+                if($request->text_add == '') {
                     $text_add = '';
+
                 } else {
                     $text_add = $request->text_add;
-                } */
+                }
             }
 
                 $province_master = DB::table('provinces')->select('id', 'name_th')->where('id', $province)->first();
@@ -57,6 +57,9 @@ Class UserController
                                 'zipcode' => $zipcode,
                                 'email_login' => $email_login,
                                 'text_add' => $text_add,
+                                'maintenance_status' => '0',
+                                'allowed_maintenance_status' => '0',
+                                'allowed_user_status' => '0',
 
                             ]);
 
@@ -78,6 +81,9 @@ Class UserController
                                 'email_login' => $email_login,
                                 'password' => $password,
                                 'text_add' => $text_add,
+                                'maintenance_status' => '0',
+                                'allowed_maintenance_status' => '0',
+                                'allowed_user_status' => '0',
                         
                             ]);
 
@@ -96,7 +102,7 @@ Class UserController
     {
         return view('webpanel/dashboard');
     }
-    public function portalSignin(Request $request)
+    /* public function portalSignin(Request $request)
     {
         
         $id = $request->user()->admin_area;
@@ -106,7 +112,7 @@ Class UserController
         $admin_area = DB::table('customers')->select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at')->whereIn('admin_area', [$id])->get();
   
         return view('portal/customer', compact('admin_area', 'user_name'));
-    }
+    } */
 
     public function statusAct(Request $request)
     {
@@ -156,14 +162,14 @@ Class UserController
 
     public function edit($id)
     {
-        $master = User::adminEdit($id);
-        $admin_row = $master[0];
+        $admin_master = User::adminEdit($id);
+        // $admin_row = $master[0];
 
         $province = DB::table('provinces')->select('id', 'name_th')->orderBy('id', 'asc')->get();
         $amphur = DB::table('amphures')->select('name_th', 'province_id')->get();
         $district = DB::table('districts')->select('name_th', 'amphure_id')->get();
 
-        return view('webpanel/admin-detail', compact('admin_row', 'province', 'amphur', 'district'));
+        return view('webpanel/admin-detail', compact('admin_master', 'province', 'amphur', 'district'));
     }
 
     public function update(Request $request, $id)
@@ -171,7 +177,12 @@ Class UserController
 
             date_default_timezone_set("Asia/Bangkok");
 
-                $admin_area = $request['admin_area'];
+                // $admin_area = $request['admin_area'];
+                $admin_area = $request->admin_area;
+                if($request->admin_area == null) {
+                    $admin_area = '';
+                }
+
                 $name = $request->admin_name;
                 $role = $request->role;
                 $rights_area = $request->rights_area;
@@ -183,7 +194,21 @@ Class UserController
                 $district_post = $request->district;
                 $zipcode_post = $request->zipcode;
                 $email_login = $request->email_login;
-                $text_add = $request['text_add'];
+                // $text_add = $request['text_add'];
+
+                $text_add = $request->text_add;
+                if($request->text_add == null) {
+                    $text_add = '';
+                }
+
+                $allowed_mtnance = $request->allowed_user_status;
+                if($request->allowed_user_status == null) {
+                    $allowed_mtnance = '0';
+                }
+
+                if($request->text_add == null) {
+                    $text_add = '';
+                }
 
                 $update_time = date('Y-m-d H:i:s');
 
@@ -192,8 +217,7 @@ Class UserController
 
             DB::table('users')
                 ->where('user_code', $id)
-                ->update
-                ([
+                ->update ([
 
                     /* 'user_code' => $code,
                     'user_id' => $code, */
@@ -211,13 +235,13 @@ Class UserController
                     'email_login' => $email_login,
                     'text_add' => $text_add,
                     'updated_at' => $update_time,
+                    'allowed_user_status' => $allowed_mtnance,
                 
                 ]);
 
             DB::table('user_tb')
                 ->where('admin_id', $id)
-                ->update
-                ([
+                ->update ([
 
                     // 'admin_id' => $code,
                     'admin_area' => $admin_area,
@@ -234,6 +258,7 @@ Class UserController
                     'email_login' => $email_login,
                     'text_add' => $text_add,
                     'updated_at' => $update_time,
+                    'allowed_user_status' => $allowed_mtnance,
                 
                 ]);
                 // check user id;

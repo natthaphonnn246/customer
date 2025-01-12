@@ -241,7 +241,7 @@
                 <th scope="col" style="color:#838383; text-align: left;">อีเมล</th>
                 <th scope="col" style="color:#838383; text-align: left;">Sale area</th>
                 <th scope="col" style="color:#838383; text-align: left;">ชื่อ</th>
-                <th scope="col" style="color:#838383; text-align: left;">สถานะ</th>
+                <th scope="col" style="color:#838383; text-align: center;">สถานะ</th>
                 <th scope="col" style="color:#838383; text-align: left;">วันที่ลงทะเบียน</th>
                 <th scope="col" style="color:#838383; text-align: left;">จัดการ</th>
               </tr>
@@ -269,19 +269,24 @@
                 <td scope="row" style="color:#9C9C9C; text-align: left;">{{$email}}</td>
                 <td scope="row" style="color:#9C9C9C; text-align: left;">{{$sale_area}}</td>
                 <td scope="row" style="color:#9C9C9C; text-align: left;">{{$customer_name}}</td>
-                @if ($status == 0)
-                <td scope="row" style="color:#9C9C9C; text-align: left;"><i class="fa-solid fa-circle" style="color: rgb(255, 70, 70);"></i> รอดำเนินการ</td>
-                @elseif ($status == 1)
-                <td scope="row" style="color:#9C9C9C; text-align: left;"><i class="fa-solid fa-circle" style="color: rgb(251, 183, 23);"></i> กำลังติดตาม</td>
-                @elseif ($status == 2)
-                <td scope="row" style="color:#9C9C9C; text-align: left;"><i class="fa-solid fa-circle" style="color: rgb(4, 181, 30);"></i> สำเร็จ</td>
-                @else
-                <td scope="row" style="color:#9C9C9C; text-align: left;"> </td>
-                @endif
+
+                    @if ($status == 0)
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(255, 70, 70);">รอดำเนินการ</span></td>
+                    {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(255, 70, 70);"></i> รอดำเนินการ</td> --}}
+                    @elseif ($status == 1)
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"><span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(255, 182, 11);">ต้องดำเนินการ</span></td>
+                    {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(251, 183, 23);"></i> ต้องดำเนินการ</td> --}}
+                    @elseif ($status == 2)
+                    {{-- <td scope="row" style="color:#9C9C9C; text-align: left;"><i class="fa-solid fa-circle" style="color: rgb(4, 181, 30);"></i> ดำเนินการแล้ว</td> --}}
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(58, 174, 19);">ดำเนินการแล้ว</span></td>
+                    @else
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> </td>
+                    @endif
+
                 <td scope="row" style="color:#9C9C9C; text-align: left;">{{$created_at}}</td>
 
-                <td scope="row" style="color:#9C9C9C; text-align: left;"><a href="/webpanel/admin/{{$customer_code}}" id="edit"><i class="fa-regular fa-eye"></i></a>
-                <button id="trash"><i class="fa-regular fa-trash-can"></i></button>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding:15px;"><a href="/portal/customer/{{$customer_code}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                {{-- <button id="trash"><i class="fa-regular fa-trash-can"></i></button> --}}
                 </td>
               </tr>
     

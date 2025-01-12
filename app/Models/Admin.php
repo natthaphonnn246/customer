@@ -24,6 +24,9 @@ class Admin extends Model
         'status_checked',
         'email_login',
         'password',
+        'maintenance_status',
+        'allowed_maintenance_status',
+        'allowed_user_status',
     ];
     protected $table = 'user_tb';
     protected $connection = 'mysql';

@@ -254,7 +254,8 @@
                 <th scope="col" style="color:#838383; text-align: left;">CODE</th>
                 <th scope="col" style="color:#838383; text-align: left;">อีเมล</th>
                 <th scope="col" style="color:#838383; text-align: left;">ชื่อร้านค้า</th>
-                <th scope="col" style="color:#838383; text-align: center;">สถานะ</th>
+                <th scope="col" style="color:#838383; text-align: center;">STATUS</th>
+                <th scope="col" style="color:#838383; text-align: center;">UPDATE</th>
                 <th scope="col" style="color:#838383; text-align: center;">วันที่สมัคร</th>
                 <th scope="col" style="color:#838383; text-align: center;">จัดการ</th>
               </tr>
@@ -271,6 +272,7 @@
                         $user_name = $row->customer_name;
                         $user_code = $row->customer_code;
                         $status = $row->status;
+                        $status_update = $row->status_update;
                         $email = $row->email;
                         $created_at = $row->created_at;
                     ?>
@@ -291,6 +293,12 @@
                     <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(58, 174, 19);">ดำเนินการแล้ว</span></td>
                     @else
                     <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> </td>
+                    @endif
+
+                    @if ($status_update == 'updated')
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(255, 70, 70);">UPDATE</span></td>
+                    @else
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"><span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(184, 184, 184);">NULL</span></td>
                     @endif
 
                 <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">{{$created_at}}</td>

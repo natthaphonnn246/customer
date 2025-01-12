@@ -70,11 +70,10 @@
                         <span>สำเนาบัตรประชาชน</span>
                         <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" accept="image/png, image/jpg, image/jpeg"><br>
 
-                        <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ หากไม่มีให้ใส่ 0</span>
+                        <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                         <input style="margin-top:10px; color:grey;" type="text" class="form-control" name="cert_number"><br>
 
                         <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-
                         <input style="margin-top:10px; color:grey;" type="date" value="2024-01-01" class="form-control" name="cert_expire"><br>
 
                     </ul>
@@ -87,7 +86,7 @@
                         <div class="col-sm-12">
                             <ul style="width: 100%;">
                                 <span>ชื่อร้านค้า/สถานพยาบาล</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="customer_name">
+                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="customer_name" required>
                             </ul>
                         </div>
                         <div class="col-sm-6">
@@ -117,7 +116,7 @@
                                 <span>เบอร์มือถือ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0812345678)</span>
                                 <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="telephone"><br>
                                 <span>ที่อยู่จัดส่ง</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address">                              
+                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address" required>                              
                             </ul>
                         </div>
                         <div class="col-sm-6">
@@ -126,7 +125,6 @@
                                 {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
         
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="province" id="province">
-                                    {{-- <?php  $provinces = DB::table('provinces')->select('id', 'name_th')->orderBy('id', 'asc')->get(); ?> --}}
                                     @if(isset($provinces) != '')
                                         @foreach($provinces as $row)
                                         
@@ -182,10 +180,17 @@
                                 <span>แอดมินผู้ดูแล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                 {{-- <input style="margin-top:10px;" type="text" class="form-control" name="admins"><br> --}}
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="admin_area">
-                                    <option value="A01">พี่เมย์</option>
-                                    <option value="A02">พรรษา</option>
-                                    <option value="A03">ออม</option>
-                                    <option value="A04">แจ๋ม</option>
+                                    
+                                    @if(isset($admin_area_list) != '')
+                                        @foreach($admin_area_list as $row)
+
+                                            @if($row->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
+                                            <option value="{{$row->admin_area}}">{{$row->name}}</option>
+                                            @endif
+
+                                        @endforeach
+                                    @endif
+                                
                                     </select><br>
  
                                 <span>พนักงานขาย/เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
@@ -211,7 +216,7 @@
                             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="text_add"></textarea>
                         </div>
 
-                            <button type="submit" id="submitForm" name="submit_form" class="btn my-4" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>
+                            <button type="submit" id="submitForm" name="submit_form" class="btn py-3" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>
                             {{-- <p class="textrow" style="text-align: center;"><span>กรุณาติดต่อเจ้าหน้าที่ เมื่อดำเนินการเรียบร้อย</span></p> --}}
                         </div>
                     </div>
@@ -290,9 +295,9 @@
                 });
 
                 $('#districts').change(function(e) {
-                e.preventDefault();
-                let amphure_id = $(this).val();
-                console.log(amphure_id);
+                    e.preventDefault();
+                    let amphure_id = $(this).val();
+                    console.log(amphure_id);
                 
                     $.ajax({
                         url: '/webpanel/customer-create/update-zipcode',
@@ -308,9 +313,9 @@
                 });
 
                 $('#districts').click(function(e) {
-                e.preventDefault();
-                let amphure_id = $(this).val();
-                console.log(amphure_id);
+                    e.preventDefault();
+                    let amphure_id = $(this).val();
+                    console.log(amphure_id);
                 
                     $.ajax({
                         url: '/webpanel/customer-create/update-zipcode',
@@ -327,57 +332,6 @@
 
         </script>
 
-        <!--- php upload ใบอนุญาตขายยาสถานพยาบาล--->
-    <script>
-
-                $(document).ready(function(){
-                    $('#cert_store').click(function(){
-                        // e.preventDefault(); ปิดใช้งาน submit ปกติ
-                        Swal.fire ({
-                            html:
-                            '<p style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล <?php echo 1 ;?></p>'
-                            +'<hr>'
-                            +'<form action="update-swal.php" method="post" enctype="multipart/form-data">'
-                            +'<img src="./upload_store/<?php echo 1 ; ?>" id="fileImage" style="width: 100%";/>'
-                            +'<hr>'
-                            +'<input type="file" id="image" class="form-control" name="certStore[<?php echo 1 ;?>]" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
-                            +'<hr>'
-                            +'<div style="margin-top: 10px; text-align: end;">'
-                            +'<button type="submit" class="btn btn-primary" style="margin: 5px;">บันทึก</button>'
-                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn btn-danger" data-dismiss="modal">ยกเลิก</button>'
-                            +'</div>'
-                            + '</form>',
-                            showConfirmButton: false, 
-
-                            // confirmButtonText: 'บันทึก',
-                            // showCancelButton: true,
-                        
-                        })
-
-                    /// preview image swal filre;
-                        let image = document.querySelector('#image');
-                        let fileImage = document.querySelector('#fileImage');
-
-                        image.onchange = evt => {
-                        const [file] = image.files;
-                        if(file) {
-                        fileImage.src = URL.createObjectURL(file);
-                        }
-                        }
-                });
-            });
-            //close window reload window;
-                function closeWin() {
-                Swal.close();
-                // window.location.reload();
-                }
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            $('.datepicker').datepicker();
-        });
-    </script>
 @endsection
 </body>
 </html>

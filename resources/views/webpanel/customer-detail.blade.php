@@ -46,7 +46,7 @@
             background-color: #0f21cb;
         }
         #exportCsv {
-            background-color: #c9c9c9;
+            background-color: #e7e7e7;
             color:white;
         }
         #exportCsv:hover {
@@ -131,20 +131,34 @@
             background-color: #0f21cb;
         }
         #cancelUpload {
-            background-color: #f55151;
-            color:white;
-            width: 90px;
+            background-color: #ebebeb;
+            color:rgb(103, 103, 103);
+            width: 80px;
             height: 40px;
         }
         #cancelUpload:hover {
-            width: 90px;
+            width: 80px;
             height: 40px;
-            background-color: #de0505;
+            color:rgb(103, 103, 103);
+            background-color: #cbcbcb;
         }
 
     </style>
     
     <div class="contentArea" id="bg">
+    
+
+      {{--   @if(Session::has('success'))
+        <script>
+            swal.fire({
+                title: 'สำเร็จ',
+                text: 'บันท��กข้อมูลลูกค้าเรียบร้อยแล้ว',
+                icon:'success',
+                confirmButtonText: 'ตกลง'
+            });
+        </script>
+        @endif --}}
+
 
         <div style="text-align: left; margin-top: 10px;">
             <span style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / แบบฟอร์ม</span>
@@ -152,9 +166,18 @@
         </div>
         <hr style="color: #8E8E8E; width: 100%;">
 
+        @if($customer_view->updated_at != '')
+        <div style="text-align: right;">
+            <span style="color:#a4a2a2;">อัปเดตข้อมูลล่าสุด : </span> <span style="color:#939393; border:solid 1px #404147; width: 50%; padding: 10px; border-radius: 5px;">{{$customer_view->updated_at}}</span></span></br>
+        </div>
+        @endif
+
         @if(isset($customer_view) != '')
-        @foreach($customer_view as $row_view)
+
+        {{-- {{dd($customer_view->customer_id)}} --}}
+
         <form id="form">
+        {{-- <form action="/webpanel/customer-detail/update/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
             @csrf
 
                 <div class="row">
@@ -166,33 +189,48 @@
                         <ul class="text-muted" style="padding-top: 10px;">
                             <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span></br>
                             <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certStore" >ใบอนุญาตขายยา/สถานพยาบาล</div>
+                            @if ($customer_view->cert_store == '')
+                            <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                            @endif
                             <hr>
 
                             <span>ใบประกอบวิชาชีพ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                             <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certMedical" >ใบประกอบวิชาชีพ</div>
+                            @if ($customer_view->cert_medical == '')
+                            <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                            @endif
                             <hr>
                             {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_medical" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
                             <span>ใบทะเบียนพาณิชย์</span>
                             <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certCommerce" >ใบทะเบียนพาณิชย์</div>
+                            @if ($customer_view->cert_commerce == '')
+                            <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                            @endif
                             <hr>
                             {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_commerce" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
                             <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span>
                             <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certVat" >ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</div>
+                            @if ($customer_view->cert_vat == '')
+                            <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                            @endif
                             <hr>
                             {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_vat" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
                             <span>สำเนาบัตรประชาชน</span>
                             <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certId" >สำเนาบัตรประชาชน</div>
+                            @if ($customer_view->cert_id == '')
+                            <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                            @endif
                             <hr>
                             {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
-                            <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ หากไม่มีให้ใส่ 0</span>
-                            <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$row_view->cert_number}}"><br>
-
+                            <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                            <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$customer_view->cert_number}}"><br>
+          
                             <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                            <input id="date" style="margin-top:10px;  color: rgb(171, 171, 171);" type="date"  class="form-control" name="cert_expire" value="{{$row_view->cert_expire}}"><br>
+                            <input id="date" style="margin-top:10px;  color: rgb(171, 171, 171);" type="date"  class="form-control" name="cert_expire" value="{{$customer_view->cert_expire}}"><br>
 
                         </ul>
 
@@ -204,7 +242,7 @@
                             <div class="col-sm-12">
                                 <ul style="width: 100%;">
                                     <span>ชื่อร้านค้า/สถานพยาบาล</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="customer_name" value="{{$row_view->customer_name}}">
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="customer_name" value="{{$customer_view->customer_name}}">
                                 </ul>
 
                                 @error('customer_name')
@@ -219,7 +257,8 @@
                             <div class="col-sm-6">
                                 <ul style="width: 100%;">
                                     <span>CODE</span><span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="customer_code" value="{{$row_view->customer_code}}" >
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="customer_code" value="{{$customer_view->customer_code}}" >
+
                                 </ul>
 
                                 @error('customer_code')
@@ -231,30 +270,44 @@
                                 @enderror
 
                             </div>
+                            
                             <div class="col-sm-6">
                                 <ul style="width: 100%;">
                                     <span>ระดับราคา</span><span style="font-size: 12px; color:red;">*ลูกค้า 6 เท่ากับ 1</span>
                                     <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="price_level">
                                     
-                                        <option name="price_level" {{$row_view->price_level == 1 ? 'selected' : '' }} value="1">1</option>
-                                        <option name="price_level" {{$row_view->price_level == 2 ? 'selected' : '' }} value="2">2</option>
-                                        <option name="price_level" {{$row_view->price_level == 3 ? 'selected' : '' }} value="3">3</option>
-                                        <option name="price_level" {{$row_view->price_level == 4 ? 'selected' : '' }} value="4">4</option>
-                                        <option name="price_level" {{$row_view->price_level == 5 ? 'selected' : '' }}value="5">5</option>
+                                        <option name="price_level" {{$customer_view->price_level == 1 ? 'selected' : '' }} value="1">1</option>
+                                        <option name="price_level" {{$customer_view->price_level == 2 ? 'selected' : '' }} value="2">2</option>
+                                        <option name="price_level" {{$customer_view->price_level == 3 ? 'selected' : '' }} value="3">3</option>
+                                        <option name="price_level" {{$customer_view->price_level == 4 ? 'selected' : '' }} value="4">4</option>
+                                        <option name="price_level" {{$customer_view->price_level == 5 ? 'selected' : '' }} value="5">5</option>
 
                                     </select>
                                 </ul>
                             </div>
                             <div class="col-sm-12">
                                 <ul style="width: 100%;">
+
+
+                                <span>แบบอนุญาตขายยา</span>
+                                <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="type">
+
+                                    <option {{$customer_view->type == '' ? 'selected': ''}} value="">ไม่ระบุ</option>
+                                    <option {{$customer_view->type == 'ข.ย.1' ? 'selected': ''}} value="ข.ย.1">ข.ย.1</option>
+                                    <option {{$customer_view->type == 'ข.ย.2' ? 'selected': ''}} value="ข.ย.2">ข.ย.2</option>
+                                    <option {{$customer_view->type == 'ย.บ.1' ? 'selected': ''}} value="ย.บ.1">ย.บ.1</option>
+                                    <option {{$customer_view->type == 'คลินิกยา/สถานพยาบาล' ? 'selected': ''}} value="คลินิกยา/สถานพยาบาล">คลินิกยา/สถานพยาบาล</option>
+                                   
+                                </select><br>
+
                                     <span>อีเมล</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" name="email" type="email" class="form-control" name="email" value="{{$row_view->email}}"><br>
-                                    <span>เบอร์ร้านค้า</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 021234567)</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="phone" value="{{$row_view->phone}}"><br>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" name="email" type="email" class="form-control" name="email" value="{{$customer_view->email}}"><br>
+                                    <span>เบอร์ร้านค้า</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 027534702)</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="phone" value="{{$customer_view->phone}}"><br>
                                     <span>เบอร์มือถือ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0812345678)</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$row_view->telephone}}"><br>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$customer_view->telephone}}"><br>
                                     <span>ที่อยู่จัดส่ง</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$row_view->address}}">                              
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$customer_view->address}}">                              
                                 </ul>
                             </div>
                             <div class="col-sm-6">
@@ -266,7 +319,7 @@
                                         @if(isset($province) != '')
                                         @foreach($province as $row)
                         
-                                            <option value="{{$row->id}}" {{$row->name_th == $row_view->province ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->id}}" {{$row->name_th == $customer_view->province ? 'selected' : '' ;}}>{{$row->name_th}}</option>
                                         
                                         @endforeach
                                     @endif
@@ -280,11 +333,11 @@
                                         
                                         @if(isset($amphur) == '')
                                         @foreach($amphur as $row)
-                                            <option value="{{$row->province_id}}" {{$row->name_th == $row_view->amphur ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->province_id}}" {{$row->name_th == $customer_view->amphur ? 'selected' : '' ;}}>{{$row->name_th}}</option>
                                         @endforeach
 
                                         @else
-                                        <option>{{$row_view->amphur}}</option>
+                                        <option>{{$customer_view->amphur}}</option>
                                         @endif
                                     </select>
                                 </ul>
@@ -295,11 +348,11 @@
                                     <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="district" id="districts">
                                         @if(isset($district) == '')
                                         @foreach($district as $row)
-                                            <option value="{{$row->amphure_id}}" {{$row->name_th == $row_view->district ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->amphure_id}}" {{$row->name_th == $customer_view->district ? 'selected' : '' ;}}>{{$row->name_th}}</option>
                                         @endforeach
 
                                         @else
-                                        <option>{{$row_view->district}}</option>
+                                        <option>{{$customer_view->district}}</option>
                                         @endif
                                     </select>
                                 </ul>
@@ -307,9 +360,17 @@
                             <div class="col-sm-6">
                                 <ul style="width: 100%;">
                                     <span>รหัสไปรษณีย์</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบ</span>
-                                    <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="zipcode" name="zip_code" value="{{$row_view->zip_code}}">
+                                    <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="zipcode" name="zip_code" value="{{$customer_view->zip_code}}">
                                 </ul>
                             </div>
+
+                            <div class="col-sm-12">
+                                <ul style="width: 100%;">
+                                    <span>ภูมิศาสตร์</span>
+                                    <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="geography" name="geography" value="{{$customer_view->geography}}">
+                                </ul>
+                            </div>
+                              
                         </div>
                     </div>
                     <!--form login-->
@@ -324,30 +385,38 @@
                                     <span>แอดมินผู้ดูแล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                     <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="admin_area">
 
-                                            <option {{$row_view->admin_area == 'A01' ? 'selected': ''}} value="A01">A01</option>
-                                            <option {{$row_view->admin_area == 'A02' ? 'selected': ''}} value="A02">A02</option>
-                                            <option {{$row_view->admin_area == 'A03' ? 'selected': ''}} value="A03">A03</option>
+                                        @if(isset($admin_area_list) != '')
+                                        @foreach($admin_area_list as $row)
+    
+                                            @if($row->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
+                                 
+                                                <option {{$row->admin_area == $admin_area_check->admin_area ? 'selected': '' ; }} value="{{$row->admin_area}}">{{$row->name}}</option>
+
+                                            @endif
+    
+                                        @endforeach
+                                        @endif
 
                                         </select><br>
     
                                     <span>พนักงานขาย/เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                         <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="sale_area">
 
-                                            <option {{$row_view->sale_area == ' ' ? 'selected': ''}} value=""> ไม่ระบุ </option>
-                                            <option {{$row_view->sale_area == 'S01' ? 'selected': ''}} value="S01">S01</option>
-                                            <option {{$row_view->sale_area == 'S02' ? 'selected': ''}} value="S02">S02</option>
-                                            <option {{$row_view->sale_area == 'S03' ? 'selected': ''}} value="S03">S03</option>
-                                            <option {{$row_view->sale_area == 'S04' ? 'selected': ''}} value="S04">S04</option>
-                                            <option {{$row_view->sale_area == 'S05' ? 'selected': ''}} value="S05">S05</option>
-                                            <option {{$row_view->sale_area == 'S06' ? 'selected': ''}} value="S06">S06</option>
-                                            <option {{$row_view->sale_area == 'S07' ? 'selected': ''}} value="S07">S07</option>
-                                            <option {{$row_view->sale_area == 'S08' ? 'selected': ''}} value="S08">S08</option>
-                                            <option {{$row_view->sale_area == 'S09' ? 'selected': ''}} value="S09">S09</option>
-                                            <option {{$row_view->sale_area == 'S10' ? 'selected': ''}} value="S10">S10</option>
-                                            <option {{$row_view->sale_area == 'S11' ? 'selected': ''}} value="S11">S11</option>
-                                            <option {{$row_view->sale_area == 'S12' ? 'selected': ''}} value="S12">S12</option>
-                                            <option {{$row_view->sale_area == 'S13' ? 'selected': ''}} value="S13">S13</option>
-                                            <option {{$row_view->sale_area == 'S14' ? 'selected': ''}} value="S14">S14</option>
+                                            <option {{$customer_view->sale_area == ' ' ? 'selected': ''}} value=""> ไม่ระบุ </option>
+                                            <option {{$customer_view->sale_area == 'S01' ? 'selected': ''}} value="S01">S01</option>
+                                            <option {{$customer_view->sale_area == 'S02' ? 'selected': ''}} value="S02">S02</option>
+                                            <option {{$customer_view->sale_area == 'S03' ? 'selected': ''}} value="S03">S03</option>
+                                            <option {{$customer_view->sale_area == 'S04' ? 'selected': ''}} value="S04">S04</option>
+                                            <option {{$customer_view->sale_area == 'S05' ? 'selected': ''}} value="S05">S05</option>
+                                            <option {{$customer_view->sale_area == 'S06' ? 'selected': ''}} value="S06">S06</option>
+                                            <option {{$customer_view->sale_area == 'S07' ? 'selected': ''}} value="S07">S07</option>
+                                            <option {{$customer_view->sale_area == 'S08' ? 'selected': ''}} value="S08">S08</option>
+                                            <option {{$customer_view->sale_area == 'S09' ? 'selected': ''}} value="S09">S09</option>
+                                            <option {{$customer_view->sale_area == 'S10' ? 'selected': ''}} value="S10">S10</option>
+                                            <option {{$customer_view->sale_area == 'S11' ? 'selected': ''}} value="S11">S11</option>
+                                            <option {{$customer_view->sale_area == 'S12' ? 'selected': ''}} value="S12">S12</option>
+                                            <option {{$customer_view->sale_area == 'S13' ? 'selected': ''}} value="S13">S13</option>
+                                            <option {{$customer_view->sale_area == 'S14' ? 'selected': ''}} value="S14">S14</option>
 
                                         </select><br>
 
@@ -366,17 +435,26 @@
                                         <span>สถานะบัญชี</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                         <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="status">
     
-                                                <option {{$row_view->status == '0' ? 'selected': ''}} value="0">รอดำเนินการ</option>
-                                                <option {{$row_view->status== '1' ? 'selected': ''}} value="1">ต้องดำเนินการ</option>
-                                                <option {{$row_view->status == '2' ? 'selected': ''}} value="2">ดำเนินการแล้ว</option>
+                                                <option {{$customer_view->status == '0' ? 'selected': ''}} value="0">รอดำเนินการ</option>
+                                                <option {{$customer_view->status== '1' ? 'selected': ''}} value="1">ต้องดำเนินการ</option>
+                                                <option {{$customer_view->status == '2' ? 'selected': ''}} value="2">ดำเนินการแล้ว</option>
                                         
     
                                             </select><br>
         
+                                        <span>UPDATE</span>
+                                        <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="status_update">
+    
+                                                <option {{$customer_view->status_update == 'updated' ? 'selected': ''}} value="updated">UPDATE</option>
+                                                <option {{$customer_view->status_update == '' ? 'selected': ''}} value="">NULL</option>
+                                        
+    
+                                        </select><br>
+
                                         <span>รหัสผ่านลูกค้า</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                         
-                                        <input style="margin-top:10px; color: rgb(171, 171, 171);" type="password" class="form-control" name="password" value="{{$row_view->password}}">
-                                        <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="password" value="{{$row_view->password}}" disabled><br>
+                                        <input style="margin-top:10px; color: rgb(171, 171, 171);" type="password" class="form-control" name="password" value="{{$customer_view->password}}">
+                                        <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="password" value="{{$customer_view->password}}" disabled><br>
     
                                     </ul>
                         
@@ -385,12 +463,13 @@
                                      
                                 <div class="mb-3 my-4">
                                     <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 500; color:#545454;">เพิ่มเติม</label></label>
-                                    <textarea class="form-control" style="color: rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_add">{{$row_view->text_area}}</textarea>
+                                    <textarea class="form-control" style="color: rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_add">{{$customer_view->text_area}}</textarea>
+
                                 </div>
 
                                 <div class="mb-3 my-4">
                                     <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 500; color:#545454;">ข้อความส่งถึงแอดมินผู้ดูแล</label></label>
-                                    <textarea class="form-control" style="color: rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_admin">{{$row_view->text_admin}}</textarea>
+                                    <textarea class="form-control" style="color: rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_admin">{{$customer_view->text_admin}}</textarea>
                                 </div>
 
                                 <div style="text-align:right;">
@@ -409,7 +488,7 @@
                                                 let user = $('#form').serialize();
 
                                                 $.ajax({
-                                                    url: '/webpanel/customer-detail/update/{{$row_view->customer_code}}',
+                                                    url: '/webpanel/customer-detail/update/{{$customer_view->customer_code}}',
                                                     type: 'post',
                                                     data: user,
                                                     success: function(data) {
@@ -433,7 +512,11 @@
                                                             icon: 'error',
                                                             confirmButtonText: 'ตกลง'
 
-                                                            });
+                                                            }).then ((data)=>{  
+                                                                if(data.isConfirmed) {
+                                                                    window.location.reload();
+                                                                }
+                                                            })
                                                         }
 
                                                         console.log(data);
@@ -460,6 +543,23 @@
                         success: function(data) {
 
                             $('#amphures').html(data);
+
+                        }
+                    });
+                });
+
+                $('#province').change(function(e) {
+                e.preventDefault();
+                let province_id = $(this).val();
+                console.log(province_id);
+                
+                    $.ajax({
+                        url: '/webpanel/customer-create/update-geography',
+                        type: 'get',
+                        data: {province_id: province_id},
+                        success: function(data) {
+
+                            $('#geography').val(data);
 
                         }
                     });
@@ -563,17 +663,17 @@
                         // e.preventDefault(); ปิดใช้งาน submit ปกติ
                         Swal.fire ({
                             html:
-                            '<p style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล <?php echo 1 ;?></p>'
+                            '<p style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล/Code : {{$customer_view->customer_code; }}</p>'
                             +'<hr>'
-                            +'<form action="/webpanel/customer-detail/upload-store/{{$row_view->customer_code}}" method="post" enctype="multipart/form-data">'
+                            +'<form action="/webpanel/customer-detail/upload-store/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
-                            +'<img src="/storage/certs/{{$row_view->cert_store ; }}" id="fileImage" style="width: 100%";/>'
+                            +'<img src="/storage/certs/{{$customer_view->cert_store ; }}" id="fileImage" style="width: 100%";/>'
                             +'<hr>'
                             +'<input type="file" id="image" class="form-control" name="cert_store" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                             +'<hr>'
                             +'<div style="margin-top: 10px; text-align: end;">'
-                            +'<button type="submit" name="submit_store" class="btn" id="submit_store" style="margin: 5px;">บันทึก</button>'
-                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ยกเลิก</button>'
+                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
+                            +'<button type="submit" name="submit_store" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
                             +'</div>'
                             + '</form>',
                             showConfirmButton: false, 
@@ -610,17 +710,17 @@
                         // e.preventDefault(); ปิดใช้งาน submit ปกติ
                         Swal.fire ({
                             html:
-                            '<p style="text-align: start;">แก้ไขใบประกอบวิชาชีพ <?php echo 1 ;?></p>'
+                            '<p style="text-align: start;">แก้ไขใบประกอบวิชาชีพ/Code : {{$customer_view->customer_code; }}</p>'
                             +'<hr>'
-                            +'<form action="/webpanel/customer-detail/upload-medical/{{$row_view->customer_code}}" method="post" enctype="multipart/form-data">'
+                            +'<form action="/webpanel/customer-detail/upload-medical/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
-                            +'<img src="/storage/certs/{{$row_view->cert_medical ; }}" id="fileImage" style="width: 100%";/>'
+                            +'<img src="/storage/certs/{{$customer_view->cert_medical ; }}" id="fileImage" style="width: 100%";/>'
                             +'<hr>'
                             +'<input type="file" id="image" class="form-control" name="cert_medical" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                             +'<hr>'
                             +'<div style="margin-top: 10px; text-align: end;">'
-                            +'<button type="submit" name="submit_medical" class="btn" id="submit_medical" style="margin: 5px;">บันทึก</button>'
-                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ยกเลิก</button>'
+                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
+                            +'<button type="submit" name="submit_medical" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
                             +'</div>'
                             + '</form>',
                             showConfirmButton: false, 
@@ -657,17 +757,17 @@
                         // e.preventDefault(); ปิดใช้งาน submit ปกติ
                         Swal.fire ({
                             html:
-                            '<p style="text-align: start;">แก้ไขใบทะเบียนพาณิชย์ <?php echo 1 ;?></p>'
+                            '<p style="text-align: start;">แก้ไขใบทะเบียนพาณิชย์/Code : {{$customer_view->customer_code; }}</p>'
                             +'<hr>'
-                            +'<form action="/webpanel/customer-detail/upload-commerce/{{$row_view->customer_code}}" method="post" enctype="multipart/form-data">'
+                            +'<form action="/webpanel/customer-detail/upload-commerce/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
-                            +'<img src="/storage/certs/{{$row_view->cert_commerce ; }}" id="fileImage" style="width: 100%";/>'
+                            +'<img src="/storage/certs/{{$customer_view->cert_commerce ; }}" id="fileImage" style="width: 100%";/>'
                             +'<hr>'
                             +'<input type="file" id="image" class="form-control" name="cert_commerce" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                             +'<hr>'
                             +'<div style="margin-top: 10px; text-align: end;">'
+                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
                             +'<button type="submit" name="submit_commerce" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
-                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ยกเลิก</button>'
                             +'</div>'
                             + '</form>',
                             showConfirmButton: false, 
@@ -704,17 +804,17 @@
                             // e.preventDefault(); ปิดใช้งาน submit ปกติ
                             Swal.fire ({
                                 html:
-                                '<p style="text-align: start;">แก้ไขใบภาษีมูลค่าเพิ่ม (ภ.พ.20)</p>'
+                                '<p style="text-align: start;">แก้ไขใบภาษีมูลค่าเพิ่ม (ภ.พ.20)/Code : {{$customer_view->customer_code; }}</p>'
                                 +'<hr>'
-                                +'<form action="/webpanel/customer-detail/upload-vat/{{$row_view->customer_code}}" method="post" enctype="multipart/form-data">'
+                                +'<form action="/webpanel/customer-detail/upload-vat/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                                 +'@csrf'
-                                +'<img src="/storage/certs/{{$row_view->cert_vat; }}" id="fileImage" style="width: 100%";/>'
+                                +'<img src="/storage/certs/{{$customer_view->cert_vat; }}" id="fileImage" style="width: 100%";/>'
                                 +'<hr>'
                                 +'<input type="file" id="image" class="form-control" name="cert_vat" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                                 +'<hr>'
                                 +'<div style="margin-top: 10px; text-align: end;">'
+                                +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
                                 +'<button type="submit" name="submit_vat" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
-                                +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ยกเลิก</button>'
                                 +'</div>'
                                 + '</form>',
                                 showConfirmButton: false, 
@@ -752,17 +852,17 @@
                             // e.preventDefault(); ปิดใช้งาน submit ปกติ
                             Swal.fire ({
                                 html:
-                                '<p style="text-align: start;">แก้ไขสำเนาบัตรประจำตัวประชาชน</p>'
+                                '<p style="text-align: start;">แก้ไขสำเนาบัตรประจำตัวประชาชน/Code : {{$customer_view->customer_code; }}</p>'
                                 +'<hr>'
-                                +'<form action="/webpanel/customer-detail/upload-id/{{$row_view->customer_code}}" method="post" enctype="multipart/form-data">'
+                                +'<form action="/webpanel/customer-detail/upload-id/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                                 +'@csrf'
-                                +'<img src="/storage/certs/{{$row_view->cert_id; }}" id="fileImage" style="width: 100%";/>'
+                                +'<img src="/storage/certs/{{$customer_view->cert_id; }}" id="fileImage" style="width: 100%";/>'
                                 +'<hr>'
                                 +'<input type="file" id="image" class="form-control" name="cert_id" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                                 +'<hr>'
                                 +'<div style="margin-top: 10px; text-align: end;">'
+                                +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
                                 +'<button type="submit" name="submit_id" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
-                                +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ยกเลิก</button>'
                                 +'</div>'
                                 + '</form>',
                                 showConfirmButton: false, 
@@ -791,7 +891,7 @@
                         }
             </script>
 
-            @endforeach
+        
         @endif
 @endsection
 </body>

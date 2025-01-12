@@ -38,7 +38,7 @@
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-center mt-2">
 
         <!-- reset password -->
          {{--    @if (Route::has('password.request'))
@@ -47,7 +47,7 @@
                 </a>
             @endif --}}
 
-            <x-primary-button class="ms-3">
+            <x-primary-button class="ms-3" style="background-color: rgb(26, 60, 229);">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
