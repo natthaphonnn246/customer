@@ -332,17 +332,20 @@
                                         <span>แอดมินผู้ดูแล</span>
                                         <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="admin_area" disabled>
 
-                                                <option>{{$customer_edit->admin_area}}</option>
+                                                <option>{{$customer_edit->admin_area.' '.'('.$user_name->name.')'}}</option>
 
                                             </select><br>
         
                                         <span>เขตการขาย</span>
                                             <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="sale_area" disabled>
 
-                                                <option>{{$customer_edit->sale_area}}</option>
-                                                
+                                                @if(isset($sale_name))
+                                                <option>{{$customer_edit->sale_area.' '.'('.$sale_name->sale_name.')'}}</option>
+                                                @else
+                                                <option>{{$customer_edit->sale_area.' '.'('.'ไม่พบชื่อ'.')'}}</option>
+                                                @endif
                                             </select><br>
-
+                
                                     </ul>
                         
                                 </div>
@@ -376,7 +379,7 @@
 
                                         if (data == 'success') {
                                             Swal.fire({
-                                            title: '<span style="border: solid 1px #1FC65E; color:#06A643;  padding: 10px; border-radius: 10px;">กรุณาติดต่อผู้ดูแลด้วยครับ</span>',
+                                            title: '<span style="color:#06A643;">กรุณาติดต่อผู้ดูแลด้วยครับ</span>',
                                             text: 'บันทึกข้อมูลเรียบร้อย',
                                             icon:'success',
                                             confirmButtonText: 'ตกลง'
@@ -413,7 +416,7 @@
                             console.log(province_id);
                             
                                 $.ajax({
-                                    url: '/webpanel/admin-create/update-amphure',
+                                    url: '/portal/signin/update-amphure',
                                     type: 'get',
                                     data: {province_id: province_id},
                                     success: function(data) {
@@ -430,7 +433,7 @@
                             console.log(amphure_id + 'checked');
                             
                                 $.ajax({
-                                    url: '/webpanel/admin-create/update-district',
+                                    url: '/portal/signin/update-district',
                                     type: 'get',
                                     data: {amphure_id: amphure_id},
                                     success: function(data) {
@@ -448,7 +451,7 @@
                             console.log(province_id);
                             
                             $.ajax({
-                                url: '/webpanel/admin-create/update-amphure',
+                                url: '/portal/signin/update-amphure',
                                 type: 'get',
                                 data: {province_id: province_id},
                                 success: function(data) {
@@ -465,7 +468,7 @@
                             console.log(amphure_id);
                             
                                 $.ajax({
-                                    url: '/webpanel/admin-create/update-district',
+                                    url: '/portal/signin/update-district',
                                     type: 'get',
                                     data: {amphure_id: amphure_id},
                                     success: function(data) {
@@ -482,7 +485,7 @@
                             console.log(amphure_id);
                             
                                 $.ajax({
-                                    url: '/webpanel/admin-create/update-zipcode',
+                                    url: '/portal/signin/update-zipcode',
                                     type: 'get',
                                     data: {amphure_id: amphure_id},
                                     success: function(data) {
@@ -500,7 +503,7 @@
                             console.log(amphure_id);
                             
                                 $.ajax({
-                                    url: '/webpanel/admin-create/update-zipcode',
+                                    url: '/portal/signin/update-zipcode',
                                     type: 'get',
                                     data: {amphure_id: amphure_id},
                                     success: function(data) {

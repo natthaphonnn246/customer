@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,10 +17,19 @@ class MaintenanceStatus
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->maintenance_status == '1') 
+        /* if (Auth::user()->maintenance_status == '1') 
+        { */
+        // dd($web_status->web_status);
+        // if(Auth::user()->maintenance_status == '1')
+        $web_status = Setting::where('setting_id','WS01')->first();
+        if($web_status->web_status == '1')  
         {
 
-            if(Auth::user()->allowed_maintenance_status == '1') {
+            // if(Auth::user()->allowed_maintenance_status == '1') {
+            // if(Auth::user()->allowed_maintenance_status == '1') 
+            $allowed_web_status = Setting::where('setting_id', 'WS01')->first();
+            if($allowed_web_status->allowed_web_status == '1') 
+            {
 
                 if(Auth::user()->allowed_user_status == '0') {
                     // return logout;

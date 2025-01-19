@@ -390,7 +390,7 @@
     
                                             @if($row->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
                                  
-                                                <option {{$row->admin_area == $admin_area_check->admin_area ? 'selected': '' ; }} value="{{$row->admin_area}}">{{$row->name}}</option>
+                                                <option {{$row->admin_area == $admin_area_check->admin_area ? 'selected': '' ; }} value="{{$row->admin_area}}">{{$row->admin_area.' '. '('. $row->name. ')'}}</option>
 
                                             @endif
     
@@ -398,25 +398,17 @@
                                         @endif
 
                                         </select><br>
-    
+
                                     <span>พนักงานขาย/เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                         <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="sale_area">
 
-                                            <option {{$customer_view->sale_area == ' ' ? 'selected': ''}} value=""> ไม่ระบุ </option>
-                                            <option {{$customer_view->sale_area == 'S01' ? 'selected': ''}} value="S01">S01</option>
-                                            <option {{$customer_view->sale_area == 'S02' ? 'selected': ''}} value="S02">S02</option>
-                                            <option {{$customer_view->sale_area == 'S03' ? 'selected': ''}} value="S03">S03</option>
-                                            <option {{$customer_view->sale_area == 'S04' ? 'selected': ''}} value="S04">S04</option>
-                                            <option {{$customer_view->sale_area == 'S05' ? 'selected': ''}} value="S05">S05</option>
-                                            <option {{$customer_view->sale_area == 'S06' ? 'selected': ''}} value="S06">S06</option>
-                                            <option {{$customer_view->sale_area == 'S07' ? 'selected': ''}} value="S07">S07</option>
-                                            <option {{$customer_view->sale_area == 'S08' ? 'selected': ''}} value="S08">S08</option>
-                                            <option {{$customer_view->sale_area == 'S09' ? 'selected': ''}} value="S09">S09</option>
-                                            <option {{$customer_view->sale_area == 'S10' ? 'selected': ''}} value="S10">S10</option>
-                                            <option {{$customer_view->sale_area == 'S11' ? 'selected': ''}} value="S11">S11</option>
-                                            <option {{$customer_view->sale_area == 'S12' ? 'selected': ''}} value="S12">S12</option>
-                                            <option {{$customer_view->sale_area == 'S13' ? 'selected': ''}} value="S13">S13</option>
-                                            <option {{$customer_view->sale_area == 'S14' ? 'selected': ''}} value="S14">S14</option>
+                                            <option {{$customer_view->sale_area == '' ? 'selected': ''}} value=""> ไม่ระบุ </option>
+
+                                            @if(isset($sale_area)!= '')
+                                                @foreach($sale_area as $row_sale_area)
+                                                    <option {{$customer_view->sale_area == $row_sale_area->sale_area ? 'selected': ''}} value="{{$row_sale_area->sale_area}}"> {{$row_sale_area->sale_area .' '. '('. $row_sale_area->sale_name.')'}} </option>
+                                                @endforeach
+                                            @endif
 
                                         </select><br>
 
@@ -460,6 +452,29 @@
                         
                                 </div>
 
+                                <div class="form-control my-4">
+                                    <ul class="text-title" style="text-align: start; margin-top: 10px;">
+                                        <span style="font-size: 16px; font-weight: 500; color:#545454;">สถานะบัญชีลูกค้า</span>
+                                        <hr>
+                                    </ul>
+                                    <ul class="text-muted" style="padding-top: 10px;">
+                                    <label></label>
+                                        <span>สถานะบัญชี</span> <span style="font-size: 12px; color:red;">*vmdrug</span>
+                                        <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="status_user">
+    
+                                                <option {{$customer_view->status_user == '' ? 'selected': ''}} value="">ปกติ</option>
+                                                <option {{$customer_view->status_user== 'กำลังติดตาม' ? 'selected': ''}} value="กำลังติดตาม">กำลังติดตาม</option>
+                                                <option {{$customer_view->status_user == 'ไม่อนุมัติ, ถูกระงับสมาชิก' ? 'selected': ''}} value="ไม่อนุมัติ, ถูกระงับสมาชิก">ไม่อนุมัติ, ถูกระงับสมาชิก</option>
+                                                <option {{$customer_view->status_user == 'ไม่อนุมัติ, ถูกระงับสมาชิก, กำลังติดตาม' ? 'selected': ''}} value="ไม่อนุมัติ, ถูกระงับสมาชิก, กำลังติดตาม">ไม่อนุมัติ, ถูกระงับสมาชิก, กำลังติดตาม</option>
+                                                <option {{$customer_view->status_user == 'ไม่อนุมัติ' ? 'selected': ''}} value="ไม่อนุมัติ">ไม่อนุมัติ</option>
+                                                <option {{$customer_view->status_user == 'ถูกระงับสมาชิก' ? 'selected': ''}} value="ถูกระงับสมาชิก">ถูกระงับสมาชิก</option>
+    
+                                        </select><br>
+    
+                                    </ul>
+                        
+                                </div>
+
                                      
                                 <div class="mb-3 my-4">
                                     <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 500; color:#545454;">เพิ่มเติม</label></label>
@@ -472,10 +487,12 @@
                                     <textarea class="form-control" style="color: rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_admin">{{$customer_view->text_admin}}</textarea>
                                 </div>
 
+                                <span style="font-size: 16px; font-weight: 500; color:#545454;">ลงทะเบียนโดย</span>
+                                <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="" name="" value="{{$customer_view->register_by}}" disabled>
+                                  
                                 <div style="text-align:right;">
-                                    <button type="button" id="updateForm" name="submit_update" class="btn my-2" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
+                                    <button type="button" id="updateForm" name="submit_update" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
                                     <a href="" type="button" id="exportCsv" class="btn my-2" style="border:none; width: 120px; color: rgb(67, 67, 67); padding: 10px;">Export CSV</a>
-        
                                 </div>
                         </div>
                 </div>

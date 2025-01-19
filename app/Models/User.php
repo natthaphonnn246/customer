@@ -36,8 +36,6 @@ class User extends Authenticatable
         'zipcode',
         'email_login',
         'text_add',
-        'maintenance_status',
-        'allowed_maintenance_status',
         'allowed_user_status',
     ];
     protected $table = 'users';

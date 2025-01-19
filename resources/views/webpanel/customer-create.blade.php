@@ -47,6 +47,8 @@
         <hr style="color: #8E8E8E; width: 100%;">
         <form action="/webpanel/customer-create/insert" method="post" enctype="multipart/form-data">
             @csrf
+             <!--- เก็บชื่อแอดมินที่ลงทะเบียน-->
+            <input type="hidden" name="register_by" value="{{'Admin'}}">
             <div class="row">
                 <div class="col-sm-6">
                     <ul class="text-title" style="text-align: start; margin-top: 25px;">
@@ -184,8 +186,8 @@
                                     @if(isset($admin_area_list) != '')
                                         @foreach($admin_area_list as $row)
 
-                                            @if($row->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
-                                            <option value="{{$row->admin_area}}">{{$row->name}}</option>
+                                            @if($row->rights_area != '0'  && $row->user_code != '0000') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
+                                            <option value="{{$row->admin_area}}">{{$row->admin_area.' '. '('. $row->name. ')'}}</option>
                                             @endif
 
                                         @endforeach
@@ -194,17 +196,14 @@
                                     </select><br>
  
                                 <span>พนักงานขาย/เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                    <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="sale_area">
+                                    
+                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="sale_area">
                                     <option selected value=""> ไม่ระบุ </option>
-                                    <option value="S01">S01 ธนวรรธน์</option>
-                                    <option value="S02">S02</option>
-                                    <option value="S03">S03</option>
-                                    <option value="S04">S04</option>
-                                    <option value="S05">S05</option>
-                                    <option value="S06">S06</option>
-                                    <option value="S07">S07</option>
-                                    <option value="S08">S08</option>
-                                    <option value="S09">S09</option>
+                                    @if(isset($sale_area)!= '')
+                                        @foreach($sale_area as $row_sale_area)
+                                            <option value="{{$row_sale_area->sale_area}}"> {{$row_sale_area->sale_area .' '. '('. $row_sale_area->sale_name.')'}} </option>
+                                        @endforeach
+                                    @endif
                                     </select><br>
 
                             </ul>

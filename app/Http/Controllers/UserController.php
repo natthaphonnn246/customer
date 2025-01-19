@@ -13,27 +13,31 @@ Class UserController
        //timestamp;
     date_default_timezone_set("Asia/Bangkok");
     
-            if (isset($request['submit_form']) != '')
+            if ($request->has('submit_form') == true)
             {
                 $code = $request->code;
                 $name = $request->admin_name;
                 $role = $request->role;
                 $email = $request->email;
                 $password = $request->password;
-                $telephone = $request->telephone;
                 $address = $request->address;
                 $province = $request->province;
                 $amphur = $request->amphur;
                 $district = $request->district;
                 $zipcode = $request->zipcode;
                 $email_login = $request->email_login;
-                
-                if($request->text_add == '') {
+
+                $text_add = $request->text_add;
+                if($request->text_add == null) {
                     $text_add = '';
 
-                } else {
-                    $text_add = $request->text_add;
-                }
+                } 
+
+                $telephone = $request->telephone;
+                if($request->telephone == null) {
+                    $telephone = '';
+
+                } 
             }
 
                 $province_master = DB::table('provinces')->select('id', 'name_th')->where('id', $province)->first();
@@ -57,8 +61,8 @@ Class UserController
                                 'zipcode' => $zipcode,
                                 'email_login' => $email_login,
                                 'text_add' => $text_add,
-                                'maintenance_status' => '0',
-                                'allowed_maintenance_status' => '0',
+                               /*  'maintenance_status' => '0',
+                                'allowed_maintenance_status' => '0', */
                                 'allowed_user_status' => '0',
 
                             ]);
@@ -81,8 +85,8 @@ Class UserController
                                 'email_login' => $email_login,
                                 'password' => $password,
                                 'text_add' => $text_add,
-                                'maintenance_status' => '0',
-                                'allowed_maintenance_status' => '0',
+                               /*  'maintenance_status' => '0',
+                                'allowed_maintenance_status' => '0', */
                                 'allowed_user_status' => '0',
                         
                             ]);
@@ -187,7 +191,6 @@ Class UserController
                 $role = $request->role;
                 $rights_area = $request->rights_area;
                 $email = $request->email;
-                $telephone = $request->telephone;
                 $address = $request->address;
                 $province = $request->province;
                 $amphur_post = $request->amphur;
@@ -196,6 +199,10 @@ Class UserController
                 $email_login = $request->email_login;
                 // $text_add = $request['text_add'];
 
+                $telephone = $request->telephone;
+                if($request->telephone == null) {
+                    $telephone = '';
+                }
                 $text_add = $request->text_add;
                 if($request->text_add == null) {
                     $text_add = '';

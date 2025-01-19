@@ -75,10 +75,10 @@
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">แอดมินทั้งหมด (Admin)</a> / รายละเอียด</span> --}}
             <span style="color: #8E8E8E;">ตั้งค่าระบบ (Settings)</span>
         </div>
-        <hr>
+        <hr style="color:#818181;">
         <ul class="text-title" style="text-align: start; margin-top: 30px;">
             <span style="font-size: 18px; font-weight: 500; color:#464646;">ตั้งค่าเว็บไซต์</span>
-            <hr>
+            <hr style="color:#818181;">
         </ul>
         <form method="post" action="/webpanel/setting/update-setting" enctype="multipart/form-data" id="bg">
             @csrf
@@ -90,8 +90,8 @@
                             <span style="color:#8E8E8E;">สถานะของเว็บไซต์</span>
                             <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="maintenance_status">
 
-                                <option {{$setting_view->maintenance_status == '0' ? 'selected': '' ; }} value="0">ปกติ</option>
-                                <option {{$setting_view->maintenance_status == '1' ? 'selected': '' ; }} value="1">อยู่ระหว่างการปรับปรุง</option>
+                                <option {{$setting_view->web_status == '0' ? 'selected': '' ; }} value="0">ปกติ</option>
+                                <option {{$setting_view->web_status == '1' ? 'selected': '' ; }} value="1">อยู่ระหว่างการปรับปรุง</option>
                                 
                             </select>
                         </ul>
@@ -102,8 +102,8 @@
                             <span style="color:#8E8E8E;">สิทธิ์ในการทดสอบระบบ</span> <span style="font-size: 12px; color:red;">*เมื่ออยู่ระหว่างปรับปรุงระบบ</span>
                             <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="allowed_maintenance_status">
 
-                                <option {{$setting_view->allowed_maintenance_status == '0' ? 'selected': '' ; }} value="0">ไม่ระบุ</option>
-                                <option {{$setting_view->allowed_maintenance_status == '1' ? 'selected': '' ; }} value="1">ระบุ</option>
+                                <option {{$setting_view->allowed_web_status == '0' ? 'selected': '' ; }} value="0">ไม่ระบุ</option>
+                                <option {{$setting_view->allowed_web_status == '1' ? 'selected': '' ; }} value="1">ระบุ</option>
                                 
                             </select>
                         </ul>
@@ -111,6 +111,7 @@
                 </div>
             @endif
 
+            <hr style="color:#818181;">
             <div style="text-align:left; margin-left:30px;">
                 <button type="submit" id="updateForm" name="submit_setting" class="btn my-2" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
             </div>

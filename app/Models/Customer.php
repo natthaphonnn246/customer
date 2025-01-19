@@ -39,6 +39,9 @@ class Customer extends Model
         'password',
         'status_update',
         'type',
+        'register_by',
+        'customer_status',
+        'status_user',
         // 'maintenance_status',
         // 'allowed_maintenance',
 
@@ -57,10 +60,11 @@ class Customer extends Model
         $total_page = ceil($count_page / $perpage);
         $start = ($perpage * $page) - $perpage;
 
-        $customer = DB::table('customers')->select('customer_code', 'customer_name', 'email', 'status','status_update', 'created_at')
-            ->offset($start)
-            ->limit($perpage)
-            ->get();
+        $customer = DB::table('customers')->select('customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->whereNotIn('customer_code',['0000', '4494'])
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
 
         return [$customer, $start, $total_page, $page];
     }

@@ -179,7 +179,7 @@
                 <li><a href="/portal/signin" style="cursor: pointer; margin-right: 15px;" id="sub_product"  class="sub-btn">สมัครสมาชิก (Dashboard) <i class="fas fa-angle-left dropdown_p" style="font-size: 12px;"></i></a></li>
             </ul> --}}
             <ul class="mainItem">
-                <li><a href="" style="cursor: pointer; margin-right: 15px;" id="sub_product"  class="sub-btn">ลงทะเบีนนลูกค้าใหม่ (Sigin)</a></li>
+                <li><a href="" style="cursor: pointer; margin-right: 15px;" id="sub_product"  class="sub-btn">ลงทะเบียนลูกค้า (Sigin)</a></li>
             </ul>
 
 

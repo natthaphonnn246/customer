@@ -42,16 +42,21 @@
     <div class="contentArea">
 
         @section('col-2')
-
-        @if(isset($user_name))
-            
-        <?php  $name = $user_name->name; ?>
-        @endif
-        <h6 class="mt-1" style="margin-left: 50px; padding-top: 20px;">{{$name}}</h6>
+            @if(isset($user_name))
+            <h6 class="mt-1" style="margin-left: 50px; padding-top: 20px;">{{$user_name->name}}</h6>
+            @endif
         @endsection
         
         <form action="/portal/portal-sign/create" method="post" enctype="multipart/form-data">
             @csrf
+
+                <!--- เก็บชื่อแอดมินที่ลงทะเบียน-->
+                @if(isset($user_name))
+                    <input type="hidden" name="register_by" value="{{$user_name->admin_area.' '.'('.$user_name->name.')'}}">
+                @else
+                    <input type="hidden" name="register_by" value="ไม่ระบุ">
+                @endif
+
             <div class="row">
                 <div class="col-sm-6">
                     <ul class="text-title" style="text-align: start; margin-top: 40px;">
@@ -61,8 +66,15 @@
                     <ul class="text-muted" style="padding-top: 10px;">
                         <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span></br>
                         {{-- <input class="btn btn-primary my-2" style="width:100%; border:none;" id="cert_store" value="ใบอนุญาตขายยา/สถานพยาบาล"> --}}
-                        <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_store" accept="image/png, image/jpg, image/jpeg" required><br>
+                         <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_store" accept="image/png, image/jpg, image/jpeg" required><br>
 
+                        {{-- <input type="file" name="upfile">
+                        <div class=""custom-file>
+              
+                            <label class="form-control" for="f1"> <input type="file" name="f1" class="custom-file-input" id="f1">กรุณาเลือกไฟล์</label>
+
+                        </div>
+ --}}
                         <span>ใบประกอบวิชาชีพ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                         <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_medical" accept="image/png, image/jpg, image/jpeg" required><br>
 
@@ -189,8 +201,8 @@
                                     @if(isset($admin_area_list) != '')
                                     @foreach($admin_area_list as $row)
 
-                                        @if($row->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
-                                        <option value="{{$row->admin_area}}">{{$row->name}}</option>
+                                        @if($row->rights_area != '0' && $row->user_id != '0000') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
+                                        <option value="{{$row->admin_area}}">{{$row->admin_area.' '.'('.$row->name.')'}}</option>
                                         @endif
 
                                     @endforeach
@@ -201,15 +213,12 @@
                                 <span>พนักงานขาย/เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                     <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="sale_area">
                                     <option selected value=""> ไม่ระบุ </option>
-                                    <option value="1">S01 ธนวรรธน์</option>
-                                    <option value="2">S02</option>
-                                    <option value="3">S03</option>
-                                    <option value="4">S04</option>
-                                    <option value="4">S05</option>
-                                    <option value="4">S06</option>
-                                    <option value="4">S07</option>
-                                    <option value="4">S08</option>
-                                    <option value="4">S09</option>
+                                   
+                                        @if (isset($sale_area))
+                                            @foreach($sale_area as $row_sale_area)
+                                            <option value="{{$row_sale_area->sale_area}}">{{$row_sale_area->sale_area.' '.'(' .$row_sale_area->sale_name.')'}}</option>
+                                            @endforeach
+                                        @endif
                                     </select><br>
 
                             </ul>

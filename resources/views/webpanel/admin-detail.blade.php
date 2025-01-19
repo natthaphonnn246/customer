@@ -138,7 +138,7 @@
                                 </select></br>
 
                                 <span>อีเมล</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" name="email" type="email" class="form-control" name="email" value="{{$admin_master->email}}"><br>
+                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="email" class="form-control" name="email" value="{{$admin_master->email}}"><br>
                                 <span>เบอร์ติดต่อ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0904545555)</span>
                                 <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$admin_master->telephone}}"><br>
                                 <span>ที่อยู่</span>

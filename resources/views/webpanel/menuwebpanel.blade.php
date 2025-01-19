@@ -188,6 +188,7 @@
                     <div class="sub-menu" style=" display: none; line-height: 55px;">
                         
                         <div class="itemList_menu"><a href="/webpanel/admin" style="line-height: 60px;" href="/webpanel/customer">แอดมินทั้งหมด</a></div>
+                        <div class="itemList_menu"><a href="/webpanel/sale" style="line-height: 60px;" href="/webpanel/customer">เขตการขาย</a></div>
                         {{-- <div class="itemList_menu"><a style="line-height: 60px;" href="/webpanel/role">จัดการสิทธิ์</a></div> --}}
             
                     </div>

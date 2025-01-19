@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Setting;
+use App\Models\User;
 use App\Models\Customer;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CustomerController;
@@ -33,19 +35,25 @@ class AuthenticatedSessionController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
             ]);
+        
+        $check_email_rights = $request->email;
+        // dd($check_email_rights);
     
         if (Auth::attempt($credentials))
         {
             
                 if(Auth::user()->user_id == '0000') {
-                    return redirect()->route('webpanel');
+                    return redirect('webpanel');
                     
                 }
 
-                if(Auth::user()->maintenance_status == '1') 
+                // if(Auth::user()->maintenance_status == '1')
+                $web_status = Setting::where('setting_id', 'WS01')->first();
+                if($web_status->web_status == '1')  
                 {
-
-                            if(Auth::user()->allowed_maintenance_status == '1') 
+                            // if(Auth::user()->allowed_maintenance_status == '1') 
+                            $allowed_web_status = Setting::where('setting_id', 'WS01')->first();
+                            if($allowed_web_status->allowed_web_status == '1') 
                             {
 
                                 if(Auth::user()->allowed_user_status == '0') {
@@ -97,6 +105,13 @@ class AuthenticatedSessionController extends Controller
                                                     
                                                 } else {
 
+                                                  /*   //check rights_area;
+                                                    $check_rights_area = User::select('rights_area')->where('email',  $check_email_rights)->first();
+                                                    // dd(($check_rights_area->rights_area));
+                                                    if($check_rights_area->rights_area == 0) {
+                                                        return back();
+
+                                                    } */
                                                     return redirect()->route('portal');
                                                 }
                             

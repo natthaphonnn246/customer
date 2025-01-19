@@ -42,9 +42,9 @@
         #admin:hover {
             background-color: #0b59f6;
         }
-        #adminRole {
-            background-color: #007bff;
-            color: #FFFFFF;
+        #importMaster {
+            background-color: #efefef;
+            color: #909090;
             border: none;
             cursor: pointer;
             padding: 8px 16px;
@@ -52,8 +52,9 @@
             border-radius: 4px;
             text-align: center;
         }
-        #adminRole:hover {
-            background-color: #0b59f6;
+        #importMaster:hover {
+            background-color: #cccccc;
+            color: #3c3c3c;
         }
         #edit {
             background-color: #007bff;
@@ -239,8 +240,8 @@
         <hr style="color: #8E8E8E; width: 100%;">
 
         <div style="text-align: left;">
-            <a href="/webpanel/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a>
-            {{-- <a href="/webpanel/admin-role"  id="adminRole" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดการสิทธิ์</a> --}}
+            <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a>
+            <a href="/webpanel/customer/importcustomer"  id="importMaster" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">import master CSV</a>
     
         </div>
 
@@ -257,6 +258,7 @@
                 <th scope="col" style="color:#838383; text-align: center;">STATUS</th>
                 <th scope="col" style="color:#838383; text-align: center;">UPDATE</th>
                 <th scope="col" style="color:#838383; text-align: center;">วันที่สมัคร</th>
+                <th scope="col" style="color:#838383; text-align: center;">สถานะ</th>
                 <th scope="col" style="color:#838383; text-align: center;">จัดการ</th>
               </tr>
             </thead>
@@ -274,6 +276,7 @@
                         $status = $row->status;
                         $status_update = $row->status_update;
                         $email = $row->email;
+                        $customer_status = $row->customer_status;
                         $created_at = $row->created_at;
                     ?>
                 
@@ -301,7 +304,20 @@
                     <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"><span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(184, 184, 184);">NULL</span></td>
                     @endif
 
-                <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">{{$created_at}}</td>
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">{{$created_at}}</td>
+
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:10px;">
+                  
+                        <label class="switch">
+                            <input type="checkbox" name="check" id="status_on{{$user_code}}" {{$customer_status == 'active' ? 'checked' : '' ;}}>
+                            {{-- {{dd($customer_status);}} --}}
+                            <span class="slider round" style="text-align: center;">
+                                <span style="color: white; font-size: 10px; text-align: center;">ON</span>
+                                <span style="color: white; font-size: 10px;">OFF</span>
+                            </span>
+                        </label>
+                  
+                    </td>
 
                     <td scope="row" style="color:#9C9C9C; text-align: center;  padding:10px;"><a href="/webpanel/customer/{{$user_code}}" id="edit"><i class="fa-regular fa-eye"></i></a>
                     <button type="button" id="trash"><i class="fa-regular fa-trash-can"></i></button>
@@ -328,7 +344,7 @@
                                         }
                                     });
                                     $.ajax({
-                                        url: '/webpanel/admin/status-check',
+                                        url: '/webpanel/customer/status-active',
                                         type: 'POST',
                                         data: {
                                             id: 2,
@@ -362,7 +378,7 @@
                                         }
                                     });
                                     $.ajax({
-                                        url: '/webpanel/admin/status-inactive',
+                                        url: '/webpanel/customer/status-inactive',
                                         type: 'POST',
                                         data: {
                                             id: 1,
