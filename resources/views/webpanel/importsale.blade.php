@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    @section ('title', 'productmaster')
+    @section ('title', 'importcustomer')
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>customer</title>
+
+    <title>cutomer</title>
 </head>
 <body>
 
@@ -41,9 +42,9 @@
         #admin:hover {
             background-color: #0b59f6;
         }
-        #adminRole {
+        #importCustomer {
             background-color: #007bff;
-            color: #FFFFFF;
+            color: #ffffff;
             border: none;
             cursor: pointer;
             padding: 8px 16px;
@@ -51,8 +52,9 @@
             border-radius: 4px;
             text-align: center;
         }
-        #adminRole:hover {
+        #importCustomer:hover {
             background-color: #0b59f6;
+            color: #ffffff;
         }
         #edit {
             background-color: #007bff;
@@ -200,20 +202,6 @@
             -ms-transform: translateX(26px);
             transform: translateX(26px);
         }
-        #importMaster {
-            background-color: #efefef;
-            color: #909090;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #importMaster:hover {
-            background-color: #cccccc;
-            color: #3c3c3c;
-        }
 
         /* Rounded sliders */
         .sliders.round {
@@ -224,67 +212,56 @@
             border-radius: 50%;
         }
     </style>
-
+        {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
-        <div style="text-align: left; margin-top: 10px;">
-            {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
-            <span style="color: #8E8E8E;">เขตการขาย (Sale area)</span>
-        </div>
-        <hr style="color: #8E8E8E; width: 100%;">
 
-        <div style="text-align: left;">
-            <a href="/webpanel/sale-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มเขตการขาย</a>
-            <a href="/webpanel/sale/importsale"  id="importMaster" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">import salearea CSV</a>
-            {{-- <a href="/webpanel/admin-role"  id="adminRole" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดการสิทธิ์</a> --}}
-    
-        </div>
+            <div style="text-align: left; margin-top: 10px;">
+                <span style="color: #8E8E8E;"><a href="/webpanel/sale" id="backLink">เขตการขาย (Salearea)</a> / นำเข้าไฟล์เขตการขาย</span>
+            </div>
+            <hr style="color: #8E8E8E;">
+            <div style="text-align: left; margin-top: 10px;">
+                <span style="color: #e84545;">**นำเข้าไฟล์เขตการขาย (Sale_area) tb: saleareas</span>
+            </div>
 
-        <hr style="color: #8E8E8E; width: 100%;">
+            @error('import_csv')
+
+            <div class="alert alert-danger my-2" role="alert">
+                {{@$message}}
+            </div>
         
-        <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col" style="color:#838383; text-align: center;">#</th>
-                <th scope="col" style="color:#838383; text-align: center;">Sale area</th>
-                <th scope="col" style="color:#838383; text-align: left;">ชื่อพนักงานขาย</th>
-                <th scope="col" style="color:#838383; text-align: left;">วันที่สร้าง</th>
-                <th scope="col" style="color:#838383; text-align: left;">จัดการ</th>
-              </tr>
-            </thead>
-            <tbody>
-                @if(isset($salearea) != '')
+            @enderror
 
-                <?php 
-                    @$start = 1;
-                ?>
-                @foreach ($salearea as $row)
-              <tr>
-                    <?php
-                        
-                        $sale_area = $row->sale_area;
-                        $sale_name = $row->sale_name;
-                        $created_at = $row->created_at
-            
-                    ?>
+            @if (isset($check_import))
+
+                <div class="alert alert-success my-2" role="alert">
+                    {{$check_import}}
+                </div>
+
+            @endif
+
+            {{-- {{$check_provinces}} --}}
+            <div style="text-align: left;">
+
+        
+                <form method="post" id="import" action="/webpanel/sale/importcsv" enctype="multipart/form-data" style="margin-top: 10px;">
+                    @csrf
+                    <input type="file"  id="import_csv" name="import_csv" class="form-control text-muted"><br/>
+                    <input type="submit" id="importCustomer" name="submit_csv" class="btn btn-primary" value="นำเข้าไฟล์">
                 
-                <td scope="row" style="color:#9C9C9C; text-align: center;">{{$start++}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: center;">{{$sale_area}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left;">{{$sale_name}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left;">{{$created_at}}</td>
+                </form>
+                <hr style="color: #8E8E8E;">
 
-                    <td scope="row" style="color:#9C9C9C; text-align: left;"><a href="/webpanel/sale/{{$sale_area}}" id="edit"><i class="fa-regular fa-eye"></i></a>
-                    <button id="trash"><i class="fa-regular fa-trash-can"></i></button>
-                </td>
-              </tr>
-
-              @endforeach
-              @endif
-            </tbody>
-          </table>
+                @if(Session::get('success_import'))
+                <div class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success_import') }}</div>
+                @elseif(Session::get('error_import'))
+                <div class="alert alert-danger"><i class="fa-solid fa-circle-xmark" style="color:red;"></i> {{ Session::get('error_import') }}</div>
+                @endif
+            
+            </div>
+          
 
     </div>
 
 @endsection
-
 </body>
 </html>

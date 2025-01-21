@@ -243,10 +243,10 @@
             <div style="text-align: left;">
 
         
-                <form method="post" id="import" action="/webpanel/customer/import-csv" enctype="multipart/form-data" style="margin-top: 10px;">
+                <form method="post" id="import" action="/webpanel/customer/importcsv" enctype="multipart/form-data" style="margin-top: 10px;">
                     @csrf
                     <input type="file"  id="import_csv" name="import_csv" class="form-control text-muted"><br/>
-                    <input type="submit" id="importCustomer" name="submit_csv" class="btn btn-primary <?= @$check_provinces > 0 ? 'disabled' : '' ?>" value="นำเข้าไฟล์">
+                    <input type="submit" id="importCustomer" name="submit_csv" class="btn btn-primary" value="นำเข้าไฟล์">
                 
                 </form>
                 <hr style="color: #8E8E8E;">

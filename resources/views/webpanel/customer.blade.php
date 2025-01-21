@@ -56,6 +56,20 @@
             background-color: #cccccc;
             color: #3c3c3c;
         }
+        #groupsCustomer {
+            background-color: #ff5cc1;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #groupsCustomer:hover {
+            background-color: #ed1199;
+            color: #ffffff;
+        }
         #edit {
             background-color: #007bff;
             color: #FFFFFF;
@@ -213,24 +227,6 @@
         }
     </style>
 
-    <?php 
-        
-/*         $image = DB::table('customers', 'id')->select('cert_store', 'cert_medical', 'cert_commerce', 'cert_vat','cert_id')->whereIn('id', ['115'])->get();
-        foreach ($image as $row) {
-            $image_url = url('/storage/certs/'.$row->cert_store);
-            $image_url1 = url('/storage/certs/'.$row->cert_medical);
-            $image_url2 = url('/storage/certs/'.$row->cert_commerce);
-            $image_url3 = url('/storage/certs/'.$row->cert_vat);
-            $image_url4 = url('/storage/certs/'.$row->cert_id);
-            echo '<img src="'.$image_url.'" style="width: 20%;">';
-            echo '<img src="'.$image_url1.'" style="width: 20%;">';
-            echo '<img src="'.$image_url2.'" style="width: 20%;">';
-            echo '<img src="'.$image_url3.'" style="width: 20%;">';
-            echo '<img src="'.$image_url4.'" style="width: 20%;">';
-        }
-            */
-    
-    ?>
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
         <div style="text-align: left; margin-top: 10px;">
@@ -242,6 +238,7 @@
         <div style="text-align: left;">
             <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a>
             <a href="/webpanel/customer/importcustomer"  id="importMaster" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">import master CSV</a>
+            <a href="/webpanel/customer/groups-customer"  id="groupsCustomer" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดกลุ่มลูกค้า</a>
     
         </div>
 

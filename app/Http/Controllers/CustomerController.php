@@ -781,12 +781,15 @@ class CustomerController
 /* 
         if($request->has('submit_update'))
         { */
-
+        
                 $phone = $request->phone;
                 if($phone == null) {
                     $phone = '';
                 }
                 $telephone = $request->telephone;
+                if($telephone == null) {
+                    $telephone = '';
+                }
                 $address = $request->address;
                 $province = $request->province;
                 $amphur = $request->amphur;
@@ -820,7 +823,6 @@ class CustomerController
      /*    } */
             Customer::where('customer_id', $id)
                     ->update ([
-
                
                         'email' => $email,
                         'phone' => $phone,
@@ -1056,11 +1058,35 @@ class CustomerController
             
    }
 
-   public function updateAdmin()
+   ///groups customer;
+   public function groupsCustomer() 
    {
-    Customer::select('admin_area', 'sale_area')->where('sale_area', 'S05')->update([
-        'admin_area' => 'A01',
-    ]);
+    $row_salearea = Salearea::select('sale_area', 'sale_name', 'admin_area', 'updated_at')->where('sale_area', '!=', '')
+                        ->orderBy('sale_area', 'asc')
+                        ->get();
+
+    $customer_area_list = Customer::select('admin_area', 'sale_area')->first();
+    $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_id')->get();
+
+    return view('/webpanel/groups-customer', compact('row_salearea', 'customer_area_list', 'admin_area_list'));
+   }
+   public function updateAdminarea(Request $request, $sale_area)
+   {
+
+        date_default_timezone_set("Asia/Bangkok");
+        $admin_area = $request->admin_area;
+        if($request->admin_area == null) {
+            $admin_area = '';
+        }
+
+        Customer::where('sale_area', $sale_area)->update(['admin_area' => $admin_area]);
+        Salearea::where('sale_area', $sale_area)->update(['admin_area' => $admin_area]);
+
+    // }
+       return back()->with('success','อัปเดตข้อมูลเรียบร้อย');
+
+    
+
    }
 
 

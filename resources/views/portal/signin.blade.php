@@ -208,7 +208,7 @@
                                 
                                 <span>พนักงานขาย/เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                     <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="sale_area">
-                                    <option selected value=""> ไม่ระบุ </option>
+                                    <option selected value="ไม่ระบุ"> ไม่ระบุ </option>
                                     
                                     @if (isset($sale_area))
                                         @foreach($sale_area as $row_sale_area)

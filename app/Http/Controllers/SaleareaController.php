@@ -12,7 +12,7 @@ class SaleareaController extends Controller
      */
     public function index()
     {
-        $salearea = Salearea::all();
+        $salearea = Salearea::orderBy('sale_area', 'asc')->get();
         // dd($salearea);
         return view('/webpanel/sale', compact('salearea'));
     }
@@ -33,6 +33,7 @@ class SaleareaController extends Controller
             if($request->text_add == null) {
                 $text_add = '';
             }
+            $admin_area = '';
 
             $check_submit = Salearea::select('salearea_id')->where('salearea_id', $sale_area)->first();
 
@@ -45,6 +46,7 @@ class SaleareaController extends Controller
                     'sale_area' => $sale_area,
                     'sale_name' => $sale_name,
                     'text_add' => $text_add,
+                    'admin_area' => $admin_area,
                 ]);
     
                     return redirect()->back()->with('success', 'เพิ่มข้อมูลสำเร็จ');
@@ -93,8 +95,12 @@ class SaleareaController extends Controller
                 $sale_area = $request->sale_area;
                 $sale_name = $request->sale_name;
                 $text_add = $request->text_add;
-
                 if($request->text_add == null) {
+                    $text_add = '';
+                }
+
+                $admin_area = $request->admin_area;
+                if($request->admin_area == null) {
                     $text_add = '';
                 }
 
@@ -104,12 +110,51 @@ class SaleareaController extends Controller
                             'sale_area' => $sale_area,
                             'sale_name' => $sale_name,
                             'text_add' => $text_add,
+                            // 'admin_area' => $admin_area,
                         ]);
 
            
                 return redirect('/webpanel/sale/'.$id)->with('success', 'อัปเดตข้อมูลสำเร็จ');
         }
         
+    }
+
+    public function importFile(Request $request)
+    {
+        date_default_timezone_set("Asia/Bangkok");
+        if($request->has('submit_csv') == true)
+        {
+
+            if($request->file('import_csv') == '') {
+                return redirect()->back()->with('error_import', 'กรุณาเลือกไฟล์ CSV');
+            }
+
+            $rename = 'Sale_area'.'_'.date("l jS \of F Y h:i:s A").'.csv';
+            $request->file('import_csv')->storeAs('importcsv',$rename,'importfiles'); //importfiles filesystem.php->disk;
+            $fileStream = fopen(storage_path('app/public/importcsv/'.$rename),'r');
+
+            while(!feof($fileStream)) {
+
+                $row = fgetcsv($fileStream, 1000, "|");
+                if($row[0] ??= '') {
+
+                    Salearea::create([
+
+                       'salearea_id' => $row[0],
+                       'sale_area' => $row[0],
+                       'sale_name' => 'ไม่ระบุ',
+                       'text_add' => '',
+                       'admin_area' => '',
+
+                    ]);
+                }
+            }
+            fclose($fileStream);
+           
+        }
+        $count = Salearea::count();
+        // dd($count);
+        return redirect('/webpanel/sale/importsale')->with('success_import', 'นำเข้าข้อมูลสำเร็จ :'.' '.$count);
     }
 
     /**

@@ -11,7 +11,8 @@
     use Illuminate\Support\Facades\Route;
     use App\Http\Middleware\EnsureUserHasRole;
     use App\Models\Customer;
-    use Illuminate\Support\Facades\DB;
+use App\Models\Salearea;
+use Illuminate\Support\Facades\DB;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
     Route::get('/', function () {
@@ -63,11 +64,20 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
             return view('webpanel/customer-create');
         });
 
+        Route::get('/webpanel/customer/groups-customer', function () {
+            return view('webpanel/groups-customer');
+        });
+
         Route::get('/webpanel/customer/importcustomer', function () {
             return view('webpanel/importcustomer');
         });
 
-        Route::post('/webpanel/customer/import-csv',[CustomerController::class, 'importFile']);
+        Route::get('/webpanel/sale/importsale', function () {
+            return view('webpanel/importsale');
+        });
+
+        Route::post('/webpanel/customer/importcsv',[CustomerController::class, 'importFile']);
+        Route::post('/webpanel/sale/importcsv',[SaleareaController::class, 'importFile']);
 
         Route::post('/webpanel/admin/status-check', [UserController::class,'statusAct']);
         Route::post('/webpanel/admin/status-inactive', [UserController::class,'statusiAct']);
@@ -106,6 +116,8 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
         Route::get('/webpanel/customer-create/update-district', [ProvinceController::class, 'district']);
         Route::get('/webpanel/customer-create/update-zipcode', [ProvinceController::class, 'zipcode']);
         Route::get('/webpanel/customer-create/update-geography', [ProvinceController::class, 'geographies']);
+
+        Route::get('webpanel/customer/groups-customer', [CustomerController::class, 'groupsCustomer']);
 
         Route::get('/webpanel/customer', function() {
             return view('webpanel/customer');
@@ -150,7 +162,8 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
     });
 
-    Route::get('/webpanel/update-admin', [CustomerController::class, 'updateAdmin']);
+    //update groups customer;
+    Route::post('/webpanel/customer/groups-customer/updatadmin/{sale_area}', [CustomerController::class, 'updateAdminarea']);
 
     // Route::get('/webpanel/customer/importcustomer',[CustomerController::class, 'importFile']);
    

@@ -379,8 +379,8 @@
 
                                         if (data == 'success') {
                                             Swal.fire({
-                                            title: '<span style="color:#06A643;">กรุณาติดต่อผู้ดูแลด้วยครับ</span>',
-                                            text: 'บันทึกข้อมูลเรียบร้อย',
+                                            title: '<span style="color:#EE414E;">กรุณาติดต่อผู้ดูแล</span>',
+                                            text: 'บันทึกเรียบร้อย',
                                             icon:'success',
                                             confirmButtonText: 'ตกลง'
 

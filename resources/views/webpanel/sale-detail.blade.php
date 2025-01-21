@@ -80,6 +80,11 @@
                                     <span>เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ ตัวอย่าง : S01</span>
                                     <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="sale_area" value="{{$salearea->sale_area}}">
 
+                                    <div class="my-3">
+                                        <span>Admin area</span>
+                                        <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="admin_area" value="{{$salearea->admin_area}}" disabled>
+                                    </div>
+
                                     <div class="mb-3 my-4">
                                         <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 18px; font-weight: 500;">เพิ่มเติม</label></label>
                                         <textarea class="form-control" style="color: grey;" id="exampleFormControlTextarea1" rows="3" name="text_add"> {{$salearea->text_add}}</textarea><br>

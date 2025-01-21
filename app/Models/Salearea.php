@@ -12,6 +12,7 @@ class Salearea extends Model
      'sale_name',
      'sale_area',
      'text_add',
+     'admin_area',
      
     ];
     protected $table = 'saleareas';
