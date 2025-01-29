@@ -64,7 +64,7 @@
             border-radius: 4px;
             text-align: center;
         }
-        #trash {
+        .trash-admin {
             background-color: #e12e49;
             color: #FFFFFF;
             border: none;
@@ -229,14 +229,14 @@
         <table class="table table-striped">
             <thead>
               <tr>
-                <th scope="col" style="color:#838383; text-align: left;">#</th>
-                <th scope="col" style="color:#838383; text-align: left;">CODE</th>
-                <th scope="col" style="color:#838383; text-align: left;">Admin area</th>
-                <th scope="col" style="color:#838383; text-align: left;">อีเมล</th>
-                <th scope="col" style="color:#838383; text-align: left;">ชื่อแอดมิน</th>
-                <th scope="col" style="color:#838383; text-align: left;">อนุมัติบัญชี</th>
-                <th scope="col" style="color:#838383; text-align: left;">วันที่สมัคร</th>
-                <th scope="col" style="color:#838383; text-align: left;">จัดการ</th>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">#</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">CODE</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">Admin area</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">อีเมล</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">ชื่อแอดมิน</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">อนุมัติบัญชี</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">วันที่สมัคร</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">จัดการ</td>
               </tr>
             </thead>
             <tbody>
@@ -296,9 +296,76 @@
                 <td scope="row" style="color:#9C9C9C; text-align: left;">{{$created_at}}</td>
 
                     <td scope="row" style="color:#9C9C9C; text-align: left;"><a href="/webpanel/admin/{{$user_code}}" id="edit"><i class="fa-regular fa-eye"></i></a>
-                    <button id="trash"><i class="fa-regular fa-trash-can"></i></button>
+                    @if ($user_code == '0000')
+                    <button class="trash-admin" style="opacity: 0.6;" disabled><i class="fa-regular fa-trash-can"></i></button>
+                    @else
+                    <button class="trash-admin" type="submit" id="trash{{$user_code}}"><i class="fa-regular fa-trash-can"></i></button>
+                    @endif
                 </td>
               </tr>
+
+                <!-- delete users table -->
+                <script>
+                        $(document).ready(function() {
+
+                                $('#trash{{$user_code}}').click(function(e) {
+                                    e.preventDefault();
+                                    // console.log('delete{{$user_code}}');
+                                    let code_del = '{{$user_code}}';
+                                    // console.log('{{$user_code}}');
+
+                                        swal.fire({
+                                            icon: "warning",
+                                            title: "คุณต้องการลบข้อมูลหรือไม่",
+                                            // text: '<?= $user_code .' '.'('. $user_name.')' ; ?>',
+                                            text: '{{$user_code.' '.'('. $user_name.')'}}',
+                                            showCancelButton: true,
+                                            confirmButtonText: "ลบข้อมูล",
+                                            cancelButtonText: "ยกเลิก"
+                                        }).then(function(result) {
+                            
+                                        if(result.isConfirmed) {
+                                            $.ajax({
+                                            url: '/webpanel/admin/delete/{{ $user_code }}',
+                                            type: 'GET',
+                                            success: function(data) {
+
+                                                let check_id = JSON.parse(data);
+                                                console.log(check_id.checkcode);
+
+                                                if(check_id.checkcode == code_del) 
+                                                {
+                                                    swal.fire({
+                                                        icon: "success",
+                                                        title: "ลบข้อมูลสำเร็จ",
+                                                        showConfirmButton: true,
+                                                    
+                                                    }).then (function(result) {
+                                                        window.location.reload();
+                                                    });
+                                                    
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: "error",
+                                                        title: "เกิดข้อผิดพลาด",
+                                                        text: 'ไม่พบข้อมูล {{$user_code.' '.'('. $user_name.')'}}',
+                                                        showConfirmButton: true,
+                                                    });
+                                                }
+
+                                            },
+
+                                        });
+
+                                    } //iscomfirmed;
+                        
+                                });   
+
+                            });
+                        
+                        });
+
+                </script>
 
                 <script text="type/javascript">
                         $(document).ready(function() {

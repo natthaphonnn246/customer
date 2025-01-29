@@ -6,7 +6,7 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Models\Customer;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Portal\PortalCustomerController;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Http\RedirectResponse;
@@ -93,7 +93,7 @@ class AuthenticatedSessionController extends Controller
                                                         $request->session()->regenerate();
                                                         // return redirect()->route('portal');
                                                         return redirect()->action(
-                                                            [CustomerController::class, 'customerView']
+                                                            [PortalCustomerController::class, 'customerView']
                                                         );
 
                                                         } else {
@@ -152,7 +152,7 @@ class AuthenticatedSessionController extends Controller
                                                     $request->session()->regenerate();
                                                     // return redirect()->route('portal');
                                                     return redirect()->action(
-                                                        [CustomerController::class, 'customerView']
+                                                        [PortalCustomerController::class, 'customerView']
                                                     );
 
                                                     } else {
@@ -203,7 +203,7 @@ class AuthenticatedSessionController extends Controller
                                             $request->session()->regenerate();
                                             // return redirect()->route('portal');
                                             return redirect()->action(
-                                                [CustomerController::class, 'customerView']
+                                                [PortalCustomerController::class, 'customerView']
                                             );
 
                                             } else {

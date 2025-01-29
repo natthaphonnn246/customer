@@ -12,147 +12,163 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 
     <title>@yield('title') | Signin</title>
 </head>
 
 <style>
-    li {
-        font-size: 15px;
-    }
-    .rotate {
-        transform: rotate(-90deg);
-        margin-left: calc(30px + 60px);
-    }
-    .rotate_p {
-        transform: rotate(-90deg);
-        margin-left: calc(30px + 40px);
-    }
-    .profile {
-        background-color: rgba(3, 12, 40, 0.463);
-        height: 85px;
-    }
-    .submenu {
-        background-color: rgba(3, 12, 40, 0.463);
-    }
-    .sub_product {
-        background-color: rgba(3, 12, 40, 0.463);
-    }
-    html,body{
-    /* height: 100%; */
-    /* font-family: "Prompt", sans-serif; */
-    font-weight: 400;
-    font-style: normal;
-    font-size: 15px;
-}
-.container-fluid{
-    display: flex;
-    flex-direction: row;
-    background-color: rgb(255, 255, 255);
-    position: fixed;
-    /* flex-direction: column; */
-   
-}
-.sidebar{
-    background-color: rgb(58, 73, 96);
-    max-width: 300px;
-    width: 100%;
-    overflow: auto;
-    /* height: 100%; */
-    /* text-align: left; */
-    /* padding-top: 10px; */
-}
-.item a {
-    color: rgb(255, 255, 255);
-    text-align: center;
-    text-decoration: none;
-    margin-left: 25px;
-    padding: 20px;
-    width: 100%;
-}
-.dropdown {
-    color: rgb(255, 255, 255);
-    text-align: center;
-    text-decoration: none;
-    /* margin-left: 100px; */
-    /* margin-left: 30%; */
-    margin-left: calc(25px + 65px);
-}
-.dropdown_p {
-    color: rgb(255, 255, 255);
-    text-align: center;
-    text-decoration: none;
-    /* margin-left: 85px; */
-    /* padding-top: 20px; */
-    /* margin-left: 30%; */
-    margin-left: calc(25px + 45px);
-}
-.item{
-    padding: 0px;
-    line-height: 55px;
-    
-}
-/* .item :hover {
-    background-color: rgba(21, 0, 207, 0.563);
-    line-height: 60px;
-   
-} */
-.content{
-    background-color: #ebedef;
-    width: 100%;
-    overflow: auto;
-    text-align: center;
-    padding-left: 30px;
-    padding-right: 30px;
-}
-.img-fluid{
-    margin-top: 18px;
-    border-radius: 100%;
-    width: 48px;
-    height: 48px;
-    color: aliceblue;
-    margin-left: 50px;
-}
-.mt-1{
-    color: aliceblue;
-    padding-top: 10px;
-}
-#logout :hover {
-    background-color: rgb(211, 57, 57);
-}
-#product {
-    background-color: none;
- }
-/* .item :hover {
-    background-color: rgb(32, 45, 163);
-    color: white;
-} */
-.itemList_menu:hover {
-    background-color: rgba(13, 62, 206, 0.463);
-    color: white;
-    width: 100%;
-}
-.mainItem:hover {
-    color: white;
-    background-color: rgb(32, 45, 163);
-    
-}
-.mainItem {
-    line-height: 55px;
-    padding: 0px;
+        body{
+            font-family: 'Prompt', sans-serif;
+        }
+        li {
+            font-size: 16px;
+        }
+        .rotate {
+            transform: rotate(-90deg);
+            margin-left: calc(30px + 60px);
+        }
+        .rotate_p {
+            transform: rotate(-90deg);
+            margin-left: calc(30px + 40px);
+        }
+        .profile {
+            background-color: rgb(45, 45, 45);
+            height: 85px;
+        }
+        .submenu {
+            background-color: rgb(255, 255, 255);
+        }
+        .sub_product {
+            background-color: rgba(3, 12, 40, 0.463);
+        }
+        html,body{
+            /* height: 100%; */
+            /* font-family: "Prompt", sans-serif; */
+            font-weight: 400;
+            font-style: normal;
+            font-size: 15px;
+        }
+        .container-fluid{
+            display: flex;
+            flex-direction: row;
+            background-color: rgb(255, 255, 255);
+            position: fixed;
+            /* flex-direction: column; */
+        
+        }
+        .sidebar{
+            /* background-color: rgb(58, 73, 96); */
+            background-color: #ffffff;
+            max-width: 300px;
+            width: 100%;
+            overflow: auto;
+            /* height: 100%; */
+            /* text-align: left; */
+            /* padding-top: 10px; */
+        }
+        .item a {
+            color: rgb(53, 53, 53);
+            text-align: center;
+            text-decoration: none;
+            margin-left: 25px;
+            padding: 20px;
+            width: 100%;
+        }
+        .item a:hover {
+            color: rgb(53, 53, 53);
+            text-align: center;
+            text-decoration: none;
+            margin-left: 25px;
+            padding: 20px;
+            width: 100%;
+        }
+        .dropdown {
+            color: rgb(255, 255, 255);
+            text-align: center;
+            text-decoration: none;
+            /* margin-left: 100px; */
+            /* margin-left: 30%; */
+            margin-left: calc(25px + 65px);
+        }
+        .dropdown_p {
+            color: rgb(255, 255, 255);
+            text-align: center;
+            text-decoration: none;
+            /* margin-left: 85px; */
+            /* padding-top: 20px; */
+            /* margin-left: 30%; */
+            margin-left: calc(25px + 45px);
+        }
+        .item{
+            padding: 0px;
+            line-height: 55px;
+            
+        }
+        /* .item :hover {
+            background-color: rgba(21, 0, 207, 0.563);
+            line-height: 60px;
+        
+        } */
+        .content{
+            background-color: #ebedef;
+            width: 100%;
+            overflow: auto;
+            text-align: center;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        .img-fluid{
+            margin-top: 18px;
+            border-radius: 100%;
+            width: 48px;
+            height: 48px;
+            color: aliceblue;
+            margin-left: 50px;
+        }
+        .mt-1{
+            color: aliceblue;
+            padding-top: 10px;
+        }
+        #logout :hover {
+            background-color: rgb(211, 57, 57);
+        }
+        #product {
+            background-color: none;
+        }
+        /* .item :hover {
+            background-color: rgb(32, 45, 163);
+            color: white;
+        } */
+        .itemList_menu:hover {
+            background-color: rgb(167, 167, 167);
+            color: white;
+            width: 100%;
+        }
+        .mainItem:hover {
+            cursor: pointer;
+            background-color: rgb(233, 233, 233);
+            
+        }
+        .mainItem {
+            line-height: 55px;
+            padding: 0px;
 
-}
-.logout:hover {
-    background-color: rgb(198, 54, 54);
-    color: white;
-    width: 100%;
-}
-.logout {
-   background-color: rgb(225, 88, 88);
-   padding: 0px;
-}
+        }
+        .logout:hover {
+            background-color: rgb(209, 208, 208);
+            color: white;
+            width: 100%;
+        }
+        .logout {
+        background-color: rgb(222, 222, 222);
+        padding: 0px;
+        cursor: pointer;
+        }
 </style>
+
 
 <title>Document</title>
 </head>
@@ -179,19 +195,19 @@
                 <li><a href="/portal/signin" style="cursor: pointer; margin-right: 15px;" id="sub_product"  class="sub-btn">สมัครสมาชิก (Dashboard) <i class="fas fa-angle-left dropdown_p" style="font-size: 12px;"></i></a></li>
             </ul> --}}
             <ul class="mainItem">
-                <li><a href="" style="cursor: pointer; margin-right: 15px;" id="sub_product"  class="sub-btn">หน้าแรก (Dashboard)</a></li>
+                <li><a href="" style="cursor: pointer; margin-right: 15px; font-weight:500;" id="sub_product"  class="sub-btn"> <i class="fa-solid fa-tv"></i> หน้าแรก</a></li>
             </ul>
 
 
             <ul class="mainItem" id="report">
                 {{-- <li class="sub-menu"><a href="#" style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">รายงาน (Report) <i class="fas fa-angle-left dropdown" style="font-size: 12px;"></i></a></li> --}}
-                <li><a style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">ข้อมูลลูกค้า (Customer)</a></li>
+                <li><a style="cursor: pointer; margin-right: 15px; font-weight:500;" id="submenu"  class="sub-btn"> <i class="fa-regular fa-address-book" style="font-size:18px;"></i> ข้อมูลลูกค้า</a></li>
             </ul>
 
                 <div class="sub-menu" style=" display: none; line-height: 55px;">
                    
-                        <div class="itemList_menu"><a style="line-height: 60px;" href="/portal/signin">สมัครสมาชิก</a></div>
-                        <div class="itemList_menu"><a style="line-height: 60px;" href="{{('/portal/customer')}}">ลูกค้าทั้งหมด</a></div>
+                        <div class="itemList_menu"><a style="line-height: 60px; color:#ebedef; font-weight:500; font-size:15px;" href="/portal/signin">สมัครสมาชิก</a></div>
+                        <div class="itemList_menu"><a style="line-height: 60px; color:#ebedef; font-weight:500; font-size:15px;" href="{{('/portal/customer')}}">ลูกค้าทั้งหมด</a></div>
                         {{-- <div class="itemList_menu"><a style="line-height: 60px;" href="/campaign">ร่วมสนุก</a></div> --}}
                        {{--  <div class="itemList_menu"><a style="line-height: 60px;" href="{{('product')}}">ตรวจสอบการสั่งสินค้า</a></div>
                         <div class="itemList_menu"><a style="line-height: 60px;" href="{{('product')}}" class="sub-item">ลูกค้าที่ไม่มีความเคลื่อนไหว</a></div>
@@ -212,8 +228,8 @@
                     </div>
 
         <ul class="item">
-            <li class="logout"><a href="/logout" ><i class="fa-solid fa-power-off"></i>
-                ออกจากระบบ (Logout)
+            <li class="logout"><a href="/logout" style="font-weight:500;"><i class="fa-solid fa-power-off"></i>
+                ออกจากระบบ
             </a>
             </li>
         </ul>
@@ -235,7 +251,7 @@
                 $(this).next('.sub-menu').slideToggle();
                 $(this).find('.dropdown').toggleClass('rotate');
                 $(this).toggleClass("submenu"); // toggle เปิดปิดแถบสีเมนู;
-                $('.sub-menu').css("background-color", "rgba(3, 12, 40, 0.463)");
+                $('.sub-menu').css("background-color", "black");
             
 
             });

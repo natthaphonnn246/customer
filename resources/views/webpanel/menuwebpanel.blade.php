@@ -17,8 +17,11 @@
 </head>
 
 <style>
+     body{
+        font-family: 'Prompt', sans-serif;
+    }
     li {
-        font-size: 15px;
+        font-size: 14px;
     }
     .rotate {
         transform: rotate(-90deg);
@@ -44,113 +47,113 @@
     font-weight: 400;
     font-style: normal;
     font-size: 15px;
-}
-.container-fluid{
-    display: flex;
-    flex-direction: row;
-    background-color: rgb(255, 255, 255);
-    position: fixed;
-    /* flex-direction: column; */
-   
-}
-.sidebar{
-    background-color: rgb(58, 73, 96);
-    max-width: 300px;
-    width: 100%;
-    overflow: auto;
-    /* height: 100%; */
-    /* text-align: left; */
-    /* padding-top: 10px; */
-}
-.item a {
-    color: rgb(255, 255, 255);
-    text-align: center;
-    text-decoration: none;
-    margin-left: 25px;
-    padding: 20px;
-    width: 100%;
-}
-.dropdown {
-    color: rgb(255, 255, 255);
-    text-align: center;
-    text-decoration: none;
-    /* margin-left: 100px; */
-    /* margin-left: 30%; */
-    margin-left: calc(25px + 65px);
-}
-.dropdown_p {
-    color: rgb(255, 255, 255);
-    text-align: center;
-    text-decoration: none;
-    /* margin-left: 85px; */
-    /* padding-top: 20px; */
-    /* margin-left: 30%; */
-    margin-left: calc(25px + 45px);
-}
-.item{
-    padding: 0px;
-    line-height: 55px;
+    }
+    .container-fluid{
+        display: flex;
+        flex-direction: row;
+        background-color: rgb(255, 255, 255);
+        position: fixed;
+        /* flex-direction: column; */
     
-}
-/* .item :hover {
-    background-color: rgba(21, 0, 207, 0.563);
-    line-height: 60px;
-   
-} */
-.content{
-    background-color: #ebedef;
-    width: 100%;
-    overflow: auto;
-    text-align: center;
-    padding-left: 30px;
-    padding-right: 30px;
-}
-.img-fluid{
-    margin-top: 18px;
-    border-radius: 100%;
-    width: 48px;
-    height: 48px;
-    color: aliceblue;
-    margin-left: 50px;
-}
-.mt-1{
-    color: aliceblue;
-    padding-top: 10px;
-}
-#logout :hover {
-    background-color: rgb(211, 57, 57);
-}
-#product {
-    background-color: none;
- }
-/* .item :hover {
-    background-color: rgb(32, 45, 163);
-    color: white;
-} */
-.itemList_menu:hover {
-    background-color: rgba(13, 62, 206, 0.463);
-    color: white;
-    width: 100%;
-}
-.mainItem:hover {
-    color: white;
-    background-color: rgb(32, 45, 163);
+    }
+    .sidebar{
+        background-color: rgb(58, 73, 96);
+        max-width: 300px;
+        width: 100%;
+        overflow: auto;
+        /* height: 100%; */
+        /* text-align: left; */
+        /* padding-top: 10px; */
+    }
+    .item a {
+        color: rgb(255, 255, 255);
+        text-align: center;
+        text-decoration: none;
+        margin-left: 25px;
+        padding: 20px;
+        width: 100%;
+    }
+    .dropdown {
+        color: rgb(255, 255, 255);
+        text-align: center;
+        text-decoration: none;
+        /* margin-left: 100px; */
+        /* margin-left: 30%; */
+        margin-left: calc(25px + 65px);
+    }
+    .dropdown_p {
+        color: rgb(255, 255, 255);
+        text-align: center;
+        text-decoration: none;
+        /* margin-left: 85px; */
+        /* padding-top: 20px; */
+        /* margin-left: 30%; */
+        margin-left: calc(25px + 45px);
+    }
+    .item{
+        padding: 0px;
+        line-height: 55px;
+        
+    }
+    /* .item :hover {
+        background-color: rgba(21, 0, 207, 0.563);
+        line-height: 60px;
     
-}
-.mainItem {
-    line-height: 55px;
-    padding: 0px;
+    } */
+    .content{
+        background-color: #ebedef;
+        width: 100%;
+        overflow: auto;
+        text-align: center;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+    .img-fluid{
+        margin-top: 18px;
+        border-radius: 100%;
+        width: 48px;
+        height: 48px;
+        color: aliceblue;
+        margin-left: 50px;
+    }
+    .mt-1{
+        color: aliceblue;
+        padding-top: 10px;
+    }
+    #logout :hover {
+        background-color: rgb(211, 57, 57);
+    }
+    #product {
+        background-color: none;
+    }
+    /* .item :hover {
+        background-color: rgb(32, 45, 163);
+        color: white;
+    } */
+    .itemList_menu:hover {
+        background-color: rgba(13, 62, 206, 0.463);
+        color: white;
+        width: 100%;
+    }
+    .mainItem:hover {
+        color: white;
+        background-color: rgb(32, 45, 163);
+        
+    }
+    .mainItem {
+        line-height: 55px;
+        padding: 0px;
 
-}
-.logout:hover {
-    background-color: rgb(198, 54, 54);
-    color: white;
-    width: 100%;
-}
-.logout {
-   background-color: rgb(225, 88, 88);
-   padding: 0px;
-}
+    }
+    .logout:hover {
+        background-color: rgb(198, 54, 54);
+        color: white;
+        width: 100%;
+    }
+    .logout {
+    background-color: rgb(225, 88, 88);
+    padding: 0px;
+    }
 </style>
 
 <title>Document</title>
@@ -200,7 +203,7 @@
                     <div class="sub-menu" style=" display: none; line-height: 55px;">
                     
                         <div class="itemList_menu"><a style="line-height: 60px;" href="/webpanel/customer">ลูกค้าทั้งหมด</a></div>
-                        <div class="itemList_menu"><a style="line-height: 60px;" href="/campaign/random">สุ่มผู้โชคดี</a></div>
+                        {{-- <div class="itemList_menu"><a style="line-height: 60px;" href="/campaign/random">สุ่มผู้โชคดี</a></div> --}}
             
                     </div>
 

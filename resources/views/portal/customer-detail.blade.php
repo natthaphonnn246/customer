@@ -172,7 +172,7 @@
         <div style="text-align: left; margin-top: 10px;">
             <span style="color: #8E8E8E;"><a href="/portal/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / รายละเอียด</span>
         </div>
-        
+        <hr style="color: #8E8E8E; width: 100%;">
     @if (isset($customer_edit) != '')
 
         <form id="form">
@@ -379,7 +379,7 @@
 
                                         if (data == 'success') {
                                             Swal.fire({
-                                            title: '<span style="color:#EE414E;">กรุณาติดต่อผู้ดูแล</span>',
+                                            title: '<span style="color:balck;">กรุณาติดต่อผู้ดูแล</span>',
                                             text: 'บันทึกเรียบร้อย',
                                             icon:'success',
                                             confirmButtonText: 'ตกลง'

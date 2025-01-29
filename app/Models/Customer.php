@@ -69,6 +69,98 @@ class Customer extends Model
         return [$customer, $start, $total_page, $page];
     }
 
+    public static function customerCompleted($page)
+    {
+        $pagination = Customer::select(DB::raw('customer_id'))->where('status','2')->get();
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('status','2')
+                    ->whereNotIn('customer_code',['0000', '4494'])
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+    public static function customerAction($page)
+    {
+        $pagination = Customer::select(DB::raw('customer_id'))->where('status','1')->get();
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('status','1')
+                    ->whereNotIn('customer_code',['0000', '4494'])
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+
+    public static function customerWaiting($page)
+    {
+        $pagination = Customer::select(DB::raw('customer_id'))->where('status','0')->get();
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('status','0')
+                    ->whereNotIn('customer_code',['0000', '4494'])
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+    public static function latestUpdate($page)
+    {
+        $pagination = Customer::select(DB::raw('customer_id'))->where('status_update','updated')->get();
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('status_update','updated')
+                    ->whereNotIn('customer_code',['0000', '4494'])
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+    public static function customerInactive($page)
+    {
+        $pagination = Customer::select(DB::raw('customer_id'))->where('customer_status','inactive')->get();
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('customer_status','inactive')
+                    ->whereNotIn('customer_code',['0000', '4494'])
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+
     public static function customerEdit($id)
     {
         $customer_edit = Customer::where('customer_id', $id)->first();

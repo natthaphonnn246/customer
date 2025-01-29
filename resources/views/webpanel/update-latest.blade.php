@@ -29,9 +29,9 @@
             border-radius: 2px;
             /* text-align: left; */
         }
-        #admin {
-            background-color: #007bff;
-            color: #FFFFFF;
+        #exportcsv {
+            background-color: #dddddd;
+            color: #3d3d3d;
             border: none;
             cursor: pointer;
             padding: 8px 16px;
@@ -39,12 +39,13 @@
             border-radius: 4px;
             text-align: center;
         }
-        #admin:hover {
-            background-color: #0b59f6;
+        #exportcsv:hover {
+            background-color: #cccccc;
+            color: #3c3c3c;
         }
-        #importMaster {
-            background-color: #ce9af4;
-            color: #ffffff;
+        #exportexcel {
+            background-color: #dddddd;
+            color: #3d3d3d;
             border: none;
             cursor: pointer;
             padding: 8px 16px;
@@ -52,9 +53,9 @@
             border-radius: 4px;
             text-align: center;
         }
-        #importMaster:hover {
-            background-color:  #ae66e0;
-            color: #ffffff;
+        #exportexcel:hover {
+            background-color: #cccccc;
+            color: #3c3c3c;
         }
         #groupsCustomer {
             background-color: #ff5cc1;
@@ -80,7 +81,7 @@
             border-radius: 4px;
             text-align: center;
         }
-        .trash-customer {
+        #trash {
             background-color: #e12e49;
             color: #FFFFFF;
             border: none;
@@ -148,34 +149,6 @@
             -webkit-transform: translateX(26px);
             -ms-transform: translateX(26px);
             transform: translateX(26px);
-        }
-        #exportcsv {
-            background-color: #dddddd;
-            color: #3d3d3d;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #exportcsv:hover {
-            background-color: #cccccc;
-            color: #3c3c3c;
-        }
-        #exportexcel {
-            background-color: #dddddd;
-            color: #3d3d3d;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #exportexcel:hover {
-            background-color: #cccccc;
-            color: #3c3c3c;
         }
 
         /* Rounded sliders */
@@ -258,24 +231,34 @@
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
         <div style="text-align: left; margin-top: 10px;">
-            {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
-            <span style="color: #8E8E8E;">ข้อมูลลูกค้า (Customer)</span>
+            <span style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / Update</span>
+
         </div>
         <hr style="color: #8E8E8E; width: 100%;">
 
-        <div style="text-align: left;">
-            <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a>
-            <a href="/webpanel/customer/importcustomer"  id="importMaster" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">import master CSV</a>
-            <a href="/webpanel/customer/groups-customer"  id="groupsCustomer" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดกลุ่มลูกค้า</a>
-
-            <a href="/webpanel/customer/export/getcsv/getcsv_customerall"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
-            <a href="/webpanel/customer/export/getexcel/getexcel_customerall"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
+        <div style="text-align: right;">
+            <a href="/webpanel/customer/export/getcsv/getcsv_update"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
+            <a href="/webpanel/customer/export/getexcel/getexcel_update"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
     
         </div>
 
+        <div style="text-align:left;">
+            @if(Session::get('error_export') == 'เกิดข้อผิดพลาด')
+
+            <script>
+                swal.fire({
+                    title: 'เกิดข้อผิดพลาด',
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง'
+
+                });
+            </script>
+            @endif
+        </div>
+
         <hr style="color: #8E8E8E; width: 100%;">
 
-        <div class="row" style="justify-content: center;">
+        <div class="row" style="justify-content: left; margin-left: 20px;">
             
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
@@ -287,56 +270,12 @@
                     @endif
                 </span>
             </div>
-              
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/completed" style="text-decoration: none; color:white;">ดำเนินการแล้ว</a><br/>
-                    @if (isset($total_status_completed))
-                    <span>{{$total_status_completed != '' ? $total_status_completed : '0' ;}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/waiting" style="text-decoration: none; color:white;">รอดำเนินการ</a><br/>
-                    @if (isset($total_status_waiting))
-                    <span>{{$total_status_waiting != '' ? $total_status_waiting : '0' ;}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
-
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/action" style="text-decoration: none; color:white;">ต้องดำเนินการ</a><br/>
-                    @if (isset($total_status_action))
-                    <span>{{$total_status_action != '' ? $total_status_action : '0' ;}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
-
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/latest_update" style="text-decoration: none; color:white;">UPDATE</a> <sup style="background-color:#fded71; padding:5px; width: 10px; color:#000000; border-radius: 20px;">Latest</sup><br/>
+                    UPDATE<br/>
                     @if (isset($total_status_updated))
                     <span>{{$total_status_updated != '' ? $total_status_updated : '0' ;}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
-
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/inactive" style="text-decoration: none; color:white;">ปิดบัญชี</a><br/>
-                    @if (isset($customer_status_inactive))
-                    <span>{{$customer_status_inactive != '' ? $customer_status_inactive : '0' ;}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -386,27 +325,27 @@
                 <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px; width: 20%;">{{$user_name}}</td>
 
                     @if ($status == 0)
-                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(237, 59, 59);">รอดำเนินการ</span></td>
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(237, 59, 59);">รอดำเนินการ</span></td>
                     {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(255, 70, 70);"></i> รอดำเนินการ</td> --}}
                     @elseif ($status == 1)
-                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"><span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(251, 169, 46);">ต้องดำเนินการ</span></td>
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"><span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(251, 169, 46);">ต้องดำเนินการ</span></td>
                     {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(251, 183, 23);"></i> ต้องดำเนินการ</td> --}}
                     @elseif ($status == 2)
                     {{-- <td scope="row" style="color:#9C9C9C; text-align: left;"><i class="fa-solid fa-circle" style="color: rgb(4, 181, 30);"></i> ดำเนินการแล้ว</td> --}}
-                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(58, 174, 19);">ดำเนินการแล้ว</span></td>
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(58, 174, 19);">ดำเนินการแล้ว</span></td>
                     @else
-                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> </td>
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> </td>
                     @endif
 
                     @if ($status_update == 'updated')
-                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(255, 70, 70);">UPDATE</span></td>
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(255, 70, 70);">UPDATE</span></td>
                     @else
-                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px;"><span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(184, 184, 184);">NULL</span></td>
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"><span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(184, 184, 184);">NULL</span></td>
                     @endif
 
                     <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">{{$created_at}}</td>
 
-                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:10px;">
                   
                         <label class="switch">
                             <input type="checkbox" name="check" id="status_on{{$user_code}}" {{$customer_status == 'active' ? 'checked' : '' ;}}>
@@ -419,77 +358,11 @@
                   
                     </td>
 
-                    <td scope="row" style="color:#9C9C9C; text-align: center;  padding:20px; width: 20%;">
-                        <a href="/webpanel/customer/{{$user_code}}" id="edit"><i class="fa-regular fa-eye"></i></a>
-                        {{-- <a href="/webpanel/customer/delete/{{$user_code}}" id="trash"><i class="fa-regular fa-trash-can"></i></a> --}}
-                        <button class="trash-customer" type="submit" id="trash{{$user_code}}"><i class="fa-regular fa-trash-can"></i></button>
+                    <td scope="row" style="color:#9C9C9C; text-align: center;  padding:10px;"><a href="/webpanel/customer/{{$user_code}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                    <button type="button" id="trash"><i class="fa-regular fa-trash-can"></i></button>
 
                 </td>
               </tr>
-
-              <!-- delete customer table -->
-
-                <script>
-                        $(document).ready(function() {
-
-                                $('#trash{{$user_code}}').click(function(e) {
-                                    e.preventDefault();
-                                    // console.log('delete{{$user_code}}');
-                                    let code_del = '{{$user_code}}';
-                                    // console.log('{{$user_code}}');
-
-                                        swal.fire({
-                                            icon: "warning",
-                                            title: "คุณต้องการลบข้อมูลหรือไม่",
-                                            // text: '<?= $user_code .' '.'('. $user_name.')' ; ?>',
-                                            text: '{{$user_code.' '.'('. $user_name.')'}}',
-                                            showCancelButton: true,
-                                            confirmButtonText: "ลบข้อมูล",
-                                            cancelButtonText: "ยกเลิก"
-                                        }).then(function(result) {
-                            
-                                        if(result.isConfirmed) {
-                                            $.ajax({
-                                            url: '/webpanel/customer/delete/{{ $user_code }}',
-                                            type: 'GET',
-                                            success: function(data) {
-
-                                                let check_id = JSON.parse(data);
-                                                console.log(check_id.checkcode);
-
-                                                if(check_id.checkcode == code_del) 
-                                                {
-                                                    swal.fire({
-                                                        icon: "success",
-                                                        title: "ลบข้อมูลสำเร็จ",
-                                                        showConfirmButton: true,
-                                                    
-                                                    }).then (function(result) {
-                                                        window.location.reload();
-                                                    });
-                                                    
-                                                } else {
-                                                    Swal.fire({
-                                                        icon: "error",
-                                                        title: "เกิดข้อผิดพลาด",
-                                                        text: 'ไม่พบข้อมูล {{$user_code.' '.'('. $user_name.')'}}',
-                                                        showConfirmButton: true,
-                                                    });
-                                                }
-
-                                            },
-
-                                        });
-
-                                    } //iscomfirmed;
-                        
-                                });   
-
-                            });
-                        
-                        });
-
-                </script>
 
                 <script text="type/javascript">
                         $(document).ready(function() {
@@ -571,29 +444,30 @@
                         });
                 </script>
 
-              {{--   <script>
+                <script>
                     $(document).ready(function() {
                         $('#trash').click(function() {
                             console.log('trash');
                         });
                     });
-                </script> --}}
+                </script>
 
               @endforeach
               @endif
             </tbody>
           </table>
 
+        @if((!($total_status_updated)) == 0)
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer?page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/latest_update?page=<?=1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer?page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $page-1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -602,16 +476,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                 
                 @endif
@@ -619,19 +493,21 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer?page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $page ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer?page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $page+1 ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif
                 </li>
                 </ul>
             </nav>
+        @endif
 
     </div>
+
 @endsection
 </body>
 </html>

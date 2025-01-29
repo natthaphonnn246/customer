@@ -64,7 +64,7 @@
             border-radius: 4px;
             text-align: center;
         }
-        #trash {
+        .trash-sale {
             background-color: #e12e49;
             color: #FFFFFF;
             border: none;
@@ -234,7 +234,7 @@
 
         <div style="text-align: left;">
             <a href="/webpanel/sale-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มเขตการขาย</a>
-            <a href="/webpanel/sale/importsale"  id="importMaster" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">import salearea CSV</a>
+            <a href="/webpanel/sale/importsale"  id="importMaster" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">import Sale CSV</a>
             {{-- <a href="/webpanel/admin-role"  id="adminRole" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดการสิทธิ์</a> --}}
     
         </div>
@@ -244,11 +244,11 @@
         <table class="table table-striped">
             <thead>
               <tr>
-                <th scope="col" style="color:#838383; text-align: center;">#</th>
-                <th scope="col" style="color:#838383; text-align: center;">Sale area</th>
-                <th scope="col" style="color:#838383; text-align: left;">ชื่อพนักงานขาย</th>
-                <th scope="col" style="color:#838383; text-align: left;">วันที่สร้าง</th>
-                <th scope="col" style="color:#838383; text-align: left;">จัดการ</th>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">#</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">Sale area</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">ชื่อพนักงานขาย</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">วันที่สร้าง</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">จัดการ</td>
               </tr>
             </thead>
             <tbody>
@@ -273,9 +273,71 @@
                 <td scope="row" style="color:#9C9C9C; text-align: left;">{{$created_at}}</td>
 
                     <td scope="row" style="color:#9C9C9C; text-align: left;"><a href="/webpanel/sale/{{$sale_area}}" id="edit"><i class="fa-regular fa-eye"></i></a>
-                    <button id="trash"><i class="fa-regular fa-trash-can"></i></button>
+                    <button class="trash-sale" type="submit" id="trash{{$sale_area}}"><i class="fa-regular fa-trash-can"></i></button>
                 </td>
               </tr>
+               <!-- delete saleareas table -->
+                <script>
+                        $(document).ready(function() {
+
+                                $('#trash{{$sale_area}}').click(function(e) {
+                                    e.preventDefault();
+                                    // console.log('delete{{$sale_area}}');
+                                    let code_del = '{{$sale_area}}';
+                                    // console.log('{{$sale_area}}');
+
+                                        swal.fire({
+                                            icon: "warning",
+                                            title: "คุณต้องการลบข้อมูลหรือไม่",
+                                            // text: '<?= $sale_area .' '.'('. $sale_name.')' ; ?>',
+                                            text: '{{$sale_area.' '.'('. $sale_name.')'}}',
+                                            showCancelButton: true,
+                                            confirmButtonText: "ลบข้อมูล",
+                                            cancelButtonText: "ยกเลิก"
+                                        }).then(function(result) {
+                            
+                                        if(result.isConfirmed) {
+                                            $.ajax({
+                                            url: '/webpanel/sale/delete/{{ $sale_area }}',
+                                            type: 'GET',
+                                            success: function(data) {
+
+                                                let check_id = JSON.parse(data);
+                                                console.log(check_id.checkcode);
+
+                                                if(check_id.checkcode == code_del) 
+                                                {
+                                                    swal.fire({
+                                                        icon: "success",
+                                                        title: "ลบข้อมูลสำเร็จ",
+                                                        showConfirmButton: true,
+                                                    
+                                                    }).then (function(result) {
+                                                        window.location.reload();
+                                                    });
+                                                    
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: "error",
+                                                        title: "เกิดข้อผิดพลาด",
+                                                        text: 'ไม่พบข้อมูล {{$sale_area.' '.'('. $sale_name.')'}}',
+                                                        showConfirmButton: true,
+                                                    });
+                                                }
+
+                                            },
+
+                                        });
+
+                                    } //iscomfirmed;
+                        
+                                });   
+
+                            });
+                        
+                        });
+
+                </script>
 
               @endforeach
               @endif

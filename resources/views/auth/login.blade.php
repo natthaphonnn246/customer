@@ -13,14 +13,14 @@
             @if (Session::has('error_login'))
             <div class="alert alert-danger my-2"><i class="fa-solid fa-circle-xmark" style="color: rgb(172, 27, 27);"></i> {{ Session::get('error_login') }}</div>
             @endif
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <x-input-label for="email" :value="__('Email')" style="font-family: 'Prompt', sans-serif;" />
+            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"  style="font-family: 'Prompt', sans-serif; font-size:15px;" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" :value="__('Password')" style="font-family: 'Prompt', sans-serif;" />
 
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
@@ -31,14 +31,14 @@
         </div>
 
         <!-- Remember Me -->
-        <div class="block mt-4">
+       {{--  <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
                 <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
                 <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
             </label>
-        </div>
+        </div> --}}
 
-        <div class="flex items-center justify-center mt-2">
+        <div class="flex items-center justify-center mt-4">
 
         <!-- reset password -->
          {{--    @if (Route::has('password.request'))
@@ -47,9 +47,13 @@
                 </a>
             @endif --}}
 
-            <x-primary-button class="ms-3" style="background-color: rgb(26, 60, 229);">
+            <x-primary-button class="ms-3" style="background-color: rgb(26, 60, 229); font-family: 'Prompt', sans-serif;">
                 {{ __('Log in') }}
             </x-primary-button>
+
         </div>
+
     </form>
+
 </x-guest-layout>
+

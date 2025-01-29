@@ -61,7 +61,7 @@
             @csrf
             <div class="row">
                 <div class="col-sm-6">
-                    <ul class="text-title" style="text-align: start; margin-top: 30px;">
+                    <ul class="text-title" style="text-align: start; margin-top: 20px;">
                         <span style="font-size: 18px; font-weight: 500;">ระบุข้อมูลแอดมิน</span>
                         <hr>
                     </ul>
@@ -148,7 +148,7 @@
                     </div>
                 </div>
                 <!--form login-->
-                    <div class="col-sm-6" style="padding-top:40px;">
+                    <div class="col-sm-6" style="padding-top:30px;">
                         <div class="form-control">
                             <ul class="text-title" style="text-align: start; margin-top: 10px;">
                                 <span style="font-size: 18px; font-weight: 500;">ข้อมูล Login</span>
@@ -171,7 +171,7 @@
                             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="text_add"></textarea>
                         </div>
 
-                            <button type="submit" name="submit_form" class="btn my-2" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>
+                            <button type="submit" name="submit_form" class="btn my-2" style="border:none; width: 100%; color: white; padding: 15px;">บันทึกข้อมูล</button>
                         </div>
                     </div>
         </form>

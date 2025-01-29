@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Webpanel;
 
 use App\Models\User;
 use App\Models\Salearea;
@@ -23,17 +23,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
 
-class CustomerController
+class WebpanelCustomerController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): View
+    public function index(Request $request): View
     {
 
-        @$page = $_GET['page'];
+        @$page = $request->page;
         if ($page) {
-            $page = $_GET['page'];
+            $page = $request->page;
         } else {
             $page = 1;
         }
@@ -54,175 +51,104 @@ class CustomerController
         $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
 
         //เพิ่มลูกค้า;
-        $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
+        // $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
+
         return view('webpanel/customer', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
                 'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive'));
         
     }
 
-    public function indexCompleted(): View
+    public function indexStatus(Request $request, $status_check): View
     {
 
-        @$page = $_GET['page'];
+        $page = $request->page;
         if ($page) {
-            $page = $_GET['page'];
+            $page = $request->page;
         } else {
             $page = 1;
         }
 
         //แสดงข้อมูลลูกค้า;
-        $row_customer = Customer::customerCompleted($page);
-        $customer = $row_customer[0];
-        // dd(gettype($customer));
-        $start = $row_customer[1];
-        $total_page = $row_customer[2];
-        $page = $row_customer[3];
 
-        //Dashborad;
-        $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_waiting = Customer::where('status', 0)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_action = Customer::where('status', 1)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_completed = Customer::where('status', 2)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
+        if($status_check == 'waiting') {
 
-        //เพิ่มลูกค้า;
-        $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
-        return view('webpanel/customer-completed', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive'));
-        
-    }
+            $row_customer = Customer::customerWaiting($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
 
-    public function indexWaiting(): View
-    {
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_waiting = Customer::where('status', 0)->whereNotIn('customer_code', ['0000','4494'])->count();
 
-        @$page = $_GET['page'];
-        if ($page) {
-            $page = $_GET['page'];
+            return view('webpanel/customer-waiting', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting'));
+
+        } else if ($status_check == 'action') {
+
+            $row_customer = Customer::customerAction($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_action = Customer::where('status', 1)->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            return view('webpanel/customer-action', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_action'));
+       
+        } else if ($status_check == 'completed') {
+
+            $row_customer = Customer::customerCompleted($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_completed = Customer::where('status', 2)->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            return view('webpanel/customer-completed', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_completed'));
+        } else if ($status_check == 'latest_update') {
+
+            $row_customer = Customer::latestUpdate($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            return view('webpanel/update-latest', compact('customer', 'start', 'total_page', 'page', 'total_customer','total_status_updated'));
+
+        } else if ($status_check == 'inactive') {
+
+            $row_customer = Customer::customerInactive($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            return view('webpanel/customer-inactive', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_inactive'));
+
         } else {
-            $page = 1;
+            return abort(403, 'Error requesting');
         }
-
-        //แสดงข้อมูลลูกค้า;
-        $row_customer = Customer::customerWaiting($page);
-        $customer = $row_customer[0];
-        // dd(gettype($customer));
-        $start = $row_customer[1];
-        $total_page = $row_customer[2];
-        $page = $row_customer[3];
-
-        //Dashborad;
-        $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_waiting = Customer::where('status', 0)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_action = Customer::where('status', 1)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_completed = Customer::where('status', 2)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
-
-        //เพิ่มลูกค้า;
-        $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
-        return view('webpanel/customer-waiting', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive'));
         
     }
-
-    public function indexAction(): View
-    {
-
-        @$page = $_GET['page'];
-        if ($page) {
-            $page = $_GET['page'];
-        } else {
-            $page = 1;
-        }
-
-        //แสดงข้อมูลลูกค้า;
-        $row_customer = Customer::customerAction($page);
-        $customer = $row_customer[0];
-        // dd(gettype($customer));
-        $start = $row_customer[1];
-        $total_page = $row_customer[2];
-        $page = $row_customer[3];
-
-        //Dashborad;
-        $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_waiting = Customer::where('status', 0)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_action = Customer::where('status', 1)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_completed = Customer::where('status', 2)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
-
-        //เพิ่มลูกค้า;
-        $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
-        return view('webpanel/customer-action', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive'));
-        
-    }
-    public function updateLatest(): View
-    {
-
-        @$page = $_GET['page'];
-        if ($page) {
-            $page = $_GET['page'];
-        } else {
-            $page = 1;
-        }
-
-        //แสดงข้อมูลลูกค้า;
-        $row_customer = Customer::latestUpdate($page);
-        $customer = $row_customer[0];
-        // dd(gettype($customer));
-        $start = $row_customer[1];
-        $total_page = $row_customer[2];
-        $page = $row_customer[3];
-
-        //Dashborad;
-        $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_waiting = Customer::where('status', 0)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_action = Customer::where('status', 1)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_completed = Customer::where('status', 2)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
-
-        //เพิ่มลูกค้า;
-        $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
-        return view('webpanel/update-latest', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive'));
-        
-    }
-    public function indexInactive(): View
-    {
-
-        @$page = $_GET['page'];
-        if ($page) {
-            $page = $_GET['page'];
-        } else {
-            $page = 1;
-        }
-
-        //แสดงข้อมูลลูกค้า;
-        $row_customer = Customer::customerInactive($page);
-        $customer = $row_customer[0];
-        // dd(gettype($customer));
-        $start = $row_customer[1];
-        $total_page = $row_customer[2];
-        $page = $row_customer[3];
-
-        //Dashborad;
-        $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_waiting = Customer::where('status', 0)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_action = Customer::where('status', 1)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_completed = Customer::where('status', 2)->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
-
-        //เพิ่มลูกค้า;
-        $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
-        return view('webpanel/customer-inactive', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive'));
-        
-    }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -397,23 +323,6 @@ class CustomerController
                 return redirect('/webpanel/customer');
 
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Customer $customer)
-    {
-        //
-    }
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -424,8 +333,8 @@ class CustomerController
 
         $admin_area_list  = User::select('admin_area', 'name', 'rights_area')->get();
 
-        $admin_area_check = Customer::select('admin_area')->where('customer_code', $id)->first();
-        // dd($admin_area_check->admin_area);
+        $admin_area_check = Customer::select('admin_area', 'customer_id')->where('customer_code', $id)->first();
+        // dd($admin_area_check->customer_id);
 
         $sale_area = Salearea::select('sale_area', 'sale_name')
                     ->orderBy('sale_area' ,'asc')
@@ -728,468 +637,6 @@ class CustomerController
         //
     }
 
- /*    public function indexPortal(Request $request)
-    {
-            $code = $request->user()->user_code;
-        
-            $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
-            $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_id')->where('user_code', $code)->first();
-
-            $sale_area = Salearea::select('sale_area', 'sale_name')
-                        ->orderBy('sale_area', 'asc')
-                        ->get();
-
-            $provinces = Province::province();
-            return view('portal/signin', compact('provinces', 'user_name', 'admin_area_list', 'sale_area'));
-    } */
-
-    //สำหรับไม่ได้รับสิทธิ์เขตรับผิดชอบ;
-/*     public function portalSign(Request $request)
-    {
-            $code = $request->user()->user_code;
-        
-            $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
-            $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_id')->get();
-
-            $sale_area = Salearea::select('sale_area', 'sale_name')
-                        ->orderBy('sale_area', 'asc')
-                        ->get();
-
-            $provinces = Province::province();
-            return view('portal/portal-sign', compact('provinces', 'user_name', 'admin_area_list', 'sale_area'));
-    } */
-
-    public function signin(Request $request)
-    {
-        // dd($request->customer_code);
-        // date_default_timezone_set("Asia/Bangkok");
-
-        if($request->has('submit_form'))
-        {
-
-            date_default_timezone_set("Asia/Bangkok");
-
-            $request->validate([
-                'customer_code' => 'required|max: 4',
-            ]);
-
-            $customer_id = $request->customer_code;
-            $customer_code = $request->customer_code;
-            $customer_name = $request->customer_name;
-            $price_level = $request->price_level;
-
-            $email = $request->email;
-            if($email == null) {
-                $email = '';
-            }
-
-            $phone = $request->phone;
-            if($phone == null) {
-                $phone = '';
-            }
-
-            $telephone = $request->telephone;
-            $address = $request->address;
-            $province = $request->province;
-            $amphur = $request->amphur;
-            $district = $request->district;
-            $zip_code = $request->zip_code;
-
-            $sale_area = $request->sale_area;
-            if($sale_area == null) {
-                $sale_area = '';
-            }
-
-            $text_area = $request->text_add;
-            if($text_area == null) {
-                $text_area = '';
-            }
-
-            $cert_number = $request->cert_number;
-            if($cert_number == null) {
-                $cert_number = '';
-            }
-
-            $register_by = $request->register_by;
-            if($register_by == null) {
-                $register_by = '';
-            }
-
-            $admin_area = $request->admin_area;
-            $cert_store = $request->file('cert_store');
-            $cert_medical = $request->file('cert_medical');
-            $cert_commerce = $request->file('cert_commerce');
-            $cert_vat = $request->file('cert_vat');
-            $cert_id = $request->file('cert_id');
-
-            $cert_expire = $request->cert_expire;
-            $status = '0';
-        }   
-
-            if($cert_store != '' && $customer_id != '')
-            {
-                $image_cert_store = $request->file('cert_store')->storeAs('img_certstore', $customer_id.'_certstore.jpg');
-            } else {
-                $image_cert_store = '';
-            }
-
-            if($cert_medical != '' && $customer_id != '')
-            {
-                $image_cert_medical = $request->file('cert_medical')->storeAs('img_certmedical', $customer_id.'_certmedical.jpg');
-            } else {
-                $image_cert_medical = '';
-            }
-
-            if($cert_commerce != '' && $customer_id != '')
-            {
-                $image_cert_commerce = $request->file('cert_commerce')->storeAs('img_certcommerce', $customer_id.'_certcommerce.jpg');
-            } else {
-                $image_cert_commerce = '';
-            }
-
-            if($cert_vat != '' && $customer_id != '')
-            {
-                $image_cert_vat = $request->file('cert_vat')->storeAs('img_certvat', $customer_id.'_certvat.jpg');
-            } else {
-                $image_cert_vat = '';
-            }
-
-            if($cert_id != '' && $customer_id != '')
-            {
-                $image_cert_id = $request->file('cert_id')->storeAs('img_certid', $customer_id.'_certid.jpg');
-            } else {
-                $image_cert_id = '';
-            }
-
-            $province_master = DB::table('provinces')->select('id', 'name_th')->whereIn('id', [$province])->get();
-            foreach ($province_master as $row)
-            {
-                $province_row = $row->name_th;
-            }
-
-       /*  $customer = new Customer;
-        $customer->customer_code = $request->customer_code;
-        $customer->save(); */
-
-        $customer = Customer::where('customer_code', $customer_code)->first();
-        // dd($customer);
-
-        if($customer == null)
-        {
-            Customer::create([
-
-                        'customer_id' => $customer_id,
-                        'customer_code' => $customer_code,
-                        'customer_name' => $customer_name,
-                        'price_level' => $price_level,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'telephone' => $telephone,
-                        'address' => $address,
-                        'province' =>  $province_row,
-                        'amphur' => $amphur,
-                        'district' => $district,
-                        'zip_code' => $zip_code,
-                        'geography' => '',
-                        'admin_area' => $admin_area,
-                        'sale_area' => $sale_area,
-                        'text_area' => $text_area,
-                        'text_admin' => '',
-                        'cert_store' => $image_cert_store,
-                        'cert_medical' =>  $image_cert_medical,
-                        'cert_commerce' => $image_cert_commerce,
-                        'cert_vat' => $image_cert_vat,
-                        'cert_id' => $image_cert_id,
-                        'cert_number' => $cert_number,
-                        'cert_expire' => $cert_expire,
-                        'status' => $status,
-                        'password' => '',
-                        'status_update' => '',
-                        'type' => '',
-                        'register_by' => $register_by,
-                        'customer_status' => 'inactive',
-                        'status_user' => '',
-                        // 'maintenance_status' => '',
-                        // 'allowed_maintenance' => '',
-
-                    ]);
-
-        } else {
-
-            return back()->with('error_code', 'ลงทะเบียนไม่สำเร็จ กรุณาตรวจสอบอีกรอบครับ');
-
-        }
-
-            return back()->with('success', 'ลงทะเบียนสำเร็จ กรุณาติดต่อผู้ดูแลด้วยครับ');
-
-    }
-    //portal/customer;
-    //portal/customer;
-    public function customerView(Request $request)
-    {
-
-        $page = $request->page;
-        if ($page) {
-            $page = $request->page;
-        } else {
-            $page = 1;
-        }
-
-        $id = $request->user()->admin_area;
-        $code = $request->user()->user_code;
-
-        $count_page = Customer::where('admin_area', $id)->count();
-   
-        $perpage = 10;
-        $total_page = ceil($count_page / $perpage);
-        $start = ($perpage * $page) - $perpage;
-        
-        $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
-        $admin_area = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
-                    ->where('admin_area', $id)
-                    ->whereNotIn('customer_status', ['inactive'])
-                    ->offset($start)
-                    ->limit($perpage)
-                    ->get();
-
-        $count_waiting = Customer::where('admin_area', $id)
-                                    ->where('status', '0')
-                                    ->whereNotIn('customer_status', ['inactive'])
-                                    ->count();
-                                    // dd($count_waiting);
-        $count_action = Customer::where('admin_area', $id)
-                        ->where('status', '1')
-                        ->whereNotIn('customer_status', ['inactive'])
-                        ->count();
-
-        $count_completed = Customer::where('admin_area', $id)
-                        ->where('status', '2')
-                        ->whereNotIn('customer_status', ['inactive'])
-                        ->count();
-
-        return view('portal/customer', compact('admin_area', 'user_name', 'page', 'total_page', 'start', 'count_waiting', 'count_action', 'count_completed'));
-    }
-    //portal/customer-waiting;
-    public function customerViewEdit(Request $request, $status_customer)
-    {
-        // dd($status_customer);
-
-        $page = $request->page;
-        if ($page) {
-            $page = $request->page;
-        } else {
-            $page = 1;
-        }
-
-        $id = $request->user()->admin_area;
-        $code = $request->user()->user_code;
-
-        if($status_customer == 'waiting') {
-
-            $count_page = Customer::where('admin_area', $id)->where('status', "0")->count();
-    
-            $perpage = 10;
-            $total_page = ceil($count_page / $perpage);
-            $start = ($perpage * $page) - $perpage;
-            
-            $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
-            $admin_area = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
-                        ->where('admin_area', $id)
-                        ->where('status', '0')
-                        ->whereNotIn('customer_status', ['inactive'])
-                        ->offset($start)
-                        ->limit($perpage)
-                        ->get();
-
-        $count_waiting = Customer::where('admin_area', $id)
-                    ->where('status', '0')
-                    ->whereNotIn('customer_status', ['inactive'])
-                    ->count();
-
-        $count_action = Customer::where('admin_area', $id)
-                        ->where('status', '1')
-                        ->whereNotIn('customer_status', ['inactive'])
-                        ->count();
-
-        $count_completed = Customer::where('admin_area', $id)
-                        ->where('status', '2')
-                        ->whereNotIn('customer_status', ['inactive'])
-                        ->count();
-
-        return view('portal/customer-waiting', compact('admin_area', 'user_name', 'page', 'total_page', 'start', 'count_waiting', 'count_action', 'count_completed', 'status_customer'));
-
-        } else if($status_customer == 'action') {
-            
-            $count_page = Customer::where('admin_area', $id)->where('status', "1")->count();
-    
-            $perpage = 10;
-            $total_page = ceil($count_page / $perpage);
-            $start = ($perpage * $page) - $perpage;
-            
-            $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
-            $admin_area = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
-                        ->where('admin_area', $id)
-                        ->where('status', '1')
-                        ->whereNotIn('customer_status', ['inactive'])
-                        ->offset($start)
-                        ->limit($perpage)
-                        ->get();
-
-            $count_waiting = Customer::where('admin_area', $id)
-                                        ->where('status', '0')
-                                        ->whereNotIn('customer_status', ['inactive'])
-                                        ->count();
-
-            $count_action = Customer::where('admin_area', $id)
-                            ->where('status', '1')
-                            ->whereNotIn('customer_status', ['inactive'])
-                            ->count();
-
-            $count_completed = Customer::where('admin_area', $id)
-                            ->where('status', '2')
-                            ->whereNotIn('customer_status', ['inactive'])
-                            ->count();
-
-            return view('portal/customer-action', compact('admin_area', 'user_name', 'page', 'total_page', 'start', 'count_waiting', 'count_action', 'count_completed', 'status_customer'));
-        
-        } else if ($status_customer == 'completed') {
-
-            $count_page = Customer::where('admin_area', $id)->where('status', "2")->count();
-    
-            $perpage = 10;
-            $total_page = ceil($count_page / $perpage);
-            $start = ($perpage * $page) - $perpage;
-            
-            $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
-            $admin_area = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
-                        ->where('admin_area', $id)
-                        ->where('status', "2")
-                        ->whereNotIn('customer_status', ['inactive'])
-                        ->offset($start)
-                        ->limit($perpage)
-                        ->get();
-
-        
-            $count_waiting = Customer::where('admin_area', $id)
-                                        ->where('status', '0')
-                                        ->whereNotIn('customer_status', ['inactive'])
-                                        ->count();
-
-            $count_action = Customer::where('admin_area', $id)
-                            ->where('status', '1')
-                            ->whereNotIn('customer_status', ['inactive'])
-                            ->count();
-
-            $count_completed = Customer::where('admin_area', $id)
-                            ->where('status', '2')
-                            ->whereNotIn('customer_status', ['inactive'])
-                            ->count();
-
-            return view('portal/customer-completed', compact('admin_area', 'user_name', 'page', 'total_page', 'start', 'count_waiting', 'count_action', 'count_completed', 'status_customer'));
-        }
-    }
-
-  /*   public function customerEdit(Request $request, $id) 
-    {
-        $customer_edit = Customer::customerEdit($id);
-        $customer_edit = $customer_edit[0];
-
-        $code = $request->user()->user_code;
-        $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
-        // dd($customer_edit->sale_area);
-        
-        $province = DB::table('provinces')->select('id', 'name_th')->orderBy('id', 'asc')->get();
-        $amphur = DB::table('amphures')->select('name_th', 'province_id')->get();
-        $district = DB::table('districts')->select('name_th', 'amphure_id')->get();
-
-        $sale_name = Salearea::select('sale_name')->where('sale_area', $customer_edit->sale_area)->first();
-        if($sale_name == null) {
-            return view('portal/customer-detail', compact('customer_edit', 'province', 'amphur', 'district', 'user_name'));
-        }
-        
-        return view('portal/customer-detail', compact('customer_edit', 'province', 'amphur', 'district', 'user_name', 'sale_name'));
-    } */
-
-    public function updateEdit(Request $request, $id)
-    {
-
-        date_default_timezone_set("Asia/Bangkok");
-/* 
-        if($request->has('submit_update'))
-        { */
-        
-                $phone = $request->phone;
-                if($phone == null) {
-                    $phone = '';
-                }
-                $telephone = $request->telephone;
-                if($telephone == null) {
-                    $telephone = '';
-                }
-                $address = $request->address;
-                $province = $request->province;
-                $amphur = $request->amphur;
-                $district = $request->district;
-                $zip_code = $request->zip_code;
-
-                $email = $request->email;
-                if($email == null) {
-                    $email = '';
-                }
- 
-                $cert_number = $request->cert_number;
-                if($cert_number == null) {
-                    $cert_number = '';
-                }
-
-                $cert_expire = $request->cert_expire;
-
-                $province_master = DB::table('provinces')->select('id', 'name_th', 'geography_id')->where('id', $province)->first();
-                $province_row = $province_master->name_th;
-
-                if(!empty($province_row)) {
-                    $geography_id = $province_master->geography_id;
-                    $geography = DB::table('geographies')->select('name')->where('id', $geography_id)->first();
-                    $geography_name = $geography->name;
-
-                } else {
-                    $geography_name = $request->geography;
-                }
-
-     /*    } */
-            Customer::where('customer_id', $id)
-                    ->update ([
-               
-                        'email' => $email,
-                        'phone' => $phone,
-                        'telephone' => $telephone,
-                        'address' => $address,
-                        'province' =>  $province_row,
-                        'amphur' => $amphur,
-                        'district' => $district,
-                        'zip_code' => $zip_code,
-                        'geography' => $geography_name,
-                        'cert_number' => $cert_number,
-                        'cert_expire' => $cert_expire,
-                        'status_update' => 'updated',
-                    
-                    ]);
-
-                // check user id;
-                $check_customer_id = Customer::select('customer_id')->where('customer_id', $id)->first();
-                $customer_id =  $check_customer_id->customer_id;
-
-                if ($customer_id == $id)
-                {
-                    echo 'success';
-                //    return redirect('/webpanel/customer/'.$id)->with('success', 'check_success');
-                }
-                else {
-                    echo 'fail';
-                }
-            
-    }
-
     public function statusAct(Request $request)
     {
         if($request->id == 2 && $request->status == 'active') {
@@ -1291,14 +738,46 @@ class CustomerController
                                         // dd($amphur_new);
                                     }
 
+                                    //check saraburi;
+                                    $check_arr = explode(" ", $row[4]);
+                                    $check_saraburi = $check_arr[count($check_arr) - 2];
+                                   
+                                   /*  $check_arr_saraburi = array_filter($check_arr, function($value) {
+                                        return $value == 'กรุงเทพมหานคร';
+                                    }); */
+
+                                    // dd($check_arr_saraburi);
+                                 
+                                
                                     $district = explode(" ", $row[4]);
-                                    $district_new = $district[count($district) - 1];
-                                    
-                                    if($district_new == '' || $district_new == 1) {
-                                        $district = explode(" ", $row[4]);
-                                        $district_new = $district[count($district) - 13];
+                                    $count_arr = count($district);
+
+
+                                    if($count_arr > 13) {
+
+                                        //check saraburi;
+                                        if($check_saraburi === 'สระบุรี') {
+                                            $district_new = $district[count($district) - 10];
+
+                                        } else {
+                                            $district_new = $district[count($district) - 13];
+                                        }
+    
+                                    } elseif ($count_arr == 13) {
+                                        // $district = explode(" ", $row[4]);
+                                        $district_new = $district[count($district) - 10];
+
+                                    } elseif ($count_arr == 12) {
+                                        // $district = explode(" ", $row[4]);
+                                        $district_new = $district[count($district) - 10];
+
+                                    } elseif ($count_arr == 11) {
+                                        // $district = explode(" ", $row[4]);
+                                        $district_new = $district[count($district) - 10];
 
                                     }
+                                    
+                
 
                                     $zip_code = explode(" ", $row[4]);
                                     $zip_code_new = $zip_code[count($zip_code) - 1];
@@ -1616,7 +1095,102 @@ class CustomerController
             exit;
    }
 
+   public function getCustomerCsv($customer_id)
+   {
+
+            $date = date('Y-m-d');
+            $filename = 'Customer__'.$customer_id.'_'.$date. '.csv';
+            // Start the output buffer.
+            ob_start();
+
+            // Set PHP headers for CSV output.
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename= '.$filename);
+            
+            $query = Customer::select('customer_code', 'customer_name', 'price_level', 'type', 'telephone','email', 'address', 'sale_area')
+                                ->whereNotIn('customer_code', ['0000','4494'])
+                                ->where('customer_id', $customer_id)
+                                ->get();
+
+            $data = $query->toArray();
+
+            // Create a file pointer with PHP.
+            $output = fopen( 'php://output', 'w' );
+
+            // Write headers to CSV file.
+            // fputcsv( $output, $header_args );
+
+            // Loop through the prepared data to output it to CSV file.
+            foreach( $data as $data_item ){
+                fputcsv($output, $data_item, "|" );
+            }
+
+            // Close the file pointer with PHP with the updated output.
+            fclose( $output );
+            exit;
+   }
+
+   //delete customer;
+   public function deleteCustomer(Request $request,  $customer_code)
+   {
+
+        if(!empty($request->customer_code)) {
+
+            // echo json_encode(array('checkcode'=> $request->user_code));
+
+            $customer = Customer::where('customer_id', $customer_code)->first();
+            // dd($customer->cert_store);
+
+            //delete image storage;
+            Storage::delete($customer->cert_store);
+            Storage::delete($customer->cert_medical);
+            Storage::delete($customer->cert_commerce);
+            Storage::delete($customer->cert_vat);
+            Storage::delete($customer->cert_id);
+
+            $customer->delete();
+
+            echo json_encode(array('checkcode'=> $request->customer_code));
+
+        }
+    
+   }
+
+   //delete admin;
+   public function deleteAdmin(Request $request,  $user_code)
+   {
+
+        if(!empty($request->user_code)) {
+
+            // echo json_encode(array('checkcode'=> $request->user_code));
+
+            $useradmin = User::where('user_code', $user_code)->first();
+
+            $useradmin ->delete();
+
+            echo json_encode(array('checkcode'=> $request->user_code));
+
+        }
+    
+   }
+
+
+   //delete salearea;
+   public function deleteSalearea(Request $request,  $sale_area)
+   {
+
+        if(!empty($request->sale_area)) {
+
+            // echo json_encode(array('checkcode'=> $request->user_code));
+
+            $salearea_del = Salearea::where('sale_area', $sale_area)->first();
+
+            $salearea_del ->delete();
+
+            echo json_encode(array('checkcode'=> $request->sale_area));
+
+        }
+    
+   }
 
 }
-
-    

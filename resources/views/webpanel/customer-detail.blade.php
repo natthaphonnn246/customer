@@ -159,17 +159,16 @@
         </script>
         @endif --}}
 
-
         <div style="text-align: left; margin-top: 10px;">
             <span style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / แบบฟอร์ม</span>
 
         </div>
-        <hr style="color: #8E8E8E; width: 100%;">
+        <hr style="color: #8E8E8E; width: 100%;"></br>
 
         @if($customer_view->updated_at != '')
         <div style="text-align: right;">
             <span style="color:#a4a2a2;">อัปเดตข้อมูลล่าสุด : </span> <span style="color:#939393; border:solid 1px #404147; width: 50%; padding: 10px; border-radius: 5px;">{{$customer_view->updated_at}}</span></span></br>
-        </div>
+        </div></br>
         @endif
 
         @if(isset($customer_view) != '')
@@ -492,7 +491,7 @@
                                   
                                 <div style="text-align:right;">
                                     <button type="button" id="updateForm" name="submit_update" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
-                                    <a href="" type="button" id="exportCsv" class="btn my-2" style="border:none; width: 120px; color: rgb(67, 67, 67); padding: 10px;">Export CSV</a>
+                                    <a href="/webpanel/customer/getcsv/{{$admin_area_check->customer_id}}" type="button" id="exportCsv" class="btn my-2" style="border:none; width: 120px; color: rgb(67, 67, 67); padding: 10px;">Export CSV</a>
                                 </div>
                         </div>
                 </div>
@@ -684,7 +683,11 @@
                             +'<hr>'
                             +'<form action="/webpanel/customer-detail/upload-store/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
+                            +'@if ((($customer_view->cert_store)) != '')'
                             +'<img src="/storage/certs/{{$customer_view->cert_store ; }}" id="fileImage" style="width: 100%";/>'
+                            +'@else'
+                            +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
+                            +'@endif'
                             +'<hr>'
                             +'<input type="file" id="image" class="form-control" name="cert_store" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                             +'<hr>'
@@ -731,7 +734,11 @@
                             +'<hr>'
                             +'<form action="/webpanel/customer-detail/upload-medical/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
+                            +'@if ((($customer_view->cert_medical)) != '')'
                             +'<img src="/storage/certs/{{$customer_view->cert_medical ; }}" id="fileImage" style="width: 100%";/>'
+                            +'@else'
+                            +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
+                            +'@endif'
                             +'<hr>'
                             +'<input type="file" id="image" class="form-control" name="cert_medical" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                             +'<hr>'
@@ -778,7 +785,11 @@
                             +'<hr>'
                             +'<form action="/webpanel/customer-detail/upload-commerce/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
+                            +'@if ((($customer_view->cert_commerce)) != '')'
                             +'<img src="/storage/certs/{{$customer_view->cert_commerce ; }}" id="fileImage" style="width: 100%";/>'
+                            +'@else'
+                            +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
+                            +'@endif'
                             +'<hr>'
                             +'<input type="file" id="image" class="form-control" name="cert_commerce" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                             +'<hr>'
@@ -825,7 +836,11 @@
                                 +'<hr>'
                                 +'<form action="/webpanel/customer-detail/upload-vat/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                                 +'@csrf'
+                                +'@if ((($customer_view->cert_vat)) != '')'
                                 +'<img src="/storage/certs/{{$customer_view->cert_vat; }}" id="fileImage" style="width: 100%";/>'
+                                +'@else'
+                                +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
+                                +'@endif'
                                 +'<hr>'
                                 +'<input type="file" id="image" class="form-control" name="cert_vat" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                                 +'<hr>'
@@ -873,7 +888,11 @@
                                 +'<hr>'
                                 +'<form action="/webpanel/customer-detail/upload-id/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                                 +'@csrf'
+                                +'@if ((($customer_view->cert_id)) != '')'
                                 +'<img src="/storage/certs/{{$customer_view->cert_id; }}" id="fileImage" style="width: 100%";/>'
+                                +'@else'
+                                +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
+                                +'@endif'
                                 +'<hr>'
                                 +'<input type="file" id="image" class="form-control" name="cert_id" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                                 +'<hr>'
@@ -911,5 +930,6 @@
         
         @endif
 @endsection
+
 </body>
 </html>

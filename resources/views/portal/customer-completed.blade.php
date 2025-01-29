@@ -229,7 +229,7 @@
             <div class="row">
                 <div class="col-9">
                     <div style="text-align: left; padding:5px; margin-top:5px;">
-                        <span style="color: #8E8E8E;">ข้อมูลลูกค้า (Customer)</span>
+                        <span style="color: #8E8E8E;">ข้อมูลลูกค้า /Status : <span style="color:rgb(255, 255, 255);  padding: 6px; background-color: rgb(58, 174, 19); border-radius:100px;">ดำเนินการแล้ว</span></span>
                     </div>
                 </div>
             
@@ -239,15 +239,13 @@
                                 {{-- <li class="sub-menu"><a href="#" style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">รายงาน (Report) <i class="fas fa-angle-left dropdown" style="font-size: 12px;"></i></a></li> --}}
                                 <div style="cursor: pointer; text-align: right; font-weight:500;" id="submenu">  
                                     <i class="fa-regular fa-bell" style="font-size: 25px;"></i>
-                                    @if ($count_waiting > 0)
                                     <sup style="background-color: #e12e49; border-radius: 20px; padding: 10px; color: white;">{{$count_waiting + $count_action}}<span style="font-size:20px;">+</span></sup>
-                                    @endif
                                 </div>
                             </div>
             
                             <div class="sub-menus" style=" display: none; margin-top: 15px;">
                                
-                              {{--   <div style="padding: 10px; background-color:rgb(38, 38, 38); border-radius: 10px; text-align:left;">
+                             {{--    <div style="padding: 10px; background-color:rgb(38, 38, 38); border-radius: 10px; text-align:left;">
                                     <ul><a href="/portal/customer" style="text-decoration: none;">ทั้งหมด : {{$count_waiting + $count_action + $count_completed}} ร้านค้า</a></ul>
                                     <hr style="color:#ffffff;">
                                     <ul><a href="/portal/customer/status/waiting" style="text-decoration: none;">รอดำเนินการ : {{$count_waiting}} ร้านค้า</a></ul>
@@ -258,17 +256,17 @@
                                 </div> --}}
                                 
                                 <select class="form-control" name="" id="noti_status" >
-                                    <option selected value="1">ทั้งหมด : {{$count_waiting + $count_action + $count_completed}} ร้านค้า</option>
+                                    <option value="1">ทั้งหมด : {{$count_waiting + $count_action + $count_completed}} ร้านค้า</option>
                                     <option value="2">รอดำเนินการ : {{$count_waiting}} ร้านค้า</option>
                                     <option value="3">ต้องดำเนินการ : {{$count_action}} ร้านค้า</option>
-                                    <option value="4">ดำเนินการแล้ว : {{$count_completed}} ร้านค้า</option>
+                                    <option {{ 'completed' == $status_customer ? 'selected': '' ;}} value="4">ดำเนินการแล้ว : {{$count_completed}} ร้านค้า</option>
                                 </select> 
 
                             </div>
                 </div>
             </div>
 
-        <script>
+            <script>
                 $(document).ready(function () {
 
                     $("#noti_status").change(function () {
@@ -385,52 +383,54 @@
             </tbody>
           </table>
 
-          <nav aria-label="Page navigation example">
-            <ul class="pagination">
-            <li class="page-item">
+          @if ($count_completed != 0)
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                <li class="page-item">
 
-            @if ($page == 1)
-                <a class="page-link" href="/portal/customer?page=<?=1 ; ?>" aria-label="Previous">
-                <span aria-hidden="true">Previous</span>
-                </a>
-            @else
-                <a class="page-link" href="/portal/customer?page=<?= $page-1 ; ?>" aria-label="Previous">
-                <span aria-hidden="true">Previous</span>
-                </a>
-            @endif
-            </li>
+                @if ($page == 1)
+                    <a class="page-link" href="/portal/customer/completed?page=<?=1 ; ?>" aria-label="Previous">
+                    <span aria-hidden="true">Previous</span>
+                    </a>
+                @else
+                    <a class="page-link" href="/portal/customer/completed?page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <span aria-hidden="true">Previous</span>
+                    </a>
+                @endif
+                </li>
 
-            @if($total_page > 14)
+                @if($total_page > 14)
 
-                @for ($i= 1; $i <= 10 ; $i++)
-                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
-                @endfor
-                <li class="page-item"><a class="page-link">...</a></li>
-                @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/portal/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
-                @endfor
+                    @for ($i= 1; $i <= 10 ; $i++)
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer/status/completed?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    @endfor
+                    <li class="page-item"><a class="page-link">...</a></li>
+                    @for ($i= $total_page-1; $i <= $total_page ; $i++)
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/portal/customer/status/completed?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    @endfor
 
-            @else
-                @for ($i= 1; $i <= $total_page ; $i++)
-                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
-                @endfor
-            
-            @endif
+                @else
+                    @for ($i= 1; $i <= $total_page ; $i++)
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer/status/completed?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    @endfor
+                
+                @endif
 
-            <li class="page-item">
-            
-            @if ($page == $total_page)
-                <a class="page-link" href="/portal/customer?page=<?= $page ; ?>" aria-label="Next">
-                <span aria-hidden="true">next</span>
-                </a>
-            @else
-                <a class="page-link" href="/portal/customer?page=<?= $page+1 ; ?>" aria-label="Next">
-                <span aria-hidden="true">next</span>
-                </a>
-            @endif
-            </li>
-            </ul>
-        </nav>
+                <li class="page-item">
+                
+                @if ($page == $total_page)
+                    <a class="page-link" href="/portal/customer/status/completed?page=<?= $page ; ?>" aria-label="Next">
+                    <span aria-hidden="true">next</span>
+                    </a>
+                @else
+                    <a class="page-link" href="/portal/customer/status/completed?page=<?= $page+1 ; ?>" aria-label="Next">
+                    <span aria-hidden="true">next</span>
+                    </a>
+                @endif
+                </li>
+                </ul>
+            </nav>
+        @endif
 
     </div>
 
