@@ -707,7 +707,7 @@ class WebpanelCustomerController
                                     $customer_name_new = str_replace("'", "''", $row[2]);
                                     $address = str_replace("'", "''", $row[4]);
                                     $cert_number = str_replace("'", "''", $row[5]);
-                                    $cert_expire_new = date('2024-12-31'); 
+                                    $cert_expire_new = date('31/12/2024'); 
                                     $cert_store = str_replace("'", "''", $row[8]); 
                                     $cert_number = str_replace("'", "''", $row[5]);
                 

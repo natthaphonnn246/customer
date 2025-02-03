@@ -142,6 +142,16 @@
             color:rgb(103, 103, 103);
             background-color: #cbcbcb;
         }
+  /*       .input_date {
+            border-radius: 3px;
+            border: 1px solid #D3D3D3;
+            padding: 5px;
+            margin-bottom: 15px;
+            width: auto;
+        }
+        #datepicker {
+            width: 100%;
+        } */
 
     </style>
     
@@ -229,9 +239,25 @@
                             <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$customer_view->cert_number}}"><br>
           
                             <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                            <input id="date" style="margin-top:10px;  color: rgb(171, 171, 171);" type="date"  class="form-control" name="cert_expire" value="{{$customer_view->cert_expire}}"><br>
+                            <input class="form-control" style="margin-top:10px;  color: rgb(171, 171, 171);"  type="text" id="datepicker" name="cert_expire" value="{{$customer_view->cert_expire}}">
+                            {{-- <input id="date" style="margin-top:10px;  color: rgb(171, 171, 171);" type="date"  class="form-control" name="cert_expire" value="{{$customer_view->cert_expire}}"><br> --}}
 
                         </ul>
+
+                             
+                        <script>
+                            $(document).ready(function () {
+
+                                    // Datepicker
+                                    $("#datepicker" ).datepicker({
+                                        changeMonth: true,
+                                        changeYear: true,
+                                        yearRange: "2022:2029",
+                                        dateFormat: "dd/mm/yy"
+                                    });
+
+                                });
+                        </script>
 
                         <ul class="text-title" style="text-align: start; margin-top: 20px;">
                             <span style="font-size: 16px; font-weight: 500; color:#545454;">ข้อมูลลูกค้า</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุให้ครบทุกช่อง</span>

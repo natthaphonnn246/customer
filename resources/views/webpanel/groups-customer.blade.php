@@ -272,11 +272,12 @@
                                         <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="admin_area">
                                                                     
                                             <option value="">ไม่ระบุ</option>
-                                            @if(isset($admin_area_list) != '')
+                                            @if(isset($customer_area_list) != '')
+                                                   
                                                 @foreach($admin_area_list as $row)
 
                                                     @if($row->rights_area != '0'  && $row->user_code != '0000') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
-                                                    <option {{$row->admin_area == $row_sale->admin_area ? 'selected' : '' ;}} value="{{$row->admin_area}}">{{$row->admin_area.' '. '('. $row->name. ')'}}</option>
+                                                    <option {{($row->admin_area == $row_sale->admin_area) && ($row->admin_area == $customer_area_list->admin_area) ? 'selected' : '' ;}} value="{{$row->admin_area}}">{{$row->admin_area.' '. '('. $row->name. ')'}}</option>
                                                     @endif
 
                                                 @endforeach

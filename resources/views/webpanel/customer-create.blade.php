@@ -10,8 +10,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <title>register-form</title>
+    <title>nntpn.com</title>
 </head>
 <body>
 
@@ -35,6 +36,24 @@
             width: auto;
             height: auto;
             background-color: #0f21cb;
+        }
+       /*  input::-webkit-calendar-picker-indicator{
+            display: none;
+        }
+
+        input[type="date"]::-webkit-input-placeholder{ 
+            visibility: hidden !important;
+        } */
+        .input_date {
+            border-radius: 3px;
+            border: 1px solid #D3D3D3;
+            padding: 5px;
+            margin-bottom: 15px;
+            width: auto;
+            
+        }
+        #datepicker {
+            width: 100%;
         }
     </style>
     
@@ -75,11 +94,28 @@
                         <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                         <input style="margin-top:10px; color:grey;" type="text" class="form-control" name="cert_number"><br>
 
-                        <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                        <input style="margin-top:10px; color:grey;" type="date" value="2024-01-01" class="form-control" name="cert_expire"><br>
+                        <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span></br>
+                        {{-- <input style="margin-top:10px; color:grey;" type="date" value="2024-01-01" class="form-control" name="cert_expire"><br> --}}
+                        {{-- <input class="input_date" style="margin-top:10px; color:grey;" type="text" id="datepicker" value="31/12/2025" name="cert_expire"> --}}
+                    
+                       
+                        <input class="input_date" style="margin-top:10px; color:grey;" type="text" id="datepicker" value="31/12/2025" name="cert_expire" value="">
+                    
+                        
+                        <script>
+                                $(document).ready(function () {
+                                    // Datepicker
+                                        $("#datepicker" ).datepicker({
+                                            changeMonth: true,
+                                            changeYear: true,
+                                            yearRange: "2024:2029",
+                                        });
+
+                                    });
+                        </script>
 
                     </ul>
-
+                    
                     <ul class="text-title" style="text-align: start; margin-top: 20px;">
                         <span style="font-size: 18px; font-weight: 500;">ข้อมูลลูกค้า</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุให้ครบทุกช่อง</span>
                         <hr>
@@ -330,6 +366,7 @@
                 });
 
         </script>
+
 
 @endsection
 </body>

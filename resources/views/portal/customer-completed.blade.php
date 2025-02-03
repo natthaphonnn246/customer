@@ -17,7 +17,7 @@
 </head>
 <body>
 
-    @extends ('portal/menuportal')
+    @extends ('portal/menuportal-tailwind')
     @section('content')
     @csrf
 
@@ -210,7 +210,7 @@
         .sliders.round:before {
             border-radius: 50%;
         }
-        #listStatus:hover {
+      /*   #listStatus:hover {
             color: #f7ff1b;
             text-decoration: none;
         }
@@ -219,24 +219,99 @@
         }
         ul a:hover {
             color:rgb(255, 196, 17);
-        }
+        } */
     </style>
 
     <div class="contentArea">
        
+            @section('col-2')
+
+            @if(isset($user_name))
+                <h6 class="mt-1" style="">{{$user_name->name}}</h6>
+                @endif
+            @endsection
+
+            @section('status_alert')
+            @if(!($user_name->rights_area) == '0')
+                <h6 class="justifiy-content:center;" style="">{{$count_alert}}</h6>
+                @endif
+            @endsection
+
+            @section('status_all')
+            @if(!($user_name->rights_area) == '0')
+                <h6 class="justifiy-content:center;" style="">{{$count_all}}</h6>
+                @endif
+            @endsection
+
+            @section('status_waiting')
+            @if(!($user_name->rights_area) == '0')
+                <h6 class="justifiy-content:center;" style="">{{$count_waiting}}</h6>
+                @endif
+            @endsection
+
+            @section('status_action')
+            @if(!($user_name->rights_area) == '0')
+                <h6 class="justifiy-content:center;" style="">{{$count_action}}</h6>
+                @endif
+            @endsection
+
+            @section('status_completed')
+            @if(!($user_name->rights_area) == '0')
+                <h6 class="justifiy-content:center;" style="">{{$count_completed}}</h6>
+                @endif
+            @endsection
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
     
             <div class="row">
-                <div class="col-9">
+                <div class="col-9 py-2">
                     <div style="text-align: left; padding:5px; margin-top:5px;">
                         <span style="color: #8E8E8E;">ข้อมูลลูกค้า /Status : <span style="color:rgb(255, 255, 255);  padding: 6px; background-color: rgb(58, 174, 19); border-radius:100px;">ดำเนินการแล้ว</span></span>
                     </div>
                 </div>
             
-                <div class="col-3" style="text-align: right; padding:5px 30px;; margin-top:10px;">
+                <hr style="color: #8E8E8E; width: 100%; margin-top: 25px;">
+                    <!--- search --->
+                    <form class="max-w-md mx-auto py-3" method="get" action="/portal/customer/status/completed">
+                        {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                               <!---icon -->
+                            </div>
+                            <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE" />
+                            <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
+                        
+                        </div>
+                        <p id="keyword_search"></p>
+                        @csrf   
+                    </form>
+    
+           {{--          <script>
+                        $(document).ready(function() {
+                            $('#default-search').keyup(function(e) {
+                                e.preventDefault();  // Prevent form from submitting
+    
+                                $.ajax({
+                                    url: '/portal/customer/search/code',
+                                    method: 'GET',
+                                    data: {
+                                        keyword: $(this).val(),
+    
+                                    },
+                                    catch:false,
+                                    success: function(data) {
+                                        
+                                        $('#keyword_search').html(data);
+    
+                                    }
+                                });
+                               /*  let keyword = $(this).val();
+                                console.log(keyword ); */
+                            });
+                        });
+                    </script> --}}
+               {{--  <div class="col-3" style="text-align: right; padding:5px 30px;; margin-top:10px;">
 
                             <div id="reports">
-                                {{-- <li class="sub-menu"><a href="#" style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">รายงาน (Report) <i class="fas fa-angle-left dropdown" style="font-size: 12px;"></i></a></li> --}}
                                 <div style="cursor: pointer; text-align: right; font-weight:500;" id="submenu">  
                                     <i class="fa-regular fa-bell" style="font-size: 25px;"></i>
                                     <sup style="background-color: #e12e49; border-radius: 20px; padding: 10px; color: white;">{{$count_waiting + $count_action}}<span style="font-size:20px;">+</span></sup>
@@ -244,17 +319,6 @@
                             </div>
             
                             <div class="sub-menus" style=" display: none; margin-top: 15px;">
-                               
-                             {{--    <div style="padding: 10px; background-color:rgb(38, 38, 38); border-radius: 10px; text-align:left;">
-                                    <ul><a href="/portal/customer" style="text-decoration: none;">ทั้งหมด : {{$count_waiting + $count_action + $count_completed}} ร้านค้า</a></ul>
-                                    <hr style="color:#ffffff;">
-                                    <ul><a href="/portal/customer/status/waiting" style="text-decoration: none;">รอดำเนินการ : {{$count_waiting}} ร้านค้า</a></ul>
-                                    <hr style="color:#ffffff;">
-                                    <ul><a href="/portal/customer/status/action" style="text-decoration: none;">ต้องดำเนินการ : {{$count_action}} ร้านค้า</a></ul>
-                                    <hr style="color:#ffffff;">
-                                    <ul><a href="/portal/customer/status/completed" style="text-decoration: none;">ดำเนินการแล้ว : {{$count_completed}} ร้านค้า</a></ul>
-                                </div> --}}
-                                
                                 <select class="form-control" name="" id="noti_status" >
                                     <option value="1">ทั้งหมด : {{$count_waiting + $count_action + $count_completed}} ร้านค้า</option>
                                     <option value="2">รอดำเนินการ : {{$count_waiting}} ร้านค้า</option>
@@ -263,9 +327,9 @@
                                 </select> 
 
                             </div>
-                </div>
+                </div> --}}
             </div>
-
+{{-- 
             <script>
                 $(document).ready(function () {
 
@@ -300,7 +364,7 @@
                         // alert("Change Status");
                     });
                 });
-        </script>
+        </script> --}}
         
        {{--  <hr style="color: #8E8E8E; width: 100%;">
 
@@ -309,34 +373,28 @@
             <a href="/webpanel/admin-role"  id="adminRole" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดการสิทธิ์</a>
     
         </div> --}}
-        @section('col-2')
-
-        @if(isset($user_name))  
-            <h6 class="mt-1" style="margin-left: 50px; padding-top: 20px;">{{$user_name->name}}</h6>
-        @endif
-       
-        @endsection
+  
         <hr style="color: #8E8E8E; width: 100%;">
         
         <table class="table table-striped">
             <thead>
               <tr>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">#</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">CODE</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">อีเมล</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">Sale area</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">ชื่อร้านค้า</td>
-                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">สถานะ</td>
-                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">วันที่ลงทะเบียน</td>
-                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">จัดการ</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">#</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">CODE</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">อีเมล</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">Sale area</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">ชื่อร้านค้า</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500; padding:20px;">สถานะ</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500; padding:20px;">วันที่ลงทะเบียน</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500; padding:20px;">จัดการ</td>
               </tr>
             </thead>
             <tbody>
-                @if(isset($admin_area) != '')
+                @if(isset($customer_list) != '')
                 <?php 
                     $start += 1;
                 ?>
-                @foreach ($admin_area as $row_area)
+                @foreach ($customer_list as $row_area)
               <tr>
                     <?php
                         

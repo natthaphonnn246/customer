@@ -17,5 +17,8 @@ export default {
         },
     },
 
-    plugins: [forms],
+/*     // plugins: [forms],
+    plugins: [
+        tailwindcss(),
+    ], */
 };

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
     Route::get('/', function () {
-        return view('auth.login');
+        return view('auth.login-tailwind');
     });
 
     Route::get('/signin', function () {
@@ -31,7 +31,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 
     Route::get('login', function () {
-        return view('welcome');
+        return view('auth.login-tailwind');
     });
 
    Route::get('/dashboard', function () {
@@ -277,11 +277,20 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
     Route::get('/webpanel/sale/delete/{sale_area}', [WebpanelCustomerController::class, 'deleteSalearea']);
 
     //portal customer;
-    Route::get('/portal/customer', [PortalCustomerController::class, 'customerView'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
+    Route::get('/portal/customer', [PortalCustomerController::class, 'customerView'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area')->name('portal.customer');
     Route::get('/portal/customer/status/{status_customer}', [PortalCustomerController::class, 'customerViewEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
 
     Route::get('/portal/customer/{id}', [PortalCustomerController::class, 'customerEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'rights_area');
     
+    ///search customer;
+    Route::get('/portal/customer/search/code', [PortalCustomerController::class, 'customerSearch'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
+    // Route::get('/portal/customer/search/code', [PortalCustomerController::class, 'customerKeyword'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
+  /*   Route::get('/webpanel/date', function() {
+        return view('webpanel/date');
+    }); */
+   /*  Route::get('/logintail', function() {
+        return view('auth/login-tailwind');
+    }); */
 
     Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

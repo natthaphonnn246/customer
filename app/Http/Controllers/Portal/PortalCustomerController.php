@@ -32,12 +32,46 @@ class PortalCustomerController
             $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
             $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_id')->where('user_code', $code)->first();
 
+            $admin_area = Customer::select('admin_area', 'status')->where('admin_area', $user_name->admin_area)->first();
+            // dd($admin_area->admin_area);
+
+            $status_all = Customer::select('status')
+                                        ->where('admin_area', $admin_area->admin_area)
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->count();
+
+            $status_waiting = Customer::select('status')
+                                        ->where('admin_area', $admin_area->admin_area)
+                                        ->where('status', '0')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->count();
+            // dd($status_waiting);
+
+            $status_action = Customer::select('status')
+                                        ->where('admin_area', $admin_area->admin_area)
+                                        ->where('status', '1')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->count();
+
+            $status_completed = Customer::select('status')
+                                        ->where('admin_area', $admin_area->admin_area)
+                                        ->where('status', '2')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->count();
+
+            $status_alert = $status_waiting + $status_action;
+            // dd($customer_tb);
+
             $sale_area = Salearea::select('sale_area', 'sale_name')
                         ->orderBy('sale_area', 'asc')
                         ->get();
 
             $provinces = Province::province();
-            return view('portal/signin', compact('provinces', 'user_name', 'admin_area_list', 'sale_area'));
+            return view('portal/signin', compact('provinces', 'user_name', 'admin_area_list', 'sale_area', 'status_all', 'status_waiting', 'status_action', 'status_completed', 'status_alert'));
     }
 
      //สำหรับแอดมินไม่ได้รับสิทธิ์เขตรับผิดชอบ;
@@ -233,6 +267,7 @@ class PortalCustomerController
             $page = 1;
         }
 
+        $keyword_code = $request->keyword;
         $id = $request->user()->admin_area;
         $code = $request->user()->user_code;
 
@@ -242,34 +277,76 @@ class PortalCustomerController
         $total_page = ceil($count_page / $perpage);
         $start = ($perpage * $page) - $perpage;
         
-        $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
-        $admin_area = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+        $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+        $customer_list = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+                                    ->where('admin_area', $id)
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->offset($start)
+                                    ->limit($perpage)
+                                    ->get();
+
+        $status_all = Customer::select('status')
                                 ->where('admin_area', $id)
                                 ->whereNotIn('customer_status', ['inactive'])
                                 ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                ->offset($start)
-                                ->limit($perpage)
-                                ->get();
+                                ->count();
 
-        $count_waiting = Customer::where('admin_area', $id)
+        $status_waiting = Customer::where('admin_area', $id)
                                     ->where('status', '0')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
                                     // dd($count_waiting);
-        $count_action = Customer::where('admin_area', $id)
+        $status_action = Customer::where('admin_area', $id)
                                     ->where('status', '1')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
 
-        $count_completed = Customer::where('admin_area', $id)
+        $status_completed = Customer::where('admin_area', $id)
                                     ->where('status', '2')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
 
-        return view('portal/customer', compact('admin_area', 'user_name', 'page', 'total_page', 'start', 'count_waiting', 'count_action', 'count_completed'));
+        $status_alert = $status_waiting + $status_action;
+
+        //keyword;
+        if($keyword_code != '') {
+            $customer_list = Customer::where('admin_area',$id)
+                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->where('customer_id', 'Like', "%{$keyword_code}%")
+                            ->orWhere('customer_name', 'Like', "%{$keyword_code}%")
+                            ->whereIn('admin_area', [$id])
+                            ->get();
+
+                            // dd($customer_list);
+            $count_page = Customer::where('admin_area', $id)->where('customer_id', $keyword_code)->count();
+
+            $perpage = 10;
+            $total_page = ceil($count_page / $perpage);
+            $start = ($perpage * $page) - $perpage;
+
+            $check_customer_code = Customer::where('admin_area',$id)
+                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->where('customer_id',  'Like', "%{$keyword_code}%")
+                                            ->orWhere('customer_name', 'Like', "%{$keyword_code}%")
+                                            ->whereIn('admin_area', [$id])
+                                            ->first();
+
+            // dd($check_customer_code);
+
+            // dd($check_search->admin_area);
+            if(!$check_customer_code  == null) {
+                return view('portal/customer', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'status_waiting', 'status_action', 'status_completed', 'status_all', 'status_alert'));
+            }
+
+                return redirect()->route('portal.customer');
+            
+ 
+        }
+        return view('portal/customer', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'status_waiting', 'status_action', 'status_completed', 'status_all', 'status_alert'));
     }
     
     //portal/customer/status/{status_custoemr};
@@ -287,16 +364,23 @@ class PortalCustomerController
         $id = $request->user()->admin_area;
         $code = $request->user()->user_code;
 
+        $keyword_code = $request->keyword;
+        // dd($keyword_code);
+
         if($status_customer == 'waiting') {
 
-            $count_page = Customer::where('admin_area', $id)->where('status', "0")->count();
+            $count_page = Customer::where('admin_area', $id)
+                                    ->where('status', "0")
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
     
             $perpage = 10;
             $total_page = ceil($count_page / $perpage);
             $start = ($perpage * $page) - $perpage;
             
-            $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
-            $admin_area = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+            $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+            $customer_list = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
                                     ->where('status', '0')
                                     ->whereNotIn('customer_status', ['inactive'])
@@ -305,74 +389,182 @@ class PortalCustomerController
                                     ->limit($perpage)
                                     ->get();
 
-        $count_waiting = Customer::where('admin_area', $id)
-                                    ->where('status', '0')
-                                    ->whereNotIn('customer_status', ['inactive'])
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->count();
-
-        $count_action = Customer::where('admin_area', $id)
-                                ->where('status', '1')
-                                ->whereNotIn('customer_status', ['inactive'])
-                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                ->count();
-
-        $count_completed = Customer::where('admin_area', $id)
-                                    ->where('status', '2')
-                                    ->whereNotIn('customer_status', ['inactive'])
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->count();
-
-        return view('portal/customer-waiting', compact('admin_area', 'user_name', 'page', 'total_page', 'start', 'count_waiting', 'count_action', 'count_completed', 'status_customer'));
-
-        } else if($status_customer == 'action') {
-            
-            $count_page = Customer::where('admin_area', $id)->where('status', "1")->count();
-    
-            $perpage = 10;
-            $total_page = ceil($count_page / $perpage);
-            $start = ($perpage * $page) - $perpage;
-            
-            $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
-            $admin_area = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+            $count_all = Customer::select('status')
                                     ->where('admin_area', $id)
-                                    ->where('status', '1')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->offset($start)
-                                    ->limit($perpage)
-                                    ->get();
-
+                                    ->count();
+    
             $count_waiting = Customer::where('admin_area', $id)
-                                    ->where('status', '0')
-                                    ->whereNotIn('customer_status', ['inactive'])
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->count();
-
+                                        ->where('status', '0')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->count();
+                                        // dd($count_waiting);
             $count_action = Customer::where('admin_area', $id)
-                                    ->where('status', '1')
-                                    ->whereNotIn('customer_status', ['inactive'])
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->count();
-
+                                        ->where('status', '1')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->count();
+    
             $count_completed = Customer::where('admin_area', $id)
                                         ->where('status', '2')
                                         ->whereNotIn('customer_status', ['inactive'])
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
+    
+            $count_alert = $count_waiting + $count_action;
+            
+              //keyword;
 
-            return view('portal/customer-action', compact('admin_area', 'user_name', 'page', 'total_page', 'start', 'count_waiting', 'count_action', 'count_completed', 'status_customer'));
-        
-        } else if ($status_customer == 'completed') {
+         /*    $check_customer_codes = Customer::where('status', '0')->where('customer_id',  'Like', "%{$keyword_code}%")
+                                            ->orWhere('customer_name', 'Like', "%{$keyword_code}%")
+                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->whereIn('admin_area', [$id])
+                                            ->where('admin_area',$id)
+                                            ->whereNotIn('customer_status', ['inactive'])
+                                            ->first();
 
-            $count_page = Customer::where('admin_area', $id)->where('status', "2")->count();
+            dd($check_customer_codes->customer_id); */
+            if($keyword_code != '') {
+                $customer_list = Customer::where('status', '0')
+                                            ->where('admin_area',$id)
+                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->where('customer_id', 'Like', "%{$keyword_code}%")
+                                            // ->orWhere('customer_name', 'Like', "%{$keyword_code}%")
+                                            ->whereIn('admin_area', [$id])
+                                            ->whereNotIn('customer_status', ['inactive'])
+                                            ->get();
+
+                                // dd($customer_list);
+                $count_page = Customer::where('admin_area', $id)->where('customer_id', $keyword_code)->count();
+
+                $perpage = 10;
+                $total_page = ceil($count_page / $perpage);
+                $start = ($perpage * $page) - $perpage;
+
+                $check_customer_code = Customer::where('status', '0')
+                                                ->where('admin_area',$id)
+                                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->where('customer_id',  'Like', "%{$keyword_code}%")
+                                                // ->orWhere('customer_name', 'Like', "%{$keyword_code}%")
+                                                ->whereIn('admin_area', [$id])
+                                                ->whereNotIn('customer_status', ['inactive'])
+                                                ->first();
+
+                // dd($check_customer_code);
+
+                // dd($check_search->admin_area);
+                if(!$check_customer_code  == null) {
+                    return view('portal/customer-waiting', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'count_all',  'count_waiting', 'count_action', 'count_completed', 'count_alert', 'status_customer'));
+                }
+
+                    return back();
+    
+            }
+
+        return view('portal/customer-waiting', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'count_all',  'count_waiting', 'count_action', 'count_completed', 'count_alert', 'status_customer'));
+
+        } else if($status_customer == 'action') {
+            
+            $count_page = Customer::where('admin_area', $id)
+                                    ->where('status', "1")
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
     
             $perpage = 10;
             $total_page = ceil($count_page / $perpage);
             $start = ($perpage * $page) - $perpage;
             
-            $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
-            $admin_area = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+            $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+            $customer_list = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+                                    ->where('admin_area', $id)
+                                    ->where('status', '1')
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->offset($start)
+                                    ->limit($perpage)
+                                    ->get();
+
+            $count_all = Customer::select('status')
+                                    ->where('admin_area', $id)
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+            $count_waiting = Customer::where('admin_area', $id)
+                                        ->where('status', '0')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->count();
+
+            $count_action = Customer::where('admin_area', $id)
+                                        ->where('status', '1')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->count();
+
+            $count_completed = Customer::where('admin_area', $id)
+                                            ->where('status', '2')
+                                            ->whereNotIn('customer_status', ['inactive'])
+                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->count();
+
+            $count_alert = $count_waiting + $count_action;
+
+            //search;
+            if($keyword_code != '') {
+                $customer_list = Customer::where('status', '1')
+                                            ->where('admin_area',$id)
+                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->where('customer_id', 'Like', "%{$keyword_code}%")
+                                            // ->orWhere('customer_name', 'Like', "%{$keyword_code}%")
+                                            ->whereIn('admin_area', [$id])
+                                            ->whereNotIn('customer_status', ['inactive'])
+                                            ->get();
+
+                                // dd($customer_list);
+                $count_page = Customer::where('admin_area', $id)->where('customer_id', $keyword_code)->count();
+
+                $perpage = 10;
+                $total_page = ceil($count_page / $perpage);
+                $start = ($perpage * $page) - $perpage;
+
+                $check_customer_code = Customer::where('status', '1')
+                                                ->where('admin_area',$id)
+                                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->where('customer_id',  'Like', "%{$keyword_code}%")
+                                                // ->orWhere('customer_name', 'Like', "%{$keyword_code}%")
+                                                ->whereIn('admin_area', [$id])
+                                                ->whereNotIn('customer_status', ['inactive'])
+                                                ->first();
+
+                // dd($check_customer_code);
+
+                // dd($check_search->admin_area);
+                if(!$check_customer_code  == null) {
+                    return view('portal/customer-action', compact('customer_list', 'user_name', 'page', 'total_page', 'start','count_all', 'count_waiting', 'count_action', 'count_completed','count_alert',  'status_customer'));
+                }
+                return back();
+            }
+
+            return view('portal/customer-action', compact('customer_list', 'user_name', 'page', 'total_page', 'start','count_all', 'count_waiting', 'count_action', 'count_completed','count_alert',  'status_customer'));
+        
+        } else if ($status_customer == 'completed') {
+
+            $count_page = Customer::where('admin_area', $id)
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->where('status', "2")
+                                    ->count();
+    
+            $perpage = 10;
+            $total_page = ceil($count_page / $perpage);
+            $start = ($perpage * $page) - $perpage;
+            
+            $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+            $customer_list = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
                                     ->where('status', "2")
                                     ->whereNotIn('customer_status', ['inactive'])
@@ -381,6 +573,11 @@ class PortalCustomerController
                                     ->limit($perpage)
                                     ->get();
 
+            $count_all = Customer::select('status')
+                                    ->where('admin_area', $id)
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
         
             $count_waiting = Customer::where('admin_area', $id)
                                         ->where('status', '0')
@@ -400,29 +597,97 @@ class PortalCustomerController
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
 
-            return view('portal/customer-completed', compact('admin_area', 'user_name', 'page', 'total_page', 'start', 'count_waiting', 'count_action', 'count_completed', 'status_customer'));
+            $count_alert = $count_waiting + $count_action;
+
+            //search;
+            if($keyword_code != '') {
+                $customer_list = Customer::where('status', '2')
+                                            ->where('admin_area',$id)
+                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->where('customer_id', 'Like', "%{$keyword_code}%")
+                                            // ->orWhere('customer_name', 'Like', "%{$keyword_code}%")
+                                            ->whereIn('admin_area', [$id])
+                                            ->whereNotIn('customer_status', ['inactive'])
+                                            ->get();
+
+                                // dd($customer_list);
+                $count_page = Customer::where('admin_area', $id)->where('customer_id', $keyword_code)->count();
+
+                $perpage = 10;
+                $total_page = ceil($count_page / $perpage);
+                $start = ($perpage * $page) - $perpage;
+
+                $check_customer_code = Customer::where('status', '2')
+                                                ->where('admin_area',$id)
+                                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->where('customer_id',  'Like', "%{$keyword_code}%")
+                                                // ->orWhere('customer_name', 'Like', "%{$keyword_code}%")
+                                                ->whereIn('admin_area', [$id])
+                                                ->whereNotIn('customer_status', ['inactive'])
+                                                ->first();
+
+                // dd($check_customer_code);
+
+                // dd($check_search->admin_area);
+                if(!$check_customer_code  == null) {
+                    return view('portal/customer-completed', compact('customer_list', 'user_name', 'page', 'total_page', 'start','count_all', 'count_waiting', 'count_action', 'count_completed','count_alert', 'status_customer'));
+                }
+                return back();
+            }
+
+            return view('portal/customer-completed', compact('customer_list', 'user_name', 'page', 'total_page', 'start','count_all', 'count_waiting', 'count_action', 'count_completed','count_alert', 'status_customer'));
         }
     }
 
     public function customerEdit(Request $request, $id) 
     {
+        // dd($id);
         $customer_edit = Customer::customerEdit($id);
+        
         $customer_edit = $customer_edit[0];
 
         $code = $request->user()->user_code;
-        $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
+        $user_name = User::select('name', 'admin_area','user_code','rights_area')->where('user_code', $code)->first();
         // dd($customer_edit->sale_area);
         
         $province = DB::table('provinces')->select('id', 'name_th')->orderBy('id', 'asc')->get();
         $amphur = DB::table('amphures')->select('name_th', 'province_id')->get();
         $district = DB::table('districts')->select('name_th', 'amphure_id')->get();
 
+        $check_admin_area = $user_name->admin_area;
+        // dd($check_admin_area);
+        $count_all = Customer::select('status')
+                    ->where('admin_area', $check_admin_area)
+                    ->whereNotIn('customer_status', ['inactive'])
+                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                    ->count();
+
+        $count_waiting = Customer::where('admin_area', $check_admin_area)
+                        ->where('status', '0')
+                        ->whereNotIn('customer_status', ['inactive'])
+                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        ->count();
+
+        $count_action = Customer::where('admin_area', $check_admin_area)
+                        ->where('status', '1')
+                        ->whereNotIn('customer_status', ['inactive'])
+                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        ->count();
+
+        $count_completed = Customer::where('admin_area', $check_admin_area)
+                            ->where('status', '2')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->count();
+
+        $count_alert = $count_waiting + $count_action;
+
         $sale_name = Salearea::select('sale_name')->where('sale_area', $customer_edit->sale_area)->first();
         if($sale_name == null) {
             return view('portal/customer-detail', compact('customer_edit', 'province', 'amphur', 'district', 'user_name'));
         }
         
-        return view('portal/customer-detail', compact('customer_edit', 'province', 'amphur', 'district', 'user_name', 'sale_name'));
+        return view('portal/customer-detail', compact('customer_edit', 'province', 'amphur', 'district', 'user_name', 'sale_name', 'count_all', 'count_waiting', 'count_action', 'count_completed', 'count_alert'));
     }
     //update customer;
     public function updateEdit(Request $request, $id)
@@ -458,6 +723,9 @@ class PortalCustomerController
                 }
 
                 $cert_expire = $request->cert_expire;
+                if($cert_expire == null) {
+                    $cert_expire = '';
+                }
 
                 $province_master = DB::table('provinces')->select('id', 'name_th', 'geography_id')->where('id', $province)->first();
                 $province_row = $province_master->name_th;
@@ -658,4 +926,76 @@ class PortalCustomerController
             }
             return back();
     }
+
+    /// search customer;
+    public function customerSearch(Request $request)
+    {
+        $keyword = $request->keyword;
+
+        $id = $request->user()->admin_area;
+
+        $check_search_code = Customer::where('customer_id', 'like', '%'.$keyword.'%')
+                                        ->orWhere('customer_name', 'like', '%'.$keyword.'%')
+                                        ->where('admin_area', $id)->first();
+        
+        // echo json_encode(array('code' => $check_search_code->admin_area, 'id'=>$id));
+
+        $arr_keyword = ['0000', '4494', '7787', '9000'];
+        
+        if(in_array($keyword, $arr_keyword) || $check_search_code->admin_area != $id)
+        {
+          
+            echo 'ไม่พบข้อมูล';
+            return;
+            
+
+        } else {
+
+            $customers = Customer::where('customer_id', 'like', "%{$keyword}%")
+                                    ->where('admin_area', $id)
+                                    ->orWhere('customer_name', 'like', "%{$keyword}%")
+                                    ->whereIn('admin_area', [$id])
+                                    ->where('admin_area', $id)->paginate(2);
+
+ /* 
+            $check_search = Customer::where('customer_id', 'like', '%'.$keyword)
+                                    ->orWhere('customer_name', 'like', '%'.$keyword.'%')
+                                    ->whereNotIn('admin_area',[$id])->first();
+
+                                    echo $check_search->admin_area; */
+        /*     if($customers== null) {
+                echo 'ไม่พบข้อมูล';
+                return;
+            } */
+
+           
+                foreach($customers as $row_customer)
+                {
+
+ 
+                    // if($row_customer->customer_id !=  '0000' AND $check_search->admin_area == $id AND $check_search->admin_area != '') {
+                    if($row_customer->customer_id !=  '0000') {
+
+                        echo
+                        '
+
+                                
+                       <div style="background-color: #17192A; absolute: potision; position: static;">
+                            <div class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75  hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+                                
+                                <a  href="/portal/customer/'.$row_customer->customer_id .'" style="text-decoration: none;"> '.$row_customer->customer_id .' ' .':'.' ' .$row_customer->customer_name.' </a>
+                            
+                            </div>
+                        </div> 
+                        
+                        ';
+                    }
+                    
+                }
+                
+            
+        }
+        
+    }
+
 }

@@ -12,18 +12,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <title>customer-signin</title>
+    <title>nntpn.com</title>
 </head>
 <body>
 
-    @extends ('portal/menuportal')
+    @extends ('portal/menuportal-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            padding: 20px 40px 40px;
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
@@ -37,6 +37,17 @@
             height: auto;
             background-color: #118C3E;
         }
+       /*  .input_date {
+            border-radius: 3px;
+            border: 1px solid #D3D3D3;
+            padding: 5px;
+            margin-bottom: 15px;
+            width: auto;
+            
+        }
+        #datepicker {
+            width: 100%;
+        } */
     </style>
     
     <div class="contentArea">
@@ -44,7 +55,37 @@
         @section('col-2')
 
         @if(isset($user_name))
-            <h6 class="mt-1" style="margin-left: 50px; padding-top: 20px;">{{$user_name->name}}</h6>
+            <h6 class="mt-1" style="">{{$user_name->name}}</h6>
+            @endif
+        @endsection
+
+        @section('status_alert')
+        @if(!($admin_area_list->rights_area) == '0')
+            <h6 class="justifiy-content:center;" style="">{{$status_alert}}</h6>
+            @endif
+        @endsection
+
+        @section('status_all')
+        @if(!($admin_area_list->rights_area) == '0')
+            <h6 class="justifiy-content:center;" style="">{{$status_all}}</h6>
+            @endif
+        @endsection
+
+        @section('status_waiting')
+        @if(!($admin_area_list->rights_area) == '0')
+            <h6 class="justifiy-content:center;" style="">{{$status_waiting}}</h6>
+            @endif
+        @endsection
+
+        @section('status_action')
+        @if(!($admin_area_list->rights_area) == '0')
+            <h6 class="justifiy-content:center;" style="">{{$status_action}}</h6>
+            @endif
+        @endsection
+
+        @section('status_completed')
+        @if(!($admin_area_list->rights_area) == '0')
+            <h6 class="justifiy-content:center;" style="">{{$status_completed}}</h6>
             @endif
         @endsection
 
@@ -60,12 +101,17 @@
             @endif
 
             <div class="row">
-                <div class="col-sm-6">
-                    <ul class="text-title" style="text-align: start; margin-top: 40px;">
+                <div style="text-align: left; padding-top: 10px;">
+                    {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
+                    <span style="color: #8E8E8E;">ลงทะเบียนร้านค้า (Register)</span>
+                </div>
+                <hr style="color: #8E8E8E; width: 100%; margin-top: 15px">
+                <div class="col-sm-6 py-3">
+                    <ul class="text-title" style="text-align: start; margin-top: 20px;">
                         <span style="font-size: 18px; font-weight: 500;">ลงทะเบีนนลูกค้าใหม่</span>
-                        <hr>
+                        <hr style="color: #8E8E8E; width: 100%; margin-top: 10px">
                     </ul>
-                    <ul class="text-muted" style="padding-top: 10px;">
+                    <ul class="text-muted py-3" style="padding-top: 10px;">
                         <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span></br>
                         {{-- <input class="btn btn-primary my-2" style="width:100%; border:none;" id="cert_store" value="ใบอนุญาตขายยา/สถานพยาบาล"> --}}
                         <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_store" accept="image/png, image/jpg, image/jpeg" required><br>
@@ -86,16 +132,30 @@
                         <input style="margin-top:10px; color:grey;" type="text" class="form-control" name="cert_number"><br>
 
                         <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                        <input style="margin-top:10px; color:grey;" type="date" value="2024-01-01" class="form-control" name="cert_expire"><br>
+                        {{-- <input style="margin-top:10px; color:grey;" type="date" value="2024-01-01" class="form-control" name="cert_expire"><br> --}}
+                        <input class="form-control" style="margin-top:10px; color:grey;" type="text" id="datepicker" value="01/01/2024" name="cert_expire">
 
                     </ul>
+                    <script>
+                        $(document).ready(function () {
+                            // Datepicker
+                                $("#datepicker" ).datepicker({
+                                    changeMonth: true,
+                                    changeYear: true,
+                                    yearRange: "2024:2029",
+                                    dateFormat: "dd/mm/yy",
+                                   
+                                    
+                                });
 
+                            });
+                    </script>
                     <ul class="text-title" style="text-align: start; margin-top: 20px;">
                         <span style="font-size: 18px; font-weight: 500;">ข้อมูลลูกค้า</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุให้ครบทุกช่อง</span>
-                        <hr>
+                        <hr style="color: #8E8E8E; width: 100%; margin-top: 10px">
                     </ul>
                     <div class="row text-muted">
-                        <div class="col-sm-12">
+                        <div class="col-sm-12 py-3">
                             <ul style="width: 100%;">
                                 <span>ชื่อร้านค้า/สถานพยาบาล</span>
                                 <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="customer_name" required>
@@ -119,7 +179,7 @@
                                 </select>
                             </ul>
                         </div>
-                        <div class="col-sm-12">
+                        <div class="col-sm-12 py-3">
                             <ul style="width: 100%;">
                                 <span>อีเมล</span>
                                 <input style="margin-top:10px; color: grey;" name="email" type="email" class="form-control" name="email"><br>
@@ -131,7 +191,7 @@
                                 <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address">                              
                             </ul>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 py-3">
                             <ul style="width: 100%;">
                                 <span>จังหวัด</span>
                                 {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
@@ -147,7 +207,7 @@
                                 </select>
                             </ul>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 py-3">
                             <ul style="width: 100%;">
                                 <span>อำเภอ/แขวง</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="amphur" id="amphures">
@@ -161,7 +221,7 @@
                                 </select>
                             </ul>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 py-3">
                             <ul style="width: 100%;">
                                 <span>ตำบล/เขต</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts">
@@ -175,7 +235,7 @@
                                 </select>
                             </ul>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 py-3">
                             <ul style="width: 100%;">
                                 <span>รหัสไปรษณีย์</span>
                                 <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="zip_code" id="zipcode">
@@ -188,10 +248,10 @@
                         <div class="form-control">
                             <ul class="text-title" style="text-align: start; margin-top: 10px;">
                                 <span style="font-size: 18px; font-weight: 500;">ข้อมูลผู้รับผิดชอบ</span>
-                                <hr>
+                                <hr style="color: #8E8E8E; width: 100%; margin-top: 10px">
                             </ul>
-                            <ul class="text-muted" style="padding-top: 10px;">
-                            <label></label>
+                            <ul class="text-muted py-3" style="padding-top: 10px;">
+                           
                                 <span>แอดมินผู้ดูแล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                 {{-- <input style="margin-top:10px;" type="text" class="form-control" name="admins"><br> --}}
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="admin_area">
@@ -234,7 +294,7 @@
                             @elseif (Session::get('success'))
                             <div class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success') }}</div>
                             @else
-                            <p class="textrow py-2" style="text-align: center; font-weight:500; font-size: 16px; color:rgb(72, 72, 72);"><span>ลงทะเบียนแล้ว กรุณาติดต่อผู้ดูแล</span></p>
+                            <p class="textrow py-3" style="text-align: center; font-weight:500; font-size: 16px; color:rgb(72, 72, 72);"><span>ลงทะเบียนแล้ว กรุณาติดต่อผู้ดูแล</span></p>
                             @endif
                         </div>
                     </div>

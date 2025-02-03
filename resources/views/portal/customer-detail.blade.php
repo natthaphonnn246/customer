@@ -16,14 +16,14 @@
 </head>
 <body>
 
-    @extends ('portal/menuportal')
+    @extends ('portal/menuportal-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            padding: 20px 30px 40px;
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
@@ -157,22 +157,55 @@
             color:rgb(103, 103, 103);
             background-color: #cbcbcb;
         }
+        #backLink {
+            color: #007bff;
+            text-decoration: underline;
+            cursor: pointer;
+        }
     </style>
     <div class="contentArea" id="bg">
 
         @section('col-2')
 
         @if(isset($user_name))
-            
-        <?php  $name = $user_name->name; ?>
-        @endif
-        <h6 class="mt-1" style="margin-left: 50px; padding-top: 20px;">{{$name}}</h6>
+            <h6 class="mt-1" style="">{{$user_name->name}}</h6>
+            @endif
+        @endsection
+
+        @section('status_alert')
+        @if(!($user_name->rights_area) == '0')
+            <h6 class="justifiy-content:center;" style="">{{$count_alert}}</h6>
+            @endif
+        @endsection
+
+        @section('status_all')
+        @if(!($user_name->rights_area) == '0')
+            <h6 class="justifiy-content:center;" style="">{{$count_all}}</h6>
+            @endif
+        @endsection
+
+        @section('status_waiting')
+        @if(!($user_name->rights_area) == '0')
+            <h6 class="justifiy-content:center;" style="">{{$count_waiting}}</h6>
+            @endif
+        @endsection
+
+        @section('status_action')
+        @if(!($user_name->rights_area) == '0')
+            <h6 class="justifiy-content:center;" style="">{{$count_action}}</h6>
+            @endif
+        @endsection
+
+        @section('status_completed')
+        @if(!($user_name->rights_area) == '0')
+            <h6 class="justifiy-content:center;" style="">{{$count_completed}}</h6>
+            @endif
         @endsection
 
         <div style="text-align: left; margin-top: 10px;">
             <span style="color: #8E8E8E;"><a href="/portal/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / รายละเอียด</span>
         </div>
-        <hr style="color: #8E8E8E; width: 100%;">
+        <hr style="color: #8E8E8E; width: 100%; margin-top: 25px;">
     @if (isset($customer_edit) != '')
 
         <form id="form">
@@ -180,24 +213,24 @@
             @csrf
             <div class="row">
                 <div class="col-sm-6">
-                    <ul class="text-title" style="text-align: start; margin-top: 30px;">
-                        <span style="font-size: 16px; font-weight: 500; color:#303030;">ข้อมูลลูกค้า</span>
-                        <hr>
+                    <ul class="text-title" style="margin-top: 20px;">
+                        <span style="font-size: 18px; font-weight: 500; color:#303030;">ข้อมูลลูกค้า</span>
+                        <hr style="color: #8E8E8E; width: 100%; margin-top: 15px;">
                     </ul>
-                    <ul class="text-muted" style="padding-top: 10px;">
-                        <span>ใบอนุญาตขายยา/สถานพยาบาล</span></br>
+                    <ul class="text-muted py-3" style="padding-top: 10px;">
+                        <span>ใบอนุญาตขายยา/สถานพยาบาล</span>
                         <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certStore" >ใบอนุญาตขายยา/สถานพยาบาล</div>
                         @if ($customer_edit->cert_store == '')
                         <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
                         @endif
-                        <hr>
+                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;">
 
                         <span>ใบประกอบวิชาชีพ</span>
                         <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certMedical" >ใบประกอบวิชาชีพ</div>
                         @if ($customer_edit->cert_medical == '')
                         <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
                         @endif
-                        <hr>
+                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;">
                         {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_medical" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
                         <span>ใบทะเบียนพาณิชย์</span>
@@ -205,7 +238,7 @@
                         @if ($customer_edit->cert_commerce == '')
                         <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
                         @endif
-                        <hr>
+                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;">
                         {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_commerce" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
                         <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span>
@@ -213,7 +246,7 @@
                         @if ($customer_edit->cert_vat == '')
                         <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
                         @endif
-                        <hr>
+                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;">
                         {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_vat" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
                         <span>สำเนาบัตรประชาชน</span>
@@ -221,27 +254,43 @@
                         @if ($customer_edit->cert_id == '')
                         <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
                         @endif
-                        <hr>
+                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;">
                         {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
-                        <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                        <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$customer_edit->cert_number}}"><br>
-      
-                        <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                        <input id="date" style="margin-top:10px;  color: rgb(171, 171, 171);" type="date"  class="form-control" name="cert_expire" value="{{$customer_edit->cert_expire}}"><br>
-
+                        <li class="py-2">
+                            <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                            <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$customer_edit->cert_number}}">
+                        </li>
+                        <li class="py-2">
+                            <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                            <input class="form-control" style="margin-top:10px; color:rgb(171, 171, 171);" type="text" id="datepicker" name="cert_expire" value="{{$customer_edit->cert_expire}}">
+                        </li>
+                        <script>
+                            $(document).ready(function () {
+                                // Datepicker
+                                    $("#datepicker" ).datepicker({
+                                        changeMonth: true,
+                                        changeYear: true,
+                                        yearRange: "2024:2029",
+                                        dateFormat: "dd/mm/yy",
+                                       
+                                        
+                                    });
+    
+                                });
+                        </script>
                     </ul>
                     <div class="row text-muted">
                         <div class="col-sm-12">
-                            <ul style="width: 100%;">
+                            <ul class="py-2" style="width: 100%;">
                                 <span>ชื่อร้านค้า</span>
                                 <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="customer_name" value="{{$customer_edit->customer_name}}" disabled>
                             </ul>
-                            <ul style="width: 100%;">
+                            <ul class="py-2" style="width: 100%;">
                                 <span>CODE</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                 <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="code" value="{{$customer_edit->customer_code;}}" disabled>
                             </ul>
-                            <ul style="width: 100%;">
+                            <ul class="py-2" style="width: 100%;">
                                 <span>ระดับราคา</span><span style="font-size: 12px; color:red;">*ลูกค้า 6 เท่ากับ 1</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="price_level" disabled>
                                 
@@ -249,22 +298,30 @@
 
                                 </select>
                             </ul>
-                           
+                           {{-- {{dd($customer_edit->cert_expire);}} --}}
                         </div>
                  
                         <div class="col-sm-12">
-                            <ul style="width: 100%;">
-                                <span>อีเมล</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" name="email" type="email" class="form-control" name="email" value="{{$customer_edit->email}}"><br>
-                                <span>เบอร์ติดต่อ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 027534702)</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="phone" value="{{$customer_edit->phone}}"><br>
-                                <span>เบอร์โทรศัพท์</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0904545555)</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$customer_edit->telephone}}"><br>
-                                <span>ที่อยู่</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$customer_edit->address}}">                              
+                            <ul class="py-3" style="width: 100%;">
+                                <li class="py-2">
+                                    <span>อีเมล</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" name="email" type="email" class="form-control" name="email" value="{{$customer_edit->email}}">
+                                </li>
+                                <li class="py-2">
+                                    <span>เบอร์ติดต่อ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 027534702)</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="phone" value="{{$customer_edit->phone}}">
+                                </li>
+                                <li class="py-2">
+                                    <span>เบอร์โทรศัพท์</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0904545555)</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$customer_edit->telephone}}">
+                                </li>
+                                <li class="py-2">
+                                    <span>ที่อยู่</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$customer_edit->address}}">
+                                </li>                              
                             </ul>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 py-3">
                             <ul style="width: 100%;">
                                 <span>จังหวัด</span>
                                 {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
@@ -280,7 +337,7 @@
                                 </select>
                             </ul>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 py-3">
                             <ul style="width: 100%;">
                                 <span>อำเภอ/เขต</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" id="amphures" name="amphur">
@@ -325,17 +382,19 @@
                                 <div class="form-control">
                                     <ul class="text-title" style="text-align: start; margin-top: 10px;">
                                         <span style="font-size: 16px; font-weight: 500; color:#545454;">ข้อมูลผู้รับผิดชอบ</span>
-                                        <hr>
+                                        <hr style="color: #8E8E8E; width: 100%; margin-top: 15px;">
                                     </ul>
                                     <ul class="text-muted" style="padding-top: 10px;">
-                                    <label></label>
+
+                                        <li class="py-2">
                                         <span>แอดมินผู้ดูแล</span>
-                                        <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="admin_area" disabled>
+                                            <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="admin_area" disabled>
 
                                                 <option>{{$customer_edit->admin_area.' '.'('.$user_name->name.')'}}</option>
 
-                                            </select><br>
-        
+                                            </select>
+                                        </li>
+                                        <li class="py-2">
                                         <span>เขตการขาย</span>
                                             <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="sale_area" disabled>
 
@@ -344,7 +403,8 @@
                                                 @else
                                                 <option>{{$customer_edit->sale_area.' '.'('.'ไม่พบชื่อ'.')'}}</option>
                                                 @endif
-                                            </select><br>
+                                            </select>
+                                        </li>
                 
                                     </ul>
                         
