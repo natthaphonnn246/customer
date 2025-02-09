@@ -24,7 +24,7 @@
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 12px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             /* text-align: left; */
@@ -262,15 +262,15 @@
         @endsection
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
     
-            <div class="row">
-                <div class="col-9 py-2">
-                    <div style="text-align: left; padding:5px; margin-top:5px;">
-                        <span style="color: #8E8E8E;">ข้อมูลลูกค้า (Customer)</span>
-                    </div>
-                </div>
+            <div class="py-2">
+                {{-- <span style="color: #8E8E8E;">ข้อมูลลูกค้า (Customer)</span> --}}
+            </div>
+        
+            <span class="ms-6" style="color: #8E8E8E;">ข้อมูลลูกค้า (Customer)</span>
+            <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 2px;">
             
-                <hr style="color: #8E8E8E; width: 100%; margin-top: 25px;">
-
+            <div class="ms-6 mr-6">
+            <div class="row">
                 <!--- search --->
                 <form class="max-w-md mx-auto py-3" method="get" action="/portal/customer">
                     {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
@@ -282,7 +282,7 @@
                         <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
                     
                     </div>
-                    <p id="keyword_search"></p>
+                    <p class="py-2" id="keyword_search"></p>
                     @csrf   
                 </form>
 
@@ -412,6 +412,7 @@
               <tr>
                     <?php
                         
+                        $id = $row_list->id;
                         $customer_name = $row_list->customer_name;
                         $customer_code = $row_list->customer_code;
                         $sale_area = $row_list->sale_area;
@@ -444,7 +445,7 @@
 
                     <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px; ">{{$created_at}}</td>
 
-                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:15px;"><a href="/portal/customer/{{$customer_code}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:15px;"><a href="/portal/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
                     {{-- <button id="trash"><i class="fa-regular fa-trash-can"></i></button> --}}
                     </td>
                 @endif
@@ -457,7 +458,7 @@
 {{-- {{dd($total_page);}} --}}
           @if($total_page > 1)
           <nav aria-label="Page navigation example">
-            <ul class="pagination">
+            <ul class="pagination py-4">
             <li class="page-item">
 
             @if ($page == 1)
@@ -507,6 +508,7 @@
         @endif
 
     </div>
+</div>
 
 @endsection
 

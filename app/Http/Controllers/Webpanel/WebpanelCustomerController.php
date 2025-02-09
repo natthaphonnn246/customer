@@ -53,8 +53,18 @@ class WebpanelCustomerController
         //เพิ่มลูกค้า;
         // $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
 
+        $status_waiting = Customer::where('status', '0')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
         return view('webpanel/customer', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive'));
+                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated'));
         
     }
 
@@ -67,6 +77,17 @@ class WebpanelCustomerController
         } else {
             $page = 1;
         }
+
+        //menu alert;
+        $status_waiting = Customer::where('status', '0')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
 
         //แสดงข้อมูลลูกค้า;
 
@@ -83,7 +104,7 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $total_status_waiting = Customer::where('status', 0)->whereNotIn('customer_code', ['0000','4494'])->count();
 
-            return view('webpanel/customer-waiting', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting'));
+            return view('webpanel/customer-waiting', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting', 'status_waiting', 'status_updated', 'status_alert'));
 
         } else if ($status_check == 'action') {
 
@@ -98,7 +119,7 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $total_status_action = Customer::where('status', 1)->whereNotIn('customer_code', ['0000','4494'])->count();
 
-            return view('webpanel/customer-action', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_action'));
+            return view('webpanel/customer-action', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_action', 'status_waiting', 'status_updated', 'status_alert'));
        
         } else if ($status_check == 'completed') {
 
@@ -113,7 +134,7 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $total_status_completed = Customer::where('status', 2)->whereNotIn('customer_code', ['0000','4494'])->count();
 
-            return view('webpanel/customer-completed', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_completed'));
+            return view('webpanel/customer-completed', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_completed', 'status_waiting', 'status_updated', 'status_alert'));
         } else if ($status_check == 'latest_update') {
 
             $row_customer = Customer::latestUpdate($page);
@@ -127,7 +148,7 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
 
-            return view('webpanel/update-latest', compact('customer', 'start', 'total_page', 'page', 'total_customer','total_status_updated'));
+            return view('webpanel/update-latest', compact('customer', 'start', 'total_page', 'page', 'total_customer','total_status_updated', 'status_waiting', 'status_updated', 'status_alert'));
 
         } else if ($status_check == 'inactive') {
 
@@ -142,9 +163,26 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
 
-            return view('webpanel/customer-inactive', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_inactive'));
+            return view('webpanel/customer-inactive', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_inactive', 'status_waiting', 'status_updated', 'status_alert'));
 
-        } else {
+        } else if ($status_check == 'following') {
+
+            $row_customer = Customer::customerFollowing($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            return view('webpanel/customer-follow', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_following', 'status_waiting', 'status_updated', 'status_alert'));
+
+        } 
+        
+        else {
             return abort(403, 'Error requesting');
         }
         
@@ -161,7 +199,17 @@ class WebpanelCustomerController
                     ->orderBy('sale_area' ,'asc')
                     ->get();
 
-        return view('webpanel/customer-create', compact('provinces', 'admin_area_list', 'sale_area'));
+        $status_waiting = Customer::where('status', '0')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        return view('webpanel/customer-create', compact('provinces', 'admin_area_list', 'sale_area', 'status_alert', 'status_waiting', 'status_updated'));
     }
     public function create(Request $request)
     {
@@ -333,7 +381,7 @@ class WebpanelCustomerController
 
         $admin_area_list  = User::select('admin_area', 'name', 'rights_area')->get();
 
-        $admin_area_check = Customer::select('admin_area', 'customer_id')->where('customer_code', $id)->first();
+        $admin_area_check = Customer::select('admin_area', 'customer_id')->where('id', $id)->first();
         // dd($admin_area_check->customer_id);
 
         $sale_area = Salearea::select('sale_area', 'sale_name')
@@ -344,7 +392,17 @@ class WebpanelCustomerController
         $amphur = DB::table('amphures')->select('name_th', 'province_id')->get();
         $district = DB::table('districts')->select('name_th', 'amphure_id')->get();
 
-        return view('webpanel/customer-detail', compact('customer_view', 'province', 'amphur', 'district', 'admin_area_list', 'admin_area_check', 'sale_area'));
+        $status_waiting = Customer::where('status', '0')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        return view('webpanel/customer-detail', compact('customer_view', 'province', 'amphur', 'district', 'admin_area_list', 'admin_area_check', 'sale_area', 'status_waiting', 'status_alert', 'status_updated'));
     }
 
     /**
@@ -429,11 +487,11 @@ class WebpanelCustomerController
                 }
 
      /*    } */
-            Customer::where('customer_id', $id)
+            Customer::where('id', $id)
                     ->update ([
 
-                        /* 'customer_id' => $customer_id,
-                        'customer_code' => $customer_code, */
+                        'customer_id' => $customer_id,
+                        'customer_code' => $customer_id,
                         'customer_name' => $customer_name,
                         'price_level' => $price_level,
                         'customer_name' => $customer_name,
@@ -463,8 +521,8 @@ class WebpanelCustomerController
                     ]);
 
                 // check user id;
-                $check_customer_id = Customer::select('customer_id')->where('customer_id', $id)->first();
-                $customer_id =  $check_customer_id->customer_id;
+                $check_customer_id = Customer::select('id')->where('id', $id)->first();
+                $customer_id =  $check_customer_id->id;
 
                 if ($customer_id == $id)
                 {
@@ -677,8 +735,22 @@ class WebpanelCustomerController
 
     } */
 
-    //เก็บไว้ดู Import_csv;
+    public function import()
+    {
+         //menu alert;
+         $status_waiting = Customer::where('status', '0')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
 
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        return view('/webpanel/importcustomer', compact('status_alert', 'status_waiting', 'status_updated'));
+    }
+    //เก็บไว้ดู Import_csv;
     public function importFile(Request $request)
     {
 
@@ -869,6 +941,7 @@ class WebpanelCustomerController
 
         }
         $count = Customer::all()->count();
+        
         return redirect('/webpanel/customer/importcustomer')->with('success_import', 'นำเข้าข้อมูลสำเร็จ :'.' '.$count);
             
    }
@@ -883,7 +956,17 @@ class WebpanelCustomerController
     $customer_area_list = Customer::select('admin_area', 'sale_area')->first();
     $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_id')->get();
 
-    return view('/webpanel/groups-customer', compact('row_salearea', 'customer_area_list', 'admin_area_list'));
+    $status_waiting = Customer::where('status', '0')
+                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->count();
+
+    $status_updated = Customer::where('status_update', 'updated')
+                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->count();
+
+    $status_alert = $status_waiting + $status_updated;
+
+    return view('/webpanel/groups-customer', compact('row_salearea', 'customer_area_list', 'admin_area_list', 'status_waiting','status_updated', 'status_alert'));
    }
    public function updateAdminarea(Request $request, $sale_area)
    {
@@ -940,6 +1023,11 @@ class WebpanelCustomerController
             case $status == 'getexcel_customerall':
                 $date = date('d-m-Y');
                 return Excel::download(new CustomerAllExport, 'Customer_all'.'_'.$date.'.'.'xlsx');
+                break;
+
+            case $status == 'getexcel_following':
+                $date = date('d-m-Y');
+                return Excel::download(new CustomerAllExport, 'Customer_following'.'_'.$date.'.'.'xlsx');
                 break;
 
             default:
@@ -1067,6 +1155,27 @@ class WebpanelCustomerController
                 
                 $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status', 'customer_status')
                                     ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->get();
+
+                $data = $query->toArray();
+                // Clean up output buffer before writing anything to CSV file.
+                ob_end_clean();
+            break;
+
+
+            case $status == 'getcsv_following':
+                $date = date('Y-m-d');
+                $filename = 'Customer_following_'. $date. '.csv';
+                 // Start the output buffer.
+                ob_start();
+
+                // Set PHP headers for CSV output.
+                header('Content-Type: text/csv; charset=utf-8');
+                header('Content-Disposition: attachment; filename= '.$filename);
+                
+                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status', 'status_user')
+                                    ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->where('status_user', "กำลังติดตาม")
                                     ->get();
 
                 $data = $query->toArray();

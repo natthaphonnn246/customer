@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use App\Models\Customer;
 use Illuminate\Support\Facades\DB;
 
 Class UserController
@@ -161,7 +162,18 @@ Class UserController
     {
         $row_user = User::user();
         $user_master = $row_user[0];
-        return view('webpanel/admin', compact('user_master'));
+
+        $status_waiting = Customer::where('status', '0')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        return view('webpanel/admin', compact('user_master', 'status_waiting', 'status_updated', 'status_alert'));
     }
 
     public function edit($id)
@@ -173,7 +185,17 @@ Class UserController
         $amphur = DB::table('amphures')->select('name_th', 'province_id')->get();
         $district = DB::table('districts')->select('name_th', 'amphure_id')->get();
 
-        return view('webpanel/admin-detail', compact('admin_master', 'province', 'amphur', 'district'));
+        $status_waiting = Customer::where('status', '0')
+                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        return view('webpanel/admin-detail', compact('admin_master', 'province', 'amphur', 'district', 'status_alert', 'status_waiting', 'status_updated'));
     }
 
     public function update(Request $request, $id)

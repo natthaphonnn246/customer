@@ -16,14 +16,16 @@
 </head>
 <body>
 
+<div id="bgs">
     @extends ('portal/menuportal-tailwind')
+    <div>
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 20px 30px 40px;
+            /* padding: 20px 30px 40px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
@@ -158,12 +160,15 @@
             background-color: #cbcbcb;
         }
         #backLink {
-            color: #007bff;
-            text-decoration: underline;
+            color: #8E8E8E;
+            text-decoration: none;
             cursor: pointer;
         }
+        #backLink:hover {
+            color: #2246fc;
+        }
     </style>
-    <div class="contentArea" id="bg">
+    <div class="contentArea">
 
         @section('col-2')
 
@@ -202,12 +207,13 @@
             @endif
         @endsection
 
-        <div style="text-align: left; margin-top: 10px;">
-            <span style="color: #8E8E8E;"><a href="/portal/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / รายละเอียด</span>
+        <div class="py-2">
         </div>
-        <hr style="color: #8E8E8E; width: 100%; margin-top: 25px;">
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/portal/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / รายละเอียด</span>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 2px;">
     @if (isset($customer_edit) != '')
 
+    <div class="ms-6 mr-6">
         <form id="form">
             {{-- action="/webpanel/admin-detail/update/{{$row_edit->user_code}}" enctype="multipart/form-data" --}}
             @csrf
@@ -354,7 +360,7 @@
                             </ul>
                         </div>
                         <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                            <ul class="mb-8" style="width: 100%;">
                                 <span>ตำบล/แขวง</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="district" id="districts">
                                     @if(isset($district) == '')
@@ -369,7 +375,7 @@
                             </ul>
                         </div>
                         <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                            <ul class="mb-6" style="width: 100%;">
                                 <span>รหัสไปรษณีย์</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบ</span>
                                 <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="zip_code" id="zipcode" value="{{$customer_edit->zip_code}}">
                             </ul>
@@ -423,16 +429,18 @@
                         </div>
                     </div>
         </form>
+    </div>
+</div>
 
                     <!--- update user information-->
                     <script>
                             $('#updateForm').click(function() {
                                 
-                                $('#bg').css('display', 'none');
+                                $('#bgs').css('display', 'none');
                                 let user = $('#form').serialize();
 
                                 $.ajax({
-                                    url: '/portal/customer-detail/update/{{$customer_edit->customer_code}}',
+                                    url: '/portal/customer-detail/update/{{$customer_edit->id}}',
                                     type: 'post',
                                     data: user,
                                     success: function(data) {
@@ -445,7 +453,7 @@
                                             confirmButtonText: 'ตกลง'
 
                                             }).then((data)=>{
-                                                $('#bg').css('display', '');
+                                                $('#bgs').css('display', '');
 
                                             });
 
@@ -465,9 +473,8 @@
                             });
                     </script>
 
-    @endif
-                    
-    </div>
+    {{-- @endif --}}
+                
                     <script>
                             
                         $('#province').change(function(e) {
@@ -813,6 +820,9 @@
                                 }
                     </script>
 
+        @endif
+    </div>
+</div>
 @endsection
 </body>
 </html>

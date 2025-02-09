@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Customer;
 use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +13,18 @@ class ProvinceController
     public function index()
     {     
             $provinces = Province::province();
-            return view('/webpanel/admin-create', compact('provinces'));
+
+            $status_waiting = Customer::where('status', '0')
+                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->count();
+
+            $status_updated = Customer::where('status_update', 'updated')
+                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->count();
+
+                    $status_alert = $status_waiting + $status_updated;
+
+            return view('/webpanel/admin-create', compact('provinces', 'status_alert', 'status_waiting', 'status_updated'));
     }
  /*    public function customerCreate()
     {

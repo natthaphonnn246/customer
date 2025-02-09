@@ -17,14 +17,14 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel')
+    @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             /* text-align: left; */
@@ -226,17 +226,40 @@
         .sliders.round:before {
             border-radius: 50%;
         }
+        #backLink {
+            color: #8E8E8E;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #backLink:hover {
+            color: #2246fc;
+        }
     </style>
+
+            @section('status_alert')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+            @endsection
+
+            @section('status_waiting')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+            @endsection
+
+            @section('status_updated')
+            <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+            @endsection
+
+            @section('text_alert')
+            <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+            @endsection
 
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
-        <div style="text-align: left; margin-top: 10px;">
-            <span style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / รอดำเนินการ Waiting</span>
-
+        <div class="py-2">
         </div>
-        <hr style="color: #8E8E8E; width: 100%;">
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / รอดำเนินการ Waiting</span>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
-        <div style="text-align: right;">
+        <div class="mr-6" style="text-align: right;">
             <a href="/webpanel/customer/export/getcsv/getcsv_waiting"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
             <a href="/webpanel/customer/export/getexcel/getexcel_waiting"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
     
@@ -256,7 +279,7 @@
             @endif
         </div>
 
-        <hr style="color: #8E8E8E; width: 100%;">
+        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
 
         <div class="row" style="justify-content: left; margin-left: 20px;">
             
@@ -284,21 +307,22 @@
 
         </div>
 
-        <hr style="color: #8E8E8E; width: 100%;">
+        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
 
+        <div class="ms-6 mr-6">
         <table class="table table-striped">
             <thead>
 
               <tr>
-                <th scope="col" style="color:#838383; text-align: left;">#</th>
-                <th scope="col" style="color:#838383; text-align: left;">CODE</th>
-                <th scope="col" style="color:#838383; text-align: left;">อีเมล</th>
-                <th scope="col" style="color:#838383; text-align: left;">ชื่อร้านค้า</th>
-                <th scope="col" style="color:#838383; text-align: center;">STATUS</th>
-                <th scope="col" style="color:#838383; text-align: center;">UPDATE</th>
-                <th scope="col" style="color:#838383; text-align: center;">วันที่สมัคร</th>
-                <th scope="col" style="color:#838383; text-align: center;">สถานะ</th>
-                <th scope="col" style="color:#838383; text-align: center;">จัดการ</th>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">#</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">CODE</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">อีเมล</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">ชื่อร้านค้า</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">STATUS</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">UPDATE</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">วันที่สมัคร</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">สถานะ</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">จัดการ</td>
               </tr>
             </thead>
             <tbody>
@@ -455,11 +479,11 @@
               @endforeach
               @endif
             </tbody>
-          </table>
-
+        </table>
+        </div>
         @if((!($total_status_waiting)) == 0)
             <nav aria-label="Page navigation example">
-                <ul class="pagination">
+                <ul class="pagination ms-6 py-4">
                 <li class="page-item">
 
                 @if ($page == 1)

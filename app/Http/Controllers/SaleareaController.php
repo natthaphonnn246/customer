@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Salearea;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class SaleareaController extends Controller
@@ -10,11 +11,38 @@ class SaleareaController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function viewCreate()
+    {
+         //menu alert;
+         $status_waiting = Customer::where('status', '0')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+        // dd($salearea);
+        return view('/webpanel/sale-create', compact('status_alert', 'status_waiting', 'status_updated'));
+    }
+
     public function index()
     {
         $salearea = Salearea::orderBy('sale_area', 'asc')->get();
+
+         //menu alert;
+         $status_waiting = Customer::where('status', '0')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
         // dd($salearea);
-        return view('/webpanel/sale', compact('salearea'));
+        return view('/webpanel/sale', compact('salearea', 'status_alert', 'status_waiting', 'status_updated'));
     }
 
     /**
@@ -63,7 +91,19 @@ class SaleareaController extends Controller
     public function viewSale($id)
     {
         $salearea = Salearea::where('salearea_id', $id)->first();
-        return view('/webpanel/sale-detail', compact('salearea'));
+
+                 //menu alert;
+                 $status_waiting = Customer::where('status', '0')
+                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->count();
+
+                $status_updated = Customer::where('status_update', 'updated')
+                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->count();
+
+                $status_alert = $status_waiting + $status_updated;
+
+        return view('/webpanel/sale-detail', compact('salearea', 'status_alert', 'status_waiting','status_updated'));
     }
 
     /**
@@ -117,6 +157,22 @@ class SaleareaController extends Controller
                 return redirect('/webpanel/sale/'.$id)->with('success', 'อัปเดตข้อมูลสำเร็จ');
         }
         
+    }
+
+    public function importsale()
+    {
+         //menu alert;
+         $status_waiting = Customer::where('status', '0')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        return view('/webpanel/importsale', compact('status_alert', 'status_waiting', 'status_updated'));
     }
 
     public function importFile(Request $request)

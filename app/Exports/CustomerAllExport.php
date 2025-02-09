@@ -13,7 +13,7 @@ class CustomerAllExport implements FromCollection, WithHeadings
     */
     public function collection()
     {
-        return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status', 'customer_status')
+        return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status', 'customer_status', 'status_user')
                         ->whereNotIn('customer_code', ['0000','4494'])
                         ->get();
     }
@@ -29,6 +29,7 @@ class CustomerAllExport implements FromCollection, WithHeadings
             'SALE_AREA',
             'STATUS',
             'CUSTOMER_STATUS',
+            'STATUS_USER',
         ];
     }
 }

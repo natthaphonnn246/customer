@@ -16,14 +16,14 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel')
+    @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
@@ -70,21 +70,39 @@
             background-color: #0f21cb;
         }
     </style>
+
+        @section('status_alert')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+        @endsection
+
+        @section('status_waiting')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+        @endsection
+
+        @section('status_updated')
+        <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+        @endsection
+
+        @section('text_alert')
+        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+        @endsection
+
     <div class="contentArea" id="bg">
-        <div style="text-align: left; margin-top: 10px;">
+        <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">แอดมินทั้งหมด (Admin)</a> / รายละเอียด</span> --}}
-            <span style="color: #8E8E8E;">ตั้งค่าระบบ (Settings)</span>
+            {{-- <span style="color: #8E8E8E;">ตั้งค่าระบบ (Settings)</span> --}}
         </div>
-        <hr style="color:#818181;">
-        <ul class="text-title" style="text-align: start; margin-top: 30px;">
+        <span class="ms-6" style="color: #8E8E8E;">ตั้งค่าระบบ (Settings)</span>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
+        <ul class="text-title ms-6" style="text-align: start; margin-top: 30px;">
             <span style="font-size: 18px; font-weight: 500; color:#464646;">ตั้งค่าเว็บไซต์</span>
-            <hr style="color:#818181;">
+            <hr class="my-3" style="color: #8E8E8E; width: 100%;">
         </ul>
         <form method="post" action="/webpanel/setting/update-setting" enctype="multipart/form-data" id="bg">
             @csrf
 
             @if(!empty($setting_view))
-                <div class="row">
+                <div class="row ms-6 mr-6 mt-4">
                     <div class="col-sm-6">
                         <ul style="width: 100%;">
                             <span style="color:#8E8E8E;">สถานะของเว็บไซต์</span>
@@ -108,12 +126,11 @@
                             </select>
                         </ul>
                     </div>
+                    <hr class="mt-8" style="color: #8E8E8E; width: 100%;">
                 </div>
             @endif
-
-            <hr style="color:#818181;">
             <div style="text-align:left; margin-left:30px;">
-                <button type="submit" id="updateForm" name="submit_setting" class="btn my-2" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
+                <button type="submit" id="updateForm" name="submit_setting" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
             </div>
         </form>
     </div>

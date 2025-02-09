@@ -23,7 +23,8 @@
 
     <style>
         .contentArea {
-            padding: 20px 40px 40px;
+            /* padding: 20px 40px 40px; */
+            /* padding: 12px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
@@ -100,15 +101,17 @@
                 <input type="hidden" name="register_by" value="ไม่ระบุ">
             @endif
 
-            <div class="row">
-                <div style="text-align: left; padding-top: 10px;">
-                    {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
-                    <span style="color: #8E8E8E;">ลงทะเบียนร้านค้า (Register)</span>
-                </div>
-                <hr style="color: #8E8E8E; width: 100%; margin-top: 15px">
-                <div class="col-sm-6 py-3">
-                    <ul class="text-title" style="text-align: start; margin-top: 20px;">
-                        <span style="font-size: 18px; font-weight: 500;">ลงทะเบีนนลูกค้าใหม่</span>
+            <div class="py-2">
+                {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
+                {{-- <span class="ms-6" style="color: #8E8E8E;">ลงทะเบียนร้านค้า (Register)</span> --}}
+            </div>
+            <span class="ms-6" style="color: #8E8E8E;">ลงทะเบียน (Register)</span>
+            <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 2px;">
+
+            <div class="row ms-6 mr-6">
+                <div class="col-sm-6 mt-2">
+                    <ul class="text-title" style="text-align: start;">
+                        <span style="font-size: 18px; font-weight: 500;">ลงทะเบียนลูกค้าใหม่</span>
                         <hr style="color: #8E8E8E; width: 100%; margin-top: 10px">
                     </ul>
                     <ul class="text-muted py-3" style="padding-top: 10px;">
@@ -181,18 +184,33 @@
                         </div>
                         <div class="col-sm-12 py-3">
                             <ul style="width: 100%;">
-                                <span>อีเมล</span>
-                                <input style="margin-top:10px; color: grey;" name="email" type="email" class="form-control" name="email"><br>
-                                <span>เบอร์ร้านค้า</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 021234567)</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="phone"><br>
-                                <span>เบอร์มือถือ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0812345678)</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="telephone" required><br>
-                                <span>ที่อยู่จัดส่ง</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address">                              
+                                <li class="mt-2">
+                                    <span>อีเมล</span>
+                                    <input style="margin-top:10px; color: grey;" name="email" type="email" class="form-control" name="email">
+                                </li>
+                                <li class="mt-4">
+                                    <span>เบอร์ร้านค้า</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 021234567)</span>
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="phone">
+                                </li>
+                                <li class="mt-4">
+                                    <span>เบอร์มือถือ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0812345678)</span>
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="telephone" required>
+                                </li>
+                                <li class="mt-4">
+                                    <span>การจัดส่งสินค้า</span><span style="font-size: 12px; color:red;"> *ไม่ระบุ คือ จัดส่งตามรอบขนส่งทางร้าน</span>
+                                    <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="delivery">
+                                    <option value="">ไม่ระบุ</option>
+                                    <option value="ขนส่งเอกชน">ขนส่งเอกชน (พัสดุ)</option>
+                                    </select>
+                                </li>
+                                <li class="mt-4">
+                                    <span>ที่อยู่จัดส่ง</span>
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address">    
+                                </li>                          
                             </ul>
                         </div>
-                        <div class="col-sm-6 py-3">
-                            <ul style="width: 100%;">
+                        <div class="col-sm-6">
+                            <ul class="mt-2" style="width: 100%;">
                                 <span>จังหวัด</span>
                                 {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
 
@@ -207,8 +225,8 @@
                                 </select>
                             </ul>
                         </div>
-                        <div class="col-sm-6 py-3">
-                            <ul style="width: 100%;">
+                        <div class="col-sm-6">
+                            <ul class="mt-2" style="width: 100%;">
                                 <span>อำเภอ/แขวง</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="amphur" id="amphures">
                                     
@@ -222,7 +240,7 @@
                             </ul>
                         </div>
                         <div class="col-sm-6 py-3">
-                            <ul style="width: 100%;">
+                            <ul class="mb-8" style="width: 100%;">
                                 <span>ตำบล/เขต</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts">
 
@@ -236,15 +254,16 @@
                             </ul>
                         </div>
                         <div class="col-sm-6 py-3">
-                            <ul style="width: 100%;">
+                            <ul class="mb-8" style="width: 100%;">
                                 <span>รหัสไปรษณีย์</span>
                                 <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="zip_code" id="zipcode">
                             </ul>
                         </div>
                     </div>
                 </div>
+                
                 <!--form login-->
-                    <div class="col-sm-6" style="padding-top:40px;">
+                    <div class="col-sm-6 mt-2">
                         <div class="form-control">
                             <ul class="text-title" style="text-align: start; margin-top: 10px;">
                                 <span style="font-size: 18px; font-weight: 500;">ข้อมูลผู้รับผิดชอบ</span>

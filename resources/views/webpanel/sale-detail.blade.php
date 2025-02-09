@@ -51,6 +51,23 @@
             background-color: #118C3E;
         }
     </style>
+
+            @section('status_alert')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+            @endsection
+
+            @section('status_waiting')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+            @endsection
+
+            @section('status_updated')
+            <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+            @endsection
+
+            @section('text_alert')
+            <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+            @endsection
+
     <div class="contentArea">
         <div style="text-align: left; margin-top: 10px;">
             <span style="color: #8E8E8E;"><a href="/webpanel/sale" id="backLink">ข้อมูลพนักงานขาย (Sale area)</a> / แบบฟอร์ม</span>

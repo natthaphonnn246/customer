@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Customer;
 use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 
@@ -50,6 +51,17 @@ class SettingController extends Controller
                         ->first();
         // dd($setting_view->maintenance_status);
 
-        return view('webpanel/setting', compact('setting_view'));
+
+        $status_waiting = Customer::where('status', '0')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        return view('webpanel/setting', compact('setting_view', 'status_waiting', 'status_updated', 'status_alert'));
     }
 }

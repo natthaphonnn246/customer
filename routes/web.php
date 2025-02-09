@@ -23,7 +23,15 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
     Route::get('/signin', function () {
         return view('portal/portal-sign');
     })->middleware('auth', 'status','maintenance');
+
     Route::get('/signin', [PortalCustomerController::class, 'portalSign'])->middleware('auth', 'status','maintenance')->name('portal.sign');
+
+      //dashboard portal charts;
+    Route::get('/portal/dashboard', function () {
+        return view('/portal/dashboard');
+    })->middleware('auth', 'status','maintenance');
+
+    Route::get('/portal/dashboard',[PortalCustomerController::class , 'dashboardCharts'])->middleware('auth', 'status','maintenance');
 
     Route::get('/portal/portal-sign/update-amphure', [ProvinceController::class, 'amphure']);
     Route::get('/portal/portal-sign/update-district', [ProvinceController::class, 'district']);
@@ -72,6 +80,8 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
         Route::get('/webpanel/customer/importcustomer', function () {
             return view('webpanel/importcustomer');
         });
+
+        Route::get('/webpanel/customer/importcustomer', [WebpanelCustomerController::class, 'import']);
 /* 
         Route::get('/webpanel/customer/customer-completed', function () {
             return view('webpanel/customer-completed');
@@ -96,6 +106,8 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
         Route::get('/webpanel/sale/importsale', function () {
             return view('webpanel/importsale');
         });
+
+        Route::get('/webpanel/sale/importsale', [SaleareaController::class, 'importsale']);
 
         Route::post('/webpanel/customer/importcsv',[WebpanelCustomerController::class, 'importFile']);
         Route::post('/webpanel/sale/importcsv',[SaleareaController::class, 'importFile']);
@@ -168,6 +180,8 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
         Route::get('/webpanel/sale-create', function() {
             return view('webpanel/sale-create');
         });
+
+        Route::get('/webpanel/sale-create', [SaleareaController::class, 'viewCreate']);
 
         Route::post('/webpanel/sale-create/insert', [SaleareaController::class, 'create']);
 

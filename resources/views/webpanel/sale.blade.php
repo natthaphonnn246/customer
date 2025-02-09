@@ -16,14 +16,14 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel')
+    @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             /* text-align: left; */
@@ -225,22 +225,39 @@
         }
     </style>
 
-    <div class="contentArea">
-        <div style="text-align: left; margin-top: 10px;">
-            {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
-            <span style="color: #8E8E8E;">เขตการขาย (Sale area)</span>
-        </div>
-        <hr style="color: #8E8E8E; width: 100%;">
+            @section('status_alert')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+            @endsection
 
-        <div style="text-align: left;">
+            @section('status_waiting')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+            @endsection
+
+            @section('status_updated')
+            <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+            @endsection
+
+            @section('text_alert')
+            <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+            @endsection
+
+    <div class="contentArea">
+        <div class="py-2">
+            {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
+        </div>
+        <span   class="ms-6" style="color: #8E8E8E;">เขตการขาย (Sale area)</span>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
+
+        <div class="ms-6 py-2" style="text-align: left;">
             <a href="/webpanel/sale-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มเขตการขาย</a>
-            <a href="/webpanel/sale/importsale"  id="importMaster" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">import Sale CSV</a>
+            <a href="/webpanel/sale/importsale"  id="importMaster" class="btn ms-2" type="submit"  name="" style="width: 180px; padding: 8px;">import Sale CSV</a>
             {{-- <a href="/webpanel/admin-role"  id="adminRole" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดการสิทธิ์</a> --}}
     
         </div>
 
-        <hr style="color: #8E8E8E; width: 100%;">
+        <hr class="my-4" style="color: #8E8E8E; width: 100%;">
         
+        <ul class="ms-4 mr-5 py-1">
         <table class="table table-striped">
             <thead>
               <tr>
@@ -267,12 +284,12 @@
             
                     ?>
                 
-                <td scope="row" style="color:#9C9C9C; text-align: center;">{{$start++}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: center;">{{$sale_area}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left;">{{$sale_name}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left;">{{$created_at}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: center; padding: 10px;">{{$start++}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: center; padding: 10px;">{{$sale_area}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 10px;">{{$sale_name}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 10px;">{{$created_at}}</td>
 
-                    <td scope="row" style="color:#9C9C9C; text-align: left;"><a href="/webpanel/sale/{{$sale_area}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                    <td scope="row" style="color:#9C9C9C; text-align: left; padding: 10px;"><a href="/webpanel/sale/{{$sale_area}}" id="edit"><i class="fa-regular fa-eye"></i></a>
                     <button class="trash-sale" type="submit" id="trash{{$sale_area}}"><i class="fa-regular fa-trash-can"></i></button>
                 </td>
               </tr>
@@ -343,7 +360,7 @@
               @endif
             </tbody>
           </table>
-
+        </ul>
     </div>
 
 @endsection

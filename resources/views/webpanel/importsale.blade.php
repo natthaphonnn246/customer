@@ -17,14 +17,14 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel')
+    @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             /* text-align: left; */
@@ -211,15 +211,40 @@
         .sliders.round:before {
             border-radius: 50%;
         }
+        #backLink {
+            color: #8E8E8E;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #backLink:hover {
+            color: #2246fc;
+        }
     </style>
+
+            @section('status_alert')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+            @endsection
+
+            @section('status_waiting')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+            @endsection
+
+            @section('status_updated')
+            <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+            @endsection
+
+            @section('text_alert')
+            <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+            @endsection
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
 
-            <div style="text-align: left; margin-top: 10px;">
-                <span style="color: #8E8E8E;"><a href="/webpanel/sale" id="backLink">เขตการขาย (Salearea)</a> / นำเข้าไฟล์เขตการขาย</span>
+            <div class="py-2">
+                {{-- <span style="color: #8E8E8E;"><a href="/webpanel/sale" id="backLink">เขตการขาย (Salearea)</a> / นำเข้าไฟล์เขตการขาย</span> --}}
             </div>
-            <hr style="color: #8E8E8E;">
-            <div style="text-align: left; margin-top: 10px;">
+            <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/sale" id="backLink">เขตการขาย (Salearea)</a> / นำเข้าไฟล์เขตการขาย</span>
+            <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
+            <div class="ms-6" style="text-align: left; margin-top: 10px;">
                 <span style="color: #e84545;">**นำเข้าไฟล์เขตการขาย (Sale_area) tb: saleareas</span>
             </div>
 
@@ -240,25 +265,27 @@
             @endif
 
             {{-- {{$check_provinces}} --}}
-            <div style="text-align: left;">
+            <div class="ms-6 mr-6" style="text-align: left;">
 
         
                 <form method="post" id="import" action="/webpanel/sale/importcsv" enctype="multipart/form-data" style="margin-top: 10px;">
                     @csrf
                     <input type="file"  id="import_csv" name="import_csv" class="form-control text-muted"><br/>
-                    <input type="submit" id="importCustomer" name="submit_csv" class="btn btn-primary" value="นำเข้าไฟล์">
+                    <input class="mb-4" type="submit" id="importCustomer" name="submit_csv" class="btn btn-primary" value="นำเข้าไฟล์">
                 
                 </form>
                 <hr style="color: #8E8E8E;">
-
+     
                 @if(Session::get('success_import'))
-                <div class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success_import') }}</div>
+                <div class="py-4">
+                    <ul class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success_import') }}</ul>
+                </div>
                 @elseif(Session::get('error_import'))
-                <div class="alert alert-danger"><i class="fa-solid fa-circle-xmark" style="color:red;"></i> {{ Session::get('error_import') }}</div>
+                <div class="py-4">
+                    <ul class="alert alert-danger"><i class="fa-solid fa-circle-xmark" style="color:red;"></i> {{ Session::get('error_import') }}</ul>
+                </div>
                 @endif
-            
             </div>
-          
 
     </div>
 

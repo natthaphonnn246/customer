@@ -16,16 +16,17 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel')
+    @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            padding: 0px;
             background-color: #FFFFFF;
             border-radius: 2px;
+            min-width: 1200px;
             /* text-align: left; */
         }
         #admin {
@@ -211,21 +212,37 @@
         }
     </style>
 
-    <div class="contentArea">
-        <div style="text-align: left; margin-top: 10px;">
-            {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
-            <span style="color: #8E8E8E;">ข้อมูลแอดมิน (Admin)</span>
-        </div>
-        <hr style="color: #8E8E8E; width: 100%;">
+        @section('status_alert')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+        @endsection
 
-        <div style="text-align: left;">
+        @section('status_waiting')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+        @endsection
+
+        @section('status_updated')
+            <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+        @endsection
+
+        @section('text_alert')
+        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+        @endsection
+
+    <div class="contentArea">
+        <div class="py-2">
+            {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
+        </div>
+        <span class="ms-6" style="color: #8E8E8E;">ข้อมูลแอดมิน (Admin)</span>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
+        <div class="ms-6 py-2" style="text-align: left;">
             <a href="/webpanel/admin-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มแอดมิน</a>
             {{-- <a href="/webpanel/admin-role"  id="adminRole" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดการสิทธิ์</a> --}}
     
         </div>
 
-        <hr style="color: #8E8E8E; width: 100%;">
+        <hr class="my-4" style="color: #8E8E8E; width: 100%;">
         
+        <ul class="ms-4 mr-5 py-1">
         <table class="table table-striped">
             <thead>
               <tr>
@@ -234,7 +251,7 @@
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500;">Admin area</td>
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500;">อีเมล</td>
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500;">ชื่อแอดมิน</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">อนุมัติบัญชี</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">อนุมัติ</td>
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500;">วันที่สมัคร</td>
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500;">จัดการ</td>
               </tr>
@@ -256,12 +273,12 @@
                         $created_at = $row->created_at;
                     ?>
                 
-                <td scope="row" style="color:#9C9C9C; text-align: left;">{{$start++}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left;">{{$user_code}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left;">{{$admin_area}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left;">{{$email}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left;">{{$user_name}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left;">
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$start++}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$user_code}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$admin_area}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$email}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$user_name}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">
                   
                     @if ($user_code === '0000')
                         <label class="switch" style="opacity:0.6;">
@@ -293,9 +310,9 @@
                     </label> --}}
               
             </td>
-                <td scope="row" style="color:#9C9C9C; text-align: left;">{{$created_at}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$created_at}}</td>
 
-                    <td scope="row" style="color:#9C9C9C; text-align: left;"><a href="/webpanel/admin/{{$user_code}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                    <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;"><a href="/webpanel/admin/{{$user_code}}" id="edit"><i class="fa-regular fa-eye"></i></a>
                     @if ($user_code == '0000')
                     <button class="trash-admin" style="opacity: 0.6;" disabled><i class="fa-regular fa-trash-can"></i></button>
                     @else
@@ -450,6 +467,7 @@
               @endif
             </tbody>
           </table>
+        </ul>
 <?php
 /* date_default_timezone_set('Asia/Bangkok');
 echo date("Y-m-d H:i:s"); */

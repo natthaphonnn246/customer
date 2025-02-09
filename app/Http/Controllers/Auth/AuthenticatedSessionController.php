@@ -93,7 +93,8 @@ class AuthenticatedSessionController extends Controller
                                                         $request->session()->regenerate();
                                                         // return redirect()->route('portal');
                                                         return redirect()->action(
-                                                            [PortalCustomerController::class, 'customerView']
+                                                            // [PortalCustomerController::class, 'customerView']
+                                                            [PortalCustomerController::class, 'dashboardCharts']
                                                         );
 
                                                         } else {
@@ -152,7 +153,8 @@ class AuthenticatedSessionController extends Controller
                                                     $request->session()->regenerate();
                                                     // return redirect()->route('portal');
                                                     return redirect()->action(
-                                                        [PortalCustomerController::class, 'customerView']
+                                                        // [PortalCustomerController::class, 'customerView']
+                                                        [PortalCustomerController::class, 'dashboardCharts']
                                                     );
 
                                                     } else {
@@ -203,7 +205,8 @@ class AuthenticatedSessionController extends Controller
                                             $request->session()->regenerate();
                                             // return redirect()->route('portal');
                                             return redirect()->action(
-                                                [PortalCustomerController::class, 'customerView']
+                                                // [PortalCustomerController::class, 'customerView']
+                                                [PortalCustomerController::class, 'dashboardCharts']
                                             );
 
                                             } else {

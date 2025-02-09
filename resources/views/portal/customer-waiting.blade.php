@@ -24,7 +24,7 @@
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             /* text-align: left; */
@@ -262,15 +262,13 @@
             @endsection
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
     
-            <div class="row">
-                <div class="col-9 py-2">
-                    <div style="text-align: left; padding:5px; margin-top:5px;">
-                        <span style="color: #8E8E8E;">ข้อมูลลูกค้า /Status : <span style="color:rgb(255, 255, 255);  padding: 6px; background-color: rgb(255, 70, 70); border-radius:100px;">รอดำเนินการ</span></span>
-                    </div>
-                </div>
-            
-                <hr style="color: #8E8E8E; width: 100%; margin-top: 25px;">
+            <div class="py-2">
+            </div>
+            <span class="ms-6" style="color: #8E8E8E;">ข้อมูลลูกค้า /Status : <span style="color:rgb(255, 255, 255);  padding: 6px; background-color: rgb(255, 70, 70); border-radius:100px;">รอดำเนินการ</span></span>
+            <hr class="my-4" style="color: #8E8E8E; width: 100%; border:solid 2px;">
 
+            <div class="ms-6 mr-6">
+            <div class="row">
                 <!--- search --->
                 <form class="max-w-md mx-auto py-3" method="get" action="/portal/customer/status/waiting">
                     {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
@@ -282,7 +280,7 @@
                         <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
                     
                     </div>
-                    <p id="keyword_search"></p>
+                    <p class="py-2" id="keyword_search"></p>
                     @csrf   
                 </form>
 
@@ -446,7 +444,7 @@
 
           @if($count_waiting != 0)
             <nav aria-label="Page navigation example">
-                <ul class="pagination">
+                <ul class="pagination py-4">
                 <li class="page-item">
 
                 @if ($page == 1)
@@ -494,6 +492,7 @@
         @endif
 
     </div>
+</div>
 
 @endsection
 

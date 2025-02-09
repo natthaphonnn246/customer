@@ -60,8 +60,9 @@ class Customer extends Model
         $total_page = ceil($count_page / $perpage);
         $start = ($perpage * $page) - $perpage;
 
-        $customer = DB::table('customers')->select('customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
                     ->whereNotIn('customer_code',['0000', '4494'])
+                    ->orderBy('id','asc')
                     ->offset($start)
                     ->limit($perpage)
                     ->get();
@@ -160,10 +161,28 @@ class Customer extends Model
 
         return [$customer, $start, $total_page, $page];
     }
+    public static function customerFollowing($page)
+    {
+        $pagination = Customer::select(DB::raw('customer_id'))->where('status_user','กำลังติดตาม')->get();
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('status_user','กำลังติดตาม')
+                    ->whereNotIn('customer_code',['0000', '4494'])
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
 
     public static function customerEdit($id)
     {
-        $customer_edit = Customer::where('customer_id', $id)->first();
+        $customer_edit = Customer::where('id', $id)->first();
 
         return [$customer_edit];
     }

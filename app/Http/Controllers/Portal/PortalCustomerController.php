@@ -25,6 +25,43 @@ use Illuminate\Http\Response;
 
 class PortalCustomerController
 {
+
+    public function dashboardCharts(Request $request)
+    {
+
+        $id = $request->user()->admin_area;
+        $code = $request->user()->user_code;
+
+        $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+        $status_all = Customer::select('status')
+                                ->where('admin_area', $id)
+                                ->whereNotIn('customer_status', ['inactive'])
+                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->count();
+
+        $status_waiting = Customer::where('admin_area', $id)
+                                    ->where('status', '0')
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+                                    // dd($count_waiting);
+        $status_action = Customer::where('admin_area', $id)
+                                    ->where('status', '1')
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_completed = Customer::where('admin_area', $id)
+                                    ->where('status', '2')
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_action;
+
+        return view('portal/dashboard', compact('user_name', 'status_all', 'status_waiting', 'status_action', 'status_completed', 'status_alert'));
+    
+    }
     public function indexPortal(Request $request)
     {
             $code = $request->user()->user_code;
@@ -278,7 +315,7 @@ class PortalCustomerController
         $start = ($perpage * $page) - $perpage;
         
         $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
-        $customer_list = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+        $customer_list = Customer::select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
@@ -740,7 +777,7 @@ class PortalCustomerController
                 }
 
      /*    } */
-            Customer::where('customer_id', $id)
+            Customer::where('id', $id)
                     ->update ([
                
                         'email' => $email,
@@ -759,8 +796,8 @@ class PortalCustomerController
                     ]);
 
                 // check user id;
-                $check_customer_id = Customer::select('customer_id')->where('customer_id', $id)->first();
-                $customer_id =  $check_customer_id->customer_id;
+                $check_customer_id = Customer::select('id')->where('id', $id)->first();
+                $customer_id =  $check_customer_id->id;
 
                 if ($customer_id == $id)
                 {

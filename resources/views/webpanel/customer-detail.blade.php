@@ -14,15 +14,15 @@
     
 </head>
 <body>
-
-    @extends ('webpanel/menuwebpanel')
+    @extends ('webpanel/menuwebpanel-tailwind')
+<div id="bg">
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
@@ -142,41 +142,42 @@
             color:rgb(103, 103, 103);
             background-color: #cbcbcb;
         }
-  /*       .input_date {
-            border-radius: 3px;
-            border: 1px solid #D3D3D3;
-            padding: 5px;
-            margin-bottom: 15px;
-            width: auto;
+        #backLink {
+            color: #8E8E8E;
+            text-decoration: none;
+            cursor: pointer;
         }
-        #datepicker {
-            width: 100%;
-        } */
+        #backLink:hover {
+            color: #2246fc;
+        }
 
     </style>
+
+        @section('status_alert')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+        @endsection
+
+        @section('status_waiting')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+        @endsection
+
+        @section('status_updated')
+        <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+        @endsection
+
+        @section('text_alert')
+        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+        @endsection
     
-    <div class="contentArea" id="bg">
-    
+    <div class="contentArea">
 
-      {{--   @if(Session::has('success'))
-        <script>
-            swal.fire({
-                title: 'สำเร็จ',
-                text: 'บันท��กข้อมูลลูกค้าเรียบร้อยแล้ว',
-                icon:'success',
-                confirmButtonText: 'ตกลง'
-            });
-        </script>
-        @endif --}}
-
-        <div style="text-align: left; margin-top: 10px;">
-            <span style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / แบบฟอร์ม</span>
-
+        <div class="py-2">
         </div>
-        <hr style="color: #8E8E8E; width: 100%;"></br>
-
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / แบบฟอร์ม</span>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
+        
         @if($customer_view->updated_at != '')
-        <div style="text-align: right;">
+        <div class="py-4 mr-6" style="text-align: right;">
             <span style="color:#a4a2a2;">อัปเดตข้อมูลล่าสุด : </span> <span style="color:#939393; border:solid 1px #404147; width: 50%; padding: 10px; border-radius: 5px;">{{$customer_view->updated_at}}</span></span></br>
         </div></br>
         @endif
@@ -189,55 +190,66 @@
         {{-- <form action="/webpanel/customer-detail/update/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
             @csrf
 
-                <div class="row">
+                <div class="row ms-6 mr-6">
                     <div class="col-sm-6">
-                        <ul class="text-title" style="text-align: start; margin-top: 25px;">
+                        <ul class="text-title" style="text-align: start;">
                             <span style="font-size: 16px; font-weight: 500; color:#545454;">ลงทะเบีนนลูกค้าใหม่</span>
-                            <hr>
+                            <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
                         </ul>
                         <ul class="text-muted" style="padding-top: 10px;">
-                            <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span></br>
-                            <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certStore" >ใบอนุญาตขายยา/สถานพยาบาล</div>
-                            @if ($customer_view->cert_store == '')
-                            <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
-                            @endif
-                            <hr>
+                            <li class="mt-2">
+                            <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certStore" >ใบอนุญาตขายยา/สถานพยาบาล</div>
+                                @if ($customer_view->cert_store == '')
+                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                @endif
+                            <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
+                            </li>
 
+                            <li class="mt-4">
                             <span>ใบประกอบวิชาชีพ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                            <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certMedical" >ใบประกอบวิชาชีพ</div>
-                            @if ($customer_view->cert_medical == '')
-                            <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
-                            @endif
-                            <hr>
+                                <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certMedical" >ใบประกอบวิชาชีพ</div>
+                                @if ($customer_view->cert_medical == '')
+                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                @endif
+                            <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
+                            </li>
                             {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_medical" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
+                            <li class="mt-4">
                             <span>ใบทะเบียนพาณิชย์</span>
-                            <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certCommerce" >ใบทะเบียนพาณิชย์</div>
-                            @if ($customer_view->cert_commerce == '')
-                            <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
-                            @endif
-                            <hr>
+                                <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certCommerce" >ใบทะเบียนพาณิชย์</div>
+                                @if ($customer_view->cert_commerce == '')
+                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                @endif
+                            <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
+                            </li>
                             {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_commerce" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
+                            <li class="mt-4">
                             <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span>
-                            <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certVat" >ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</div>
-                            @if ($customer_view->cert_vat == '')
-                            <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
-                            @endif
-                            <hr>
+                                <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certVat" >ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</div>
+                                @if ($customer_view->cert_vat == '')
+                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                @endif
+                            <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
+                            </li>
                             {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_vat" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
+                            <li class="mt-4">
                             <span>สำเนาบัตรประชาชน</span>
-                            <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certId" >สำเนาบัตรประชาชน</div>
-                            @if ($customer_view->cert_id == '')
-                            <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
-                            @endif
-                            <hr>
+                                <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certId" >สำเนาบัตรประชาชน</div>
+                                @if ($customer_view->cert_id == '')
+                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                @endif
+                            <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
+                            </li>
                             {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
-                            <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                            <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$customer_view->cert_number}}"><br>
-          
+                            <li class="mt-4">
+                                <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$customer_view->cert_number}}"><br>
+                            </li>
                             <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                             <input class="form-control" style="margin-top:10px;  color: rgb(171, 171, 171);"  type="text" id="datepicker" name="cert_expire" value="{{$customer_view->cert_expire}}">
                             {{-- <input id="date" style="margin-top:10px;  color: rgb(171, 171, 171);" type="date"  class="form-control" name="cert_expire" value="{{$customer_view->cert_expire}}"><br> --}}
@@ -259,13 +271,13 @@
                                 });
                         </script>
 
-                        <ul class="text-title" style="text-align: start; margin-top: 20px;">
+                        <ul class="text-title mt-5" style="text-align: start; margin-top: 20px;">
                             <span style="font-size: 16px; font-weight: 500; color:#545454;">ข้อมูลลูกค้า</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุให้ครบทุกช่อง</span>
-                            <hr>
+                            <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
                         </ul>
                         <div class="row text-muted">
                             <div class="col-sm-12">
-                                <ul style="width: 100%;">
+                                <ul class="mt-3" style="width: 100%;">
                                     <span>ชื่อร้านค้า/สถานพยาบาล</span>
                                     <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="customer_name" value="{{$customer_view->customer_name}}">
                                 </ul>
@@ -280,9 +292,9 @@
 
                             </div>
                             <div class="col-sm-6">
-                                <ul style="width: 100%;">
+                                <ul class="mt-4" style="width: 100%;">
                                     <span>CODE</span><span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="customer_code" value="{{$customer_view->customer_code}}" >
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" id="codeId" name="customer_code" value="{{$customer_view->customer_code}}" >
 
                                 </ul>
 
@@ -297,7 +309,7 @@
                             </div>
                             
                             <div class="col-sm-6">
-                                <ul style="width: 100%;">
+                                <ul class="mt-4" style="width: 100%;">
                                     <span>ระดับราคา</span><span style="font-size: 12px; color:red;">*ลูกค้า 6 เท่ากับ 1</span>
                                     <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="price_level">
                                     
@@ -312,31 +324,39 @@
                             </div>
                             <div class="col-sm-12">
                                 <ul style="width: 100%;">
+                                
+                                <li class="mt-4">
+                                    <span>แบบอนุญาตขายยา</span>
+                                    <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="type">
 
-
-                                <span>แบบอนุญาตขายยา</span>
-                                <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="type">
-
-                                    <option {{$customer_view->type == '' ? 'selected': ''}} value="">ไม่ระบุ</option>
-                                    <option {{$customer_view->type == 'ข.ย.1' ? 'selected': ''}} value="ข.ย.1">ข.ย.1</option>
-                                    <option {{$customer_view->type == 'ข.ย.2' ? 'selected': ''}} value="ข.ย.2">ข.ย.2</option>
-                                    <option {{$customer_view->type == 'ย.บ.1' ? 'selected': ''}} value="ย.บ.1">ย.บ.1</option>
-                                    <option {{$customer_view->type == 'คลินิกยา/สถานพยาบาล' ? 'selected': ''}} value="คลินิกยา/สถานพยาบาล">คลินิกยา/สถานพยาบาล</option>
-                                   
-                                </select><br>
-
+                                        <option {{$customer_view->type == '' ? 'selected': ''}} value="">ไม่ระบุ</option>
+                                        <option {{$customer_view->type == 'ข.ย.1' ? 'selected': ''}} value="ข.ย.1">ข.ย.1</option>
+                                        <option {{$customer_view->type == 'ข.ย.2' ? 'selected': ''}} value="ข.ย.2">ข.ย.2</option>
+                                        <option {{$customer_view->type == 'ย.บ.1' ? 'selected': ''}} value="ย.บ.1">ย.บ.1</option>
+                                        <option {{$customer_view->type == 'คลินิกยา/สถานพยาบาล' ? 'selected': ''}} value="คลินิกยา/สถานพยาบาล">คลินิกยา/สถานพยาบาล</option>
+                                    
+                                    </select>
+                                </li>
+                                <li class="mt-4">
                                     <span>อีเมล</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" name="email" type="email" class="form-control" name="email" value="{{$customer_view->email}}"><br>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" name="email" type="email" class="form-control" name="email" value="{{$customer_view->email}}">
+                                </li>
+                                <li class="mt-4">
                                     <span>เบอร์ร้านค้า</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 027534702)</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="phone" value="{{$customer_view->phone}}"><br>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="phone" value="{{$customer_view->phone}}">
+                                </li>
+                                <li class="mt-4">
                                     <span>เบอร์มือถือ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0812345678)</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$customer_view->telephone}}"><br>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$customer_view->telephone}}">
+                                </li>
+                                <li class="mt-4">
                                     <span>ที่อยู่จัดส่ง</span>
                                     <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$customer_view->address}}">                              
+                                </li>
                                 </ul>
                             </div>
                             <div class="col-sm-6">
-                                <ul style="width: 100%;">
+                                <ul class="mt-4" style="width: 100%;">
                                     <span>จังหวัด</span>
                                     {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
             
@@ -352,7 +372,7 @@
                                 </ul>
                             </div>
                             <div class="col-sm-6">
-                                <ul style="width: 100%;">
+                                <ul class="mt-4" style="width: 100%;">
                                     <span>อำเภอ/แขวง</span>
                                     <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="amphur" id="amphures">
                                         
@@ -368,7 +388,7 @@
                                 </ul>
                             </div>
                             <div class="col-sm-6">
-                                <ul style="width: 100%;">
+                                <ul class="mt-3" style="width: 100%;">
                                     <span>ตำบล/เขต</span>
                                     <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="district" id="districts">
                                         @if(isset($district) == '')
@@ -383,14 +403,14 @@
                                 </ul>
                             </div>
                             <div class="col-sm-6">
-                                <ul style="width: 100%;">
+                                <ul class="mt-3" style="width: 100%;">
                                     <span>รหัสไปรษณีย์</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบ</span>
                                     <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="zipcode" name="zip_code" value="{{$customer_view->zip_code}}">
                                 </ul>
                             </div>
 
                             <div class="col-sm-12">
-                                <ul style="width: 100%;">
+                                <ul  class="mt-3 mb-8" style="width: 100%;">
                                     <span>ภูมิศาสตร์</span>
                                     <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="geography" name="geography" value="{{$customer_view->geography}}">
                                 </ul>
@@ -399,14 +419,14 @@
                         </div>
                     </div>
                     <!--form login-->
-                        <div class="col-sm-6" style="padding-top:20px;">
+                        <div class="col-sm-6">
                             <div class="form-control">
-                                <ul class="text-title" style="text-align: start; margin-top: 10px;">
+                                <ul class="text-title ms-6 mr-6" style="text-align: start; margin-top: 10px;">
                                     <span style="font-size: 16px; font-weight: 500; color:#545454;">ข้อมูลผู้รับผิดชอบ</span>
-                                    <hr>
+                                    <hr class="my-3" style="color: #8E8E8E; width: 100%;">
                                 </ul>
-                                <ul class="text-muted" style="padding-top: 10px;">
-                                <label></label>
+                                <ul class="text-muted ms-6 mr-6" style="padding-top: 10px;">
+
                                     <span>แอดมินผู้ดูแล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                     <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="admin_area">
 
@@ -443,12 +463,12 @@
 
                             <div class="mb-3 my-4">
                                 <div class="form-control">
-                                    <ul class="text-title" style="text-align: start; margin-top: 10px;">
+                                    <ul class="text-title ms-6" style="text-align: start; margin-top: 10px;">
                                         <span style="font-size: 16px; font-weight: 500; color:#545454;">ตั้งค่ารหัสผ่านและสถานะบัญชี</span>
-                                        <hr>
+                                        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
                                     </ul>
-                                    <ul class="text-muted" style="padding-top: 10px;">
-                                    <label></label>
+                                    <ul class="text-muted ms-6 mr-6" style="padding-top: 10px;">
+
                                         <span>สถานะบัญชี</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                         <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="status">
     
@@ -478,11 +498,11 @@
                                 </div>
 
                                 <div class="form-control my-4">
-                                    <ul class="text-title" style="text-align: start; margin-top: 10px;">
+                                    <ul class="text-title ms-6 mr-6" style="text-align: start; margin-top: 10px;">
                                         <span style="font-size: 16px; font-weight: 500; color:#545454;">สถานะบัญชีลูกค้า</span>
-                                        <hr>
+                                        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
                                     </ul>
-                                    <ul class="text-muted" style="padding-top: 10px;">
+                                    <ul class="text-muted ms-6 mr-6" style="padding-top: 10px;">
                                     <label></label>
                                         <span>สถานะบัญชี</span> <span style="font-size: 12px; color:red;">*vmdrug</span>
                                         <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="status_user">
@@ -501,20 +521,21 @@
                                 </div>
 
                                      
-                                <div class="mb-3 my-4">
+                                <div class="mb-3 my-4 ms-2 mr-2">
                                     <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 500; color:#545454;">เพิ่มเติม</label></label>
                                     <textarea class="form-control" style="color: rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_add">{{$customer_view->text_area}}</textarea>
 
                                 </div>
 
-                                <div class="mb-3 my-4">
+                                <div class="mb-3 my-4 ms-2 mr-2">
                                     <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 500; color:#545454;">ข้อความส่งถึงแอดมินผู้ดูแล</label></label>
                                     <textarea class="form-control" style="color: rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_admin">{{$customer_view->text_admin}}</textarea>
                                 </div>
 
-                                <span style="font-size: 16px; font-weight: 500; color:#545454;">ลงทะเบียนโดย</span>
-                                <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="" name="" value="{{$customer_view->register_by}}" disabled>
-                                  
+                                <div class="mb-3 my-4 ms-2 mr-2">
+                                    <span style="font-size: 16px; font-weight: 500; color:#545454;">ลงทะเบียนโดย</span>
+                                    <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="" name="" value="{{$customer_view->register_by}}" disabled>
+                                </div>
                                 <div style="text-align:right;">
                                     <button type="button" id="updateForm" name="submit_update" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
                                     <a href="/webpanel/customer/getcsv/{{$admin_area_check->customer_id}}" type="button" id="exportCsv" class="btn my-2" style="border:none; width: 120px; color: rgb(67, 67, 67); padding: 10px;">Export CSV</a>
@@ -528,9 +549,12 @@
                                                 
                                                 $('#bg').css('display', 'none');
                                                 let user = $('#form').serialize();
+                                           /*      let customer_id = $('#codeId').val();
+                                                console.log(customer_id); */
 
                                                 $.ajax({
-                                                    url: '/webpanel/customer-detail/update/{{$customer_view->customer_code}}',
+                                                    // url: '/webpanel/customer-detail/update/{{$customer_view->customer_code}}',
+                                                    url: '/webpanel/customer-detail/update/{{$customer_view->id}}',
                                                     type: 'post',
                                                     data: user,
                                                     success: function(data) {
@@ -544,6 +568,7 @@
 
                                                             }).then((data)=>{
                                                                 $('#bg').css('display', '');
+                                                                // window.location.href = "/webpanel/customer";
 
                                                             });
 
@@ -568,6 +593,7 @@
                                     </script>
 
                 </div>
+            </form>
         </form>
     </div>
     
@@ -955,6 +981,7 @@
 
         
         @endif
+</div>
 @endsection
 
 </body>

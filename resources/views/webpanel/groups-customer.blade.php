@@ -17,14 +17,14 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel')
+    @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             /* text-align: left; */
@@ -240,23 +240,49 @@
         .sliders.round:before {
             border-radius: 50%;
         }
+        #backLink {
+            color: #8E8E8E;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #backLink:hover {
+            color: #2246fc;
+        }
     </style>
+
+        @section('status_alert')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+        @endsection
+
+        @section('status_waiting')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+        @endsection
+
+        @section('status_updated')
+        <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+        @endsection
+
+        @section('text_alert')
+        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+        @endsection
 
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
-        <div style="text-align: left; margin-top: 10px;">
-            <span style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / จัดกลุ่มลูกค้า (Groups Customer)</span>
-
+        <div class="py-2">
         </div>
-        <hr style="color: #8E8E8E; width: 100%;">
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / จัดกลุ่มลูกค้า</span>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
-        <div class="py-3 my-3" style="border-radius: 8px; border:solid 1px rgb(7, 0, 12); background-color:#8460f8;">
+        {{-- <div class="py-3 my-4 ms-6 mr-6 text-center" style="border-radius: 8px; background-color:#ffffff;">
             <span style="color: rgb(255, 255, 255); font-size: 16px;">กำหนดลูกค้าให้แอดมิน โดยอ้างอิงจากเขตการขาย</span>
+        </div> --}}
+        <div class="py-3 my-4 ms-6 mr-6 p-4 mb-4 text-center text-red-800 rounded-lg bg-red-50 dark:bg-white-800 dark:text-red-400 border-1 border-red-600" role="alert">
+            <span class="font-medium">คำเตือน !</span> กำหนดลูกค้าให้แอดมิน โดยอ้างอิงจากเขตการขาย
         </div>
 
-        <hr style="color: #8E8E8E; width: 100%;">
+        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
 
-            <div class="row">
+            <div class="row ms-6 mr-6">
 
                 <?php
                 foreach($row_salearea as $row_sale) {

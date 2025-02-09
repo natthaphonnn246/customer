@@ -236,32 +236,32 @@
         }
     </style>
 
-        @section('status_alert')
-        <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
-        @endsection
+            @section('status_alert')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+            @endsection
 
-        @section('status_waiting')
-        <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
-        @endsection
+            @section('status_waiting')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+            @endsection
 
-        @section('status_updated')
-        <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
-        @endsection
+            @section('status_updated')
+            <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+            @endsection
 
-        @section('text_alert')
-        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
-        @endsection
+            @section('text_alert')
+            <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+            @endsection
+
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
         <div class="py-2">
         </div>
-        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / รอดำเนินการ Action</span>
-
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / กำลังติดตาม Following</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         <div class="mr-6" style="text-align: right;">
-            <a href="/webpanel/customer/export/getcsv/getcsv_action"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
-            <a href="/webpanel/customer/export/getexcel/getexcel_action"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
+            <a href="/webpanel/customer/export/getcsv/getcsv_following"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
+            <a href="/webpanel/customer/export/getexcel/getexcel_following"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
     
         </div>
 
@@ -297,8 +297,8 @@
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
                     รอดำเนินการ<br/>
-                    @if (isset($total_status_action))
-                    <span>{{$total_status_action != '' ? $total_status_action : '0' ;}}</span>
+                    @if (isset($customer_status_following))
+                    <span>{{$customer_status_following != '' ? $customer_status_following : '0' ;}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -314,15 +314,15 @@
             <thead>
 
               <tr>
-                <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">#</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">CODE</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">อีเมล</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">ชื่อร้านค้า</td>
-                <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">STATUS</td>
-                <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">UPDATE</td>
-                <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">วันที่สมัคร</td>
-                <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">สถานะ</td>
-                <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">จัดการ</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">#</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">CODE</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">อีเมล</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">ชื่อร้านค้า</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">STATUS</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">UPDATE</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">วันที่สมัคร</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">สถานะ</td>
+                <td scope="col" style="color:#838383; text-align: center; font-weight:500;">จัดการ</td>
               </tr>
             </thead>
             <tbody>
@@ -481,18 +481,17 @@
             </tbody>
         </table>
         </div>
-
-        @if((!($total_status_action)) == 0)
+        @if((!($customer_status_following)) == 0)
             <nav aria-label="Page navigation example">
                 <ul class="pagination ms-6 py-4">
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer/status/action?page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/following?page=<?=1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/action?page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/following?page=<?= $page-1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -501,16 +500,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/action?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/following?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/action?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/following?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/action?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/following?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                 
                 @endif
@@ -518,11 +517,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer/status/action?page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/following?page=<?= $page ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/action?page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/following?page=<?= $page+1 ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif

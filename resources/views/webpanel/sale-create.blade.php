@@ -16,14 +16,14 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel')
+    @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
@@ -50,41 +50,66 @@
             height: auto;
             background-color: #118C3E;
         }
+        #backLink {
+            color: #8E8E8E;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #backLink:hover {
+            color: #2246fc;
+        }
     </style>
+
+        @section('status_alert')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+        @endsection
+
+        @section('status_waiting')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+        @endsection
+
+        @section('status_updated')
+        <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+        @endsection
+
+        @section('text_alert')
+        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+        @endsection
+
+
     <div class="contentArea">
-        <div style="text-align: left; margin-top: 10px;">
-            <span style="color: #8E8E8E;"><a href="/webpanel/sale" id="backLink">ข้อมูลพนักงานขาย (Sale area)</a> / แบบฟอร์ม</span>
+        <div class="py-2">
+            {{-- <span style="color: #8E8E8E;"><a href="/webpanel/sale" id="backLink">ข้อมูลพนักงานขาย (Sale area)</a> / แบบฟอร์ม</span> --}}
         </div>
-        
-        <hr style="color: #8E8E8E; width: 100%;">
-        
+        <span  class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/sale" id="backLink">พนักงานขาย (Sale area)</a> /แบบฟอร์ม</span>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
+        <ul class="text-title ms-6" style="text-align: start; margin-top: 10px;">
+            <span style="font-size: 18px; font-weight: 500;">ระบุข้อมูลพนักงานขาย</span>
+        </ul>
+        <hr class="my-3 mr-4" style="color: #8E8E8E; width: 100%;">
         <form action="/webpanel/sale-create/insert" method="post" enctype="multipart/form-data">
             @csrf
-            <div class="row">
-         
-                    <ul class="text-title" style="text-align: start; margin-top: 30px;">
-                        <span style="font-size: 18px; font-weight: 500;">ระบุข้อมูลพนักงานขาย</span>
-                        <hr>
-                    </ul>
-    
+            <div class="row ms-4 mr-1">
+
                     <div class="row text-muted">
-                        <div class="col-sm-12">
-                            <ul style="width: 100%;">
+        
+                            <ul class="my-2" style="width: 100%;">
                                 <span>ชื่อพนักงานขาย</span>
                                 <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="sale_name">
+                           
+                                <li class="py-4">
+                                    <span>เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ ตัวอย่าง : S01</span>
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="sale_area" required>
+                                
+                                    <label for="exampleFormControlTextarea1" class="form-label mt-4" style="font-size: 18px; font-weight: 500;">เพิ่มเติม</label></label>
+                                    <textarea class="form-control my-1" style="color: grey;" id="exampleFormControlTextarea1" rows="3" name="text_add"></textarea>
+
+                                    <div class="mt-4 text-right">
+                                        <button type="submit" name="submit_form" class="btn" style="border:none; width: 180px; color: white; padding: 10px;">บันทึกข้อมูล</button>
+                                    </div>
+                                </li>
                             </ul>
-         
- 
-                            <ul style="width: 100%;">
-                                <span>เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ ตัวอย่าง : S01</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="sale_area" required>
-
-                                <div class="mb-3 my-4">
-                                    <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 18px; font-weight: 500;">เพิ่มเติม</label></label>
-                                    <textarea class="form-control" style="color: grey;" id="exampleFormControlTextarea1" rows="3" name="text_add"></textarea><br>
-
-                                    <button type="submit" name="submit_form" class="btn py-3" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>
-                                </div>
+                    </div>
 
                                     @if(Session::get('success'))
                                     <div class="alert alert-success" role="alert">
@@ -97,11 +122,9 @@
                                         {{Session::get('error')}}
                                     </div>
                                     @endif
-                            </ul>
                  
                         </div>
                     </div>
-                </div>
         </form>
     </div>
 

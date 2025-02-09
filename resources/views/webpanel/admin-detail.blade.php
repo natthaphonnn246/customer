@@ -16,14 +16,14 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel')
+    @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
@@ -51,7 +51,7 @@
             background-color: #0f21cb;
         }
         #exportCsv {
-            background-color: #c9c9c9;
+            background-color: #e0e0e0;
             color:white;
         }
         #exportCsv:hover {
@@ -69,40 +69,68 @@
             height: auto;
             background-color: #0f21cb;
         }
+        #backLink {
+            color: #8E8E8E;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #backLink:hover {
+            color: #2246fc;
+        }
     </style>
+
+        @section('status_alert')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+        @endsection
+
+        @section('status_waiting')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+        @endsection
+
+        @section('status_updated')
+        <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+        @endsection
+
+        @section('text_alert')
+        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+        @endsection
+
     <div class="contentArea" id="bg">
-        <div style="text-align: left; margin-top: 10px;">
-            <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">แอดมินทั้งหมด (Admin)</a> / รายละเอียด</span>
+        <div class="py-2">
         </div>
-        
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">แอดมิน (Admin)</a> / รายละเอียด</span>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
+
+        <ul class="text-title my-2 ms-6" style="text-align: start;">
+            <span style="font-size: 18px; font-weight: 500;">ข้อมูลแอดมิน</span>
+        </ul>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
     @if (isset($admin_master) != '')
     {{-- @foreach ($admin_row as $row_edit) --}}
         <form id="form">
             {{-- action="/webpanel/admin-detail/update/{{$row_edit->user_code}}" enctype="multipart/form-data" --}}
             @csrf
-            <div class="row">
+            <div class="row ms-6 mr-6">
                 <div class="col-sm-6">
-                    <ul class="text-title" style="text-align: start; margin-top: 30px;">
-                        <span style="font-size: 18px; font-weight: 500;">ข้อมูลแอดมิน</span>
-                        <hr>
-                    </ul>
     
                     <div class="row text-muted">
                         <div class="col-sm-12">
-                            <ul style="width: 100%;">
-                                <span>ชื่อแอดมิน</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="admin_name" value="{{$admin_master->name}}">
-                            </ul>
-                            <ul style="width: 100%;">
-                                <span>CODE</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="code" value="{{$admin_master->user_code;}}" disabled>
-                            </ul>
-                            <ul style="width: 100%;">
-                                <span>Admin area</span> <span style="font-size: 12px; color:red;">*เขตรับผิดชอบ</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="admin_area" value="{{$admin_master->admin_area;}}">
+                            <ul>
+                                <li style="width: 100%;">
+                                    <span>ชื่อแอดมิน</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="admin_name" value="{{$admin_master->name}}">
+                                </li>
+                                <li class="my-4" style="width: 100%;">
+                                    <span>CODE</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="code" value="{{$admin_master->user_code;}}" disabled>
+                                </li>
+                                <li class="my-4" style="width: 100%;">
+                                    <span>Admin area</span> <span style="font-size: 12px; color:red;">*เขตรับผิดชอบ</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="admin_area" value="{{$admin_master->admin_area;}}">
+                                </li>
                             </ul>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 my-1">
                             <ul style="width: 100%;">
                                 <span>สิทธิ์แอดมิน</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="role">
@@ -116,7 +144,7 @@
                                 </select>
                             </ul>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 my-1">
                             <ul style="width: 100%;">
                                 <span>สิทธิ์รับผิดชอบ</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="rights_area">
@@ -129,24 +157,31 @@
                         </div>
                         <div class="col-sm-12">
                             <ul style="width: 100%;">
-                                <span>สิทธิ์ในการทดสอบระบบ</span> <span style="font-size: 12px; color:red;">*เมื่ออยู่ระหว่างปรับปรุงระบบ</span>
-                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="allowed_user_status">
+                                <li class="mt-4">
+                                    <span>สิทธิ์ในการทดสอบระบบ</span> <span style="font-size: 12px; color:red;">*เมื่ออยู่ระหว่างปรับปรุงระบบ</span>
+                                    <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="allowed_user_status">
 
-                                    <option {{$admin_master->allowed_user_status == 0 ? 'selected' : '' ; }} value="0">ไม่ระบุ</option>
-                                    <option  {{$admin_master->allowed_user_status == 1 ? 'selected' : '' ; }} value="1">ระบุ</option>
-                                    
-                                </select></br>
-
-                                <span>อีเมล</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="email" class="form-control" name="email" value="{{$admin_master->email}}"><br>
-                                <span>เบอร์ติดต่อ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0904545555)</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$admin_master->telephone}}"><br>
-                                <span>ที่อยู่</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$admin_master->address}}">                              
+                                        <option {{$admin_master->allowed_user_status == 0 ? 'selected' : '' ; }} value="0">ไม่ระบุ</option>
+                                        <option  {{$admin_master->allowed_user_status == 1 ? 'selected' : '' ; }} value="1">ระบุ</option>
+                                        
+                                    </select>
+                                </li>
+                                <li class="mt-4">
+                                    <span>อีเมล</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="email" class="form-control" name="email" value="{{$admin_master->email}}">
+                                </li>
+                                <li class="mt-4">
+                                    <span>เบอร์ติดต่อ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0904545555)</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$admin_master->telephone}}">
+                                </li>
+                                <li class="mt-4">
+                                    <span>ที่อยู่</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$admin_master->address}}">   
+                                </li>                           
                             </ul>
                         </div>
                         <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                            <ul class="mt-4" style="width: 100%;">
                                 <span>จังหวัด</span>
                                 {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
 
@@ -162,7 +197,7 @@
                             </ul>
                         </div>
                         <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                            <ul class="mt-4" style="width: 100%;">
                                 <span>อำเภอ/เขต</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" id="amphures" name="amphur">
 
@@ -178,7 +213,7 @@
                             </ul>
                         </div>
                         <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                            <ul class="mt-3" style="width: 100%;">
                                 <span>ตำบล/แขวง</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="district" id="districts">
                                     @if(isset($district) == '')
@@ -193,7 +228,7 @@
                             </ul>
                         </div>
                         <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                            <ul class="mt-3" style="width: 100%;">
                                 <span>รหัสไปรษณีย์</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบ</span>
                                 <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="zipcode" id="zipcode" value="{{$admin_master->zipcode}}">
                             </ul>
@@ -204,29 +239,32 @@
                     <div class="col-sm-6" style="padding-top:40px;">
                         <div class="form-control">
                             <ul class="text-title" style="text-align: start; margin-top: 10px;">
-                                <span style="font-size: 18px; font-weight: 500;">ข้อมูล Login</span>
-                                <hr>
+                                <span class="ms-3" style="font-size: 18px; font-weight: 500;">ข้อมูล Login</span>
+                                <hr class="my-3" style="color: #8E8E8E; width: 100%;">
                             </ul>
-                            <ul class="text-muted" style="padding-top: 10px;">
-                            <label></label>
-                                <span>อีเมล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" name="email_login" value="{{$admin_master->email_login}}"><br>
-                                
-                                <span>รหัสผ่าน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                <input style="margin-top:10px;" type="text" class="form-control" name="password" disabled><br>
+                            <ul class="text-muted" style="padding-top: 6px;">
+
+                                <li class="ms-6">
+                                    <span>อีเมล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                    <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" name="email_login" value="{{$admin_master->email_login}}">
+                                </li>
+                                <li class="ms-6 mt-4 mb-3">
+                                    <span>รหัสผ่าน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                    <input style="margin-top:10px;" type="text" class="form-control" name="password" disabled>
+                                </li>
 
                             </ul>
                 
                         </div>
                     
-                        <div class="mb-3 my-4">
+                        <div class="mb-3 my-4 ms-2">
                             <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 18px; font-weight: 500;">เพิ่มเติม</label></label>
                             <textarea class="form-control" style=" color:rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_add">{{$admin_master->text_add}}</textarea>
                         </div>
 
                         <div style="text-align:right;">
                             <button type="button" id="updateForm" name="submit_update" class="btn my-2" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
-                            <a href="" type="button" id="exportCsv" class="btn my-2" style="border:none; width: 120px; color: rgb(67, 67, 67); padding: 10px;">Export CSV</a>
+                            {{-- <a href="" type="button" id="exportCsv" class="btn my-2" style="border:none; width: 120px; color: rgb(67, 67, 67); padding: 10px;">Export CSV</a> --}}
 
                         </div>
                         </div>
@@ -277,7 +315,7 @@
     {{-- @endforeach --}}
     @endif
 
-        <hr style="color:#828282;">
+        <hr class="my-4" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         @if (Session::has('success'))
         <div class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success') }}</div>
@@ -288,19 +326,21 @@
         
         @endif
 
-        <div class="form-control" style="margin-top: 25px;">
                     <form action="/webpanel/admin-detail/reset/{{$admin_master->user_code}}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <ul class="text-title" style="text-align: start; margin-top: 10px;">
-                            <span style="font-size: 16px; font-weight: 500;">เปลี่ยนรหัสผ่าน</span>
-                            <hr style="color:#8E8E8E;">
-                            <span style="font-size: 16px; color: #8E8E8E; font-weight: 400;">รหัสผ่านใหม่</span>
-                            <input style="margin-top:5px; opacity:0.5;" type="password" class="form-control my-2" name="reset_password" required>
-                            <hr style="color:#8E8E8E;">
-                            <button type="submit" name="submit_reset" id="reset" class="btn" style="border:none; width:150px; color: white; padding: 10px;">เปลี่ยนรหัสผ่าน</button>
+                        <ul class="text-title ms-8 mr-8" style="text-align: start; margin-top: 10px;">
+                            <li>
+                                <span style="font-size: 16px; font-weight: 500;">เปลี่ยนรหัสผ่าน</span>
+                            </li>
+                            <hr class="my-2" style="color:#8E8E8E;">
+                            <li class="my-3">
+                                <span style="font-size: 16px; color: #8E8E8E; font-weight: 400;">รหัสผ่านใหม่</span>
+                                <input style="margin-top:5px; opacity:0.5;" type="password" class="form-control my-2" name="reset_password" required>
+                            </li>
+                            <hr class="my-3" style="color:#8E8E8E;">
+                            <button type="submit" name="submit_reset" id="reset" class="btn mb-4" style="border:none; width:150px; color: white; padding: 10px;">เปลี่ยนรหัสผ่าน</button>
                         </ul>
                     </form>
-        </div></br>
 
                     
     </div>

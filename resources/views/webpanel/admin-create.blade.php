@@ -15,14 +15,14 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel')
+    @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
@@ -49,22 +49,46 @@
             height: auto;
             background-color: #118C3E;
         }
+        #backLink {
+            color: #8E8E8E;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #backLink:hover {
+            color: #2246fc;
+        }
     </style>
+
+            @section('status_alert')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+            @endsection
+
+            @section('status_waiting')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+            @endsection
+
+            @section('status_updated')
+            <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+            @endsection
+
+            @section('text_alert')
+            <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+            @endsection
+
     <div class="contentArea">
-        <div style="text-align: left; margin-top: 10px;">
-            <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span>
+        <div class="py-2">
         </div>
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
         
-        <hr style="color: #8E8E8E; width: 100%;">
-        
+        <ul class="text-title" style="text-align: start; margin-top: 20px;">
+            <span class="ms-6" style="font-size: 18px; font-weight: 500;">ระบุข้อมูลแอดมิน</span>
+        </ul>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
         <form action="/webpanel/admin-create/insert" method="post" enctype="multipart/form-data">
             @csrf
-            <div class="row">
+            <div class="row ms-6 mr-6">
                 <div class="col-sm-6">
-                    <ul class="text-title" style="text-align: start; margin-top: 20px;">
-                        <span style="font-size: 18px; font-weight: 500;">ระบุข้อมูลแอดมิน</span>
-                        <hr>
-                    </ul>
     
                     <div class="row text-muted">
                         <div class="col-sm-12">
@@ -74,13 +98,13 @@
                             </ul>
                         </div>
                         <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                            <ul class="mt-3" style="width: 100%;">
                                 <span>CODE</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                 <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="code" required>
                             </ul>
                         </div>
                         <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                            <ul class="mt-3" style="width: 100%;">
                                 <span>สิทธิ์แอดมิน</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="role">
                                     <option value="0">ไม่ระบุ</option>
@@ -88,17 +112,24 @@
                             </ul>
                         </div>
                         <div class="col-sm-12">
-                            <ul style="width: 100%;">
-                                <span>อีเมล</span>
-                                <input style="margin-top:10px; color: grey;" name="email" type="email" class="form-control" name="email"><br>
-                                <span>เบอร์ติดต่อ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0904545555)</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="telephone"><br>
-                                <span>ที่อยู่</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address">                              
+                            <ul class="mt-3" style="width: 100%;">
+                                <li class="my-3">
+                                    <span>อีเมล</span>
+                                    <input style="margin-top:10px; color: grey;" name="email" type="email" class="form-control" name="email">
+                                </li>
+
+                                <li class="my-3">
+                                    <span>เบอร์ติดต่อ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0904545555)</span>
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="telephone">
+                                </li>
+                                <li class="my-3">
+                                    <span>ที่อยู่</span>
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address">   
+                                </li>                           
                             </ul>
                         </div>
                         <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                            <ul class="my-2" style="width: 100%;">
                                 <span>จังหวัด</span>
                                 {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
 
@@ -114,7 +145,7 @@
                             </ul>
                         </div>
                         <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                            <ul class="my-2" style="width: 100%;">
                                 <span>อำเภอ/เขต</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" id="amphures" name="amphur">
                                     
@@ -127,8 +158,8 @@
                                 </select>
                             </ul>
                         </div>
-                        <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                        <div class="col-sm-6 mb-8">
+                            <ul class="mt-3" style="width: 100%;">
                                 <span>ตำบล/แขวง</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts">
                                     @if(isset($district) != '')
@@ -139,8 +170,8 @@
                                 </select>
                             </ul>
                         </div>
-                        <div class="col-sm-6">
-                            <ul style="width: 100%;">
+                        <div class="col-sm-6 mb-8">
+                            <ul class="mt-3" style="width: 100%;">
                                 <span>รหัสไปรษณีย์</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบ</span>
                                 <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="zipcode" id="zipcode">
                             </ul>
@@ -150,18 +181,20 @@
                 <!--form login-->
                     <div class="col-sm-6" style="padding-top:30px;">
                         <div class="form-control">
-                            <ul class="text-title" style="text-align: start; margin-top: 10px;">
+                            <ul class="text-title my-3 ms-2" style="text-align: start; margin-top: 10px;">
                                 <span style="font-size: 18px; font-weight: 500;">ข้อมูล Login</span>
-                                <hr>
                             </ul>
+                            <hr class="my-2" style="width: 100%;">
                             <ul class="text-muted" style="padding-top: 10px;">
-                            <label></label>
-                                <span>อีเมล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                <input style="margin-top:10px;" type="text" class="form-control" name="email_login"><br>
-                                
-                                <span>รหัสผ่าน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                <input style="margin-top:10px;" type="text" class="form-control" name="password"><br>
+                                <li class="mt-2 ms-2 mr-2">
+                                    <span>อีเมล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                    <input style="margin-top:10px;" type="text" class="form-control" name="email_login">
+                                </li>
+                                <li class="mt-2 ms-2 mr-2 mb-3 ">
+                                    <span>รหัสผ่าน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                    <input style="margin-top:10px;" type="text" class="form-control" name="password">
 
+                                </li>
                             </ul>
                 
                         </div>
