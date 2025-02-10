@@ -55,7 +55,9 @@
                             </div>
                             <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
                         </div> --}}
-                        <button type="submit" class="w-full text-white bg-primary-400 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-500 dark:hover:bg-gray-700 dark:focus:ring-primary-800">Sign in</button>
+                        <ul class="text-center">
+                            <button type="submit" class="w-full text-white bg-primary-400 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-500 dark:hover:bg-blue-700 dark:focus:ring-primary-800" style="width:100px;">Sign in</button>
+                        </ul>
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
                             &copy; 2025 nntpn.com All rights reserved
                         </p>

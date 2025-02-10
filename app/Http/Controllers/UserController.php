@@ -121,25 +121,25 @@ Class UserController
 
     public function statusAct(Request $request)
     {
-        if($request->id == 2 && $request->status == 'active')
+        if($request->id_act == 2 && $request->status == 'active')
         {
-            $user_code = $request->user_code;
+            $code_id = $request->code_id;
     
-            User::where('user_code', [$user_code])
+            User::where('id', [$code_id])
                 ->update(['status_checked' => 'active']);
 
-            echo "success".$user_code;
+            echo "success".$code_id;
         }
 
     }
 
     public function statusiAct(Request $request)
     {
-        if($request->id == 1 && $request->status_in == 'inactive')
+        if($request->id_inact == 1 && $request->status_in == 'inactive')
         {
-            $user_code = $request->user_code;
+            $code_id = $request->code_id;
 
-            User::where('user_code', [$user_code])
+            User::where('id', [$code_id])
                 ->update(['status_checked' => 'inactive']);
 
             echo "inactive";
@@ -209,10 +209,11 @@ Class UserController
                     $admin_area = '';
                 }
 
+                $user_code = $request->code;
                 $name = $request->admin_name;
                 $role = $request->role;
                 $rights_area = $request->rights_area;
-                $email = $request->email;
+                $email = $request->email_login;
                 $address = $request->address;
                 $province = $request->province;
                 $amphur_post = $request->amphur;
@@ -245,11 +246,11 @@ Class UserController
                 $province_row = $province_master->name_th;
 
             DB::table('users')
-                ->where('user_code', $id)
+                ->where('id', $id)
                 ->update ([
 
-                    /* 'user_code' => $code,
-                    'user_id' => $code, */
+                    'user_code' => $user_code,
+                    'user_id' => $user_code,
                     'name' => $name,
                     'role' => $role,
                     'admin_area' => $admin_area,
@@ -269,10 +270,11 @@ Class UserController
                 ]);
 
             DB::table('user_tb')
-                ->where('admin_id', $id)
+                ->where('id', $id)
                 ->update ([
 
-                    // 'admin_id' => $code,
+                    'admin_id' => $user_code,
+                    'code' => $user_code,
                     'admin_area' => $admin_area,
                     'admin_name' => $name,
                     'role' => $role,
@@ -291,8 +293,8 @@ Class UserController
                 
                 ]);
                 // check user id;
-                $check_user_id = User::select('user_id')->where('user_id', $id)->first();
-                $user_id = $check_user_id->user_id;
+                $check_user_id = User::select('id')->where('id', $id)->first();
+                $user_id = $check_user_id->id;
 
                 if ($user_id == $id) {
                     echo 'success';
@@ -308,18 +310,18 @@ Class UserController
         {
             $password = $request->reset_password;
 
-            $check_code_pass = User::select('user_code')->where('user_code',$id_reset)->first();
-            $check_id = $check_code_pass->user_code;
+            $check_code_pass = User::select('id')->where('id',$id_reset)->first();
+            $check_id = $check_code_pass->id;
 
             if($check_id == $id_reset)
             {
                     DB::table('users')
-                        ->where('user_code', [$id_reset])
+                        ->where('id', [$id_reset])
                         ->update(['password' => bcrypt($password)]);
 
 
                     DB::table('user_tb')
-                        ->where('code', [$id_reset])
+                        ->where('id', [$id_reset])
                         ->update(['password' => $password]);
 
                     return back()->with('success', 'เปลี่ยนรหัสผ่านสำเร็จ');
@@ -330,5 +332,23 @@ Class UserController
             }
         }
     }
+
+      //delete admin;
+   public function deleteAdmin(Request $request,  $id)
+   {
+
+        if(!empty($request->id)) {
+
+            // echo json_encode(array('checkcode'=> $request->user_code));
+
+            $useradmin = User::where('id', $id)->first();
+
+            $useradmin ->delete();
+
+            echo json_encode(array('checkcode'=> $request->id));
+
+        }
+    
+   }
 
 }

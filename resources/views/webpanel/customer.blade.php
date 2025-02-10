@@ -425,7 +425,7 @@
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">
                     
                             <label class="switch">
-                                <input type="checkbox" name="check" id="status_on{{$user_code}}" {{$customer_status == 'active' ? 'checked' : '' ;}}>
+                                <input type="checkbox" name="check" id="status_on{{$id}}" {{$customer_status == 'active' ? 'checked' : '' ;}}>
                                 {{-- {{dd($customer_status);}} --}}
                                 <span class="slider round" style="text-align: center;">
                                     <span style="color: white; font-size: 10px; text-align: center;">ON</span>
@@ -438,7 +438,7 @@
                         <td scope="row" style="color:#9C9C9C; text-align: center;  padding:20px; width: 20%;">
                             <a href="/webpanel/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
                             {{-- <a href="/webpanel/customer/delete/{{$user_code}}" id="trash"><i class="fa-regular fa-trash-can"></i></a> --}}
-                            <button class="trash-customer" type="submit" id="trash{{$user_code}}"><i class="fa-regular fa-trash-can"></i></button>
+                            <button class="trash-customer" type="submit" id="trash{{$id}}"><i class="fa-regular fa-trash-can"></i></button>
 
                     </td>
                 </tr>
@@ -448,10 +448,10 @@
                     <script>
                             $(document).ready(function() {
 
-                                    $('#trash{{$user_code}}').click(function(e) {
+                                    $('#trash{{$id}}').click(function(e) {
                                         e.preventDefault();
                                         // console.log('delete{{$user_code}}');
-                                        let code_del = '{{$user_code}}';
+                                        let code_del = '{{$id}}';
                                         // console.log('{{$user_code}}');
 
                                             swal.fire({
@@ -466,7 +466,7 @@
                                 
                                             if(result.isConfirmed) {
                                                 $.ajax({
-                                                url: '/webpanel/customer/delete/{{ $user_code }}',
+                                                url: '/webpanel/customer/delete/{{$id}}',
                                                 type: 'GET',
                                                 success: function(data) {
 
@@ -510,14 +510,14 @@
                     <script text="type/javascript">
                             $(document).ready(function() {
                                 // $('#status_on').prop('checked', false);
-                                $('#status_on{{$user_code}}').change(function() {
+                                $('#status_on{{$id}}').change(function() {
                     
                                     if($(this).is(':checked')) 
                                     {
-                                        $('#status_on{{$user_code}}').prop('checked', true);
+                                        $('#status_on{{$id}}').prop('checked', true);
                                         console.log('ON');
                                         // var admin_code = $(this).val();
-                                        let user_code = '{{$user_code}}';
+                                        let user_code = '{{$id}}';
                                         console.log(user_code);
                     
                                         $.ajaxSetup({
@@ -529,9 +529,9 @@
                                             url: '/webpanel/customer/status-active',
                                             type: 'POST',
                                             data: {
-                                                id: 2,
+                                                id_act: 2,
                                                 status: 'active',
-                                                user_code: user_code,
+                                                code_id: user_code,
                                                 _token: "{{ csrf_token() }}",
                                             },
                                             success: function(response) {
@@ -551,7 +551,7 @@
                     
                                     } else {
 
-                                        let user_code = '{{$user_code}}';
+                                        const user_code = '{{$id}}';
                                         console.log(user_code);
 
                                         $.ajaxSetup({
@@ -563,9 +563,9 @@
                                             url: '/webpanel/customer/status-inactive',
                                             type: 'POST',
                                             data: {
-                                                id: 1,
+                                                id_inact: 1,
                                                 status_in: 'inactive',
-                                                user_code: user_code,
+                                                code_id: user_code,
                                                 _token: "{{ csrf_token() }}",
                                             },
                                             success: function(response) {

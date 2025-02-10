@@ -321,7 +321,14 @@
                                     <span>เบอร์โทรศัพท์</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0904545555)</span>
                                     <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$customer_edit->telephone}}">
                                 </li>
-                                <li class="py-2">
+                                <li class="mt-3">
+                                    <span>การจัดส่งสินค้า</span><span style="font-size: 12px; color:red;"> *ไม่ระบุ คือ จัดส่งตามรอบขนส่งทางร้าน</span>
+                                    <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="delivery_by">
+                                    <option {{$customer_edit->delivery_by == 'owner' ? 'selected': ''}} value="owner">ไม่ระบุ</option>
+                                    <option {{$customer_edit->delivery_by == 'private' ? 'selected': ''}} value="private">ขนส่งเอกชน (พัสดุ)</option>
+                                    </select>
+                                </li>
+                                <li class="mt-4">
                                     <span>ที่อยู่</span>
                                     <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$customer_edit->address}}">
                                 </li>                              

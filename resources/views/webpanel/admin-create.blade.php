@@ -115,7 +115,7 @@
                             <ul class="mt-3" style="width: 100%;">
                                 <li class="my-3">
                                     <span>อีเมล</span>
-                                    <input style="margin-top:10px; color: grey;" name="email" type="email" class="form-control" name="email">
+                                    <input style="margin-top:10px; color: grey;" name="email" type="email" class="form-control" id="email">
                                 </li>
 
                                 <li class="my-3">
@@ -188,11 +188,11 @@
                             <ul class="text-muted" style="padding-top: 10px;">
                                 <li class="mt-2 ms-2 mr-2">
                                     <span>อีเมล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                    <input style="margin-top:10px;" type="text" class="form-control" name="email_login">
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="email_login" id="emailLogin" value="">
                                 </li>
                                 <li class="mt-2 ms-2 mr-2 mb-3 ">
                                     <span>รหัสผ่าน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                    <input style="margin-top:10px;" type="text" class="form-control" name="password">
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="password">
 
                                 </li>
                             </ul>
@@ -209,6 +209,9 @@
                     </div>
         </form>
     </div>
+
+    {{-- <input id="logins" value=""> --}}
+    
     <script>
              
         $('#province').change(function(e) {
@@ -362,7 +365,17 @@
             Swal.close();
             // window.location.reload();
             }
-</script>
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#email").keyup(function(){
+                const email = $("#email").val();
+                const email_login = $("#emailLogin").val(email);
+                console.log(email);
+            });
+        });
+    </script>
 @endsection
 </body>
 </html>

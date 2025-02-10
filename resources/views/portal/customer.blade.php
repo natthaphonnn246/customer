@@ -390,6 +390,7 @@
         </div> --}}
         <hr class="my-1" style="color: #8E8E8E; width: 100%;">
 
+        <div class="py-2">
         <table class="table table-striped">
             <thead>
               <tr>
@@ -455,6 +456,7 @@
               @endif
             </tbody>
           </table>
+        </div>
 {{-- {{dd($total_page);}} --}}
           @if($total_page > 1)
           <nav aria-label="Page navigation example">

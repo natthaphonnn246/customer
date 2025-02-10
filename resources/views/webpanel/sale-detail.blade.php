@@ -16,14 +16,14 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel')
+    @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
 
 
     <style>
         .contentArea {
-            padding: 10px;
+            /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
@@ -69,45 +69,51 @@
             @endsection
 
     <div class="contentArea">
-        <div style="text-align: left; margin-top: 10px;">
-            <span style="color: #8E8E8E;"><a href="/webpanel/sale" id="backLink">ข้อมูลพนักงานขาย (Sale area)</a> / แบบฟอร์ม</span>
+
+        <div class="py-2">
         </div>
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/sale" id="backLink">ข้อมูลพนักงานขาย (Sale area)</a> / แบบฟอร์ม</span>
         
-        <hr style="color: #8E8E8E; width: 100%;">
+        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
         
         @if(isset($salearea) != null)
-            <form action="/webpanel/sale-detail/update/{{$salearea->sale_area}}" method="post" enctype="multipart/form-data">
+            <form action="/webpanel/sale-detail/update/{{$salearea->id}}" method="post" enctype="multipart/form-data">
                 @csrf
-                <div class="row">
+                <div class="row ms-6 mr-1">
             
-                        <ul class="text-title" style="text-align: start; margin-top: 30px;">
+                        <ul class="text-title mt-2" style="text-align: start;">
                             <span style="font-size: 18px; font-weight: 500;">ระบุข้อมูลพนักงานขาย</span>
-                            <hr>
                         </ul>
+                        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
         
                         <div class="row text-muted">
                             <div class="col-sm-12">
-                                <ul style="width: 100%;">
+                                <ul class="mt-2" style="width: 100%;">
                                     <span>ชื่อพนักงานขาย</span>
                                     <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="sale_name" value="{{$salearea->sale_name}}">
                                 </ul>
             
     
                                 <ul style="width: 100%;">
-                                    <span>เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ ตัวอย่าง : S01</span>
-                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="sale_area" value="{{$salearea->sale_area}}">
+                                    <li class="mt-4">
+                                        <span>เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ ตัวอย่าง : S01</span>
+                                        <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="sale_area" value="{{$salearea->sale_area}}">
 
-                                    <div class="my-3">
+                                    </li>
+    
+                                    <li class="mt-4">
                                         <span>Admin area</span>
                                         <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="admin_area" value="{{$salearea->admin_area}}" disabled>
-                                    </div>
+                                    </li>
 
-                                    <div class="mb-3 my-4">
+                                    <li class="mt-4">
                                         <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 18px; font-weight: 500;">เพิ่มเติม</label></label>
                                         <textarea class="form-control" style="color: grey;" id="exampleFormControlTextarea1" rows="3" name="text_add"> {{$salearea->text_add}}</textarea><br>
 
-                                        <button type="submit" name="submit_update" class="btn py-3" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>
-                                    </div>
+                                    </li>
+                                    <li class="mt-2 mb-4 text-right">
+                                        <button type="submit" name="submit_update" class="btn py-2" style="border:none; width: 145px; color: white; padding: 10px;">บันทึกข้อมูล</button>
+                                    </li>
 
                                         @if(Session::get('success'))
                                         <div class="alert alert-success" role="alert">

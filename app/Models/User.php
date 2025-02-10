@@ -68,13 +68,13 @@ class User extends Authenticatable
 
     public static function user()
     {
-        $user = User::select('name', 'user_code','admin_area', 'email', 'status_checked', 'created_at')->get();
+        $user = User::select('id', 'name', 'user_code','admin_area', 'email', 'status_checked', 'created_at')->get();
         return [$user];
     }
 
-    public static function adminEdit ($code)
+    public static function adminEdit ($id)
     {
-        $admin = User::where('user_code', $code)->first();
+        $admin = User::where('id', $id)->first();
         return $admin;
     }
 }

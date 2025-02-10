@@ -265,6 +265,7 @@
               <tr>
                     <?php
                         
+                        $id = $row->id;
                         $user_name = $row->name;
                         $user_code = $row->user_code;
                         $admin_area = $row->admin_area;
@@ -282,7 +283,7 @@
                   
                     @if ($user_code === '0000')
                         <label class="switch" style="opacity:0.6;">
-                            <input type="checkbox" name="check" id="status_on{{$user_code}}" {{ $status_admin == 'active' ? 'checked disabled' : '' ;}}>
+                            <input type="checkbox" name="check" id="status_on{{$id}}" {{ $status_admin == 'active' ? 'checked disabled' : '' ;}}>
                             <span class="slider round" style="text-align: center;">
                                 <span style="color: white; font-size: 10px; text-align: center;">ON</span>
                                 <span style="color: white; font-size: 10px;">OFF</span>
@@ -290,7 +291,7 @@
                         </label>
                     @else
                         <label class="switch">
-                            <input type="checkbox" name="check" id="status_on{{$user_code}}" {{ $status_admin == 'active' ? 'checked' : '' ;}}>
+                            <input type="checkbox" name="check" id="status_on{{$id}}" {{ $status_admin == 'active' ? 'checked' : '' ;}}>
                             <span class="slider round" style="text-align: center;">
                                 <span style="color: white; font-size: 10px; text-align: center;">ON</span>
                                 <span style="color: white; font-size: 10px;">OFF</span>
@@ -312,11 +313,11 @@
             </td>
                 <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$created_at}}</td>
 
-                    <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;"><a href="/webpanel/admin/{{$user_code}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                    <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;"><a href="/webpanel/admin/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
                     @if ($user_code == '0000')
                     <button class="trash-admin" style="opacity: 0.6;" disabled><i class="fa-regular fa-trash-can"></i></button>
                     @else
-                    <button class="trash-admin" type="submit" id="trash{{$user_code}}"><i class="fa-regular fa-trash-can"></i></button>
+                    <button class="trash-admin" type="submit" id="trash{{$id}}"><i class="fa-regular fa-trash-can"></i></button>
                     @endif
                 </td>
               </tr>
@@ -325,10 +326,10 @@
                 <script>
                         $(document).ready(function() {
 
-                                $('#trash{{$user_code}}').click(function(e) {
+                                $('#trash{{$id}}').click(function(e) {
                                     e.preventDefault();
                                     // console.log('delete{{$user_code}}');
-                                    let code_del = '{{$user_code}}';
+                                    let code_del = '{{$id}}';
                                     // console.log('{{$user_code}}');
 
                                         swal.fire({
@@ -343,7 +344,7 @@
                             
                                         if(result.isConfirmed) {
                                             $.ajax({
-                                            url: '/webpanel/admin/delete/{{ $user_code }}',
+                                            url: '/webpanel/admin/delete/{{$id}}',
                                             type: 'GET',
                                             success: function(data) {
 
@@ -387,14 +388,14 @@
                 <script text="type/javascript">
                         $(document).ready(function() {
                             // $('#status_on').prop('checked', false);
-                            $('#status_on{{$user_code}}').change(function() {
+                            $('#status_on{{$id}}').change(function() {
                 
                                 if($(this).is(':checked')) 
                                 {
-                                    $('#status_on{{$user_code}}').prop('checked', true);
+                                    $('#status_on{{$id}}').prop('checked', true);
                                     console.log('ON');
                                     // var admin_code = $(this).val();
-                                    let user_code = '{{$user_code}}';
+                                    let user_code = '{{$id}}';
                                     console.log(user_code);
                 
                                     $.ajaxSetup({
@@ -406,9 +407,9 @@
                                         url: '/webpanel/admin/status-check',
                                         type: 'POST',
                                         data: {
-                                            id: 2,
+                                            id_act: 2,
                                             status: 'active',
-                                            user_code: user_code,
+                                            code_id: user_code,
                                             _token: "{{ csrf_token() }}",
                                         },
                                         success: function(response) {
@@ -428,7 +429,7 @@
                 
                                 } else {
 
-                                    let user_code = '{{$user_code}}';
+                                    const user_code = '{{$id}}';
                                     console.log(user_code);
 
                                     $.ajaxSetup({
@@ -440,9 +441,9 @@
                                         url: '/webpanel/admin/status-inactive',
                                         type: 'POST',
                                         data: {
-                                            id: 1,
+                                            id_inact: 1,
                                             status_in: 'inactive',
-                                            user_code: user_code,
+                                            code_id: user_code,
                                             _token: "{{ csrf_token() }}",
                                         },
                                         success: function(response) {

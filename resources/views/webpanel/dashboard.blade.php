@@ -53,7 +53,7 @@
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
             {{-- <span class="ms-6" style="color: #8E8E8E;">หน้าแรก (Dashboard)</span> --}}
         </div>
-        <span class="ms-6" style="color: #8E8E8E;">หน้าแรก (Dashboard)</span>
+        <span class="ms-6" style="color: #8E8E8E;">หน้าหลัก (Dashboard)</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
         
         <div class="row" style="justify-content: center;">

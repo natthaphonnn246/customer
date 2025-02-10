@@ -278,6 +278,7 @@
               <tr>
                     <?php
                         
+                        $id = $row->id;
                         $sale_area = $row->sale_area;
                         $sale_name = $row->sale_name;
                         $created_at = $row->created_at
@@ -289,18 +290,18 @@
                 <td scope="row" style="color:#9C9C9C; text-align: left; padding: 10px;">{{$sale_name}}</td>
                 <td scope="row" style="color:#9C9C9C; text-align: left; padding: 10px;">{{$created_at}}</td>
 
-                    <td scope="row" style="color:#9C9C9C; text-align: left; padding: 10px;"><a href="/webpanel/sale/{{$sale_area}}" id="edit"><i class="fa-regular fa-eye"></i></a>
-                    <button class="trash-sale" type="submit" id="trash{{$sale_area}}"><i class="fa-regular fa-trash-can"></i></button>
+                    <td scope="row" style="color:#9C9C9C; text-align: left; padding: 10px;"><a href="/webpanel/sale/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                    <button class="trash-sale" type="submit" id="trash{{$id}}"><i class="fa-regular fa-trash-can"></i></button>
                 </td>
               </tr>
                <!-- delete saleareas table -->
                 <script>
                         $(document).ready(function() {
 
-                                $('#trash{{$sale_area}}').click(function(e) {
+                                $('#trash{{$id}}').click(function(e) {
                                     e.preventDefault();
                                     // console.log('delete{{$sale_area}}');
-                                    let code_del = '{{$sale_area}}';
+                                    let code_del = '{{$id}}';
                                     // console.log('{{$sale_area}}');
 
                                         swal.fire({
@@ -315,7 +316,7 @@
                             
                                         if(result.isConfirmed) {
                                             $.ajax({
-                                            url: '/webpanel/sale/delete/{{ $sale_area }}',
+                                            url: '/webpanel/sale/delete/{{$id}}',
                                             type: 'GET',
                                             success: function(data) {
 

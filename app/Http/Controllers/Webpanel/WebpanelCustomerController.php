@@ -178,7 +178,7 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count();
 
-            return view('webpanel/customer-follow', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_following', 'status_waiting', 'status_updated', 'status_alert'));
+            return view('webpanel/customer-following', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_following', 'status_waiting', 'status_updated', 'status_alert'));
 
         } 
         
@@ -325,6 +325,8 @@ class WebpanelCustomerController
                 $province_row = $row->name_th;
             }
 
+            $delivery_by = $request->delivery_by;
+
        /*  $customer = new Customer;
         $customer->customer_code = $request->customer_code;
         $customer->save(); */
@@ -363,6 +365,7 @@ class WebpanelCustomerController
                     'register_by' => $register_by,
                     'customer_status' => 'inactive',
                     'status_user' => '',
+                    'delivery_by' => $delivery_by,
                     // 'maintenance_status' => '',
                     // 'allowed_maintenance' => '',
 
@@ -486,6 +489,8 @@ class WebpanelCustomerController
                     $type = '';
                 }
 
+                $delivery_by = $request->delivery_by;
+
      /*    } */
             Customer::where('id', $id)
                     ->update ([
@@ -515,6 +520,7 @@ class WebpanelCustomerController
                         'status_update' => $status_update,
                         'type' => $type,
                         'status_user' => $status_user,
+                        'delivery_by' => $delivery_by,
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
                     
@@ -697,8 +703,8 @@ class WebpanelCustomerController
 
     public function statusAct(Request $request)
     {
-        if($request->id == 2 && $request->status == 'active') {
-            Customer::where('customer_id', $request->user_code)
+        if($request->id_act == 2 && $request->status == 'active') {
+            Customer::where('id', $request->code_id)
                     ->update ([ 'customer_status' => 'active' ]);
 
         }
@@ -706,8 +712,8 @@ class WebpanelCustomerController
 
     public function statusiAct(Request $request)
     {
-        if($request->id == 1 && $request->status_in == 'inactive') {
-            Customer::where('customer_id', $request->user_code)
+        if($request->id_inact == 1 && $request->status_in == 'inactive') {
+            Customer::where('id', $request->code_id)
                     ->update ([ 'customer_status' => 'inactive' ]);
 
         }
@@ -894,6 +900,7 @@ class WebpanelCustomerController
                                     $type = $row[8];
                                     $register_by = 'import_naster';
                                     $customer_status = 'active';
+                                    $delivery_by = 'owner';
 
                             
                             Customer::create([
@@ -929,6 +936,7 @@ class WebpanelCustomerController
                                     'register_by' => $register_by,
                                     'customer_status' => $customer_status,
                                     'status_user' => $status_user,
+                                    'delivery_by' => $delivery_by,
         
                                 ]);
                             }
@@ -1240,14 +1248,14 @@ class WebpanelCustomerController
    }
 
    //delete customer;
-   public function deleteCustomer(Request $request,  $customer_code)
+   public function deleteCustomer(Request $request,  $id)
    {
 
-        if(!empty($request->customer_code)) {
+        if(!empty($request->id)) {
 
             // echo json_encode(array('checkcode'=> $request->user_code));
 
-            $customer = Customer::where('customer_id', $customer_code)->first();
+            $customer = Customer::where('id', $id)->first();
             // dd($customer->cert_store);
 
             //delete image storage;
@@ -1259,44 +1267,7 @@ class WebpanelCustomerController
 
             $customer->delete();
 
-            echo json_encode(array('checkcode'=> $request->customer_code));
-
-        }
-    
-   }
-
-   //delete admin;
-   public function deleteAdmin(Request $request,  $user_code)
-   {
-
-        if(!empty($request->user_code)) {
-
-            // echo json_encode(array('checkcode'=> $request->user_code));
-
-            $useradmin = User::where('user_code', $user_code)->first();
-
-            $useradmin ->delete();
-
-            echo json_encode(array('checkcode'=> $request->user_code));
-
-        }
-    
-   }
-
-
-   //delete salearea;
-   public function deleteSalearea(Request $request,  $sale_area)
-   {
-
-        if(!empty($request->sale_area)) {
-
-            // echo json_encode(array('checkcode'=> $request->user_code));
-
-            $salearea_del = Salearea::where('sale_area', $sale_area)->first();
-
-            $salearea_del ->delete();
-
-            echo json_encode(array('checkcode'=> $request->sale_area));
+            echo json_encode(array('checkcode'=> $request->id));
 
         }
     

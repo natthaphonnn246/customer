@@ -236,6 +236,8 @@ class PortalCustomerController
                 $province_row = $row->name_th;
             }
 
+            $delivery_by = $request->delivery_by;
+
        /*  $customer = new Customer;
         $customer->customer_code = $request->customer_code;
         $customer->save(); */
@@ -278,6 +280,7 @@ class PortalCustomerController
                         'register_by' => $register_by,
                         'customer_status' => 'inactive',
                         'status_user' => '',
+                        'delivery_by' => $delivery_by,
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
 
@@ -417,7 +420,7 @@ class PortalCustomerController
             $start = ($perpage * $page) - $perpage;
             
             $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
-            $customer_list = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+            $customer_list = Customer::select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
                                     ->where('status', '0')
                                     ->whereNotIn('customer_status', ['inactive'])
@@ -515,7 +518,7 @@ class PortalCustomerController
             $start = ($perpage * $page) - $perpage;
             
             $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
-            $customer_list = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+            $customer_list = Customer::select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
                                     ->where('status', '1')
                                     ->whereNotIn('customer_status', ['inactive'])
@@ -601,7 +604,7 @@ class PortalCustomerController
             $start = ($perpage * $page) - $perpage;
             
             $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
-            $customer_list = Customer::select('admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+            $customer_list = Customer::select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
                                     ->where('status', "2")
                                     ->whereNotIn('customer_status', ['inactive'])
@@ -775,6 +778,7 @@ class PortalCustomerController
                 } else {
                     $geography_name = $request->geography;
                 }
+                $delivery_by = $request->delivery_by;
 
      /*    } */
             Customer::where('id', $id)
@@ -792,6 +796,7 @@ class PortalCustomerController
                         'cert_number' => $cert_number,
                         'cert_expire' => $cert_expire,
                         'status_update' => 'updated',
+                        'delivery_by' => $delivery_by,
                     
                     ]);
 

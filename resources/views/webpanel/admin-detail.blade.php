@@ -15,7 +15,7 @@
     <title>customer</title>
 </head>
 <body>
-
+<div id="bg">
     @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
@@ -122,7 +122,7 @@
                                 </li>
                                 <li class="my-4" style="width: 100%;">
                                     <span>CODE</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="code" value="{{$admin_master->user_code;}}" disabled>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="code" value="{{$admin_master->user_code;}}">
                                 </li>
                                 <li class="my-4" style="width: 100%;">
                                     <span>Admin area</span> <span style="font-size: 12px; color:red;">*เขตรับผิดชอบ</span>
@@ -168,7 +168,7 @@
                                 </li>
                                 <li class="mt-4">
                                     <span>อีเมล</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="email" class="form-control" name="email" value="{{$admin_master->email}}">
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="email" class="form-control" name="email" value="{{$admin_master->email}}" disabled>
                                 </li>
                                 <li class="mt-4">
                                     <span>เบอร์ติดต่อ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0904545555)</span>
@@ -246,7 +246,7 @@
 
                                 <li class="ms-6">
                                     <span>อีเมล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                    <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" name="email_login" value="{{$admin_master->email_login}}">
+                                    <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" name="email_login" value="{{$admin_master->email}}">
                                 </li>
                                 <li class="ms-6 mt-4 mb-3">
                                     <span>รหัสผ่าน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
@@ -279,7 +279,7 @@
                                 let user = $('#form').serialize();
 
                                 $.ajax({
-                                    url: '/webpanel/admin-detail/update/{{$admin_master->user_code}}',
+                                    url: '/webpanel/admin-detail/update/{{$admin_master->id}}',
                                     type: 'post',
                                     data: user,
                                     success: function(data) {
@@ -293,6 +293,7 @@
 
                                             }).then((data)=>{
                                                 $('#bg').css('display', '');
+                                                window.location.reload();
 
                                             });
 
@@ -318,15 +319,15 @@
         <hr class="my-4" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         @if (Session::has('success'))
-        <div class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success') }}</div>
+        <div class="alert alert-success ms-6 mr-6"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success') }}</div>
         @endif
 
         @if (Session::has('error'))
-        <div class="alert alert-danger"><i class="fa-solid fa-circle-xmark" style="color: rgb(172, 27, 27);"></i> {{ Session::get('error') }}</div>
+        <div class="alert alert-danger ms-6 mr-6"><i class="fa-solid fa-circle-xmark" style="color: rgb(172, 27, 27);"></i> {{ Session::get('error') }}</div>
         
         @endif
 
-                    <form action="/webpanel/admin-detail/reset/{{$admin_master->user_code}}" method="POST" enctype="multipart/form-data">
+                    <form action="/webpanel/admin-detail/reset/{{$admin_master->id}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <ul class="text-title ms-8 mr-8" style="text-align: start; margin-top: 10px;">
                             <li>
@@ -498,6 +499,7 @@
             // window.location.reload();
             }
 </script>
+</div>
 @endsection
 </body>
 </html>

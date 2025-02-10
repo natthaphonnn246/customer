@@ -282,13 +282,13 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
     });
     
     //delete customer;
-    Route::get('/webpanel/customer/delete/{customer_code}', [WebpanelCustomerController::class, 'deleteCustomer']);
+    Route::get('/webpanel/customer/delete/{id}', [WebpanelCustomerController::class, 'deleteCustomer']);
 
     //delete admin;
-    Route::get('/webpanel/admin/delete/{user_code}', [WebpanelCustomerController::class, 'deleteAdmin']);
+    Route::get('/webpanel/admin/delete/{id}', [UserController::class, 'deleteAdmin']);
 
     //delete sale_area;
-    Route::get('/webpanel/sale/delete/{sale_area}', [WebpanelCustomerController::class, 'deleteSalearea']);
+    Route::get('/webpanel/sale/delete/{id}', [SaleareaController::class, 'deleteSalearea']);
 
     //portal customer;
     Route::get('/portal/customer', [PortalCustomerController::class, 'customerView'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area')->name('portal.customer');

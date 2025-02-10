@@ -349,6 +349,14 @@
                                     <span>เบอร์มือถือ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0812345678)</span>
                                     <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$customer_view->telephone}}">
                                 </li>
+                                {{-- {{dd($customer_view->delivery_by);}} --}}
+                                <li class="mt-4">
+                                    <span>การจัดส่งสินค้า</span><span style="font-size: 12px; color:red;"> *ไม่ระบุ คือ จัดส่งตามรอบขนส่งทางร้าน</span>
+                                    <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="delivery_by">
+                                    <option {{$customer_view->delivery_by == 'owner' ? 'selected': ''}} value="owner">ไม่ระบุ</option>
+                                    <option {{$customer_view->delivery_by == 'private' ? 'selected': ''}} value="private">ขนส่งเอกชน (พัสดุ)</option>
+                                    </select>
+                                </li>
                                 <li class="mt-4">
                                     <span>ที่อยู่จัดส่ง</span>
                                     <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$customer_view->address}}">                              

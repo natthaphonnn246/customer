@@ -112,12 +112,12 @@
                     </div>
 
                                     @if(Session::get('success'))
-                                    <div class="alert alert-success" role="alert">
+                                    <div class="alert alert-success ms-6 mr-6" role="alert">
                                         <i class="fa-solid fa-circle-check" style="color:green;"></i>
                                         {{Session::get('success')}}
                                     </div>
                                     @elseif(Session::get('error'))
-                                    <div class="alert alert-danger" role="alert">
+                                    <div class="alert alert-danger ms-6 mr-6" role="alert">
                                         <i class="fa-solid fa-circle-xmark" style="color: rgb(172, 27, 27);"></i> 
                                         {{Session::get('error')}}
                                     </div>

@@ -377,6 +377,7 @@
 
         <hr style="color: #8E8E8E; width: 100%;">
         
+        <div class="py-2">
         <table class="table table-striped">
             <thead>
               <tr>
@@ -395,18 +396,19 @@
                 <?php 
                     $start += 1;
                 ?>
-                @foreach ($customer_list as $row_area)
+                @foreach ($customer_list as $row_list)
               <tr>
                     <?php
                         
-                        $customer_name = $row_area->customer_name;
-                        $customer_code = $row_area->customer_code;
-                        $sale_area = $row_area->sale_area;
-                        $status_admin = $row_area->sale_area;
-                        $email = $row_area->email;
-                        $status = $row_area->status;
-                        $created_at = $row_area->created_at;
-                        $customer_status = $row_area->customer_status;
+                        $id = $row_list->id;
+                        $customer_name = $row_list->customer_name;
+                        $customer_code = $row_list->customer_code;
+                        $sale_area = $row_list->sale_area;
+                        $status_admin = $row_list->sale_area;
+                        $email = $row_list->email;
+                        $status = $row_list->status;
+                        $created_at = $row_list->created_at;
+                        $customer_status = $row_list->customer_status;
                     ?>
                 
                 @if($customer_status == 'active')
@@ -431,7 +433,7 @@
 
                     <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px; ">{{$created_at}}</td>
 
-                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:15px;"><a href="/portal/customer/{{$customer_code}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:15px;"><a href="/portal/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
                     {{-- <button id="trash"><i class="fa-regular fa-trash-can"></i></button> --}}
                     </td>
                 @endif
@@ -441,55 +443,58 @@
               @endif
             </tbody>
           </table>
+        </div>
+{{-- {{dd($total_page);}} --}}
+          @if($total_page > 1)
+          <nav aria-label="Page navigation example">
+            <ul class="pagination py-4">
+            <li class="page-item">
 
-          @if ($count_action != 0)
-            <nav aria-label="Page navigation example">
-                <ul class="pagination py-4">
-                <li class="page-item">
-
-                @if ($page == 1)
-                    <a class="page-link" href="/portal/customer/status/action?page=<?=1 ; ?>" aria-label="Previous">
-                    <span aria-hidden="true">Previous</span>
-                    </a>
-                @else
-                    <a class="page-link" href="/portal/customer/status/action?page=<?= $page-1 ; ?>" aria-label="Previous">
-                    <span aria-hidden="true">Previous</span>
-                    </a>
-                @endif
-                </li>
-
-                @if($total_page > 14)
-
-                    @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer/status/action?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
-                    @endfor
-                    <li class="page-item"><a class="page-link">...</a></li>
-                    @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/portal/customer/status/action?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
-                    @endfor
-
-                @else
-                    @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer/status/action?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
-                    @endfor
-                
-                @endif
-
-                <li class="page-item">
-                
-                @if ($page == $total_page)
-                    <a class="page-link" href="/portal/customer/status/action?page=<?= $page ; ?>" aria-label="Next">
-                    <span aria-hidden="true">next</span>
-                    </a>
-                @else
-                    <a class="page-link" href="/portal/customer/status/action?page=<?= $page+1 ; ?>" aria-label="Next">
-                    <span aria-hidden="true">next</span>
-                    </a>
-                @endif
-                </li>
-                </ul>
-            </nav>
+            @if ($page == 1)
+                <a class="page-link" href="/portal/customer?page=<?=1 ; ?>" aria-label="Previous">
+                <span aria-hidden="true">Previous</span>
+                </a>
+            @else
+                <a class="page-link" href="/portal/customer?page=<?= $page-1 ; ?>" aria-label="Previous">
+                <span aria-hidden="true">Previous</span>
+                </a>
             @endif
+            </li>
+
+            @if($total_page > 14)
+
+                @for ($i= 1; $i <= 10 ; $i++)
+                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                @endfor
+                <li class="page-item"><a class="page-link">...</a></li>
+                @for ($i= $total_page-1; $i <= $total_page ; $i++)
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/portal/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                @endfor
+
+            @else
+                @for ($i= 1; $i <= $total_page ; $i++)
+                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                @endfor
+            
+            @endif
+
+            <li class="page-item">
+            
+            @if ($page == $total_page)
+                <a class="page-link" href="/portal/customer?page=<?= $page ; ?>" aria-label="Next">
+                <span aria-hidden="true">next</span>
+                </a>
+            @else
+                <a class="page-link" href="/portal/customer?page=<?= $page+1 ; ?>" aria-label="Next">
+                <span aria-hidden="true">next</span>
+                </a>
+            @endif
+            </li>
+            </ul>
+        </nav>
+        @else
+        {{-- <hr> --}}
+        @endif
 
     </div>
 </div>

@@ -32,10 +32,10 @@ class Admin extends Model
     protected $connection = 'mysql';
     // public $timestamps = false;
 
-    public static function adminEdit ($code)
+    public static function adminEdit ($id)
     {
-        $admin = Admin::select('admin_id', 'code','admin_area', 'admin_name', 'email', 'role','telephone', 'address','province', 'amphur', 'district', 'zipcode', 'created_at')
-                ->where('admin_id', [$code])
+        $admin = Admin::select('id','admin_id', 'code','admin_area', 'admin_name', 'email', 'role','telephone', 'address','province', 'amphur', 'district', 'zipcode', 'created_at')
+                ->where('id', [$id])
                 ->get();
         return [$admin];
     }

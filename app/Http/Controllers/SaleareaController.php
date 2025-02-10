@@ -90,7 +90,7 @@ class SaleareaController extends Controller
 
     public function viewSale($id)
     {
-        $salearea = Salearea::where('salearea_id', $id)->first();
+        $salearea = Salearea::where('id', $id)->first();
 
                  //menu alert;
                  $status_waiting = Customer::where('status', '0')
@@ -144,7 +144,7 @@ class SaleareaController extends Controller
                     $text_add = '';
                 }
 
-                $salearea->where('salearea_id', $id)->update([
+                $salearea->where('id', $id)->update([
 
                             'salearea_id' => $sale_area,
                             'sale_area' => $sale_area,
@@ -228,4 +228,22 @@ class SaleareaController extends Controller
     {
         //
     }
+
+    //delete salearea;
+   public function deleteSalearea(Request $request,  $id)
+   {
+
+        if(!empty($request->id)) {
+
+            // echo json_encode(array('checkcode'=> $request->user_code));
+
+            $salearea_del = Salearea::where('id', $id)->first();
+
+            $salearea_del ->delete();
+
+            echo json_encode(array('checkcode'=> $request->id));
+
+        }
+    
+   }
 }

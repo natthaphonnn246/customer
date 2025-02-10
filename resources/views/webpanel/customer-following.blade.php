@@ -236,33 +236,32 @@
         }
     </style>
 
-        @section('status_alert')
-        <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
-        @endsection
+            @section('status_alert')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+            @endsection
 
-        @section('status_waiting')
-        <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
-        @endsection
+            @section('status_waiting')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+            @endsection
 
-        @section('status_updated')
-        <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
-        @endsection
+            @section('status_updated')
+            <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+            @endsection
 
-        @section('text_alert')
-        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
-        @endsection
+            @section('text_alert')
+            <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+            @endsection
 
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
         <div class="py-2">
         </div>
-        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / ปิดบัญชี Inactive</span>
-
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / กำลังติดตาม Following</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         <div class="mr-6" style="text-align: right;">
-            <a href="/webpanel/customer/export/getcsv/getcsv_inactive"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
-            <a href="/webpanel/customer/export/getexcel/getexcel_inactive"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
+            <a href="/webpanel/customer/export/getcsv/getcsv_following"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
+            <a href="/webpanel/customer/export/getexcel/getexcel_following"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
     
         </div>
 
@@ -297,9 +296,9 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    ปิดบัญชี<br/>
-                    @if (isset($customer_status_inactive))
-                    <span>{{$customer_status_inactive != '' ? $customer_status_inactive : '0' ;}}</span>
+                    รอดำเนินการ<br/>
+                    @if (isset($customer_status_following))
+                    <span>{{$customer_status_following != '' ? $customer_status_following : '0' ;}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -310,7 +309,6 @@
 
         <hr class="my-3" style="color: #8E8E8E; width: 100%;">
 
-       
         <div class="ms-6 mr-6 mb-2">
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
             <table class="table table-striped">
