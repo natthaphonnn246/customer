@@ -52,7 +52,7 @@ class SettingController extends Controller
         // dd($setting_view->maintenance_status);
 
 
-        $status_waiting = Customer::where('status', '0')
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
 

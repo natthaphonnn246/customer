@@ -40,19 +40,19 @@ class PortalCustomerController
                                 ->count();
 
         $status_waiting = Customer::where('admin_area', $id)
-                                    ->where('status', '0')
+                                    ->where('status', 'รอดำเนินการ')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
                                     // dd($count_waiting);
         $status_action = Customer::where('admin_area', $id)
-                                    ->where('status', '1')
+                                    ->where('status', 'ต้องดำเนินการ')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
 
         $status_completed = Customer::where('admin_area', $id)
-                                    ->where('status', '2')
+                                    ->where('status', 'ดำเนินการแล้ว')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
@@ -80,7 +80,7 @@ class PortalCustomerController
 
             $status_waiting = Customer::select('status')
                                         ->where('admin_area', $admin_area->admin_area)
-                                        ->where('status', '0')
+                                        ->where('status', 'รอดำเนินการ')
                                         ->whereNotIn('customer_status', ['inactive'])
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
@@ -88,14 +88,14 @@ class PortalCustomerController
 
             $status_action = Customer::select('status')
                                         ->where('admin_area', $admin_area->admin_area)
-                                        ->where('status', '1')
+                                        ->where('status', 'ต้องดำเนินการ')
                                         ->whereNotIn('customer_status', ['inactive'])
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
 
             $status_completed = Customer::select('status')
                                         ->where('admin_area', $admin_area->admin_area)
-                                        ->where('status', '2')
+                                        ->where('status', 'ดำเนินการแล้ว')
                                         ->whereNotIn('customer_status', ['inactive'])
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
@@ -192,7 +192,7 @@ class PortalCustomerController
             $cert_id = $request->file('cert_id');
 
             $cert_expire = $request->cert_expire;
-            $status = '0';
+            $status = 'รอดำเนินการ';
         }   
 
             if($cert_store != '' && $customer_id != '')
@@ -333,19 +333,19 @@ class PortalCustomerController
                                 ->count();
 
         $status_waiting = Customer::where('admin_area', $id)
-                                    ->where('status', '0')
+                                    ->where('status', 'รอดำเนินการ')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
                                     // dd($count_waiting);
         $status_action = Customer::where('admin_area', $id)
-                                    ->where('status', '1')
+                                    ->where('status', 'ต้องดำเนินการ')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
 
         $status_completed = Customer::where('admin_area', $id)
-                                    ->where('status', '2')
+                                    ->where('status', 'ดำเนินการแล้ว')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
@@ -410,7 +410,7 @@ class PortalCustomerController
         if($status_customer == 'waiting') {
 
             $count_page = Customer::where('admin_area', $id)
-                                    ->where('status', "0")
+                                    ->where('status', "รอดำเนินการ")
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
@@ -422,7 +422,7 @@ class PortalCustomerController
             $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
             $customer_list = Customer::select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
-                                    ->where('status', '0')
+                                    ->where('status', 'รอดำเนินการ')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->offset($start)
@@ -436,19 +436,19 @@ class PortalCustomerController
                                     ->count();
     
             $count_waiting = Customer::where('admin_area', $id)
-                                        ->where('status', '0')
+                                        ->where('status', 'รอดำเนินการ')
                                         ->whereNotIn('customer_status', ['inactive'])
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
                                         // dd($count_waiting);
             $count_action = Customer::where('admin_area', $id)
-                                        ->where('status', '1')
+                                        ->where('status', 'ต้องดำเนินการ')
                                         ->whereNotIn('customer_status', ['inactive'])
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
     
             $count_completed = Customer::where('admin_area', $id)
-                                        ->where('status', '2')
+                                        ->where('status', 'ดำเนินการแล้ว')
                                         ->whereNotIn('customer_status', ['inactive'])
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
@@ -508,7 +508,7 @@ class PortalCustomerController
         } else if($status_customer == 'action') {
             
             $count_page = Customer::where('admin_area', $id)
-                                    ->where('status', "1")
+                                    ->where('status', "ต้องดำเนินการ")
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
@@ -520,7 +520,7 @@ class PortalCustomerController
             $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
             $customer_list = Customer::select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
-                                    ->where('status', '1')
+                                    ->where('status', 'ต้องดำเนินการ')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->offset($start)
@@ -534,19 +534,19 @@ class PortalCustomerController
                                     ->count();
 
             $count_waiting = Customer::where('admin_area', $id)
-                                        ->where('status', '0')
+                                        ->where('status', 'รอดำเนินการ')
                                         ->whereNotIn('customer_status', ['inactive'])
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
 
             $count_action = Customer::where('admin_area', $id)
-                                        ->where('status', '1')
+                                        ->where('status', 'ต้องดำเนินการ')
                                         ->whereNotIn('customer_status', ['inactive'])
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
 
             $count_completed = Customer::where('admin_area', $id)
-                                            ->where('status', '2')
+                                            ->where('status', 'ดำเนินการแล้ว')
                                             ->whereNotIn('customer_status', ['inactive'])
                                             ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                             ->count();
@@ -555,7 +555,7 @@ class PortalCustomerController
 
             //search;
             if($keyword_code != '') {
-                $customer_list = Customer::where('status', '1')
+                $customer_list = Customer::where('status', 'ต้องดำเนินการ')
                                             ->where('admin_area',$id)
                                             ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                             ->where('customer_id', 'Like', "%{$keyword_code}%")
@@ -571,7 +571,7 @@ class PortalCustomerController
                 $total_page = ceil($count_page / $perpage);
                 $start = ($perpage * $page) - $perpage;
 
-                $check_customer_code = Customer::where('status', '1')
+                $check_customer_code = Customer::where('status', 'ต้องดำเนินการ')
                                                 ->where('admin_area',$id)
                                                 ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                 ->where('customer_id',  'Like', "%{$keyword_code}%")
@@ -596,7 +596,7 @@ class PortalCustomerController
             $count_page = Customer::where('admin_area', $id)
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->where('status', "2")
+                                    ->where('status', "ดำเนินการแล้ว")
                                     ->count();
     
             $perpage = 10;
@@ -606,7 +606,7 @@ class PortalCustomerController
             $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
             $customer_list = Customer::select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
-                                    ->where('status', "2")
+                                    ->where('status', "ดำเนินการแล้ว")
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->offset($start)
@@ -620,19 +620,19 @@ class PortalCustomerController
                                     ->count();
         
             $count_waiting = Customer::where('admin_area', $id)
-                                        ->where('status', '0')
+                                        ->where('status', 'รอดำเนินการ')
                                         ->whereNotIn('customer_status', ['inactive'])
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
 
             $count_action = Customer::where('admin_area', $id)
-                                    ->where('status', '1')
+                                    ->where('status', 'ต้องดำเนินการ')
                                     ->whereNotIn('customer_status', ['inactive'])
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
 
             $count_completed = Customer::where('admin_area', $id)
-                                        ->where('status', '2')
+                                        ->where('status', 'ดำเนินการแล้ว')
                                         ->whereNotIn('customer_status', ['inactive'])
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
@@ -641,7 +641,7 @@ class PortalCustomerController
 
             //search;
             if($keyword_code != '') {
-                $customer_list = Customer::where('status', '2')
+                $customer_list = Customer::where('status', 'ดำเนินการแล้ว')
                                             ->where('admin_area',$id)
                                             ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                             ->where('customer_id', 'Like', "%{$keyword_code}%")
@@ -657,7 +657,7 @@ class PortalCustomerController
                 $total_page = ceil($count_page / $perpage);
                 $start = ($perpage * $page) - $perpage;
 
-                $check_customer_code = Customer::where('status', '2')
+                $check_customer_code = Customer::where('status', 'ดำเนินการแล้ว')
                                                 ->where('admin_area',$id)
                                                 ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                 ->where('customer_id',  'Like', "%{$keyword_code}%")
@@ -703,19 +703,19 @@ class PortalCustomerController
                     ->count();
 
         $count_waiting = Customer::where('admin_area', $check_admin_area)
-                        ->where('status', '0')
+                        ->where('status', 'รอดำเนินการ')
                         ->whereNotIn('customer_status', ['inactive'])
                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                         ->count();
 
         $count_action = Customer::where('admin_area', $check_admin_area)
-                        ->where('status', '1')
+                        ->where('status', 'ต้องดำเนินการ')
                         ->whereNotIn('customer_status', ['inactive'])
                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                         ->count();
 
         $count_completed = Customer::where('admin_area', $check_admin_area)
-                            ->where('status', '2')
+                            ->where('status', 'ดำเนินการแล้ว')
                             ->whereNotIn('customer_status', ['inactive'])
                             ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                             ->count();

@@ -352,13 +352,13 @@
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$email}}</td>
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px; width: 20%;">{{$user_name}}</td>
 
-                        @if ($status == 0)
+                        @if ($status == 'รอดำเนินการ')
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(237, 59, 59);">รอดำเนินการ</span></td>
                         {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(255, 70, 70);"></i> รอดำเนินการ</td> --}}
-                        @elseif ($status == 1)
+                        @elseif ($status == 'ต้องดำเนินการ')
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"><span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(251, 169, 46);">ต้องดำเนินการ</span></td>
                         {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(251, 183, 23);"></i> ต้องดำเนินการ</td> --}}
-                        @elseif ($status == 2)
+                        @elseif ($status == 'ดำเนินการแล้ว')
                         {{-- <td scope="row" style="color:#9C9C9C; text-align: left;"><i class="fa-solid fa-circle" style="color: rgb(4, 181, 30);"></i> ดำเนินการแล้ว</td> --}}
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(58, 174, 19);">ดำเนินการแล้ว</span></td>
                         @else
@@ -552,17 +552,18 @@
             </table>
         </div>
 
+        @if($total_page >= 1)
         <div class="ms-6">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer?page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/inactive?page=<?=1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer?page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/inactive?page=<?= $page-1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -571,16 +572,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/inactive?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/inactive?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/inactive?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                 
                 @endif
@@ -588,11 +589,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer?page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/inactive?page=<?= $page ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer?page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/inactive?page=<?= $page+1 ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif
@@ -600,6 +601,7 @@
                 </ul>
             </nav>
         </div>
+        @endif
         <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
         <div class="py-3">
             <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>

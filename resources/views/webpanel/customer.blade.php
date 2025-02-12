@@ -338,7 +338,7 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/latest_update" style="text-decoration: none; color:white;">UPDATE</a> <sup style="background-color:#fded71; padding:5px; width: 10px; color:#000000; border-radius: 20px;">Latest</sup><br/>
+                    <a href="/webpanel/customer/status/latest_update" style="text-decoration: none; color:white;">UPDATE</a> <sup style="background-color:#80bdf3; padding:5px; width: 10px; color:#ffffff; border-radius: 20px;">New</sup><br/>
                     @if (isset($total_status_updated))
                     <span>{{$total_status_updated != '' ? $total_status_updated : '0' ;}}</span>
                     @else
@@ -359,6 +359,86 @@
             </div>
 
         </div>
+        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
+        <!--- search --->
+        <div class="row ms-6 mr-6">
+            <div class="col-sm-2">
+                <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/customer">
+                    <ul class="ms-2 my-2">
+                        <span>เลือกผลลัพธ์ : </span>
+                    </ul>
+                    {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
+            
+                <button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="" style="background-color:rgb(9, 179, 74); width: 100%; border-radius:8px; color:#ffffff; height:70px;" type="button">เขตรับผิดชอบ
+
+                </button>
+                
+                <!-- Dropdown menu -->
+                <div id="dropdownDivider" class="z-10 hidden bg-gray divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
+
+                    @if(isset($admin_area))
+
+                        @foreach($admin_area as $row_area)
+                        <div class="py-2">
+                            <a href="/webpanel/customer/adminarea/{{$row_area->admin_area}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{$row_area->admin_area}}</a>
+                        </div>
+                        @endforeach
+                        @else
+                        <div class="py-2">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Separated link</a>
+                        </div>
+                    @endif
+                </div>
+                
+    
+                    <p class="py-2" id="keyword_search"></p>
+                    @csrf   
+                </form>
+            </div>
+            <div class="col-sm-10">
+                <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/customer">
+                    <ul class="ms-2 my-2">
+                        <span>ค้นหาร้านค้า : </span>
+                    </ul>
+                    {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <!---icon -->
+                        </div>
+                        <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" />
+                        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
+                    
+                    </div>
+                    <p class="py-2" id="keyword_search"></p>
+                    @csrf   
+                </form>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function() {
+                $('#default-search').keyup(function(e) {
+                    e.preventDefault();  // Prevent form from submitting
+
+                    $.ajax({
+                        url: '/webpanel/customer/search/code',
+                        method: 'GET',
+                        data: {
+                            keyword: $(this).val(),
+
+                        },
+                        catch:false,
+                        success: function(data) {
+                            
+                            $('#keyword_search').html(data);
+
+                        }
+                    });
+                   /*  let keyword = $(this).val();
+                    console.log(keyword ); */
+                });
+            });
+        </script>
 
         <div class="ms-6 mr-6 mb-2">
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
@@ -401,13 +481,13 @@
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$email}}</td>
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px; width: 20%;">{{$user_name}}</td>
 
-                        @if ($status == 0)
+                        @if ($status == 'รอดำเนินการ')
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(237, 59, 59);">รอดำเนินการ</span></td>
                         {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(255, 70, 70);"></i> รอดำเนินการ</td> --}}
-                        @elseif ($status == 1)
+                        @elseif ($status == 'ต้องดำเนินการ')
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"><span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(251, 169, 46);">ต้องดำเนินการ</span></td>
                         {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(251, 183, 23);"></i> ต้องดำเนินการ</td> --}}
-                        @elseif ($status == 2)
+                        @elseif ($status == 'ดำเนินการแล้ว')
                         {{-- <td scope="row" style="color:#9C9C9C; text-align: left;"><i class="fa-solid fa-circle" style="color: rgb(4, 181, 30);"></i> ดำเนินการแล้ว</td> --}}
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(58, 174, 19);">ดำเนินการแล้ว</span></td>
                         @else

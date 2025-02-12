@@ -163,7 +163,7 @@ Class UserController
         $row_user = User::user();
         $user_master = $row_user[0];
 
-        $status_waiting = Customer::where('status', '0')
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
 
@@ -185,7 +185,7 @@ Class UserController
         $amphur = DB::table('amphures')->select('name_th', 'province_id')->get();
         $district = DB::table('districts')->select('name_th', 'amphure_id')->get();
 
-        $status_waiting = Customer::where('status', '0')
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
                                 ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                 ->count();
 

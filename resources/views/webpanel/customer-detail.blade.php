@@ -173,7 +173,7 @@
 
         <div class="py-2">
         </div>
-        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / แบบฟอร์ม</span>
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้า (Customer)</a> / แบบฟอร์ม</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
         
         @if($customer_view->updated_at != '')
@@ -480,9 +480,9 @@
                                         <span>สถานะบัญชี</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                         <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="status">
     
-                                                <option {{$customer_view->status == '0' ? 'selected': ''}} value="0">รอดำเนินการ</option>
-                                                <option {{$customer_view->status== '1' ? 'selected': ''}} value="1">ต้องดำเนินการ</option>
-                                                <option {{$customer_view->status == '2' ? 'selected': ''}} value="2">ดำเนินการแล้ว</option>
+                                                <option {{$customer_view->status == 'รอดำเนินการ' ? 'selected': ''}} value="รอดำเนินการ">รอดำเนินการ</option>
+                                                <option {{$customer_view->status== 'ต้องดำเนินการ' ? 'selected': ''}} value="ต้องดำเนินการ">ต้องดำเนินการ</option>
+                                                <option {{$customer_view->status == 'ดำเนินการแล้ว' ? 'selected': ''}} value="ดำเนินการแล้ว">ดำเนินการแล้ว</option>
                                         
     
                                             </select><br>

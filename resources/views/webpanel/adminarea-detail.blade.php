@@ -236,32 +236,32 @@
         }
     </style>
 
-            @section('status_alert')
-            <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
-            @endsection
+        @section('status_alert')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+        @endsection
 
-            @section('status_waiting')
-            <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
-            @endsection
+        @section('status_waiting')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+        @endsection
 
-            @section('status_updated')
-            <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
-            @endsection
+        @section('status_updated')
+        <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+        @endsection
 
-            @section('text_alert')
-            <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
-            @endsection
+        @section('text_alert')
+        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+        @endsection
 
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
         <div class="py-2">
         </div>
-        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / กำลังติดตาม Following</span>
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ย้อนกลับ/</a> รับผิดชอบโดย : {{$admin_name->name}} ({{$admin_name->admin_area}})</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         <div class="mr-6" style="text-align: right;">
-            <a href="/webpanel/customer/export/getcsv/getcsv_following"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
-            <a href="/webpanel/customer/export/getexcel/getexcel_following"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
+            <a href="/webpanel/customer/export/getcsv/getcsv_customer/{{$admin_name->admin_area}}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
+            <a class="ms-1" href="/webpanel/customer/export/getexcel/getexcel_customer/{{$admin_name->admin_area}}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
     
         </div>
 
@@ -286,8 +286,8 @@
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
                     ร้านค้าทั้งหมด<br/>
-                    @if (isset($total_customer))
-                    <span>{{$total_customer != '' ? $total_customer : '0' ;}}</span>
+                    @if (isset($total_customer_adminarea))
+                    <span>{{$total_customer_adminarea != '' ? $total_customer_adminarea : '0' ;}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -296,9 +296,31 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    รอดำเนินการ<br/>
-                    @if (isset($customer_status_following))
-                    <span>{{$customer_status_following != '' ? $customer_status_following : '0' ;}}</span>
+                    <a href="">รอดำเนินการ</a><br/>
+                    @if (isset($total_status_waiting))
+                    <span>{{$total_status_waiting != '' ? $total_status_waiting : '0' ;}}</span>
+                    @else
+                    <span>error</span>
+                    @endif
+                </span>
+            </div>
+
+            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
+                <span style="color: white; text-align: center;">
+                    ต้องดำเนินการ<br/>
+                    @if (isset($total_status_action))
+                    <span>{{$total_status_action != '' ? $total_status_action : '0' ;}}</span>
+                    @else
+                    <span>error</span>
+                    @endif
+                </span>
+            </div>
+
+            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
+                <span style="color: white; text-align: center;">
+                    ดำเนินการแล้ว<br/>
+                    @if (isset($total_status_completed))
+                    <span>{{$total_status_completed != '' ? $total_status_completed : '0' ;}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -308,6 +330,51 @@
         </div>
 
         <hr class="my-3" style="color: #8E8E8E; width: 100%;">
+
+         <!--- search --->
+         <div class="row ms-6 mr-6">
+            <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/customer">
+                <ul class="ms-2 my-2">
+                    <span>ค้นหาร้านค้า : </span>
+                </ul>
+                {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
+                <div class="relative">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <!---icon -->
+                    </div>
+                    <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" />
+                    <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
+                
+                </div>
+                <p class="py-2" id="keyword_search"></p>
+                @csrf   
+            </form>
+        </div>
+
+        <script>
+            $(document).ready(function() {
+                $('#default-search').keyup(function(e) {
+                    e.preventDefault();  // Prevent form from submitting
+
+                    $.ajax({
+                        url: '/webpanel/customer/search/code',
+                        method: 'GET',
+                        data: {
+                            keyword: $(this).val(),
+
+                        },
+                        catch:false,
+                        success: function(data) {
+                            
+                            $('#keyword_search').html(data);
+
+                        }
+                    });
+                /*  let keyword = $(this).val();
+                    console.log(keyword ); */
+                });
+            });
+        </script>
 
         <div class="ms-6 mr-6 mb-2">
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
@@ -550,18 +617,17 @@
             </table>
         </div>
 
-        @if($total_page >= 1)
         <div class="ms-6">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer/status/following?page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?page=<?=1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/following?page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?page=<?= $page-1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -570,16 +636,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/following?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/following?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/following?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                 
                 @endif
@@ -587,11 +653,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer/status/following?page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?page=<?= $page ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/following?page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?page=<?= $page+1 ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif
@@ -599,7 +665,6 @@
                 </ul>
             </nav>
         </div>
-        @endif
         <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
         <div class="py-3">
             <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>

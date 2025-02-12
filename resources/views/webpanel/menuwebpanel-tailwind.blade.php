@@ -51,7 +51,7 @@
                 <li class="py-1">
                     <a href="/webpanel" class="py-2 flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-green-800 group">
                         <i class="fa-solid fa-tv"></i>
-                        <span class="ms-3">หน้าแรก</span>
+                        <span class="ms-3">หน้าหลัก</span>
                     </a>
                 </li>
                 {{-- <hr class="my-2" style="color:rgb(106, 109, 170);"> --}}
@@ -156,8 +156,18 @@
                    </button>
                 </div>
                 <p class="mb-3 text-sm dark:text-blue-400" style="color:white;">
+                  
+                  <ul class="py-2">
+                     <a href="/webpanel/customer/status/latest_update" class="flex items-center w-full p-2 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-red-700">
+                           <span class="flex-1 text-left rtl:text-left whitespace-nowrap" style="font-size:18px;">อัปเดต<sup style="background-color:rgba(198, 92, 92, 0.79); padding: 5px; border-radius:20px; font-size:12px; margin-left:6px;">New</sup></span>
+                           <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(186, 26, 69);"><p>@yield('status_updated')</p></span>
+                     </a>
+                  </ul>
+               
                     <?php date_default_timezone_set("Asia/Bangkok"); ?>
-                    <blockquote style="color:white; font-size:16px; text-align:center;">UPDATED ! @yield('text_alert')</blockquote>
+                    <blockquote style="color:white; font-size:16px; text-align:center;">
+                     {{-- <span style="">@yield('text_alert')</span> --}}
+                     </blockquote>
                   {{--   <br>
                     <blockquote style="color:white; font-size:16px;">@yield('text_alert')</blockquote> --}}
                 </p>

@@ -129,7 +129,7 @@ class DashboardController extends Controller
            $count_status_closed = Customer::whereNotIn('status_user', ['','กำลังติดตาม','ถูกระงับสมาชิก'])->count();
     
            //menu alert;
-           $status_waiting = Customer::where('status', '0')
+           $status_waiting = Customer::where('status', 'รอดำเนินการ')
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->count();
 

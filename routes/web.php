@@ -3,6 +3,7 @@
     use App\Http\Controllers\ProfileController;
     use App\Http\Controllers\UserController;
     use App\Exports;
+    use App\Exports\CustomerAreaExport;
     use App\Http\Controllers\ProvinceController;
     use App\Http\Controllers\Webpanel\WebpanelCustomerController;
     use App\Http\Controllers\Portal\PortalCustomerController;
@@ -12,9 +13,9 @@
     use Illuminate\Support\Facades\Route;
     use App\Http\Middleware\EnsureUserHasRole;
     use App\Models\Customer;
-use App\Models\Salearea;
-use Illuminate\Support\Facades\DB;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+    use App\Models\Salearea;
+    use Illuminate\Support\Facades\DB;
+    use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
     Route::get('/', function () {
         return view('auth.login-tailwind');
@@ -197,15 +198,27 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
         //export customer -> getexcel;
         Route::get('/webpanel/customer/export/getexcel/{status}', [WebpanelCustomerController::class, 'exportCustomerExcel']);
+
+        //export customer -> getexcel;
+        // Route::get('/webpanel/customer/export/getexcel/{status}/{admin_id}', [WebpanelCustomerController::class, 'exportCustomerAreaExcel']);
+        Route::get('/webpanel/customer/export/getexcel/{status}/{admin_id}', [CustomerAreaExport::class, 'exportCustomerAreaExcel']);
  
         //export customer -> getcsv;
         Route::get('/webpanel/customer/export/getcsv/{status}', [WebpanelCustomerController::class, 'exportCustomerCsv']);
 
+        //export adminarea-detail->getcsv;
+        // Route::get('/webpanel/customer/export/getcsv/{status}/{admin_id}', [WebpanelCustomerController::class, 'exportCustomerAreaCsv']);
+        Route::get('/webpanel/customer/export/getcsv/{status}/{admin_id}', [CustomerAreaExport::class, 'exportCustomerAreaCsv']);
+
         //export customer_detail -> getcsv;
         Route::get('/webpanel/customer/getcsv/{customer_id}', [WebpanelCustomerController::class, 'getCustomerCsv']);
  
+        //adminarea-detail;
+        Route::get('/webpanel/customer/adminarea/{admin_id}', [WebpanelCustomerController::class, 'indexAdminArea']);
 
     });
+
+    Route::get('/webpanel/customer/search/code', [PortalCustomerController::class, 'customerSearch'])->middleware('auth', 'role','status', 'verified');
 
     Route::get('/webpanel/customer/export/getcsv/{status}', [WebpanelCustomerController::class, 'exportCustomerCsv']);
 

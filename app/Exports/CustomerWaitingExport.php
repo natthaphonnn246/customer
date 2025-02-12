@@ -15,7 +15,7 @@ class CustomerWaitingExport implements FromCollection, WithHeadings
     {
         return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
                         ->whereNotIn('customer_code', ['0000','4494'])
-                        ->where('status', '0')
+                        ->where('status', 'รอดำเนินการ')
                         ->get();
     }
     public function headings(): array
