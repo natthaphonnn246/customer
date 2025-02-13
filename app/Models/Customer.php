@@ -204,4 +204,64 @@ class Customer extends Model
 
         return [$customer, $start, $total_page, $page];
     }
+
+    //รอดำเนินการ เขตรับผิดชอบว
+    public static function viewCustomerAdminAreaWaiting($page, $admin_id)
+    {
+        $count_page = Customer::where('status', 'รอดำเนินการ')->where('admin_area', $admin_id)->whereNotIn('customer_id', ['0000', '4494'])->count();
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('status', 'รอดำเนินการ')
+                    ->where('admin_area',$admin_id)
+                    ->whereNotIn('customer_code',['0000', '4494'])
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+
+    //ต้องดำเนินการ เขตรับผิดชอบว
+    public static function viewCustomerAdminAreaAction($page, $admin_id)
+    {
+        $count_page = Customer::where('status', 'ต้องดำเนินการ')->where('admin_area', $admin_id)->whereNotIn('customer_id', ['0000', '4494'])->count();
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('status', 'ต้องดำเนินการ')
+                    ->where('admin_area',$admin_id)
+                    ->whereNotIn('customer_code',['0000', '4494'])
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page,  $count_page];
+    }
+
+     //ดำเนินการแล้ว เขตรับผิดชอบว
+     public static function viewCustomerAdminAreaCompleted($page, $admin_id)
+     {
+         $count_page = Customer::where('status', 'ดำเนินการแล้ว')->where('admin_area', $admin_id)->whereNotIn('customer_id', ['0000', '4494'])->count();
+ 
+         $perpage = 10;
+         $total_page = ceil($count_page / $perpage);
+         $start = ($perpage * $page) - $perpage;
+ 
+         $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                     ->where('status', 'ดำเนินการแล้ว')
+                     ->where('admin_area',$admin_id)
+                     ->whereNotIn('customer_code',['0000', '4494'])
+                     ->offset($start)
+                     ->limit($perpage)
+                     ->get();
+ 
+         return [$customer, $start, $total_page, $page];
+     }
 }

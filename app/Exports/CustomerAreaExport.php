@@ -14,11 +14,41 @@ class CustomerAreaExport
     {
         $date = date('d-m-Y');
 
-        if($status == 'getexcel_customer') {
-            return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status')
-                            ->whereNotIn('customer_code', ['0000','4494'])
-                            ->where('admin_area', $admin_id)
-                            ->downloadExcel('Customer_all'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
+        switch ($status)
+        {
+            case ($status == 'getexcel_customer'):
+                return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status')
+                                ->whereNotIn('customer_code', ['0000','4494'])
+                                ->where('admin_area', $admin_id)
+                                ->downloadExcel('Customer_all'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
+            break;
+
+            case ($status == 'getexcel_waiting'):
+                return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status')
+                                ->whereNotIn('customer_code', ['0000','4494'])
+                                ->where('admin_area', $admin_id)
+                                ->where('status', 'รอดำเนินการ')
+                                ->downloadExcel('Customer_waiting'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
+            break;
+
+            case ($status == 'getexcel_action'):
+                return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status')
+                                ->whereNotIn('customer_code', ['0000','4494'])
+                                ->where('admin_area', $admin_id)
+                                ->where('status', 'ต้องดำเนินการ')
+                                ->downloadExcel('Customer_action'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
+            break;
+
+            case ($status == 'getexcel_completed'):
+                return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status')
+                                ->whereNotIn('customer_code', ['0000','4494'])
+                                ->where('admin_area', $admin_id)
+                                ->where('status', 'ดำเนินการแล้ว')
+                                ->downloadExcel('Customer_completed'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
+            break;
+
+            default:
+            return back()->with('error_export', 'เกิดข้อผิดพลาด');
         }
     }
 
@@ -50,6 +80,27 @@ class CustomerAreaExport
                 ob_end_clean();
             break;
 
+            case $status == 'getcsv_waiting' && $admin_id != '':
+                $date = date('Y-m-d');
+                $filename = 'Customer_waiting_'. $date. '.csv';
+                 // Start the output buffer.
+                ob_start();
+
+                // Set PHP headers for CSV output.
+                header('Content-Type: text/csv; charset=utf-8');
+                header('Content-Disposition: attachment; filename= '.$filename);
+                
+                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status')
+                                    ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->where('admin_area', $admin_id)
+                                    ->where('status', 'รอดำเนินการ')
+                                    ->get();
+
+                $data = $query->toArray();
+                // Clean up output buffer before writing anything to CSV file.
+                ob_end_clean();
+            break;
+
             case $status == 'getcsv_action':
                 $date = date('Y-m-d');
                 $filename = 'Customer_action_'. $date. '.csv';
@@ -60,8 +111,9 @@ class CustomerAreaExport
                 header('Content-Type: text/csv; charset=utf-8');
                 header('Content-Disposition: attachment; filename= '.$filename);
                 
-                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
+                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status')
                                     ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->where('admin_area', $admin_id)
                                     ->where('status', 'ต้องดำเนินการ')
                                     ->get();
 
@@ -70,9 +122,9 @@ class CustomerAreaExport
                 ob_end_clean();
             break;
 
-            case $status == 'getcsv_waiting':
+            case $status == 'getcsv_completed':
                 $date = date('Y-m-d');
-                $filename = 'Customer_waiting_'. $date. '.csv';
+                $filename = 'Customer_completed_'. $date. '.csv';
                  // Start the output buffer.
                 ob_start();
 
@@ -80,29 +132,10 @@ class CustomerAreaExport
                 header('Content-Type: text/csv; charset=utf-8');
                 header('Content-Disposition: attachment; filename= '.$filename);
                 
-                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
+                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status')
                                     ->whereNotIn('customer_code', ['0000','4494'])
-                                    ->where('status', 'รอดำเนินการ')
-                                    ->get();
-
-                $data = $query->toArray();
-                // Clean up output buffer before writing anything to CSV file.
-                ob_end_clean();
-            break;
-
-            case $status == 'getcsv_update':
-                $date = date('Y-m-d');
-                $filename = 'Customer_update_'. $date. '.csv';
-                 // Start the output buffer.
-                ob_start();
-
-                // Set PHP headers for CSV output.
-                header('Content-Type: text/csv; charset=utf-8');
-                header('Content-Disposition: attachment; filename= '.$filename);
-                
-                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
-                                    ->where('status_update', "updated")
+                                    ->where('admin_area', $admin_id)
+                                    ->where('status', 'ดำเนินการแล้ว')
                                     ->get();
 
                 $data = $query->toArray();

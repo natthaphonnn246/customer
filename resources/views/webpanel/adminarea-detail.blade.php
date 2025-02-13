@@ -285,7 +285,7 @@
             
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    ร้านค้าทั้งหมด<br/>
+                    <a href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}">ร้านค้าทั้งหมด</a><br/>
                     @if (isset($total_customer_adminarea))
                     <span>{{$total_customer_adminarea != '' ? $total_customer_adminarea : '0' ;}}</span>
                     @else
@@ -296,7 +296,7 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    <a href="">รอดำเนินการ</a><br/>
+                    <a href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting">รอดำเนินการ</a><br/>
                     @if (isset($total_status_waiting))
                     <span>{{$total_status_waiting != '' ? $total_status_waiting : '0' ;}}</span>
                     @else
@@ -307,7 +307,7 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    ต้องดำเนินการ<br/>
+                    <a href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action">ต้องดำเนินการ</a><br/>
                     @if (isset($total_status_action))
                     <span>{{$total_status_action != '' ? $total_status_action : '0' ;}}</span>
                     @else
@@ -318,7 +318,7 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    ดำเนินการแล้ว<br/>
+                    <a href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-completed">ดำเนินการแล้ว</a><br/>
                     @if (isset($total_status_completed))
                     <span>{{$total_status_completed != '' ? $total_status_completed : '0' ;}}</span>
                     @else
@@ -333,7 +333,7 @@
 
          <!--- search --->
          <div class="row ms-6 mr-6">
-            <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/customer">
+            <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/customer/adminarea/{{$admin_name->admin_area}}">
                 <ul class="ms-2 my-2">
                     <span>ค้นหาร้านค้า : </span>
                 </ul>
@@ -617,6 +617,7 @@
             </table>
         </div>
 
+        @if(isset($check_keyword) == null)
         <div class="ms-6">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
@@ -665,6 +666,57 @@
                 </ul>
             </nav>
         </div>
+        @elseif ($count_page <= 1)
+        @else
+        <div class="ms-6">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                <li class="page-item">
+
+                @if ($page == 1)
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?=1 ; ?>" aria-label="Previous">
+                    <span aria-hidden="true">Previous</span>
+                    </a>
+                @else
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <span aria-hidden="true">Previous</span>
+                    </a>
+                @endif
+                </li>
+
+                @if($total_page > 14)
+
+                    @for ($i= 1; $i <= 10 ; $i++)
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    @endfor
+                    <li class="page-item"><a class="page-link">...</a></li>
+                    @for ($i= $total_page-1; $i <= $total_page ; $i++)
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    @endfor
+
+                @else
+                    @for ($i= 1; $i <= $total_page ; $i++)
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    @endfor
+                
+                @endif
+
+                <li class="page-item">
+                
+                @if ($page == $total_page)
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $page ; ?>" aria-label="Next">
+                    <span aria-hidden="true">next</span>
+                    </a>
+                @else
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $page+1 ; ?>" aria-label="Next">
+                    <span aria-hidden="true">next</span>
+                    </a>
+                @endif
+                </li>
+                </ul>
+            </nav>
+        </div>
+        @endif
         <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
         <div class="py-3">
             <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>

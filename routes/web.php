@@ -216,6 +216,11 @@
         //adminarea-detail;
         Route::get('/webpanel/customer/adminarea/{admin_id}', [WebpanelCustomerController::class, 'indexAdminArea']);
 
+        //search customer;
+        // Route::get('/webpanel/customer/adminarea/{admin_id}', [WebpanelCustomerController::class, 'indexAdminArea']);
+
+        Route::get('/webpanel/customer/adminarea/{admin_id}/{status}', [WebpanelCustomerController::class, 'indexAdminArea']);
+
     });
 
     Route::get('/webpanel/customer/search/code', [PortalCustomerController::class, 'customerSearch'])->middleware('auth', 'role','status', 'verified');

@@ -177,8 +177,8 @@
                                 <li class="mt-4">
                                     <span>การจัดส่งสินค้า</span><span style="font-size: 12px; color:red;"> *ไม่ระบุ คือ จัดส่งตามรอบขนส่งทางร้าน</span>
                                     <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="delivery_by">
-                                    <option value="owner">ไม่ระบุ</option>
-                                    <option value="private">ขนส่งเอกชน (พัสดุ)</option>
+                                    <option value="standard">ไม่ระบุ</option>
+                                    <option value="owner">ขนส่งเอกชน (พัสดุ)</option>
                                     </select>
                                 </li>
                                 <li class="mt-4">

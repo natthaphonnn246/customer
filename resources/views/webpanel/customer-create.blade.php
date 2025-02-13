@@ -193,6 +193,13 @@
                                     <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="telephone">
                                 </li>
                                 <li class="mt-4">
+                                    <span>การจัดส่งสินค้า</span><span style="font-size: 12px; color:red;"> *ไม่ระบุ คือ จัดส่งตามรอบขนส่งทางร้าน</span>
+                                    <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="delivery_by">
+                                    <option value="standard">ไม่ระบุ</option>
+                                    <option value="owner">ขนส่งเอกชน (พัสดุ)</option>
+                                    </select>
+                                </li>
+                                <li class="mt-4">
                                     <span>ที่อยู่จัดส่ง</span>
                                     <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address" required>
                                 </li>                              
