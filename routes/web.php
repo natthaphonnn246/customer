@@ -3,10 +3,13 @@
     use App\Http\Controllers\ProfileController;
     use App\Http\Controllers\UserController;
     use App\Exports;
+    use App\Exports\CustomerExcelExport;
     use App\Exports\CustomerAreaExport;
+    use App\Exports\CustomerCsvExport;
     use App\Http\Controllers\ProvinceController;
     use App\Http\Controllers\Webpanel\WebpanelCustomerController;
     use App\Http\Controllers\Portal\PortalCustomerController;
+    use App\Http\Controllers\webpanel\WebpanelAdminController;
     use App\Http\Controllers\SettingController;
     use App\Http\Controllers\SaleareaController;
     use App\Http\Controllers\DashboardController;
@@ -43,7 +46,14 @@
         return view('auth.login-tailwind');
     });
 
-   Route::get('/dashboard', function () {
+    //admin for reports;
+    Route::middleware('auth', 'status','maintenance', 'adminRole')->group(function () {
+        Route::get('/admin', [WebpanelAdminController::class, 'dashboard'])->name('webpanel.report');
+        Route::get('/admin/customer', [WebpanelAdminController::class, 'indexCustomer']);
+        Route::get('/admin/customer/{id}', [WebpanelAdminController::class, 'edit']);
+    });
+
+    Route::get('/dashboard', function () {
         return view('dashboard');
         })->middleware(['auth', 'role','status','rights_area', 'verified'])->name('dashboard'); 
 
@@ -55,6 +65,7 @@
         Route::get('/webpanel', function () {
             return view('webpanel/dashboard');
         });
+
 
         Route::get('/webpanel', [DashboardController::class, 'index'])->name('webpanel');
     
@@ -197,14 +208,14 @@
         Route::post('/webpanel/customer/status-inactive', [WebpanelCustomerController::class, 'statusiAct']);
 
         //export customer -> getexcel;
-        Route::get('/webpanel/customer/export/getexcel/{status}', [WebpanelCustomerController::class, 'exportCustomerExcel']);
+        Route::get('/webpanel/customer/export/getexcel/{status}', [CustomerExcelExport::class, 'exportCustomerExcel']);
 
         //export customer -> getexcel;
         // Route::get('/webpanel/customer/export/getexcel/{status}/{admin_id}', [WebpanelCustomerController::class, 'exportCustomerAreaExcel']);
         Route::get('/webpanel/customer/export/getexcel/{status}/{admin_id}', [CustomerAreaExport::class, 'exportCustomerAreaExcel']);
  
         //export customer -> getcsv;
-        Route::get('/webpanel/customer/export/getcsv/{status}', [WebpanelCustomerController::class, 'exportCustomerCsv']);
+        Route::get('/webpanel/customer/export/getcsv/{status}', [CustomerCsvExport::class, 'exportCustomerCsv']);
 
         //export adminarea-detail->getcsv;
         // Route::get('/webpanel/customer/export/getcsv/{status}/{admin_id}', [WebpanelCustomerController::class, 'exportCustomerAreaCsv']);
@@ -223,9 +234,13 @@
 
     });
 
-    Route::get('/webpanel/customer/search/code', [PortalCustomerController::class, 'customerSearch'])->middleware('auth', 'role','status', 'verified');
+    Route::get('/webpanel/datepicker', function (){
+        return view('webpanel/datepicker');
+    });
 
-    Route::get('/webpanel/customer/export/getcsv/{status}', [WebpanelCustomerController::class, 'exportCustomerCsv']);
+    // Route::get('/webpanel/customer/search/code', [PortalCustomerController::class, 'customerSearch'])->middleware('auth', 'role','status', 'verified');
+
+    // Route::get('/webpanel/customer/export/getcsv/{status}', [WebpanelCustomerController::class, 'exportCustomerCsv']);
 
     //update groups customer;
     Route::post('/webpanel/customer/groups-customer/updatadmin/{sale_area}', [WebpanelCustomerController::class, 'updateAdminarea']);

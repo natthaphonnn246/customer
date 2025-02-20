@@ -16,7 +16,7 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel-tailwind')
+    @extends ('admin/menuadmin')
     @section('content')
     @csrf
 
@@ -45,6 +45,10 @@
 
         @section('text_alert')
         <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+        @endsection
+
+        @section('username')
+        <h6 class="color:#ffffff; font-weight:300;">{{$user_name}}</h6>
         @endsection
 
     <div class="contentArea">
@@ -152,180 +156,6 @@
                     </div>
 
                 </div> 
-                
-      {{--   <div class="p-3 m-0 border-0 bd-example m-0 border-0">
-                <hr style="border: solid 4px; color:#666666">
-                @if(isset($customer_north))
-
-                    <div style="text-align:left;">
-                        <div class="py-2">
-                            <span class="form-control" style="color:#656565; font-weight:bold;">ภาคเหนือ : </span>
-                            <span class="form-control" style="color:#656565; margin-top: 15px;"><i class="fa-solid fa-circle" style="color:#2196F3;"></i> รวมทั้งหมด : {{$customer_north}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#0dc328;"></i> ปกติ : {{$normal_customer_north}} ร้านค้า |
-                            <i class="fa-solid fa-circle" style="color:#ffb429;"></i> ติดตาม : {{$follow_customer_north}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#ff0000;"></i> ระงับบัญชี : {{$suspend_customer_north}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#7a7a7a;"></i> ปิดบัญชี : {{$closed_customer_north}} ร้านค้า</span>
-                        </div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 35px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_north}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 35px; background-color:#2196F3; font-size:12px; width: {{$percentage_north .'%'}}; ">{{ number_format($percentage_north,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_normal_customer_north}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#0dc328; font-size:11px; width: {{$percentage_normal_customer_north .'%'}}; ">{{ number_format($percentage_normal_customer_north,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_follow_customer_north}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#ffb429; font-size:11px; width: {{$percentage_follow_customer_north .'%'}}; ">{{ number_format($percentage_follow_customer_north,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_suspend_customer_north}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color: #ff0000; font-size:11px; width: {{$percentage_suspend_customer_north .'%'}}; ">{{ number_format($percentage_suspend_customer_north,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_closed_customer_north}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#7a7a7a; font-size:11px; width: {{$percentage_closed_customer_north .'%'}};">{{ number_format($percentage_closed_customer_north,2) .'%'}}</div>
-                    </div>
-                 
-                @endif
-
-                <hr style="border: solid 4px; color:#666666">
-
-                @if(isset($customer_central))
-
-                    <div style="text-align:left;">
-                        <div class="py-2">
-                            <span class="form-control" style="color:#656565; font-weight:bold;">ภาคกลาง : </span>
-                            <span class="form-control" style="color:#656565; margin-top: 15px;"><i class="fa-solid fa-circle" style="color:#2196F3;"></i> รวมทั้งหมด : {{$customer_central}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#0dc328;"></i> ปกติ : {{$normal_customer_central}} ร้านค้า |
-                            <i class="fa-solid fa-circle" style="color:#ffb429;"></i> ติดตาม : {{$follow_customer_central}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#ff0000;"></i> ระงับบัญชี : {{$suspend_customer_central}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#7a7a7a;"></i> ปิดบัญชี : {{$closed_customer_central}} ร้านค้า</span>
-                        </div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 35px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_central}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 35px; background-color:#2196F3; font-size:12px; width: {{$percentage_central .'%'}}; ">{{ number_format($percentage_central,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_normal_customer_central}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#0dc328; font-size:11px; width: {{$percentage_normal_customer_central .'%'}}; ">{{ number_format($percentage_normal_customer_central,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_follow_customer_central}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#ffb429; font-size:11px; width: {{$percentage_follow_customer_central .'%'}}; ">{{ number_format($percentage_follow_customer_central,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_suspend_customer_central}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color: #ff0000; font-size:11px; width: {{$percentage_suspend_customer_central .'%'}}; ">{{ number_format($percentage_suspend_customer_central,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_closed_customer_central}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#7a7a7a; font-size:11px; width: {{$percentage_closed_customer_central .'%'}};">{{ number_format($percentage_closed_customer_central,2) .'%'}}</div>
-                    </div>
-
-                @endif
-
-                <hr style="border: solid 4px; color:#666666">
-
-                @if(isset($customer_eastern))
-                
-                    <div style="text-align:left;">
-                        <div class="py-2">
-                            <span class="form-control" style="color:#656565; font-weight:bold;">ภาคตะวันออก : </span>
-                            <span class="form-control" style="color:#656565; margin-top: 15px;"><i class="fa-solid fa-circle" style="color:#2196F3;"></i> รวมทั้งหมด : {{$customer_eastern}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#0dc328;"></i> ปกติ : {{$normal_customer_eastern}} ร้านค้า |
-                            <i class="fa-solid fa-circle" style="color:#ffb429;"></i> ติดตาม : {{$follow_customer_eastern}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#ff0000;"></i> ระงับบัญชี : {{$suspend_customer_eastern}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#7a7a7a;"></i> ปิดบัญชี : {{$closed_customer_eastern}} ร้านค้า</span>
-                        </div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 35px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_eastern}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 35px; background-color:#2196F3; font-size:12px; width: {{$percentage_eastern .'%'}}; ">{{ number_format($percentage_eastern,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_normal_customer_eastern}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#0dc328; font-size:11px; width: {{$percentage_normal_customer_eastern .'%'}}; ">{{ number_format($percentage_normal_customer_eastern,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_follow_customer_eastern}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#ffb429; font-size:11px; width: {{$percentage_follow_customer_eastern .'%'}}; ">{{ number_format($percentage_follow_customer_eastern,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_suspend_customer_eastern}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color: #ff0000; font-size:11px; width: {{$percentage_suspend_customer_eastern .'%'}}; ">{{ number_format($percentage_suspend_customer_eastern,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_closed_customer_eastern}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#7a7a7a; font-size:11px; width: {{$percentage_closed_customer_eastern .'%'}};">{{ number_format($percentage_closed_customer_eastern,2) .'%'}}</div>
-                    </div>
-
-                @endif
-
-                <hr style="border: solid 4px; color:#666666">
-
-                @if(isset($customer_northeast))
-
-                    <div style="text-align:left;">
-                        <div class="py-2">
-                            <span class="form-control" style="color:#656565; font-weight:bold;">ภาคตะวันออกเฉียงเหนือ (อีสาน) : </span>
-                            <span class="form-control" style="color:#656565; margin-top: 15px;"><i class="fa-solid fa-circle" style="color:#2196F3;"></i> รวมทั้งหมด : {{$customer_northeast}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#0dc328;"></i> ปกติ : {{$normal_customer_northeast}} ร้านค้า |
-                            <i class="fa-solid fa-circle" style="color:#ffb429;"></i> ติดตาม : {{$follow_customer_northeast}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#ff0000;"></i> ระงับบัญชี : {{$suspend_customer_northeast}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#7a7a7a;"></i> ปิดบัญชี : {{$closed_customer_northeast}} ร้านค้า</span>
-                        </div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 35px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_northeast}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 35px; background-color:#2196F3; font-size:12px; width: {{$percentage_northeast .'%'}};">{{ number_format($percentage_northeast,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_normal_customer_northeast}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#0dc328; font-size:11px; width: {{$percentage_normal_customer_northeast .'%'}}; ">{{ number_format($percentage_normal_customer_northeast,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_follow_customer_northeast}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#ffb429; font-size:11px; width: {{$percentage_follow_customer_northeast .'%'}}; ">{{ number_format($percentage_follow_customer_eastern,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_suspend_customer_northeast}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color: #ff0000; font-size:11px; width: {{$percentage_suspend_customer_northeast .'%'}}; ">{{ number_format($percentage_suspend_customer_northeast,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_closed_customer_northeast}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#7a7a7a; font-size:11px; width: {{$percentage_closed_customer_northeast .'%'}};">{{ number_format($percentage_closed_customer_northeast,2) .'%'}}</div>
-                    </div>
-
-                @endif
-
-                <hr style="border: solid 4px; color:#666666">
-
-                @if(isset($customer_western))
-
-                    <div style="text-align:left;">
-                        <div class="py-2">
-                            <span class="form-control" style="color:#656565; font-weight:bold;">ภาคตะวันตก : </span>
-                            <span class="form-control" style="color:#656565; margin-top: 15px;"><i class="fa-solid fa-circle" style="color:#2196F3;"></i> รวมทั้งหมด : {{$customer_western}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#0dc328;"></i> ปกติ : {{$normal_customer_western}} ร้านค้า |
-                            <i class="fa-solid fa-circle" style="color:#ffb429;"></i> ติดตาม : {{$follow_customer_western}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#ff0000;"></i> ระงับบัญชี : {{$suspend_customer_western}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#7a7a7a;"></i> ปิดบัญชี : {{$closed_customer_western}} ร้านค้า</span>
-                        </div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 35px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_western}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 35px; background-color:#2196F3; font-size:12px; width: {{$percentage_western .'%'}}; ">{{ number_format($percentage_western,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_normal_customer_western}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#0dc328; font-size:11px; width: {{$percentage_normal_customer_western .'%'}};">{{ number_format($percentage_normal_customer_western,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_follow_customer_western}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#ffb429; font-size:11px; width: {{$percentage_follow_customer_western .'%'}};">{{ number_format($percentage_follow_customer_western,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_suspend_customer_western}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color: #ff0000; font-size:11px; width: {{$percentage_suspend_customer_western .'%'}};">{{ number_format($percentage_suspend_customer_western,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_closed_customer_western}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#7a7a7a; font-size:11px; width: {{$percentage_closed_customer_western .'%'}};">{{ number_format($percentage_closed_customer_western,2) .'%'}}</div>
-                    </div>
-
-                @endif
-
-                <hr style="border: solid 4px; color:#666666">
-
-                @if(isset($customer_south))
-                   
-                    <div style="text-align:left;">
-                        <div class="py-2">
-                            <span class="form-control" style="color:#656565; font-weight:bold;">ภาคใต้ : </span>
-                            <span class="form-control" style="color:#656565; margin-top: 15px;"><i class="fa-solid fa-circle" style="color:#2196F3;"></i> รวมทั้งหมด : {{$customer_south}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#0dc328;"></i> ปกติ : {{$normal_customer_south}} ร้านค้า |
-                            <i class="fa-solid fa-circle" style="color:#ffb429;"></i> ติดตาม : {{$follow_customer_south}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#ff0000;"></i> ระงับบัญชี : {{$suspend_customer_south}} ร้านค้า | <i class="fa-solid fa-circle" style="color:#7a7a7a;"></i> ปิดบัญชี : {{$closed_customer_south}} ร้านค้า</span>
-                        </div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 35px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_south}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 35px; background-color:#2196F3; font-size:12px; width: {{$percentage_south .'%'}}; ">{{ number_format($percentage_south,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_normal_customer_western}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#0dc328; font-size:11px; width: {{$percentage_normal_customer_south .'%'}};">{{ number_format($percentage_normal_customer_south,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_follow_customer_south}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#ffb429; font-size:11px; width: {{$percentage_follow_customer_south .'%'}};">{{ number_format($percentage_follow_customer_south,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_suspend_customer_south}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color: #ff0000; font-size:11px; width: {{$percentage_suspend_customer_south .'%'}};">{{ number_format($percentage_suspend_customer_south,2) .'%'}}</div>
-                    </div>
-                    <div class="progress my-2" role="progressbar" style="height: 20px; border-radius: 5px;" aria-label="Success example" aria-valuenow="{{$percentage_closed_customer_south}}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="height: 20px; background-color:#7a7a7a; font-size:11px; width: {{$percentage_closed_customer_south .'%'}};">{{ number_format($percentage_closed_customer_south,2) .'%'}}</div>
-                    </div>
-
-                @endif --}}
 
                 <hr class="my-4" style="border: solid 4px; color:#666666">
            

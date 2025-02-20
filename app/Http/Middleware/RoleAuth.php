@@ -18,7 +18,7 @@ class RoleAuth
     public function handle(Request $request, Closure $next): Response
     {
 
-        if (Auth::user()->role == 1) 
+        if (Auth::user()->role == 2) 
         {
 
             return $next($request);

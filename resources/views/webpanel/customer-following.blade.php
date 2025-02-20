@@ -296,7 +296,7 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    รอดำเนินการ<br/>
+                    กำลังติดตาม<br/>
                     @if (isset($customer_status_following))
                     <span>{{$customer_status_following != '' ? $customer_status_following : '0' ;}}</span>
                     @else

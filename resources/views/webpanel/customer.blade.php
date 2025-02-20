@@ -361,6 +361,7 @@
         </div>
         <hr class="my-3" style="color: #8E8E8E; width: 100%;">
         <!--- search --->
+  
         <div class="row ms-6 mr-6">
             <div class="col-sm-2">
                 <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/customer">
@@ -368,11 +369,13 @@
                         <span>เลือกผลลัพธ์ : </span>
                     </ul>
                     {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
-            
-                <button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="" style="background-color:rgb(9, 179, 74); width: 100%; border-radius:8px; color:#ffffff; height:70px;" type="button">เขตรับผิดชอบ
+        
+                <button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="" style="background-color:rgb(9, 179, 74); width: 100%; border-radius:8px; color:#ffffff; height:70px;" type="button">
+                    
+                    เขตรับผิดชอบ
+                      
+                </button> 
 
-                </button>
-                
                 <!-- Dropdown menu -->
                 <div id="dropdownDivider" class="z-10 hidden bg-gray divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
 

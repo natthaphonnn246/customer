@@ -42,6 +42,7 @@ class AuthenticatedSessionController extends Controller
         if (Auth::attempt($credentials))
         {
             
+                //superadmin;
                 if(Auth::user()->user_id == '0000') {
                     return redirect('webpanel');
                     
@@ -65,6 +66,14 @@ class AuthenticatedSessionController extends Controller
 
                                 } else {
 
+                                    //check amdin_area at table: customers if null redirect to logout;
+                                    $check_admin_area = $request->user()->admin_area;
+                                    $check_admin_customer = Customer::where('admin_area', $check_admin_area)->first();
+                                    // dd($check_admin_customer);
+                                    if($check_admin_customer != null) 
+                                    {
+                                        // dd('Please select');
+                                    
                                         if(Auth::user()->rights_area == '1')
                                         {
             
@@ -79,13 +88,13 @@ class AuthenticatedSessionController extends Controller
                                                 {
                                                     $admin_area = $user->admin_area;
 
-                                                    if(Auth::user()->role == '1')
+                                                 /*    if(Auth::user()->role == '1')
                                                     {
                                                         $request->authenticate();
                                                         $request->session()->regenerate();
                                                         return redirect()->route('webpanel');
                                             
-                                                    } else {
+                                                    } else { */
                                         
                                                         if(Auth::user()->admin_area ==  $admin_area) {
 
@@ -102,7 +111,7 @@ class AuthenticatedSessionController extends Controller
                                                             return back();
                                                         }
 
-                                                    }
+                                                    // }
                                                     
                                                 } else {
 
@@ -115,15 +124,35 @@ class AuthenticatedSessionController extends Controller
                                                     } */
                                                     return redirect()->route('portal');
                                                 }
-                            
-                                        } else {
+                                        //admin;
+                                        } elseif (Auth::user()->role == '1') {
                                             
+                                            // return redirect()->route('portal.sign');
+                                            return redirect()->route('webpanel.report');
+                                        
+                                        } else {
                                             return redirect()->route('portal.sign');
-                                        } 
 
+                                        }
+                                    } else {
+                                        // not admin_area at table customes;
+                                        Auth::guard('web')->logout();
+                                        $request->session()->invalidate();
+                                        $request->session()->regenerateToken();
+                                        return redirect('/')->with('error_active', 'กรุณาติดต่อผู้ดูแล');
                                     }
+
+                                }
                             
                             } else {
+
+                                //check amdin_area at table: customers if null redirect to logout;
+                                $check_admin_area = $request->user()->admin_area;
+                                $check_admin_customer = Customer::where('admin_area', $check_admin_area)->first();
+                                // dd($check_admin_customer);
+                                if($check_admin_customer != null) 
+                                {
+
 
                                     if(Auth::user()->rights_area == '1')
                                     {
@@ -139,13 +168,14 @@ class AuthenticatedSessionController extends Controller
                                             {
                                                 $admin_area = $user->admin_area;
 
-                                                if(Auth::user()->role == '1')
+
+                                              /*   if(Auth::user()->role == '1')
                                                 {
                                                     $request->authenticate();
                                                     $request->session()->regenerate();
                                                     return redirect()->route('webpanel');
                                         
-                                                } else {
+                                                } else { */
                                     
                                                     if(Auth::user()->admin_area ==  $admin_area) {
 
@@ -162,21 +192,40 @@ class AuthenticatedSessionController extends Controller
                                                         return back();
                                                     }
 
-                                                }
+                                                // }
                                                 
                                             } else {
                                                 
                                                 return redirect()->route('portal');
                                             }
                         
+                                    } elseif (Auth::user()->role == '1') {
+                                            
+                                        // return redirect()->route('portal.sign');
+                                        return redirect()->route('webpanel.report');
+                                    
                                     } else {
-                                        
                                         return redirect()->route('portal.sign');
-                                    } 
 
+                                    } 
+                                } else {
+                                    // not admin_area at table customes;
+                                    Auth::guard('web')->logout();
+                                    $request->session()->invalidate();
+                                    $request->session()->regenerateToken();
+                                    return redirect('/')->with('error_active', 'กรุณาติดต่อผู้ดูแล');
                                 }
 
+                            }
+
                 } else {
+
+                        //check amdin_area at table: customers if null redirect to logout;
+                        $check_admin_area = $request->user()->admin_area;
+                        $check_admin_customer = Customer::where('admin_area', $check_admin_area)->first();
+                        // dd($check_admin_customer);
+                        if($check_admin_customer != null) 
+                        {
 
                             if(Auth::user()->rights_area == '1') {
                         
@@ -191,13 +240,13 @@ class AuthenticatedSessionController extends Controller
                                     {
                                         $admin_area = $user->admin_area;
 
-                                        if(Auth::user()->role == '1')
+                                      /*   if(Auth::user()->role == '1')
                                         {
                                             $request->authenticate();
                                             $request->session()->regenerate();
                                             return redirect()->route('webpanel');
                                 
-                                        } else {
+                                        } else { */
                             
                                             if(Auth::user()->admin_area ==  $admin_area) {
 
@@ -214,7 +263,7 @@ class AuthenticatedSessionController extends Controller
                                                 return back();
                                             }
 
-                                        }
+                                        // }
                                         
                                     } else {
 
@@ -222,11 +271,25 @@ class AuthenticatedSessionController extends Controller
 
                                     }
                 
+                            } elseif (Auth::user()->role == '1') {
+                                            
+                                // return redirect()->route('portal.sign');
+                                return redirect()->route('webpanel.report');
+                            
                             } else {
                                 
                                 return redirect()->route('portal.sign');
                             } 
+
+                        } else {
+                            // not admin_area at table customes;
+                            Auth::guard('web')->logout();
+                            $request->session()->invalidate();
+                            $request->session()->regenerateToken();
+                            return redirect('/')->with('error_active', 'กรุณาติดต่อผู้ดูแล');
                         }
+
+                    }
             
         } else {
             

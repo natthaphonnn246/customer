@@ -136,9 +136,10 @@
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="role">
                         
                                     @if(($admin_master->user_code) == 0000)
-                                    <option value="1" selected>มี</option>
+                                    <option value="2" selected>มี</option>
                                     @else
-                                    <option value="0">ไม่ระบุ</option>
+                                    <option {{$admin_master->role == 0 ? 'selected': '' ; }} value="0">ไม่ระบุ</option>
+                                    <option {{$admin_master->role == 1 ? 'selected': '' ; }} value="1">มี (ดูรายงาน)</option>
                                     @endif
 
                                 </select>

@@ -64,6 +64,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
 
+    ->withMiddleware(function (Middleware $middleware) {
+
+        $middleware->alias([
+            'adminRole' => \App\Http\Middleware\AdminRoleAuth::class,
+        ]);
+    })
+
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

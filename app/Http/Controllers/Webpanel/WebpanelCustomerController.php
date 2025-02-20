@@ -185,7 +185,7 @@ class WebpanelCustomerController
                                             ->where('admin_area', $admin_id)
                                             ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                             ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                            ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                            // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                             ->offset($start)
                                             ->limit($perpage)
                                             ->get();
@@ -194,7 +194,7 @@ class WebpanelCustomerController
                                                 ->where('admin_area', $admin_id)
                                                 ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                 ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                 ->get();
         
                     // dd($check_customer_code);
@@ -208,7 +208,8 @@ class WebpanelCustomerController
                         return back();
         
             }
-            return view('webpanel/adminarea-waiting' ,compact('admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+            $count_page = 1;
+            return view('webpanel/adminarea-waiting' ,compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
             break;
 
             case 'status-action':
@@ -237,7 +238,7 @@ class WebpanelCustomerController
                                                 ->where('admin_area', $admin_id)
                                                 ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                 ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                 ->offset($start)
                                                 ->limit($perpage)
                                                 ->get();
@@ -246,7 +247,7 @@ class WebpanelCustomerController
                                                     ->where('admin_area', $admin_id)
                                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                     ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                    ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                    // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                     ->get();
             
                         // dd($check_customer_code);
@@ -260,7 +261,8 @@ class WebpanelCustomerController
                             return back();
             
                 }
-                return view('webpanel/adminarea-action' ,compact('count_page_master', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                $count_page = 1;
+                return view('webpanel/adminarea-action' ,compact('count_page_master','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
                 break;
 
                 case 'status-completed':
@@ -287,7 +289,7 @@ class WebpanelCustomerController
                                                     ->where('admin_area', $admin_id)
                                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                     ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                    ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                    // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                     ->offset($start)
                                                     ->limit($perpage)
                                                     ->get();
@@ -296,7 +298,7 @@ class WebpanelCustomerController
                                                         ->where('admin_area', $admin_id)
                                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                         ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                        ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                        // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                         ->get();
                 
                             // dd($check_customer_code);
@@ -310,8 +312,10 @@ class WebpanelCustomerController
                                 return back();
                 
                     }
-                    return view('webpanel/adminarea-completed' ,compact('admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                    $count_page = 1;
+                    return view('webpanel/adminarea-completed' ,compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
                     break;
+                    
 
             //customer/adminarea;
             default:
@@ -328,14 +332,14 @@ class WebpanelCustomerController
                         $customer = Customer::where('admin_area', $admin_id)
                                             ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                             ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                            ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                            // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                             ->offset($start)
                                             ->limit($perpage)
                                             ->get();
             
                         $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                     ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                    ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                    // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                     ->get();
             
                         // dd($check_customer_code);
@@ -349,7 +353,8 @@ class WebpanelCustomerController
                             return back();
             
                 }
-                return view('webpanel/adminarea-detail',compact('admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                $count_page = 1;
+                return view('webpanel/adminarea-detail',compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
         }
         
     }
@@ -1161,6 +1166,14 @@ class WebpanelCustomerController
 
                                     $status_user = str_replace("'", "''", $row[10]); 
 
+                                    //delivery;
+                                    $delivery_row = $row[18];
+                                    if($delivery_row == 1) {
+                                        $delivery_by ='owner';
+                                    } else {
+                                        $delivery_by ='standard';
+                                    }
+
                                     $customer_id = $row[0];
                                     $customer_code  = $row[0];
                                     $customer_name = $customer_name_new;
@@ -1191,7 +1204,7 @@ class WebpanelCustomerController
                                     $type = $row[8];
                                     $register_by = 'import_naster';
                                     $customer_status = 'active';
-                                    $delivery_by = 'standard';
+                                    // $delivery_by = 'standard';
 
                             
                             Customer::create([
@@ -1286,224 +1299,7 @@ class WebpanelCustomerController
 
    }
 
-   //export excel customer;
-   public function exportCustomerExcel($status)
-   {
-
-    // dd($status);
-
-     switch ($status) 
-        {
-            //get excel;
-            case $status == 'getexcel_completed':
-                $date = date('d-m-Y');
-                return Excel::download(new CustomerCompletedExport, 'Customer_completed'.'_'.$date.'.'.'xlsx');
-                break;
-
-            case $status == 'getexcel_action':
-                $date = date('d-m-Y');
-                return Excel::download(new CustomerActionExport, 'Customer_action'.'_'.$date.'.'.'xlsx');
-                break;
-
-            case $status == 'getexcel_waiting':
-                $date = date('d-m-Y');
-                return Excel::download(new CustomerWaitingExport, 'Customer_waiting'.'_'.$date.'.'.'xlsx');
-                break;
-
-            case $status == 'getexcel_update':
-                $date = date('d-m-Y');
-                return Excel::download(new UpdateLatestExport, 'Customer_update'.'_'.$date.'.'.'xlsx');
-                break;
-
-            case $status == 'getexcel_inactive':
-                $date = date('d-m-Y');
-                return Excel::download(new CustomerInactiveExport, 'Customer_inactive'.'_'.$date.'.'.'xlsx');
-                break;
-
-            case $status == 'getexcel_customerall':
-                $date = date('d-m-Y');
-                return Excel::download(new CustomerAllExport, 'Customer_all'.'_'.$date.'.'.'xlsx');
-                break;
-
-            case $status == 'getexcel_following':
-                $date = date('d-m-Y');
-                return Excel::download(new CustomerAllExport, 'Customer_following'.'_'.$date.'.'.'xlsx');
-                break;
-
-            default:
-                return back()->with('error_export', 'เกิดข้อผิดพลาด');
-        }
-        
-   }
-
-   public function exportCustomerCsv($status)
-   {
-        // dd($status);
-
-        switch ($status)
-        {
-
-            case $status == 'getcsv_completed':
-                $date = date('Y-m-d');
-                $filename = 'Customer_completed_'. $date.'.csv';
-                 // Start the output buffer.
-                ob_start();
-
-                // Set PHP headers for CSV output.
-                header('Content-Type: text/csv; charset=utf-8');
-                header('Content-Disposition: attachment; filename= '.$filename);
-                
-                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
-                                    ->where('status', 'ดำเนินการแล้ว')
-                                    ->get();
-
-                $data = $query->toArray();
-                // Clean up output buffer before writing anything to CSV file.
-                ob_end_clean();
-            break;
-
-            case $status == 'getcsv_action':
-                $date = date('Y-m-d');
-                $filename = 'Customer_action_'. $date. '.csv';
-                 // Start the output buffer.
-                ob_start();
-
-                // Set PHP headers for CSV output.
-                header('Content-Type: text/csv; charset=utf-8');
-                header('Content-Disposition: attachment; filename= '.$filename);
-                
-                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
-                                    ->where('status', 'ต้องดำเนินการ')
-                                    ->get();
-
-                $data = $query->toArray();
-                // Clean up output buffer before writing anything to CSV file.
-                ob_end_clean();
-            break;
-
-            case $status == 'getcsv_waiting':
-                $date = date('Y-m-d');
-                $filename = 'Customer_waiting_'. $date. '.csv';
-                 // Start the output buffer.
-                ob_start();
-
-                // Set PHP headers for CSV output.
-                header('Content-Type: text/csv; charset=utf-8');
-                header('Content-Disposition: attachment; filename= '.$filename);
-                
-                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
-                                    ->where('status', 'รอดำเนินการ')
-                                    ->get();
-
-                $data = $query->toArray();
-                // Clean up output buffer before writing anything to CSV file.
-                ob_end_clean();
-            break;
-
-            case $status == 'getcsv_update':
-                $date = date('Y-m-d');
-                $filename = 'Customer_update_'. $date. '.csv';
-                 // Start the output buffer.
-                ob_start();
-
-                // Set PHP headers for CSV output.
-                header('Content-Type: text/csv; charset=utf-8');
-                header('Content-Disposition: attachment; filename= '.$filename);
-                
-                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
-                                    ->where('status_update', "updated")
-                                    ->get();
-
-                $data = $query->toArray();
-                // Clean up output buffer before writing anything to CSV file.
-                ob_end_clean();
-            break;
-
-            case $status == 'getcsv_inactive':
-                $date = date('Y-m-d');
-                $filename = 'Customer_inactive_'. $date. '.csv';
-                 // Start the output buffer.
-                ob_start();
-
-                // Set PHP headers for CSV output.
-                header('Content-Type: text/csv; charset=utf-8');
-                header('Content-Disposition: attachment; filename= '.$filename);
-                
-                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
-                                    ->where('customer_status', "inactive")
-                                    ->get();
-
-                $data = $query->toArray();
-                // Clean up output buffer before writing anything to CSV file.
-                ob_end_clean();
-            break;
-
-            case $status == 'getcsv_customerall':
-                $date = date('Y-m-d');
-                $filename = 'Customer_all_'. $date. '.csv';
-                 // Start the output buffer.
-                ob_start();
-
-                // Set PHP headers for CSV output.
-                header('Content-Type: text/csv; charset=utf-8');
-                header('Content-Disposition: attachment; filename= '.$filename);
-                
-                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status', 'customer_status')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
-                                    ->get();
-
-                $data = $query->toArray();
-                // Clean up output buffer before writing anything to CSV file.
-                ob_end_clean();
-            break;
-
-
-            case $status == 'getcsv_following':
-                $date = date('Y-m-d');
-                $filename = 'Customer_following_'. $date. '.csv';
-                 // Start the output buffer.
-                ob_start();
-
-                // Set PHP headers for CSV output.
-                header('Content-Type: text/csv; charset=utf-8');
-                header('Content-Disposition: attachment; filename= '.$filename);
-                
-                $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status', 'status_user')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
-                                    ->where('status_user', "กำลังติดตาม")
-                                    ->get();
-
-                $data = $query->toArray();
-                // Clean up output buffer before writing anything to CSV file.
-                ob_end_clean();
-            break;
-
-
-            default:
-                return back()->with('error_export', 'เกิดข้อผิดพลาด');
-        }
-
-            // Create a file pointer with PHP.
-            $output = fopen( 'php://output', 'w' );
-
-            // Write headers to CSV file.
-            // fputcsv( $output, $header_args );
-
-            // Loop through the prepared data to output it to CSV file.
-            foreach( $data as $data_item ){
-                fputcsv($output, $data_item, "|" );
-            }
-
-            // Close the file pointer with PHP with the updated output.
-            fclose( $output );
-            exit;
-   }
-
+   //getcsv customer by customer_id;
    public function getCustomerCsv($customer_id)
    {
 

@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+
     <title>nntpn.com</title>
 </head>
 <body>
@@ -53,7 +54,8 @@
             
         }
         #datepicker {
-            width: 100%;
+            width: 100% !important;
+            padding:8px !important;
         }
         #backLink {
             color: #8E8E8E;
@@ -63,6 +65,8 @@
         #backLink:hover {
             color: #2246fc;
         }
+   
+        
     </style>
             
             @section('status_alert')
@@ -84,7 +88,6 @@
     <div class="contentArea">
 
         <div class="py-2">
-        </div>
 
         <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / แบบฟอร์ม</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
@@ -130,21 +133,37 @@
                             <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                             {{-- <input style="margin-top:10px; color:grey;" type="date" value="2024-01-01" class="form-control" name="cert_expire"><br> --}}
                             {{-- <input class="input_date" style="margin-top:10px; color:grey;" type="text" id="datepicker" value="31/12/2025" name="cert_expire"> --}}
-                        
-                        
-                            <input class="input_date" style="margin-top:10px; color:grey;" type="text" id="datepicker" value="31/12/2025" name="cert_expire" value="">
                         </li>
+                        
+                        <div class="relative">
+                            <input class="input_date" style="margin-top:10px; color:grey; border-radius:6px;" type="text" id="datepicker" name="cert_expire" value="31/12/2025">
+
+                            {{-- <span style="background-color:#ea9191; color:#FFFFFF; padding:5px 10px; border-radius:5px; cursor: pointer;" id="datepickr">กรุณาเลือกวันที่</span> --}}
+                        </div>
                         
                         <script>
                                 $(document).ready(function () {
                                     // Datepicker
+
+                                    // $('#datepickr').click(function () {
+                                        // $('#datepickr').css('display', 'none');
                                         $("#datepicker" ).datepicker({
+                                            dateFormat: 'dd/mm/yy',
                                             changeMonth: true,
                                             changeYear: true,
-                                            yearRange: "2024:2029",
-                                        });
+                                            yearRange: "2025:2029",
+                                            showOn: "button",
+                                            buttonImage: "/icons/icons9-calendar.gif",
+                                            showButtonPanel: true, 
+                                            // showAnim: "fold"
+            
 
+                                        });
                                     });
+                                     
+                                    
+
+                                    // });
                         </script>
 
                     </ul>
@@ -301,7 +320,7 @@
                             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="text_add"></textarea>
                         </div>
 
-                            <button type="submit" id="submitForm" name="submit_form" class="btn py-3" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>
+                            <button type="submit" id="submitForm" name="submit_form" class="btn py-3 ms-1" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>
                             {{-- <p class="textrow" style="text-align: center;"><span>กรุณาติดต่อเจ้าหน้าที่ เมื่อดำเนินการเรียบร้อย</span></p> --}}
                         </div>
                     </div>

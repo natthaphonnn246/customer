@@ -50,8 +50,8 @@
                 <div class="h-full px-3 py-2 overflow-y-auto bg-black-50" style="background-color: #081524;">
                         <a href="#" class="flex items-center ps-2.5 mb-3 my-3">
                             {{-- <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 me-3 sm:h-7" alt="Flowbite Logo" /> --}}
-                            <img class="w-8 h-8 rounded-full me-3" src="/profile/profile_img copy.jpg" alt="user photo"> 
-                            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">nntpn.com</span>
+                            <img class="w-8 h-8 rounded-full me-3" src="/profile/user.png" alt="user photo"> 
+                            <span class="self-center text-xl font-medium whitespace-nowrap dark:text-white">@yield('username')</span>
                         </a>
                 </div>
             </ul>
@@ -59,34 +59,12 @@
   
             <ul class="space-y-2 font-medium">
                 <li class="py-1">
-                    <a href="/webpanel" class="py-2 flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-green-800 group">
+                    <a href="/admin" class="py-2 flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-green-800 group">
                         <i class="fa-solid fa-tv"></i>
                         <span class="ms-3">หน้าหลัก</span>
                     </a>
                 </li>
                 {{-- <hr class="my-2" style="color:rgb(106, 109, 170);"> --}}
-                <li>
-                    <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-green-800" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
-                    {{-- <i class="fa-regular fa-user"></i> --}}
-                  <svg class="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                     <path fill-rule="evenodd" d="M12 2a7 7 0 0 0-7 7 3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1a1 1 0 0 0 1-1V9a5 5 0 1 1 10 0v7.083A2.919 2.919 0 0 1 14.083 19H14a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 1.732-1h.351a4.917 4.917 0 0 0 4.83-4H19a3 3 0 0 0 3-3v-2a3 3 0 0 0-3-3 7 7 0 0 0-7-7Zm1.45 3.275a4 4 0 0 0-4.352.976 1 1 0 0 0 1.452 1.376 2.001 2.001 0 0 1 2.836-.067 1 1 0 1 0 1.386-1.442 4 4 0 0 0-1.321-.843Z" clip-rule="evenodd"/>
-                  </svg>
-                   
-                      <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">แอดมิน</span>
-                      <i class="fa-solid fa-plus m-2"></i>
-                   </button>
-                      <ul id="dropdown-example" class="hidden py-2 space-y-2">
-                            <li style="margin-left: 35px;">
-                               <a href="/webpanel/admin" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" style="font-size:14px;">ทั้งหมด</a>
-                            </li>
-                            <li style="margin-left: 35px;">
-                               <a href="/webpanel/sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" style="font-size:14px;">เขตการขาย<span style="background-color:rgba(26, 81, 221, 0.79); padding: 5px; border-radius:20px; font-size:12px; margin-left:6px;">sale</span></a>
-                            </li>
-                         {{--   <li>
-                               <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
-                            </li> --}}
-                      </ul>
-                </li>
                 {{-- <hr class="my-2" style="color:rgb(106, 109, 170);"> --}}
                 <li>
                     <button type="button" class="flex items-center w-full p-2 text-base  text-sm text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-green-800" aria-controls="dropdown-customer" data-collapse-toggle="dropdown-customer">
@@ -96,39 +74,15 @@
                    </button>
                       <ul id="dropdown-customer" class="hidden py-2 space-y-2">
                             <li style="margin-left: 35px;">
-                               <a href="/webpanel/customer" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" style="font-size:14px;">ทั้งหมด</a>
+                               <a href="/admin/customer" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" style="font-size:14px;">ทั้งหมด</a>
                             </li>
                          {{--   <li>
                                <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
                             </li> --}}
                       </ul>
                 </li>
-                <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-alert" data-collapse-toggle="dropdown-alert">
-                  <i class="fa-regular fa-bell" style="font-size:18px;"></i>
-                     <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">แจ้งเตือน</span>
-                     <span class="inline-flex items-center justify-center p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:brown;"><p>@yield('status_alert')</p></span>
-               </button>
-               <ul id="dropdown-alert" class="hidden py-2 space-y-2">
-                     <li style="margin-left: 25px;">
-                        <a href="/webpanel/customer/status/waiting" class="flex items-center w-full p-2 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                              <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:14px;">ลงทะเบียนใหม่</span>
-                              <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(17, 88, 211);"><p>@yield('status_waiting')</p></span>
-                        </a>
-                     </li>
-                     <li style="margin-left: 25px;">
-                        <a href="/webpanel/customer/status/latest_update" class="flex items-center w-full p-2 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                              <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:14px;">อัปเดตข้อมูล</span>
-                              <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(186, 26, 69);"><p>@yield('status_updated')</p></span>
-                        </a>
-                     </li>
-               </ul>
                 {{-- <hr class="my-2" style="color:rgb(106, 109, 170);"> --}}
-               <li>
-                    <a href="/webpanel/setting" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-green-800 group">
-                        <i class="fa-solid fa-gear"></i>
-                        <span class="ms-3">ตั้งค่าระบบ</span>
-                    </a>
-                </li>
+              
                 {{-- <hr class="my-2" style="color:rgb(106, 109, 170);"> --}}
                <li>
                     <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-red-700 group">
@@ -170,17 +124,10 @@
                    </button>
                 </div>
                 <p class="mb-3 text-sm dark:text-blue-400" style="color:white;">
-                  
-                  <ul class="py-2">
-                     <a href="/webpanel/customer/status/latest_update" class="flex items-center w-full p-2 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-red-700">
-                           <span class="flex-1 text-left rtl:text-left whitespace-nowrap" style="font-size:18px;">อัปเดต<sup style="background-color:rgba(198, 92, 92, 0.79); padding: 5px; border-radius:20px; font-size:12px; margin-left:6px;">New</sup></span>
-                           <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(186, 26, 69);"><p>@yield('status_updated')</p></span>
-                     </a>
-                  </ul>
                
                     <?php date_default_timezone_set("Asia/Bangkok"); ?>
-                    <blockquote style="color:white; font-size:16px; text-align:center;">
-                     {{-- <span style="">@yield('text_alert')</span> --}}
+                    <blockquote style="color:white; font-size:16px; text-align:left;">
+                     รายงานการขายอัปเดตทุกวัน 8 โมงเช้า
                      </blockquote>
                   {{--   <br>
                     <blockquote style="color:white; font-size:16px;">@yield('text_alert')</blockquote> --}}

@@ -136,24 +136,28 @@
 
                         <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                         {{-- <input style="margin-top:10px; color:grey;" type="date" value="2024-01-01" class="form-control" name="cert_expire"><br> --}}
-                        <input class="form-control" style="margin-top:10px; color:grey;" type="text" id="datepicker" value="01/01/2024" name="cert_expire">
+                        <input class="form-control" style="margin-top:10px; color:grey;" type="text" id="datepicker" value="31/12/2025" name="cert_expire">
 
                     </ul>
                     <script>
                         $(document).ready(function () {
                             // Datepicker
                                 $("#datepicker" ).datepicker({
+                                    dateFormat: 'dd/mm/yy',
                                     changeMonth: true,
                                     changeYear: true,
-                                    yearRange: "2024:2029",
-                                    dateFormat: "dd/mm/yy",
+                                    yearRange: "2025:2029",
+                                 /*    showOn: "button",
+                                    buttonImage: "/icons/icons9-calendar.gif",
+                                    showButtonPanel: true, */
+                                    // showAnim: "fold"
                                    
                                     
                                 });
 
                             });
                     </script>
-                    <ul class="text-title" style="text-align: start; margin-top: 20px;">
+                    <ul class="text-title" style="text-align: start; margin-top: 5px;">
                         <span style="font-size: 18px; font-weight: 500;">ข้อมูลลูกค้า</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุให้ครบทุกช่อง</span>
                         <hr style="color: #8E8E8E; width: 100%; margin-top: 10px">
                     </ul>

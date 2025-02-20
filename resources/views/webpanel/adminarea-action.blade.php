@@ -618,7 +618,7 @@
         </div>
 
 
-        @if(isset($check_keyword) == null)
+        @if(isset($check_keyword) == null && $total_page > 1)
         <div class="ms-6">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
@@ -666,7 +666,7 @@
                 </ul>
             </nav>
         </div>
-        @elseif ($count_page_master <= 1)
+        @elseif ($count_page <= 1)
         @else
         <div class="ms-6">
             <nav aria-label="Page navigation example">

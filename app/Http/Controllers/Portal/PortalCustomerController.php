@@ -64,6 +64,7 @@ class PortalCustomerController
     }
     public function indexPortal(Request $request)
     {
+
             $code = $request->user()->user_code;
         
             $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
@@ -108,7 +109,9 @@ class PortalCustomerController
                         ->get();
 
             $provinces = Province::province();
+            
             return view('portal/signin', compact('provinces', 'user_name', 'admin_area_list', 'sale_area', 'status_all', 'status_waiting', 'status_action', 'status_completed', 'status_alert'));
+      
     }
 
      //สำหรับแอดมินไม่ได้รับสิทธิ์เขตรับผิดชอบ;

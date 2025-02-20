@@ -48,7 +48,7 @@ class CustomerAreaExport
             break;
 
             default:
-            return back()->with('error_export', 'เกิดข้อผิดพลาด');
+                return abort('403', 'ERROR EXPORT');
         }
     }
 
@@ -205,7 +205,7 @@ class CustomerAreaExport
 
 
             default:
-                return back()->with('error_export', 'เกิดข้อผิดพลาด');
+                return abort('403', 'ERROR EXPORT');
         }
 
             // Create a file pointer with PHP.
