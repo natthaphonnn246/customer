@@ -86,7 +86,7 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/following" style="text-decoration: none; color:white;">กำลังติดตาม</a><br/>
+                    <a href="/admin/customer/status/following" style="text-decoration: none; color:white;">กำลังติดตาม</a><br/>
                     @if (isset($count_status_follow))
                     <span>{{$count_status_follow != '' ? $count_status_follow : '0' ;}}</span>
                     @else

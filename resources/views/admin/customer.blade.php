@@ -27,6 +27,7 @@
             /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
+            min-width: 1200px;
             /* text-align: left; */
         }
         #admin {
@@ -270,6 +271,10 @@
         @section('text_alert')
         <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
         @endsection
+
+        @section('username')
+        <h6 class="color:#ffffff; font-weight:300;">{{$user_name}}</h6>
+        @endsection
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
         <div class="py-2">
@@ -278,13 +283,13 @@
         <span class="ms-6" style="color: #8E8E8E; font-weight:400;">ข้อมูลลูกค้า (Customer)</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
-        <div class="ms-6" style="text-align: left;">
+        <div class="ms-6 mr-6" style="text-align: right;">
         {{--     <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a>
             <a href="/webpanel/customer/importcustomer"  id="importMaster" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">import master CSV</a>
             <a href="/webpanel/customer/groups-customer"  id="groupsCustomer" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดกลุ่มลูกค้า</a> --}}
 
-            <a href="/webpanel/customer/export/getcsv/getcsv_customerall"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
-            <a href="/webpanel/customer/export/getexcel/getexcel_customerall"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
+            <a href="/admin/customer/export/getcsv/getcsv_customerall"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
+            <a href="/admin/customer/export/getexcel/getexcel_customerall"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
     
         </div>
 
@@ -305,7 +310,7 @@
               
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/completed" style="text-decoration: none; color:white;">ดำเนินการแล้ว</a><br/>
+                    <a href="/admin/customer/status/completed" style="text-decoration: none; color:white;">ดำเนินการแล้ว</a><br/>
                     @if (isset($total_status_completed))
                     <span>{{$total_status_completed != '' ? $total_status_completed : '0' ;}}</span>
                     @else
@@ -316,7 +321,7 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/waiting" style="text-decoration: none; color:white;">รอดำเนินการ</a><br/>
+                    <a href="/admin/customer/status/waiting" style="text-decoration: none; color:white;">รอดำเนินการ</a><br/>
                     @if (isset($total_status_waiting))
                     <span>{{$total_status_waiting != '' ? $total_status_waiting : '0' ;}}</span>
                     @else
@@ -327,7 +332,7 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/action" style="text-decoration: none; color:white;">ต้องดำเนินการ</a><br/>
+                    <a href="/admin/customer/status/action" style="text-decoration: none; color:white;">ต้องดำเนินการ</a><br/>
                     @if (isset($total_status_action))
                     <span>{{$total_status_action != '' ? $total_status_action : '0' ;}}</span>
                     @else
@@ -338,7 +343,7 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/latest_update" style="text-decoration: none; color:white;">UPDATE</a> <sup style="background-color:#80bdf3; padding:5px; width: 10px; color:#ffffff; border-radius: 20px;">New</sup><br/>
+                    <a href="/admin/customer/status/latest_update" style="text-decoration: none; color:white;">UPDATE</a> <sup style="background-color:#80bdf3; padding:5px; width: 10px; color:#ffffff; border-radius: 20px;">New</sup><br/>
                     @if (isset($total_status_updated))
                     <span>{{$total_status_updated != '' ? $total_status_updated : '0' ;}}</span>
                     @else
@@ -349,7 +354,7 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/inactive" style="text-decoration: none; color:white;">ปิดบัญชี</a><br/>
+                    <a href="/admin/customer/status/inactive" style="text-decoration: none; color:white;">ปิดบัญชี</a><br/>
                     @if (isset($customer_status_inactive))
                     <span>{{$customer_status_inactive != '' ? $customer_status_inactive : '0' ;}}</span>
                     @else
@@ -364,7 +369,7 @@
   
         <div class="row ms-6 mr-6">
             <div class="col-sm-2">
-                <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/customer">
+                <form class="max-w-100 mx-auto mt-2" method="get" action="/admin/customer">
                     <ul class="ms-2 my-2">
                         <span>เลือกผลลัพธ์ : </span>
                     </ul>
@@ -383,7 +388,7 @@
 
                         @foreach($admin_area as $row_area)
                         <div class="py-2">
-                            <a href="/webpanel/customer/adminarea/{{$row_area->admin_area}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{$row_area->admin_area}}</a>
+                            <a href="/admin/customer/adminarea/{{$row_area->admin_area}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{$row_area->admin_area}}</a>
                         </div>
                         @endforeach
                         @else
@@ -399,7 +404,7 @@
                 </form>
             </div>
             <div class="col-sm-10">
-                <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/customer">
+                <form class="max-w-100 mx-auto mt-2" method="get" action="/admin/customer">
                     <ul class="ms-2 my-2">
                         <span>ค้นหาร้านค้า : </span>
                     </ul>
@@ -451,7 +456,7 @@
                 <tr>
                     <td scope="col" style="color:#838383; text-align: left; font-weight: 500; padding:20px;">#</td>
                     <td scope="col" style="color:#838383; text-align: left; font-weight: 500; padding:20px;">CODE</td>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500; padding:20px;">อีเมล</td>
+                    {{-- <td scope="col" style="color:#838383; text-align: left; font-weight: 500; padding:20px;">อีเมล</td> --}}
                     <td scope="col" style="color:#838383; text-align: left; font-weight: 500; padding:20px;">ชื่อร้านค้า</td>
                     <td scope="col" style="color:#838383; text-align: center; font-weight: 500; padding:20px;">STATUS</td>
                    {{--  <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">UPDATE</td> --}}
@@ -481,7 +486,7 @@
                     
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$start++}}</td>
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$user_code}}</td>
-                    <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$email}}</td>
+                    {{-- <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$email}}</td> --}}
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px; width: 20%;">{{$user_name}}</td>
 
                         @if ($status == 'รอดำเนินการ')
@@ -682,18 +687,18 @@
                 </tbody>
             </table>
         </div>
-        @if(isset($check_keyword) == null)
+        @if(isset($check_keyword) == null && $total_page > 1)
         <div class="ms-6">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer?page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/admin/customer?page=<?=1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer?page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/admin/customer?page=<?= $page-1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -702,16 +707,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/admin/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                 
                 @endif
@@ -719,11 +724,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer?page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/admin/customer?page=<?= $page ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer?page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/admin/customer?page=<?= $page+1 ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif
@@ -735,6 +740,7 @@
         <div class="py-3">
             <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
         </div>
+        @elseif ($count_page <= 1)
         @else
         <div class="ms-6">
             <nav aria-label="Page navigation example">
@@ -742,11 +748,11 @@
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/admin/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?=1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/admin/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $page-1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -755,16 +761,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/admin/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                 
                 @endif
@@ -772,11 +778,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/admin/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $page ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/admin/customer?keyword=<?php echo $_GET['keyword']; ?>&_token=<?php echo $_GET['_token'] ; ?>&page=<?= $page+1 ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif

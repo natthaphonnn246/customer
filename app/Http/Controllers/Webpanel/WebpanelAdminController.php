@@ -179,7 +179,9 @@ class WebpanelAdminController
             $page = $request->page;
         } else {
             $page = 1;
-                }
+        }
+
+        $user_name = $request->user()->name;
 
         //แสดงข้อมูลลูกค้า;
         $row_customer = Customer::viewCustomer($page);
@@ -216,6 +218,8 @@ class WebpanelAdminController
         $keyword_search = $request->keyword;
         // dd($keyword);
 
+        $user_name = $request->user()->name;
+
         if($keyword_search != '') {
 
             $count_page = Customer::where('customer_id', 'Like', "%{$keyword_search}%")->count();
@@ -241,8 +245,8 @@ class WebpanelAdminController
 
             // dd($check_search->admin_area);
             if(!$check_keyword  == null) {
-                return view('admin/customer', compact('check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                            'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated'));
+                return view('admin/customer', compact('count_page', 'check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
+                            'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated', 'user_name'));
         
             }
 
@@ -250,8 +254,9 @@ class WebpanelAdminController
 
         }
 
-        return view('admin/customer', compact('admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated'));
+        $count_page = 1;
+        return view('admin/customer', compact('count_page', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
+                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated', 'user_name'));
         
     }
 
@@ -283,6 +288,383 @@ class WebpanelAdminController
 
         $status_alert = $status_waiting + $status_updated;
 
-        return view('admin/customer-detail', compact('customer_view', 'province', 'amphur', 'district', 'admin_area_list', 'admin_area_check', 'sale_area', 'status_waiting', 'status_alert', 'status_updated'));
+
+        //user_name admin;
+        $user_name = $request->user()->name;
+
+        return view('admin/customer-detail', compact('customer_view', 'province', 'amphur', 'district', 'admin_area_list', 'admin_area_check', 'sale_area', 'status_waiting', 'status_alert', 'status_updated', 'user_name'));
+    }
+
+    public function indexStatus(Request $request, $status_check): View
+    {
+
+        $page = $request->page;
+        if ($page) {
+            $page = $request->page;
+        } else {
+            $page = 1;
+        }
+
+        //user_name admin;
+        $user_name = $request->user()->name;
+
+        //menu alert;
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        //แสดงข้อมูลลูกค้า;
+
+        if($status_check == 'waiting') {
+
+            $row_customer = Customer::customerWaiting($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            return view('admin/customer-waiting', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting', 'status_waiting', 'status_updated', 'status_alert'));
+
+        } else if ($status_check == 'action') {
+
+            $row_customer = Customer::customerAction($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            return view('admin/customer-action', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_action', 'status_waiting', 'status_updated', 'status_alert'));
+       
+        } else if ($status_check == 'completed') {
+
+            $row_customer = Customer::customerCompleted($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            return view('admin/customer-completed', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_completed', 'status_waiting', 'status_updated', 'status_alert'));
+        } else if ($status_check == 'latest_update') {
+
+            $row_customer = Customer::latestUpdate($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            return view('admin/customer-updatelatest', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer','total_status_updated', 'status_waiting', 'status_updated', 'status_alert'));
+
+        } else if ($status_check == 'inactive') {
+
+            $row_customer = Customer::customerInactive($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            return view('admin/customer-inactive', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_inactive', 'status_waiting', 'status_updated', 'status_alert'));
+
+        } else if ($status_check == 'following') {
+
+            $row_customer = Customer::customerFollowing($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            return view('admin/customer-following', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_following', 'status_waiting', 'status_updated', 'status_alert', 'user_name'));
+
+        } 
+        
+        else {
+            return abort(403, 'Error requesting');
+        }
+        
+    }
+
+    public function indexAdminArea(Request $request, $admin_id)
+    {
+
+        // dd($request->status);
+        // dd($status);
+        $admin_area = User::where('admin_area', $admin_id)->first();
+
+        $page = $request->page;
+        if ($page) {
+            $page = $request->page;
+        } else {
+            $page = 1;
+        }
+        $user_name = $request->user()->name;
+
+          //menu alert;
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        //แสดงข้อมูลลูกค้า;
+        $row_customer = Customer::viewCustomerAdminArea($page, $admin_id);
+        $customer = $row_customer[0];
+        $start = $row_customer[1];
+        $total_page = $row_customer[2];
+        $page = $row_customer[3];
+
+        // name;
+        $admin_name = User::select('admin_area', 'name')->where('admin_area', $admin_id)->first();
+
+        //Dashborad;
+        $total_customer_adminarea = Customer::whereNotIn('customer_code', ['0000','4494'])->where('admin_area', $admin_id)->count();
+        $total_status_waiting = Customer::where('admin_area', $admin_id)->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_status_action = Customer::where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_status_completed = Customer::where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
+
+            //dropdown admin_area;
+            $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
+            ////////////////////////////////////////////////////////
+    
+            $keyword_search = $request->keyword;
+            // dd($keyword);
+
+            // dd($request->status);
+        switch ($request->status)
+        {
+            case 'status-waiting':
+
+            $row_customer = Customer::viewCustomerAdminAreaWaiting($page, $admin_id);
+            $customer = $row_customer[0];
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            if($keyword_search != '') {
+        
+                    $count_page = Customer::where('status','รอดำเนินการ')
+                                            ->where('admin_area', $admin_id)
+                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
+                    // dd(($count_page));
+        
+                    $perpage = 10;
+                    $total_page = ceil($count_page / $perpage);
+                    $start = ($perpage * $page) - $perpage;
+
+                    $customer = Customer::where('status','รอดำเนินการ')
+                                            ->where('admin_area', $admin_id)
+                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                            // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                            ->offset($start)
+                                            ->limit($perpage)
+                                            ->get();
+        
+                    $check_keyword = Customer::where('status','รอดำเนินการ')
+                                                ->where('admin_area', $admin_id)
+                                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                                // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                ->get();
+        
+                    // dd($check_customer_code);
+        
+                    // dd($check_search->admin_area);
+                    if(!$check_keyword  == null) {
+                        return view('admin/adminarea-waiting',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                
+                    }
+        
+                        return back();
+        
+            }
+            $count_page = 1;
+            return view('admin/adminarea-waiting' ,compact('user_name', 'admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+            break;
+
+            case 'status-action':
+
+                $row_customer = Customer::viewCustomerAdminAreaAction($page, $admin_id);
+                $customer = $row_customer[0];
+                $start = $row_customer[1];
+                $total_page = $row_customer[2];
+                $page = $row_customer[3];
+                $count_page_master = $row_customer[4];
+
+                // dd($count_page_master);
+                if($keyword_search != '') {
+            
+                        $count_page = Customer::where('status','ต้องดำเนินการ')
+                                                ->where('admin_area', $admin_id)
+                                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
+                        // dd(gettype($count_page));
+            
+                        $perpage = 10;
+                        $total_page = ceil($count_page / $perpage);
+                        $start = ($perpage * $page) - $perpage;
+    
+                        $customer = Customer::where('status','ต้องดำเนินการ')
+                                                ->where('admin_area', $admin_id)
+                                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                                // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                ->offset($start)
+                                                ->limit($perpage)
+                                                ->get();
+            
+                        $check_keyword = Customer::where('status','ต้องดำเนินการ')
+                                                    ->where('admin_area', $admin_id)
+                                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                                    // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                    ->get();
+            
+                        // dd($check_customer_code);
+            
+                        // dd($check_search->admin_area);
+                        if(!$check_keyword  == null) {
+                            return view('admin/adminarea-action',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                    
+                        }
+            
+                            return back();
+            
+                }
+                $count_page = 1;
+                return view('admin/adminarea-action' ,compact('user_name', 'count_page_master','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                break;
+
+                case 'status-completed':
+
+                    $row_customer = Customer::viewCustomerAdminAreaCompleted($page, $admin_id);
+                    $customer = $row_customer[0];
+                    $start = $row_customer[1];
+                    $total_page = $row_customer[2];
+                    $page = $row_customer[3];
+    
+                    if($keyword_search != '') {
+                
+                            $count_page = Customer::where('status','ดำเนินการแล้ว')
+                                                    ->where('admin_area', $admin_id)
+                                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
+                            // dd(gettype($count_page));
+                
+                            $perpage = 10;
+                            $total_page = ceil($count_page / $perpage);
+                            $start = ($perpage * $page) - $perpage;
+        
+                            $customer = Customer::where('status','ดำเนินการแล้ว')
+                                                    ->where('admin_area', $admin_id)
+                                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                                    // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                    ->offset($start)
+                                                    ->limit($perpage)
+                                                    ->get();
+                
+                            $check_keyword = Customer::where('status','ดำเนินการแล้ว')
+                                                        ->where('admin_area', $admin_id)
+                                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                        ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                                        // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                        ->get();
+                
+                            // dd($check_customer_code);
+                
+                            // dd($check_search->admin_area);
+                            if(!$check_keyword  == null) {
+                                return view('admin/adminarea-completed',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                        
+                            }
+                
+                                return back();
+                
+                    }
+                    $count_page = 1;
+                    return view('admin/adminarea-completed' ,compact('user_name', 'admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                    break;
+                    
+
+            //customer/adminarea;
+            default:
+
+                if($keyword_search != '') {
+            
+                        $count_page = Customer::where('admin_area', $admin_id)->where('customer_id', 'Like', "%{$keyword_search}%")->count();
+                        // dd(gettype($count_page));
+            
+                        $perpage = 10;
+                        $total_page = ceil($count_page / $perpage);
+                        $start = ($perpage * $page) - $perpage;
+    
+                        $customer = Customer::where('admin_area', $admin_id)
+                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                            // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                            ->offset($start)
+                                            ->limit($perpage)
+                                            ->get();
+            
+                        $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                                    // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                    ->get();
+            
+                        // dd($check_customer_code);
+            
+                        // dd($check_search->admin_area);
+                        if(!$check_keyword  == null) {
+                            return view('admin/adminarea-detail',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                    
+                        }
+            
+                            return back();
+            
+                }
+                $count_page = 1;
+                return view('admin/adminarea-detail',compact('user_name', 'admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+        }
+        
     }
 }

@@ -168,6 +168,10 @@
         @section('text_alert')
         <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
         @endsection
+
+        @section('username')
+        <h6 class="color:#ffffff; font-weight:300;">{{$user_name}}</h6>
+        @endsection
     
     <div class="contentArea">
 
@@ -748,12 +752,12 @@
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
-                            +'<hr>'
+                           /*  +'<hr>'
                             +'<input type="file" id="image" class="form-control" name="cert_store" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                             +'<hr>'
                             +'<div style="margin-top: 10px; text-align: end;">'
                             +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
-                            +'<button type="submit" name="submit_store" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
+                            +'<button type="submit" name="submit_store" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>' */
                             +'</div>'
                             + '</form>',
                             showConfirmButton: false, 
@@ -799,12 +803,12 @@
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
-                            +'<hr>'
+                       /*      +'<hr>'
                             +'<input type="file" id="image" class="form-control" name="cert_medical" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                             +'<hr>'
                             +'<div style="margin-top: 10px; text-align: end;">'
                             +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
-                            +'<button type="submit" name="submit_medical" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
+                            +'<button type="submit" name="submit_medical" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>' */
                             +'</div>'
                             + '</form>',
                             showConfirmButton: false, 
@@ -850,12 +854,12 @@
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
-                            +'<hr>'
+                            /* +'<hr>'
                             +'<input type="file" id="image" class="form-control" name="cert_commerce" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                             +'<hr>'
                             +'<div style="margin-top: 10px; text-align: end;">'
                             +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
-                            +'<button type="submit" name="submit_commerce" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
+                            +'<button type="submit" name="submit_commerce" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>' */
                             +'</div>'
                             + '</form>',
                             showConfirmButton: false, 
@@ -901,12 +905,12 @@
                                 +'@else'
                                 +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                                 +'@endif'
-                                +'<hr>'
+                              /*   +'<hr>'
                                 +'<input type="file" id="image" class="form-control" name="cert_vat" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                                 +'<hr>'
                                 +'<div style="margin-top: 10px; text-align: end;">'
                                 +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
-                                +'<button type="submit" name="submit_vat" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
+                                +'<button type="submit" name="submit_vat" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>' */
                                 +'</div>'
                                 + '</form>',
                                 showConfirmButton: false, 
@@ -953,12 +957,12 @@
                                 +'@else'
                                 +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                                 +'@endif'
-                                +'<hr>'
+                             /*    +'<hr>'
                                 +'<input type="file" id="image" class="form-control" name="cert_id" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                                 +'<hr>'
                                 +'<div style="margin-top: 10px; text-align: end;">'
                                 +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
-                                +'<button type="submit" name="submit_id" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
+                                +'<button type="submit" name="submit_id" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>' */
                                 +'</div>'
                                 + '</form>',
                                 showConfirmButton: false, 

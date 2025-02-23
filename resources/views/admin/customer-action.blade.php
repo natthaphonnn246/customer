@@ -17,7 +17,7 @@
 </head>
 <body>
 
-    @extends ('webpanel/menuwebpanel-tailwind')
+    @extends ('admin/menuadmin')
     @section('content')
     @csrf
 
@@ -228,41 +228,45 @@
             border-radius: 50%;
         }
         #backLink {
-            color: #8E8E8E;
+            color: #2546ff;
             text-decoration: none;
             cursor: pointer;
         }
         #backLink:hover {
-            color: #2246fc;
+            text-decoration: underline;
         }
     </style>
 
-            @section('status_alert')
-            <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
-            @endsection
+        @section('status_alert')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
+        @endsection
 
-            @section('status_waiting')
-            <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
-            @endsection
+        @section('status_waiting')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
+        @endsection
 
-            @section('status_updated')
-            <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
-            @endsection
+        @section('status_updated')
+        <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
+        @endsection
 
-            @section('text_alert')
-            <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
-            @endsection
+        @section('text_alert')
+        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
+        @endsection
 
+        @section('username')
+        <h6 class="color:#ffffff; font-weight:300;">{{$user_name}}</h6>
+        @endsection
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
         <div class="py-2">
         </div>
-        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / Update</span>
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/admin/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / ต้องดำเนินการ</span>
+
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         <div class="mr-6" style="text-align: right;">
-            <a href="/webpanel/customer/export/getcsv/getcsv_update"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
-            <a href="/webpanel/customer/export/getexcel/getexcel_update"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
+            <a href="/admin/customer/export/getcsv/getcsv_action"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
+            <a href="/admin/customer/export/getexcel/getexcel_action"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
     
         </div>
 
@@ -297,9 +301,9 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    UPDATE<br/>
-                    @if (isset($total_status_updated))
-                    <span>{{$total_status_updated != '' ? $total_status_updated : '0' ;}}</span>
+                    ต้องดำเนินการ<br/>
+                    @if (isset($total_status_action))
+                    <span>{{$total_status_action != '' ? $total_status_action : '0' ;}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -310,7 +314,6 @@
 
         <hr class="my-3" style="color: #8E8E8E; width: 100%;">
 
-        
         <div class="ms-6 mr-6 mb-2">
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
             <table class="table table-striped">
@@ -319,12 +322,12 @@
                 <tr>
                     <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">#</td>
                     <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">CODE</td>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">อีเมล</td>
+                    {{-- <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">อีเมล</td> --}}
                     <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">ชื่อร้านค้า</td>
                     <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">STATUS</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">UPDATE</td>
+                   {{--  <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">UPDATE</td>
                     <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">วันที่สมัคร</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">สถานะ</td>
+                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">สถานะ</td> --}}
                     <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">จัดการ</td>
                 </tr>
                 </thead>
@@ -349,7 +352,7 @@
                     
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$start++}}</td>
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$user_code}}</td>
-                    <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$email}}</td>
+                    {{-- <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$email}}</td> --}}
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px; width: 20%;">{{$user_name}}</td>
 
                         @if ($status == 'รอดำเนินการ')
@@ -365,31 +368,30 @@
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> </td>
                         @endif
 
-                        @if ($status_update == 'updated')
+                       {{--  @if ($status_update == 'updated')
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(255, 70, 70);">UPDATE</span></td>
                         @else
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px;"><span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(184, 184, 184);">NULL</span></td>
-                        @endif
+                        @endif --}}
 
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">{{$created_at}}</td>
+                        {{-- <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">{{$created_at}}</td> --}}
 
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">
+                      {{--   <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">
                     
                             <label class="switch">
                                 <input type="checkbox" name="check" id="status_on{{$id}}" {{$customer_status == 'active' ? 'checked' : '' ;}}>
-                                {{-- {{dd($customer_status);}} --}}
                                 <span class="slider round" style="text-align: center;">
                                     <span style="color: white; font-size: 10px; text-align: center;">ON</span>
                                     <span style="color: white; font-size: 10px;">OFF</span>
                                 </span>
                             </label>
                     
-                        </td>
+                        </td> --}}
 
                         <td scope="row" style="color:#9C9C9C; text-align: center;  padding:20px; width: 20%;">
-                            <a href="/webpanel/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                            <a href="/admin/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
                             {{-- <a href="/webpanel/customer/delete/{{$user_code}}" id="trash"><i class="fa-regular fa-trash-can"></i></a> --}}
-                            <button class="trash-customer" type="submit" id="trash{{$id}}"><i class="fa-regular fa-trash-can"></i></button>
+                            {{-- <button class="trash-customer" type="submit" id="trash{{$id}}"><i class="fa-regular fa-trash-can"></i></button> --}}
 
                     </td>
                 </tr>
@@ -552,17 +554,18 @@
             </table>
         </div>
 
+        @if($total_page > 1)
         <div class="ms-6">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer/status/completed?page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/admin/customer/status/action?page=<?=1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/completed?page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/admin/customer/status/action?page=<?= $page-1 ; ?>" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -571,16 +574,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/completed?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer/status/action?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/completed?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/admin/customer/status/action?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/completed?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer/status/action?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
                     @endfor
                 
                 @endif
@@ -588,11 +591,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer/status/completed?page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/admin/customer/status/action?page=<?= $page ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/completed?page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/admin/customer/status/action?page=<?= $page+1 ; ?>" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif
@@ -600,6 +603,7 @@
                 </ul>
             </nav>
         </div>
+        @endif
         <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
         <div class="py-3">
             <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>

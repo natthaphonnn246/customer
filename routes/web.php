@@ -47,10 +47,19 @@
     });
 
     //admin for reports;
-    Route::middleware('auth', 'status','maintenance', 'adminRole')->group(function () {
+    Route::middleware('auth', 'status','maintenance', 'adminRole','verified')->group(function () {
         Route::get('/admin', [WebpanelAdminController::class, 'dashboard'])->name('webpanel.report');
         Route::get('/admin/customer', [WebpanelAdminController::class, 'indexCustomer']);
         Route::get('/admin/customer/{id}', [WebpanelAdminController::class, 'edit']);
+        Route::get('/admin/customer/status/{status_check}', [WebpanelAdminController::class, 'indexStatus']);
+        Route::get('/admin/customer/export/getcsv/{status}', [CustomerCsvExport::class, 'exportCustomerCsv']);
+        Route::get('/admin/customer/export/getexcel/{status}', [CustomerExcelExport::class, 'exportCustomerExcel']);
+        Route::get('/admin/customer/status/{status_check}', [WebpanelAdminController::class, 'indexStatus']);
+        Route::get('/admin/customer/adminarea/{admin_id}', [WebpanelAdminController::class, 'indexAdminArea']);
+        Route::get('/admin/customer/adminarea/{admin_id}/{status}', [WebpanelAdminController::class, 'indexAdminArea']);
+        Route::get('/admin/customer/export/getexcel/{status}/{admin_id}', [CustomerAreaExport::class, 'exportCustomerAreaExcel']);
+        Route::get('/admin/customer/export/getcsv/{status}/{admin_id}', [CustomerAreaExport::class, 'exportCustomerAreaCsv']);
+        Route::get('/admin/customer/adminarea/{admin_id}/{status}', [WebpanelAdminController::class, 'indexAdminArea']);
     });
 
     Route::get('/dashboard', function () {
