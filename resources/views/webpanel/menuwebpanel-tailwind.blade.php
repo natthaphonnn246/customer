@@ -51,7 +51,7 @@
                         <a href="#" class="flex items-center ps-2.5 mb-3 my-3">
                             {{-- <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 me-3 sm:h-7" alt="Flowbite Logo" /> --}}
                             <img class="w-8 h-8 rounded-full me-3" src="/profile/profiles-2 copy.jpg" alt="user photo"> 
-                            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">nntpn.com</span>
+                            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">cms.vmdrug</span>
                         </a>
                 </div>
             </ul>
