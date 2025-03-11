@@ -54,7 +54,9 @@ class Customer extends Model
 
     public static function viewCustomer($page)
     {
-        $pagination = Customer::select(DB::raw('customer_id'))->get();
+        $pagination = Customer::select(DB::raw('customer_id'))
+                                ->whereNotIn('customer_code',['0000', '4494'])
+                                ->get();
         $count_page = count($pagination);
 
         $perpage = 10;
