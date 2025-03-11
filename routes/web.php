@@ -13,9 +13,11 @@
     use App\Http\Controllers\SettingController;
     use App\Http\Controllers\SaleareaController;
     use App\Http\Controllers\DashboardController;
+    use App\Http\Controllers\ReportSellerController;
     use Illuminate\Support\Facades\Route;
     use App\Http\Middleware\EnsureUserHasRole;
-    use App\Models\Customer;
+use App\Imports\SellersImport;
+use App\Models\Customer;
     use App\Models\Salearea;
     use Illuminate\Support\Facades\DB;
     use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -241,6 +243,15 @@
 
         Route::get('/webpanel/customer/adminarea/{admin_id}/{status}', [WebpanelCustomerController::class, 'indexAdminArea']);
 
+    });
+
+    //report seller;
+    Route::middleware('auth', 'role','status', 'verified')->group(function () {
+        Route::get('/webpanel/report/seller', [ReportSellerController::class, 'index']);
+        Route::get('webpanel/report/seller/importseller', [ReportSellerController::class, 'import']);
+        Route::post('/webpanel/report/seller/importcsv', [ReportSellerController::class, 'importFile']);
+        Route::get('/webpanel/report/seller/search_date', [ReportSellerController::class, 'index']);
+        Route::get('/webpanel/report/seller/range', [ReportSellerController::class, 'index']);
     });
 
     Route::get('/webpanel/datepicker', function (){

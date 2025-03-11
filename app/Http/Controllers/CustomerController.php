@@ -1430,7 +1430,7 @@ class CustomerController
 
     // dd($status);
 
-     switch ($status) 
+   /*   switch ($status) 
         {
             //get excel;
             case $status == 'getexcel_completed':
@@ -1465,7 +1465,7 @@ class CustomerController
 
             default:
                 return back()->with('error_export', 'เกิดข้อผิดพลาด');
-        }
+        } */
         
    }
 

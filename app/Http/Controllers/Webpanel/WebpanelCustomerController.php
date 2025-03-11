@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class WebpanelCustomerController
 {
@@ -101,7 +103,7 @@ class WebpanelCustomerController
         
             }
 
-                return back();
+                // return back();
 
         }
 
@@ -568,7 +570,13 @@ class WebpanelCustomerController
             if($register_by == null) {
                 $register_by = '';
             }
-    
+            
+
+            /* $cert_store = $request->file('cert_store')->dimensions(
+                Rule::dimensions()
+                    ->maxWidth(100)
+                    ->maxHeight(100)
+            ); */
             $cert_store = $request->file('cert_store');
             $cert_medical = $request->file('cert_medical');
             $cert_commerce = $request->file('cert_commerce');

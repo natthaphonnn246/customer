@@ -50,7 +50,7 @@
                 <div class="h-full px-3 py-2 overflow-y-auto bg-black-50" style="background-color: #081524;">
                         <a href="#" class="flex items-center ps-2.5 mb-3 my-3">
                             {{-- <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 me-3 sm:h-7" alt="Flowbite Logo" /> --}}
-                            <img class="w-8 h-8 rounded-full me-3" src="/profile/profile_img copy.jpg" alt="user photo"> 
+                            <img class="w-8 h-8 rounded-full me-3" src="/profile/profiles-2 copy.jpg" alt="user photo"> 
                             <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">nntpn.com</span>
                         </a>
                 </div>
@@ -103,6 +103,29 @@
                             </li> --}}
                       </ul>
                 </li>
+                <li>
+                  <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-green-800" aria-controls="dropdown-report" data-collapse-toggle="dropdown-report">
+                  {{-- <i class="fa-regular fa-user"></i> --}}
+                  <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5"/>
+                   </svg>
+                   
+                 
+                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">รายงาน</span>
+                    <i class="fa-solid fa-plus m-2"></i>
+                 </button>
+                    <ul id="dropdown-report" class="hidden py-2 space-y-2">
+                          <li style="margin-left: 35px;">
+                             <a href="/webpanel/report/seller" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" style="font-size:14px;">ขายสินค้า</a>
+                          </li>
+                          <li style="margin-left: 35px;">
+                             <a href="/webpanel/sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" style="font-size:14px;">ขายสินค้าตามเขต</a>
+                          </li>
+                       {{--   <li>
+                             <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
+                          </li> --}}
+                    </ul>
+              </li>
                 <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-alert" data-collapse-toggle="dropdown-alert">
                   <i class="fa-regular fa-bell" style="font-size:18px;"></i>
                      <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">แจ้งเตือน</span>

@@ -93,7 +93,7 @@
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         <ul class="text-title" style="text-align: start; margin-top: 25px;">
-            <span class="ms-6" style="font-size: 18px; font-weight: 500;">ลงทะเบีนนลูกค้าใหม่</span>
+            <span class="ms-6" style="font-size: 18px; font-weight: 500;">ลงทะเบียนลูกค้าใหม่</span>
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
         </ul>
 
