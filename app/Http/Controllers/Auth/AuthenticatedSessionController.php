@@ -107,7 +107,7 @@ class AuthenticatedSessionController extends Controller
                                                         );
 
                                                         } else {
-
+                                                            
                                                             return back();
                                                         }
 
