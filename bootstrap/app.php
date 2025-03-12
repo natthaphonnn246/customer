@@ -42,7 +42,6 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
 
-
     //check role user if role == 0 ;
     ->withMiddleware(function (Middleware $middleware) {
 
