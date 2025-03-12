@@ -49,7 +49,8 @@ use App\Models\Customer;
     });
 
     //admin for reports;
-    Route::middleware('auth', 'status','maintenance', 'adminRole','verified')->group(function () {
+    // Route::middleware('auth', 'status','maintenance', 'adminRole','verified')->group(function () {
+    Route::middleware('auth', 'status','maintenance', 'verified')->group(function () {
         Route::get('/admin', [WebpanelAdminController::class, 'dashboard'])->name('webpanel.report');
         Route::get('/admin/customer', [WebpanelAdminController::class, 'indexCustomer']);
         Route::get('/admin/customer/{id}', [WebpanelAdminController::class, 'edit']);
