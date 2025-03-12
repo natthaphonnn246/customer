@@ -52,7 +52,6 @@ class MaintenanceStatus
             return redirect('/')->with('error_active', 'กรุณาติดต่อผู้ดูแล');
 
         }
-
         return $next($request);
 
 
