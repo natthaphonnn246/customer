@@ -17,18 +17,18 @@ class AdminRoleAuth
     public function handle(Request $request, Closure $next): Response
     {
 
-         if (Auth::user()->role == 1) 
-        {
-            return $next($request);
-        }
-        else{
-            // return back();
+        if (Auth::user()->role == "1") 
+            {
+                return $next($request);
+            }
+            else{
+                // return back();
 
-            // return logout;
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            return redirect('/');
-        }
+                // return logout;
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return redirect('/');
+            }
     }
 }
