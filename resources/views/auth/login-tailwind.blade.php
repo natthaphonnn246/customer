@@ -33,7 +33,7 @@
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-center dark:text-white" style="font-weight:500;">
                          <div class="ms-14 mr-14">
-                            <img style="width:100%;" src="/profile/cmsvmdrugpng Copy.png">
+                            <img style="width:100%;" src="/profile/cmsvmdrugpng copy.png">
                          </div>
                         
                         {{-- <img class="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo"> --}}
