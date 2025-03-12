@@ -292,7 +292,7 @@ class AuthenticatedSessionController extends Controller
                     }
             
         } else {
-            
+
             $request->authenticate();
 
             $request->session()->regenerate();

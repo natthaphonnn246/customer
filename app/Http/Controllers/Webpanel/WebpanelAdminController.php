@@ -19,6 +19,7 @@ class WebpanelAdminController
     //dashboard;
     public function dashboard(Request $request)
     {
+        // dd('test');
         $customer_north = Customer::where('geography', 'ภาคเหนือ')->count();
         $customer_central = Customer::where('geography', 'ภาคกลาง')->count();
         $customer_eastern = Customer::where('geography', 'ภาคตะวันออก')->count();
