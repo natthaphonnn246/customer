@@ -32,7 +32,7 @@
             <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:border-gray-700" style="background-color:rgb(255, 255, 255);">
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-center dark:text-white" style="font-weight:500;">
-                         <div class="ms-16 mr-16">
+                         <div class="ms-14 mr-14">
                             <img style="width:100%;" src="/profile/cmsvmdrugpng Copy.png">
                          </div>
                         
