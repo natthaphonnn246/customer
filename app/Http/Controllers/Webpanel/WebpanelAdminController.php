@@ -8,8 +8,9 @@ use App\Models\Customer;
 use App\Models\user;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
-class WebpanelAdminController
+class WebpanelAdminController extends Controller
 {
    /*  public function dashboard()
     {
@@ -49,7 +50,7 @@ class WebpanelAdminController
         $closed_customer_north = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคเหนือ')->count();
         // dd($closed_customer_north);
         // dd($suspend_customer_north);
-        
+
         //percentage of status_customer_north;
         $percentage_normal_customer_north = ($normal_customer_north / $customer_north) * 100;
         $percentage_follow_customer_north = ($follow_customer_north / $customer_north) * 100;
@@ -63,7 +64,7 @@ class WebpanelAdminController
          $suspend_customer_central = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคกลาง')->count();
          $closed_customer_central = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคกลาง')->count();
          // dd($suspend_customer_central);
-         
+
          //percentage of status_customer_central;
          $percentage_normal_customer_central = ($normal_customer_central / $customer_central) * 100;
          $percentage_follow_customer_central = ($follow_customer_central / $customer_central) * 100;
@@ -77,7 +78,7 @@ class WebpanelAdminController
         $suspend_customer_eastern = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันออก')->count();
         $closed_customer_eastern = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันออก')->count();
         // dd($suspend_customer_central);
-        
+
         //percentage of status_customer_central;
         $percentage_normal_customer_eastern = ($normal_customer_eastern / $customer_eastern) * 100;
         $percentage_follow_customer_eastern = ($follow_customer_eastern / $customer_eastern) * 100;
@@ -91,13 +92,13 @@ class WebpanelAdminController
          $suspend_customer_northeast = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
          $closed_customer_northeast = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
          // dd($suspend_customer_central);
-         
+
          //percentage of status_customer_northeast;
          $percentage_normal_customer_northeast = ($normal_customer_northeast / $customer_northeast) * 100;
          $percentage_follow_customer_northeast = ($follow_customer_northeast / $customer_northeast) * 100;
          $percentage_suspend_customer_northeast = ($suspend_customer_northeast / $customer_northeast) * 100;
          $percentage_closed_customer_northeast = ($closed_customer_northeast / $customer_northeast) * 100;
-         
+
          // dd($percentage_normal_customer_northeast);
 
           //status_user_western;
@@ -106,7 +107,7 @@ class WebpanelAdminController
           $suspend_customer_western = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันตก')->count();
           $closed_customer_western = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันตก')->count();
           // dd($suspend_customer_central);
-          
+
           //percentage of status_customer_western;
           $percentage_normal_customer_western = ($normal_customer_western / $customer_western) * 100;
           $percentage_follow_customer_western = ($follow_customer_western / $customer_western) * 100;
@@ -120,7 +121,7 @@ class WebpanelAdminController
            $suspend_customer_south = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคใต้')->count();
            $closed_customer_south = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคใต้')->count();
            // dd($suspend_customer_central);
-           
+
            //percentage of status_customer_south;
            $percentage_normal_customer_south = ($normal_customer_south / $customer_south) * 100;
            $percentage_follow_customer_south = ($follow_customer_south / $customer_south) * 100;
@@ -137,7 +138,7 @@ class WebpanelAdminController
            $count_status_suspend = Customer::where('status_user', 'ถูกระงับสมาชิก')->count();
            //status_closed;
            $count_status_closed = Customer::whereNotIn('status_user', ['','กำลังติดตาม','ถูกระงับสมาชิก'])->count();
-    
+
            //menu alert;
            $status_waiting = Customer::where('status', 'รอดำเนินการ')
                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
@@ -155,8 +156,8 @@ class WebpanelAdminController
 
         $user_name = $request->user()->name;
         // $admin_name = User::where('user_name', )
-        return view('admin/dashboard-admin', 
-        
+        return view('admin/dashboard-admin',
+
         compact('customer_north' , 'customer_central', 'customer_eastern', 'customer_northeast', 'customer_western', 'customer_south',
                 'percentage_north', 'percentage_central', 'percentage_eastern', 'percentage_northeast', 'percentage_western', 'percentage_south',
                 'normal_customer_north', 'follow_customer_north','suspend_customer_north','closed_customer_north', 'percentage_normal_customer_north', 'percentage_follow_customer_north', 'percentage_suspend_customer_north', 'percentage_closed_customer_north',
@@ -167,8 +168,8 @@ class WebpanelAdminController
                 'normal_customer_south', 'follow_customer_south','suspend_customer_south', 'percentage_normal_customer_south', 'percentage_follow_customer_south', 'closed_customer_south', 'percentage_suspend_customer_south', 'percentage_closed_customer_south',
                 'customer_all', 'count_status_normal', 'count_status_follow', 'count_status_suspend', 'count_status_closed',
                 'status_waiting', 'status_updated', 'status_alert', 'user_name'
-                    
-                
+
+
                 ));
         // dd($customer_north);
     }
@@ -248,7 +249,7 @@ class WebpanelAdminController
             if(!$check_keyword  == null) {
                 return view('admin/customer', compact('count_page', 'check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
                             'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated', 'user_name'));
-        
+
             }
 
                 // return back();
@@ -258,7 +259,7 @@ class WebpanelAdminController
         $count_page = 1;
         return view('admin/customer', compact('count_page', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
                 'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated', 'user_name'));
-        
+
     }
 
     public function edit(Request $request, $id)
@@ -351,7 +352,7 @@ class WebpanelAdminController
             $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
 
             return view('admin/customer-action', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_action', 'status_waiting', 'status_updated', 'status_alert'));
-       
+
         } else if ($status_check == 'completed') {
 
             $row_customer = Customer::customerCompleted($page);
@@ -411,12 +412,12 @@ class WebpanelAdminController
 
             return view('admin/customer-following', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_following', 'status_waiting', 'status_updated', 'status_alert', 'user_name'));
 
-        } 
-        
+        }
+
         else {
             return abort(403, 'Error requesting');
         }
-        
+
     }
 
     public function indexAdminArea(Request $request, $admin_id)
@@ -464,7 +465,7 @@ class WebpanelAdminController
             //dropdown admin_area;
             $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
             ////////////////////////////////////////////////////////
-    
+
             $keyword_search = $request->keyword;
             // dd($keyword);
 
@@ -480,13 +481,13 @@ class WebpanelAdminController
             $page = $row_customer[3];
 
             if($keyword_search != '') {
-        
+
                     $count_page = Customer::where('status','รอดำเนินการ')
                                             ->where('admin_area', $admin_id)
                                             ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                             ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                     // dd(($count_page));
-        
+
                     $perpage = 10;
                     $total_page = ceil($count_page / $perpage);
                     $start = ($perpage * $page) - $perpage;
@@ -499,24 +500,24 @@ class WebpanelAdminController
                                             ->offset($start)
                                             ->limit($perpage)
                                             ->get();
-        
+
                     $check_keyword = Customer::where('status','รอดำเนินการ')
                                                 ->where('admin_area', $admin_id)
                                                 ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                 ->where('customer_id', 'Like', "%{$keyword_search}%")
                                                 // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                 ->get();
-        
+
                     // dd($check_customer_code);
-        
+
                     // dd($check_search->admin_area);
                     if(!$check_keyword  == null) {
                         return view('admin/adminarea-waiting',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
-                
+
                     }
-        
+
                         return back();
-        
+
             }
             $count_page = 1;
             return view('admin/adminarea-waiting' ,compact('user_name', 'admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
@@ -533,17 +534,17 @@ class WebpanelAdminController
 
                 // dd($count_page_master);
                 if($keyword_search != '') {
-            
+
                         $count_page = Customer::where('status','ต้องดำเนินการ')
                                                 ->where('admin_area', $admin_id)
                                                 ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                 ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                         // dd(gettype($count_page));
-            
+
                         $perpage = 10;
                         $total_page = ceil($count_page / $perpage);
                         $start = ($perpage * $page) - $perpage;
-    
+
                         $customer = Customer::where('status','ต้องดำเนินการ')
                                                 ->where('admin_area', $admin_id)
                                                 ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
@@ -552,24 +553,24 @@ class WebpanelAdminController
                                                 ->offset($start)
                                                 ->limit($perpage)
                                                 ->get();
-            
+
                         $check_keyword = Customer::where('status','ต้องดำเนินการ')
                                                     ->where('admin_area', $admin_id)
                                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                     ->where('customer_id', 'Like', "%{$keyword_search}%")
                                                     // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                     ->get();
-            
+
                         // dd($check_customer_code);
-            
+
                         // dd($check_search->admin_area);
                         if(!$check_keyword  == null) {
                             return view('admin/adminarea-action',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
-                    
+
                         }
-            
+
                             return back();
-            
+
                 }
                 $count_page = 1;
                 return view('admin/adminarea-action' ,compact('user_name', 'count_page_master','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
@@ -582,19 +583,19 @@ class WebpanelAdminController
                     $start = $row_customer[1];
                     $total_page = $row_customer[2];
                     $page = $row_customer[3];
-    
+
                     if($keyword_search != '') {
-                
+
                             $count_page = Customer::where('status','ดำเนินการแล้ว')
                                                     ->where('admin_area', $admin_id)
                                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                     ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                             // dd(gettype($count_page));
-                
+
                             $perpage = 10;
                             $total_page = ceil($count_page / $perpage);
                             $start = ($perpage * $page) - $perpage;
-        
+
                             $customer = Customer::where('status','ดำเนินการแล้ว')
                                                     ->where('admin_area', $admin_id)
                                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
@@ -603,42 +604,42 @@ class WebpanelAdminController
                                                     ->offset($start)
                                                     ->limit($perpage)
                                                     ->get();
-                
+
                             $check_keyword = Customer::where('status','ดำเนินการแล้ว')
                                                         ->where('admin_area', $admin_id)
                                                         ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                         ->where('customer_id', 'Like', "%{$keyword_search}%")
                                                         // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                         ->get();
-                
+
                             // dd($check_customer_code);
-                
+
                             // dd($check_search->admin_area);
                             if(!$check_keyword  == null) {
                                 return view('admin/adminarea-completed',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
-                        
+
                             }
-                
+
                                 return back();
-                
+
                     }
                     $count_page = 1;
                     return view('admin/adminarea-completed' ,compact('user_name', 'admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
                     break;
-                    
+
 
             //customer/adminarea;
             default:
 
                 if($keyword_search != '') {
-            
+
                         $count_page = Customer::where('admin_area', $admin_id)->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                         // dd(gettype($count_page));
-            
+
                         $perpage = 10;
                         $total_page = ceil($count_page / $perpage);
                         $start = ($perpage * $page) - $perpage;
-    
+
                         $customer = Customer::where('admin_area', $admin_id)
                                             ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                             ->where('customer_id', 'Like', "%{$keyword_search}%")
@@ -646,26 +647,26 @@ class WebpanelAdminController
                                             ->offset($start)
                                             ->limit($perpage)
                                             ->get();
-            
+
                         $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                     ->where('customer_id', 'Like', "%{$keyword_search}%")
                                                     // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                     ->get();
-            
+
                         // dd($check_customer_code);
-            
+
                         // dd($check_search->admin_area);
                         if(!$check_keyword  == null) {
                             return view('admin/adminarea-detail',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
-                    
+
                         }
-            
+
                             return back();
-            
+
                 }
                 $count_page = 1;
                 return view('admin/adminarea-detail',compact('user_name', 'admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
         }
-        
+
     }
 }
