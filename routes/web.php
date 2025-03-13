@@ -9,7 +9,7 @@
     use App\Http\Controllers\ProvinceController;
     use App\Http\Controllers\Webpanel\WebpanelCustomerController;
     use App\Http\Controllers\Portal\PortalCustomerController;
-    use App\Http\Controllers\webpanel\WebpanelAdminController;
+    use App\Http\Controllers\Webpanel\WebpanelAdminController;
     use App\Http\Controllers\SettingController;
     use App\Http\Controllers\SaleareaController;
     use App\Http\Controllers\DashboardController;
@@ -66,7 +66,7 @@ use App\Models\Customer;
 
     Route::get('/dashboard', function () {
         return view('dashboard');
-        })->middleware(['auth', 'role','status','rights_area', 'verified'])->name('dashboard'); 
+        })->middleware(['auth', 'role','status','rights_area', 'verified'])->name('dashboard');
 
     //webpanel routes;
     Route::middleware('auth', 'role','status', 'verified')->group(function () {
@@ -79,19 +79,19 @@ use App\Models\Customer;
 
 
         Route::get('/webpanel', [DashboardController::class, 'index'])->name('webpanel');
-    
+
         Route::get('/webpanel/admin', function () {
             return view('webpanel/admin');
         });
-    
+
         Route::get('/webpanel/customer', function () {
             return view('webpanel/customer');
         });
-    
+
         Route::get('/webpanel/admin-create', function () {
             return view('webpanel/admin-create');
         });
-    
+
         Route::get('/webpanel/customer/customer-create', function () {
             return view('webpanel/customer-create');
         });
@@ -105,7 +105,7 @@ use App\Models\Customer;
         });
 
         Route::get('/webpanel/customer/importcustomer', [WebpanelCustomerController::class, 'import']);
-/* 
+/*
         Route::get('/webpanel/customer/customer-completed', function () {
             return view('webpanel/customer-completed');
         });
@@ -224,7 +224,7 @@ use App\Models\Customer;
         //export customer -> getexcel;
         // Route::get('/webpanel/customer/export/getexcel/{status}/{admin_id}', [WebpanelCustomerController::class, 'exportCustomerAreaExcel']);
         Route::get('/webpanel/customer/export/getexcel/{status}/{admin_id}', [CustomerAreaExport::class, 'exportCustomerAreaExcel']);
- 
+
         //export customer -> getcsv;
         Route::get('/webpanel/customer/export/getcsv/{status}', [CustomerCsvExport::class, 'exportCustomerCsv']);
 
@@ -234,7 +234,7 @@ use App\Models\Customer;
 
         //export customer_detail -> getcsv;
         Route::get('/webpanel/customer/getcsv/{customer_id}', [WebpanelCustomerController::class, 'getCustomerCsv']);
- 
+
         //adminarea-detail;
         Route::get('/webpanel/customer/adminarea/{admin_id}', [WebpanelCustomerController::class, 'indexAdminArea']);
 
@@ -266,7 +266,7 @@ use App\Models\Customer;
     Route::post('/webpanel/customer/groups-customer/updatadmin/{sale_area}', [WebpanelCustomerController::class, 'updateAdminarea']);
 
     // Route::get('/webpanel/customer/importcustomer',[CustomerController::class, 'importFile']);
-   
+
 
     //customer view table;
     Route::get('/webpanel/customer', [WebpanelCustomerController::class, 'index'])->middleware('auth', 'role','status', 'verified');
@@ -288,7 +288,7 @@ use App\Models\Customer;
        /*  Route::get('/portal/signin/update-amphure', [ProvinceController::class, 'amphure']);
         Route::get('/portal/signin/update-district', [ProvinceController::class, 'district']);
         Route::get('/portal/signin/update-zipcode', [ProvinceController::class, 'zipcode']); */
-/* 
+/*
         Route::get('/portal', function () {
             return view('portal/portal-sign');
         }); */
@@ -297,7 +297,7 @@ use App\Models\Customer;
         Route::get('/portal/signin', function () {
         return view('portal/signin');
         });
-    
+
     });
 
   /*   Route::get('/portal/signin', function () {
@@ -333,7 +333,7 @@ use App\Models\Customer;
         //customer update customer-detail;
         Route::post('/portal/customer-detail/update/{id}', [PortalCustomerController::class, 'updateEdit']);
     });
-    
+
     //delete customer;
     Route::get('/webpanel/customer/delete/{id}', [WebpanelCustomerController::class, 'deleteCustomer']);
 
@@ -348,7 +348,7 @@ use App\Models\Customer;
     Route::get('/portal/customer/status/{status_customer}', [PortalCustomerController::class, 'customerViewEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
 
     Route::get('/portal/customer/{id}', [PortalCustomerController::class, 'customerEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'rights_area');
-    
+
     ///search customer;
     Route::get('/portal/customer/search/code', [PortalCustomerController::class, 'customerSearch'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
     // Route::get('/portal/customer/search/code', [PortalCustomerController::class, 'customerKeyword'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
