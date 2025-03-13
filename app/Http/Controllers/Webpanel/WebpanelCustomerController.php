@@ -868,7 +868,7 @@ class WebpanelCustomerController
                 Customer::where('customer_id', $id)
                         ->update ([
 
-                            'cert_store' => $image_cert_store,
+                            'cert_store' => "storage/certs/".$image_cert_store,
 
                         ]);
 

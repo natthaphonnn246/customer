@@ -731,6 +731,7 @@
 
         </script>
 
+{{$customer_view->cert_store;}}
         <!--- php upload ใบอนุญาตขายยา/สถานพยาบาล--->
         <script>
 
@@ -745,7 +746,8 @@
                             +'@csrf'
                             +'@if ((($customer_view->cert_store)) != '')'
                             // +'<img src="/storage/certs/{{$customer_view->cert_store ; }}" id="fileImage" style="width: 100%";/>'
-                            +'<img src="{{asset("storage/".$customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
+                            // +'<img src="{{asset("storage/".$customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
+                            +'<img src="{{asset($customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
@@ -796,7 +798,7 @@
                             +'<form action="/webpanel/customer-detail/upload-medical/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
                             +'@if ((($customer_view->cert_medical)) != '')'
-                            +'<img src="{{asset("storage/".$customer_view->cert_medical)}}" id="fileImage" style="width: 100%";/>'
+                            +'<img src="{{asset("storage/certs/".$customer_view->cert_medical)}}" id="fileImage" style="width: 100%";/>'
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
