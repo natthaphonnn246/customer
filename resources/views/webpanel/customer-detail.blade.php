@@ -747,6 +747,7 @@
                             +'@if ((($customer_view->cert_store)) != '')'
                             // +'<img src="/storage/certs/{{$customer_view->cert_store ; }}" id="fileImage" style="width: 100%";/>'
                             // +'<img src="{{asset("storage/".$customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
+                            //update = "storage/".$customer_view->cert_strore;
                             +'<img src="{{asset($customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
