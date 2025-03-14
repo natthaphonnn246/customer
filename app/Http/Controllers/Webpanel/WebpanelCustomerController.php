@@ -868,7 +868,7 @@ class WebpanelCustomerController
                 Customer::where('customer_id', $id)
                         ->update ([
 
-                            'cert_store' => $image_cert_store,
+                            'cert_store' => "storage/".$image_cert_store,
 
                         ]);
 
@@ -899,7 +899,7 @@ class WebpanelCustomerController
                 Customer::where('customer_id', $id)
                         ->update ([
                             
-                            'cert_medical' =>  $image_cert_medical,
+                            'cert_medical' =>  "storage/".$image_cert_medical,
 
                         ]);
 
@@ -930,7 +930,7 @@ class WebpanelCustomerController
                 Customer::where('customer_id', $id)
                         ->update ([
 
-                            'cert_commerce' =>  $image_cert_commerce,
+                            'cert_commerce' =>  "storage/".$image_cert_commerce,
 
                         ]);
 
@@ -960,7 +960,7 @@ class WebpanelCustomerController
                 Customer::where('customer_id', $id)
                         ->update ([
 
-                            'cert_vat' =>  $image_cert_vat,
+                            'cert_vat' =>  "storage/".$image_cert_vat,
 
                         ]);
 
@@ -990,7 +990,7 @@ class WebpanelCustomerController
                 Customer::where('customer_id', $id)
                         ->update ([
 
-                            'cert_id' =>  $image_cert_id,
+                            'cert_id' =>  "storage/".$image_cert_id,
 
                         ]);
 

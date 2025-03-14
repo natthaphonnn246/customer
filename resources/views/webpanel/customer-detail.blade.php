@@ -746,7 +746,8 @@
                             +'@csrf'
                             +'@if ((($customer_view->cert_store)) != '')'
                             // +'<img src="/storage/certs/{{$customer_view->cert_store ; }}" id="fileImage" style="width: 100%";/>'
-                            +'<img src="{{asset("storage/".$customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
+                            // +'<img src="{{asset("storage/".$customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
+                            +'<img src="{{asset($customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
@@ -757,7 +758,7 @@
                             +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
                             +'<button type="submit" name="submit_store" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
                             +'</div>'
-                            + '</form>',
+                            +'</form>',
                             showConfirmButton: false, 
 
                             // confirmButtonText: 'บันทึก',
@@ -797,7 +798,7 @@
                             +'<form action="/webpanel/customer-detail/upload-medical/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
                             +'@if ((($customer_view->cert_medical)) != '')'
-                            +'<img src="{{asset("storage/".$customer_view->cert_medical)}}" id="fileImage" style="width: 100%";/>'
+                            +'<img src="{{asset($customer_view->cert_medical)}}" id="fileImage" style="width: 100%";/>'
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
@@ -848,7 +849,7 @@
                             +'<form action="/webpanel/customer-detail/upload-commerce/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
                             +'@if ((($customer_view->cert_commerce)) != '')'
-                            +'<img src="{{asset("storage/".$customer_view->cert_commerce)}}" id="fileImage" style="width: 100%";/>'
+                            +'<img src="{{asset($customer_view->cert_commerce)}}" id="fileImage" style="width: 100%";/>'
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
@@ -899,7 +900,7 @@
                                 +'<form action="/webpanel/customer-detail/upload-vat/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                                 +'@csrf'
                                 +'@if ((($customer_view->cert_vat)) != '')'
-                                +'<img src="{{asset("storage/".$customer_view->cert_vat)}}" id="fileImage" style="width: 100%";/>'
+                                +'<img src="{{asset($customer_view->cert_vat)}}" id="fileImage" style="width: 100%";/>'
                                 +'@else'
                                 +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                                 +'@endif'
@@ -951,7 +952,7 @@
                                 +'<form action="/webpanel/customer-detail/upload-id/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                                 +'@csrf'
                                 +'@if ((($customer_view->cert_id)) != '')'
-                                +'<img src="{{asset("storage/".$customer_view->cert_id)}}" id="fileImage" style="width: 100%";/>'
+                                +'<img src="{{asset($customer_view->cert_id)}}" id="fileImage" style="width: 100%";/>'
                                 +'@else'
                                 +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                                 +'@endif'
