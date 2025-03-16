@@ -22,6 +22,8 @@
     <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
 
    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+
+   <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     @vite('resources/css/app.css')
 
   </head>
@@ -33,6 +35,22 @@
     }
     li {
         font-size: 15px;
+    }
+    #admin {
+      background-color: none;
+      color: white;
+    }
+    #admin:hover {
+      background-color: rgb(16, 100, 42);
+      color: white;
+    }
+    #store {
+      background-color: none;
+      color: white;
+    }
+    #store:hover {
+      background-color: rgb(16, 100, 42);
+      color: white;
     }
 
   </style>
@@ -51,7 +69,7 @@
                         <a href="#" class="flex items-center ps-2.5 mb-3 my-3">
                             {{-- <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 me-3 sm:h-7" alt="Flowbite Logo" /> --}}
                             <img class="w-8 h-8 rounded-full me-3" src="/profile/profiles-2 copy.jpg" alt="user photo"> 
-                            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">cms.vmdrug</span>
+                            <span class="self-center text-xl font-semibold whitespace-nowrap" style="color:white;">cms.vmdrug</span>
                         </a>
                 </div>
             </ul>
@@ -66,7 +84,7 @@
                 </li>
                 {{-- <hr class="my-2" style="color:rgb(106, 109, 170);"> --}}
                 <li>
-                    <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-green-800" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+                    <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100" id="admin" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
                     {{-- <i class="fa-regular fa-user"></i> --}}
                   <svg class="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                      <path fill-rule="evenodd" d="M12 2a7 7 0 0 0-7 7 3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1a1 1 0 0 0 1-1V9a5 5 0 1 1 10 0v7.083A2.919 2.919 0 0 1 14.083 19H14a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 1.732-1h.351a4.917 4.917 0 0 0 4.83-4H19a3 3 0 0 0 3-3v-2a3 3 0 0 0-3-3 7 7 0 0 0-7-7Zm1.45 3.275a4 4 0 0 0-4.352.976 1 1 0 0 0 1.452 1.376 2.001 2.001 0 0 1 2.836-.067 1 1 0 1 0 1.386-1.442 4 4 0 0 0-1.321-.843Z" clip-rule="evenodd"/>
@@ -89,8 +107,8 @@
                 </li>
                 {{-- <hr class="my-2" style="color:rgb(106, 109, 170);"> --}}
                 <li>
-                    <button type="button" class="flex items-center w-full p-2 text-base  text-sm text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-green-800" aria-controls="dropdown-customer" data-collapse-toggle="dropdown-customer">
-                    <i class="fa-solid fa-store"></i>
+                    <button type="button" class="flex items-center w-full p-2 text-base  text-sm text-gray-900 transition duration-75 rounded-lg group" id="store" aria-controls="dropdown-customer" data-collapse-toggle="dropdown-customer">
+                    <i class="fa-solid fa-store ms-1"></i>
                       <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">ร้านค้า</span>
                       <i class="fa-solid fa-plus m-2"></i>
                    </button>
