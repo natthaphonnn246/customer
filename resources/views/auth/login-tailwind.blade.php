@@ -19,6 +19,16 @@
     li {
         font-size: 15px;
     }
+    #loginTail {
+      background-color: rgb(0, 94, 255);
+      color: white;
+      font-size: 16px;
+    }
+    #loginTail:hover {
+      background-color: rgb(10, 80, 202);
+      color: white;
+      font-size: 16px;
+    }
 </style>
 <body>
 
@@ -61,7 +71,7 @@
                             <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
                         </div> --}}
                         <ul class="text-center">
-                            <button type="submit" class="w-full text-white bg-primary-400 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-500 dark:hover:bg-blue-700 dark:focus:ring-primary-800" style="width:100px;">Login</button>
+                            <button type="submit" class="w-full text-white bg-primary-400 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" id="loginTail" style="width:100px;">Login</button>
                         </ul>
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
                             &copy; 2025 cms.vmdrug.co.th All rights reserved
