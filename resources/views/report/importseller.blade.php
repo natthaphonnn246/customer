@@ -212,12 +212,13 @@
             border-radius: 50%;
         }
         #backLink {
-            color: #8E8E8E;
+            color: #3b25ff;
             text-decoration: none;
             cursor: pointer;
         }
         #backLink:hover {
-            color: #2246fc;
+            color: #3b25ff;
+            text-decoration: underline;
         }
     </style>
 

@@ -143,11 +143,12 @@
             background-color: #cbcbcb;
         }
         #backLink {
-            color: #2546ff;
+            color: #3b25ff;
             text-decoration: none;
             cursor: pointer;
         }
         #backLink:hover {
+            color: #3b25ff;
             text-decoration: underline;
         }
 
@@ -177,7 +178,7 @@
 
         <div class="py-2">
         </div>
-        <span class="ms-6" style="font-weight: 400;"><a href="/admin/customer" id="backLink">ข้อมูลลูกค้า (Customer)</a></span>
+        <span class="ms-6" style="font-weight: 400; color: #8E8E8E;"><a href="/admin/customer" id="backLink">ข้อมูลลูกค้า (Customer)</a> / รายละเอียด</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
         
      {{--    @if($customer_view->updated_at != '')
@@ -347,7 +348,7 @@
                                 </li>
                                 <li class="mt-4">
                                     <span>เบอร์ร้านค้า</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 027534702)</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="phone" value="{{$customer_view->phone}}">
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="phone" value="{{$customer_view->phone}}" disabled>
                                 </li>
                                 <li class="mt-4">
                                     <span>เบอร์มือถือ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0812345678)</span>

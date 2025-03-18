@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    @section ('title', 'customer-create')
+    @section ('title', 'CMS VMDRUG System')
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -143,12 +143,13 @@
             background-color: #cbcbcb;
         }
         #backLink {
-            color: #8E8E8E;
+            color: #3b25ff;
             text-decoration: none;
             cursor: pointer;
         }
         #backLink:hover {
-            color: #2246fc;
+            color: #3b25ff;
+            text-decoration: underline;
         }
 
     </style>
@@ -168,19 +169,13 @@
         @section('text_alert')
         <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
         @endsection
-    
+
     <div class="contentArea">
 
         <div class="py-2">
         </div>
         <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้า (Customer)</a> / แบบฟอร์ม</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
-        
-        @if($customer_view->updated_at != '')
-        <div class="py-4 mr-6" style="text-align: right;">
-            <span style="color:#a4a2a2;">อัปเดตข้อมูลล่าสุด : </span> <span style="color:#939393; border:solid 1px #404147; width: 50%; padding: 10px; border-radius: 5px;">{{$customer_view->updated_at}}</span></span></br>
-        </div></br>
-        @endif
 
         @if(isset($customer_view) != '')
 
@@ -190,7 +185,7 @@
         {{-- <form action="/webpanel/customer-detail/update/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
             @csrf
 
-                <div class="row ms-6 mr-6">
+                <div class="row ms-6 mr-6 mt-8">
                     <div class="col-sm-6">
                         <ul class="text-title" style="text-align: start;">
                             <span style="font-size: 16px; font-weight: 500; color:#545454;">ลงทะเบีนนลูกค้าใหม่</span>
@@ -441,10 +436,13 @@
                                         @if(isset($admin_area_list) != '')
                                         @foreach($admin_area_list as $row)
     
-                                            @if($row->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
-                                 
-                                                <option {{$row->admin_area == $admin_area_check->admin_area ? 'selected': '' ; }} value="{{$row->admin_area}}">{{$row->admin_area.' '. '('. $row->name. ')'}}</option>
-
+                                            @if($row->admin_area != '') <!-- ตรวจสอบสิทธิ์แอดมิน admin_area -->
+                                                @if($row->rights_area == '0' || $row->role == '1')
+                                                {{-- <option {{$row->admin_area == $admin_area_check->admin_area ? 'selected': '' ; }} value="{{$row->admin_area}}">{{$row->admin_area.' '. '('. $row->name. ')'}}</option> --}}
+                                                    <option {{$row->admin_area == $admin_area_check->admin_area ? 'selected': '' ; }} value="">{{$row->admin_area.' '. '('. $row->name. ')'}} ไม่มีสิทธิ์ดูแลลูกค้า</option>
+                                                @else
+                                                    <option {{$row->admin_area == $admin_area_check->admin_area ? 'selected': '' ; }} value="{{$row->admin_area}}">{{$row->admin_area.' '. '('. $row->name. ')'}}</option>
+                                                @endif
                                             @endif
     
                                         @endforeach
@@ -544,6 +542,13 @@
                                     <span style="font-size: 16px; font-weight: 500; color:#545454;">ลงทะเบียนโดย</span>
                                     <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="" name="" value="{{$customer_view->register_by}}" disabled>
                                 </div>
+                                <div class="mb-3 my-4 ms-2 mr-2">
+                                    <span style="font-size: 16px; font-weight: 500; color:#ff5252;">อัปเดตข้อมูล</span>
+                                    @if($customer_view->updated_at != '')
+                                    <span style="margin-top:10px; color:rgb(242, 72, 72); border: solid rgb(255, 89, 89);" type="text" class="form-control" id="" name="">{{$customer_view->updated_at}}</span>
+                                    @endif
+                                </div>
+                                <hr class="mr-6 ms-6 mt-4" style="color:#8E8E8E;">
                                 <div style="text-align:right;">
                                     <button type="button" id="updateForm" name="submit_update" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
                                     <a href="/webpanel/customer/getcsv/{{$admin_area_check->customer_id}}" type="button" id="exportCsv" class="btn my-2" style="border:none; width: 120px; color: rgb(67, 67, 67); padding: 10px;">Export CSV</a>
@@ -731,7 +736,7 @@
 
         </script>
 
-{{$customer_view->cert_store;}}
+{{-- {{$customer_view->cert_store;}} --}}
         <!--- php upload ใบอนุญาตขายยา/สถานพยาบาล--->
         <script>
 
@@ -747,7 +752,7 @@
                             +'@if ((($customer_view->cert_store)) != '')'
                             // +'<img src="/storage/certs/{{$customer_view->cert_store ; }}" id="fileImage" style="width: 100%";/>'
                             // +'<img src="{{asset("storage/".$customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
-                            //update = "storage/".$customer_view->cert_strore;
+                            //update = "storage/".$customer_view->cert_strore; //test;
                             +'<img src="{{asset($customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
@@ -994,6 +999,7 @@
         
         @endif
 </div>
+
 @endsection
 
 </body>

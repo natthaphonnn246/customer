@@ -20,16 +20,18 @@ class WebpanelAdminController extends Controller
     //dashboard;
     public function dashboard(Request $request)
     {
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
         // dd('test');
-        $customer_north = Customer::where('geography', 'ภาคเหนือ')->count();
-        $customer_central = Customer::where('geography', 'ภาคกลาง')->count();
-        $customer_eastern = Customer::where('geography', 'ภาคตะวันออก')->count();
-        $customer_northeast = Customer::where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
-        $customer_western = Customer::where('geography', 'ภาคตะวันตก')->count();
-        $customer_south = Customer::where('geography', 'ภาคใต้')->count();
+        $customer_north = Customer::where('geography', 'ภาคเหนือ')->whereNotIn('customer_id',$code_notin)->count();
+        $customer_central = Customer::where('geography', 'ภาคกลาง')->whereNotIn('customer_id',$code_notin)->count();
+        $customer_eastern = Customer::where('geography', 'ภาคตะวันออก')->whereNotIn('customer_id',$code_notin)->count();
+        $customer_northeast = Customer::where('geography', 'ภาคตะวันออกเฉียงเหนือ')->whereNotIn('customer_id',$code_notin)->count();
+        $customer_western = Customer::where('geography', 'ภาคตะวันตก')->whereNotIn('customer_id',$code_notin)->count();
+        $customer_south = Customer::where('geography', 'ภาคใต้')->whereNotIn('customer_id',$code_notin)->count();
 
         //ร้านค้าทั้งหมด;
-        $customer_all = Customer::all()->count();
+        $customer_all = Customer::all()->whereNotIn('customer_id',$code_notin)->count();
         // dd($customer_all);
 
         //percentage;
@@ -44,10 +46,10 @@ class WebpanelAdminController extends Controller
         // dd($percentage_north);
 
         //status_user_north;
-        $normal_customer_north = Customer::where('status_user', '')->where('geography', 'ภาคเหนือ')->count();
-        $follow_customer_north = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคเหนือ')->count();
-        $suspend_customer_north = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคเหนือ')->count();
-        $closed_customer_north = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคเหนือ')->count();
+        $normal_customer_north = Customer::where('status_user', '')->where('geography', 'ภาคเหนือ')->whereNotIn('customer_id',$code_notin)->count();
+        $follow_customer_north = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคเหนือ')->whereNotIn('customer_id',$code_notin)->count();
+        $suspend_customer_north = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคเหนือ')->whereNotIn('customer_id',$code_notin)->count();
+        $closed_customer_north = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคเหนือ')->whereNotIn('customer_id',$code_notin)->count();
         // dd($closed_customer_north);
         // dd($suspend_customer_north);
 
@@ -59,10 +61,10 @@ class WebpanelAdminController extends Controller
         // dd($percentage_normal_customer_north);
 
          //status_user_central;
-         $normal_customer_central = Customer::where('status_user', '')->where('geography', 'ภาคกลาง')->count();
-         $follow_customer_central = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคกลาง')->count();
-         $suspend_customer_central = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคกลาง')->count();
-         $closed_customer_central = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคกลาง')->count();
+         $normal_customer_central = Customer::where('status_user', '')->where('geography', 'ภาคกลาง')->whereNotIn('customer_id',$code_notin)->count();
+         $follow_customer_central = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคกลาง')->whereNotIn('customer_id',$code_notin)->count();
+         $suspend_customer_central = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคกลาง')->whereNotIn('customer_id',$code_notin)->count();
+         $closed_customer_central = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคกลาง')->whereNotIn('customer_id',$code_notin)->count();
          // dd($suspend_customer_central);
 
          //percentage of status_customer_central;
@@ -73,10 +75,10 @@ class WebpanelAdminController extends Controller
          // dd($percentage_normal_customer_central);
 
         //status_user_eastern;
-        $normal_customer_eastern = Customer::where('status_user', '')->where('geography', 'ภาคตะวันออก')->count();
-        $follow_customer_eastern = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันออก')->count();
-        $suspend_customer_eastern = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันออก')->count();
-        $closed_customer_eastern = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันออก')->count();
+        $normal_customer_eastern = Customer::where('status_user', '')->where('geography', 'ภาคตะวันออก')->whereNotIn('customer_id',$code_notin)->count();
+        $follow_customer_eastern = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันออก')->whereNotIn('customer_id',$code_notin)->count();
+        $suspend_customer_eastern = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันออก')->whereNotIn('customer_id',$code_notin)->count();
+        $closed_customer_eastern = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันออก')->whereNotIn('customer_id',$code_notin)->count();
         // dd($suspend_customer_central);
 
         //percentage of status_customer_central;
@@ -87,10 +89,10 @@ class WebpanelAdminController extends Controller
         // dd($percentage_normal_customer_central);
 
          //status_user_northeast;
-         $normal_customer_northeast = Customer::where('status_user', '')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
-         $follow_customer_northeast = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
-         $suspend_customer_northeast = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
-         $closed_customer_northeast = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
+         $normal_customer_northeast = Customer::where('status_user', '')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->whereNotIn('customer_id',$code_notin)->count();
+         $follow_customer_northeast = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->whereNotIn('customer_id',$code_notin)->count();
+         $suspend_customer_northeast = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->whereNotIn('customer_id',$code_notin)->count();
+         $closed_customer_northeast = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->whereNotIn('customer_id',$code_notin)->count();
          // dd($suspend_customer_central);
 
          //percentage of status_customer_northeast;
@@ -102,10 +104,10 @@ class WebpanelAdminController extends Controller
          // dd($percentage_normal_customer_northeast);
 
           //status_user_western;
-          $normal_customer_western = Customer::where('status_user', '')->where('geography', 'ภาคตะวันตก')->count();
-          $follow_customer_western = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันตก')->count();
-          $suspend_customer_western = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันตก')->count();
-          $closed_customer_western = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันตก')->count();
+          $normal_customer_western = Customer::where('status_user', '')->where('geography', 'ภาคตะวันตก')->whereNotIn('customer_id',$code_notin)->count();
+          $follow_customer_western = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันตก')->whereNotIn('customer_id',$code_notin)->count();
+          $suspend_customer_western = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันตก')->whereNotIn('customer_id',$code_notin)->count();
+          $closed_customer_western = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันตก')->whereNotIn('customer_id',$code_notin)->count();
           // dd($suspend_customer_central);
 
           //percentage of status_customer_western;
@@ -116,10 +118,10 @@ class WebpanelAdminController extends Controller
           // dd($percentage_normal_customer_western);
 
            //status_user_south;
-           $normal_customer_south = Customer::where('status_user', '')->where('geography', 'ภาคใต้')->count();
-           $follow_customer_south = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคใต้')->count();
-           $suspend_customer_south = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคใต้')->count();
-           $closed_customer_south = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคใต้')->count();
+           $normal_customer_south = Customer::where('status_user', '')->where('geography', 'ภาคใต้')->whereNotIn('customer_id',$code_notin)->count();
+           $follow_customer_south = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคใต้')->whereNotIn('customer_id',$code_notin)->count();
+           $suspend_customer_south = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคใต้')->whereNotIn('customer_id',$code_notin)->count();
+           $closed_customer_south = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคใต้')->whereNotIn('customer_id',$code_notin)->count();
            // dd($suspend_customer_central);
 
            //percentage of status_customer_south;
@@ -131,21 +133,21 @@ class WebpanelAdminController extends Controller
 
 
            //status_normal;
-           $count_status_normal = Customer::where('status_user', '')->count();
+           $count_status_normal = Customer::where('status_user', '')->whereNotIn('customer_id',$code_notin)->count();
            //status_follow;
-           $count_status_follow = Customer::where('status_user', 'กำลังติดตาม')->count();
+           $count_status_follow = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_id',$code_notin)->count();
            //status_suspend;
-           $count_status_suspend = Customer::where('status_user', 'ถูกระงับสมาชิก')->count();
+           $count_status_suspend = Customer::where('status_user', 'ถูกระงับสมาชิก')->whereNotIn('customer_id',$code_notin)->count();
            //status_closed;
-           $count_status_closed = Customer::whereNotIn('status_user', ['','กำลังติดตาม','ถูกระงับสมาชิก'])->count();
+           $count_status_closed = Customer::whereNotIn('status_user', ['','กำลังติดตาม','ถูกระงับสมาชิก'])->whereNotIn('customer_id',$code_notin)->count();
 
            //menu alert;
            $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id',$code_notin)
                                         ->count();
 
             $status_updated = Customer::where('status_update', 'updated')
-                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id',$code_notin)
                                         ->count();
 
             $status_alert = $status_waiting + $status_updated;
@@ -192,23 +194,29 @@ class WebpanelAdminController extends Controller
         $total_page = $row_customer[2];
         $page = $row_customer[3];
 
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
         //Dashborad;
-        $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
+        // $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+        $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
+        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count();
 
         //เพิ่มลูกค้า;
         // $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
 
         $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_updated = Customer::where('status_update', 'updated')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_alert = $status_waiting + $status_updated;
@@ -224,21 +232,25 @@ class WebpanelAdminController extends Controller
 
         if($keyword_search != '') {
 
-            $count_page = Customer::where('customer_id', 'Like', "%{$keyword_search}%")->count();
+            $count_page = Customer::where('customer_id', 'Like', "%{$keyword_search}%")
+                                    ->whereNotIn('customer_id',$code_notin)
+                                    ->count();
             // dd($count_page);
 
             $perpage = 10;
             $total_page = ceil($count_page / $perpage);
             $start = ($perpage * $page) - $perpage;
 
-            $customer = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+            // $customer = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+            $customer = Customer::whereNotIn('customer_id', $code_notin)
                                     ->where('customer_id', 'Like', "%{$keyword_search}%")
                                     ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                     ->offset($start)
                                     ->limit($perpage)
                                     ->get();
 
-            $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+            // $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+            $check_keyword = Customer::whereNotIn('customer_id', $code_notin)
                                         ->where('customer_id', 'Like', "%{$keyword_search}%")
                                         ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                         ->get();
@@ -264,6 +276,10 @@ class WebpanelAdminController extends Controller
 
     public function edit(Request $request, $id)
     {
+
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
         $customer_edit = Customer::customerEdit($id);
         $customer_view = $customer_edit[0];
 
@@ -281,11 +297,13 @@ class WebpanelAdminController extends Controller
         $district = DB::table('districts')->select('name_th', 'amphure_id')->get();
 
         $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_updated = Customer::where('status_update', 'updated')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_alert = $status_waiting + $status_updated;
@@ -300,6 +318,9 @@ class WebpanelAdminController extends Controller
     public function indexStatus(Request $request, $status_check): View
     {
 
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
         $page = $request->page;
         if ($page) {
             $page = $request->page;
@@ -312,11 +333,13 @@ class WebpanelAdminController extends Controller
 
         //menu alert;
         $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_updated = Customer::where('status_update', 'updated')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_alert = $status_waiting + $status_updated;
@@ -333,8 +356,10 @@ class WebpanelAdminController extends Controller
             $page = $row_customer[3];
 
             //Dashborad;
-            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-            $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+            // $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+            // $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('admin/customer-waiting', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting', 'status_waiting', 'status_updated', 'status_alert'));
 
@@ -348,8 +373,10 @@ class WebpanelAdminController extends Controller
             $page = $row_customer[3];
 
             //Dashborad;
-            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-            $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+            // $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+            // $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('admin/customer-action', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_action', 'status_waiting', 'status_updated', 'status_alert'));
 
@@ -363,8 +390,10 @@ class WebpanelAdminController extends Controller
             $page = $row_customer[3];
 
             //Dashborad;
-            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-            $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
+            // $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+            // $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('admin/customer-completed', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_completed', 'status_waiting', 'status_updated', 'status_alert'));
         } else if ($status_check == 'latest_update') {
@@ -377,8 +406,10 @@ class WebpanelAdminController extends Controller
             $page = $row_customer[3];
 
             //Dashborad;
-            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-            $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
+            // $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+            // $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('admin/customer-updatelatest', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer','total_status_updated', 'status_waiting', 'status_updated', 'status_alert'));
 
@@ -392,8 +423,10 @@ class WebpanelAdminController extends Controller
             $page = $row_customer[3];
 
             //Dashborad;
-            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-            $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
+            // $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+            // $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
+            $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('admin/customer-inactive', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_inactive', 'status_waiting', 'status_updated', 'status_alert'));
 
@@ -407,8 +440,10 @@ class WebpanelAdminController extends Controller
             $page = $row_customer[3];
 
             //Dashborad;
-            $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-            $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count();
+            // $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+            // $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count();
+            $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('admin/customer-following', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_following', 'status_waiting', 'status_updated', 'status_alert', 'user_name'));
 
@@ -422,6 +457,9 @@ class WebpanelAdminController extends Controller
 
     public function indexAdminArea(Request $request, $admin_id)
     {
+
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         // dd($request->status);
         // dd($status);
@@ -437,11 +475,13 @@ class WebpanelAdminController extends Controller
 
           //menu alert;
         $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_updated = Customer::where('status_update', 'updated')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_alert = $status_waiting + $status_updated;
@@ -457,10 +497,15 @@ class WebpanelAdminController extends Controller
         $admin_name = User::select('admin_area', 'name')->where('admin_area', $admin_id)->first();
 
         //Dashborad;
-        $total_customer_adminarea = Customer::whereNotIn('customer_code', ['0000','4494'])->where('admin_area', $admin_id)->count();
-        $total_status_waiting = Customer::where('admin_area', $admin_id)->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_action = Customer::where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_completed = Customer::where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
+        // $total_customer_adminarea = Customer::whereNotIn('customer_code', ['0000','4494'])->where('admin_area', $admin_id)->count();
+        // $total_status_waiting = Customer::where('admin_area', $admin_id)->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+        // $total_status_action = Customer::where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+        // $total_status_completed = Customer::where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
+
+        $total_customer_adminarea = Customer::whereNotIn('customer_code', $code_notin)->where('admin_area', $admin_id)->count();
+        $total_status_waiting = Customer::where('admin_area', $admin_id)->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_action = Customer::where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_completed = Customer::where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
 
             //dropdown admin_area;
             $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
@@ -484,7 +529,8 @@ class WebpanelAdminController extends Controller
 
                     $count_page = Customer::where('status','รอดำเนินการ')
                                             ->where('admin_area', $admin_id)
-                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->whereNotIn('customer_id', $code_notin)
                                             ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                     // dd(($count_page));
 
@@ -494,7 +540,8 @@ class WebpanelAdminController extends Controller
 
                     $customer = Customer::where('status','รอดำเนินการ')
                                             ->where('admin_area', $admin_id)
-                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->whereNotIn('customer_id', $code_notin)
                                             ->where('customer_id', 'Like', "%{$keyword_search}%")
                                             // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                             ->offset($start)
@@ -503,7 +550,8 @@ class WebpanelAdminController extends Controller
 
                     $check_keyword = Customer::where('status','รอดำเนินการ')
                                                 ->where('admin_area', $admin_id)
-                                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->whereNotIn('customer_id', $code_notin)
                                                 ->where('customer_id', 'Like', "%{$keyword_search}%")
                                                 // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                 ->get();
@@ -537,7 +585,8 @@ class WebpanelAdminController extends Controller
 
                         $count_page = Customer::where('status','ต้องดำเนินการ')
                                                 ->where('admin_area', $admin_id)
-                                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->whereNotIn('customer_id', $code_notin)
                                                 ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                         // dd(gettype($count_page));
 
@@ -547,7 +596,8 @@ class WebpanelAdminController extends Controller
 
                         $customer = Customer::where('status','ต้องดำเนินการ')
                                                 ->where('admin_area', $admin_id)
-                                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->whereNotIn('customer_id', $code_notin)
                                                 ->where('customer_id', 'Like', "%{$keyword_search}%")
                                                 // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                 ->offset($start)
@@ -556,7 +606,8 @@ class WebpanelAdminController extends Controller
 
                         $check_keyword = Customer::where('status','ต้องดำเนินการ')
                                                     ->where('admin_area', $admin_id)
-                                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    ->whereNotIn('customer_id', $code_notin)
                                                     ->where('customer_id', 'Like', "%{$keyword_search}%")
                                                     // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                     ->get();
@@ -588,7 +639,8 @@ class WebpanelAdminController extends Controller
 
                             $count_page = Customer::where('status','ดำเนินการแล้ว')
                                                     ->where('admin_area', $admin_id)
-                                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    ->whereNotIn('customer_id', $code_notin)
                                                     ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                             // dd(gettype($count_page));
 
@@ -598,7 +650,8 @@ class WebpanelAdminController extends Controller
 
                             $customer = Customer::where('status','ดำเนินการแล้ว')
                                                     ->where('admin_area', $admin_id)
-                                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    ->whereNotIn('customer_id', $code_notin)
                                                     ->where('customer_id', 'Like', "%{$keyword_search}%")
                                                     // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                     ->offset($start)
@@ -607,7 +660,8 @@ class WebpanelAdminController extends Controller
 
                             $check_keyword = Customer::where('status','ดำเนินการแล้ว')
                                                         ->where('admin_area', $admin_id)
-                                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                        ->whereNotIn('customer_id', $code_notin)
                                                         ->where('customer_id', 'Like', "%{$keyword_search}%")
                                                         // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                         ->get();
@@ -633,7 +687,9 @@ class WebpanelAdminController extends Controller
 
                 if($keyword_search != '') {
 
-                        $count_page = Customer::where('admin_area', $admin_id)->where('customer_id', 'Like', "%{$keyword_search}%")->count();
+                        $count_page = Customer::where('admin_area', $admin_id)
+                                                ->whereNotIn('customer_id',$code_notin)
+                                                ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                         // dd(gettype($count_page));
 
                         $perpage = 10;
@@ -641,14 +697,16 @@ class WebpanelAdminController extends Controller
                         $start = ($perpage * $page) - $perpage;
 
                         $customer = Customer::where('admin_area', $admin_id)
-                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->whereNotIn('customer_id', $code_notin)
                                             ->where('customer_id', 'Like', "%{$keyword_search}%")
                                             // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                             ->offset($start)
                                             ->limit($perpage)
                                             ->get();
 
-                        $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        // $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        $check_keyword = Customer::whereNotIn('customer_id', $code_notin)
                                                     ->where('customer_id', 'Like', "%{$keyword_search}%")
                                                     // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                     ->get();

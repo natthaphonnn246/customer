@@ -251,7 +251,7 @@
                 <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group" id="alertMenu" aria-controls="dropdown-alert" data-collapse-toggle="dropdown-alert">
                   <i class="fa-regular fa-bell" style="font-size:18px; color:white"></i>
                      <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">แจ้งเตือน</span>
-                     <span class="inline-flex items-center justify-center p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:brown; border: solid white;"><p>@yield('status_alert')</p></span>
+                     <span class="inline-flex items-center justify-center p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:brown;"><p>@yield('status_alert')</p></span>
                </button>
                <ul id="dropdown-alert" class="hidden py-2 space-y-2">
                      <li style="margin-left: 25px;">

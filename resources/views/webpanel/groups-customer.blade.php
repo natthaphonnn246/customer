@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <title>cutomer</title>
+    <title>CMS VMDRUG System</title>
 </head>
 <body>
 
@@ -241,12 +241,13 @@
             border-radius: 50%;
         }
         #backLink {
-            color: #8E8E8E;
+            color: #3b25ff;
             text-decoration: none;
             cursor: pointer;
         }
         #backLink:hover {
-            color: #2246fc;
+            color: #3b25ff;
+            text-decoration: underline;
         }
     </style>
 
@@ -286,6 +287,7 @@
 
                 <?php
                 foreach($row_salearea as $row_sale) {
+
                 ?>
                 <div class="col-sm-6 my-2">
                     <form action="/webpanel/customer/groups-customer/updatadmin/{{$row_sale->sale_area}}" method="post" enctype="multipart/form-data">
@@ -295,15 +297,16 @@
                                         <label for="sale_area" style="color:#838383; margin-top:10px; font-weight:500;">เขตการขาย : {{$row_sale->sale_area}}</label>
                                         <input class="form-control my-2" type="text" name="sale_area" style="color:#838383;" value="{{$row_sale->sale_area}}">
                                         <label for="sale_area" style="color:#838383; font-weight:500;">Admin area</label>
-                                        <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="admin_area">
-                                                                    
+                                        <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="admin_area">                  
                                             <option value="">ไม่ระบุ</option>
                                             @if(isset($customer_area_list) != '')
-                                                   
+                                                 
                                                 @foreach($admin_area_list as $row)
-
+                                                
                                                     @if($row->rights_area != '0'  && $row->user_code != '0000') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
-                                                    <option {{($row->admin_area == $row_sale->admin_area) && ($row->admin_area == $customer_area_list->admin_area) ? 'selected' : '' ;}} value="{{$row->admin_area}}">{{$row->admin_area.' '. '('. $row->name. ')'}}</option>
+                                                    {{-- <option {{($row->admin_area == $row_sale->admin_area) && ($row->admin_area == $customer_area_list->admin_area) ? 'selected' : '' ;}} value="{{$row->admin_area}}">{{$row->admin_area.' '. '('. $row->name. ')'}}</option> --}}
+                                                    <option {{($row->admin_area == $row_sale->admin_area) ? 'selected' : '' ;}} value="{{$row->admin_area}}">{{$row->admin_area.' '. '('. $row->name. ')'}}</option>
+
                                                     @endif
 
                                                 @endforeach

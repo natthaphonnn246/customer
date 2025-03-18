@@ -14,6 +14,9 @@ class CustomerCsvExport
     {
          // dd($status);
  
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
          switch ($status)
          {
  
@@ -28,9 +31,10 @@ class CustomerCsvExport
                  header('Content-Disposition: attachment; filename= '.$filename);
                  
                  $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                     ->whereNotIn('customer_code', ['0000','4494'])
-                                     ->where('status', 'ดำเนินการแล้ว')
-                                     ->get();
+                                    //  ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
+                                    ->where('status', 'ดำเนินการแล้ว')
+                                    ->get();
  
                  $data = $query->toArray();
                  // Clean up output buffer before writing anything to CSV file.
@@ -48,9 +52,10 @@ class CustomerCsvExport
                  header('Content-Disposition: attachment; filename= '.$filename);
                  
                  $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                     ->whereNotIn('customer_code', ['0000','4494'])
-                                     ->where('status', 'ต้องดำเนินการ')
-                                     ->get();
+                                    // ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
+                                    ->where('status', 'ต้องดำเนินการ')
+                                    ->get();
  
                  $data = $query->toArray();
                  // Clean up output buffer before writing anything to CSV file.
@@ -68,9 +73,10 @@ class CustomerCsvExport
                  header('Content-Disposition: attachment; filename= '.$filename);
                  
                  $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                     ->whereNotIn('customer_code', ['0000','4494'])
-                                     ->where('status', 'รอดำเนินการ')
-                                     ->get();
+                                    //  ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
+                                    ->where('status', 'รอดำเนินการ')
+                                    ->get();
  
                  $data = $query->toArray();
                  // Clean up output buffer before writing anything to CSV file.
@@ -88,9 +94,10 @@ class CustomerCsvExport
                  header('Content-Disposition: attachment; filename= '.$filename);
                  
                  $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                     ->whereNotIn('customer_code', ['0000','4494'])
-                                     ->where('status_update', "updated")
-                                     ->get();
+                                    //  ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
+                                    ->where('status_update', "updated")
+                                    ->get();
  
                  $data = $query->toArray();
                  // Clean up output buffer before writing anything to CSV file.
@@ -108,9 +115,10 @@ class CustomerCsvExport
                  header('Content-Disposition: attachment; filename= '.$filename);
                  
                  $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                     ->whereNotIn('customer_code', ['0000','4494'])
-                                     ->where('customer_status', "inactive")
-                                     ->get();
+                                    //  ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
+                                    ->where('customer_status', "inactive")
+                                    ->get();
  
                  $data = $query->toArray();
                  // Clean up output buffer before writing anything to CSV file.
@@ -128,8 +136,9 @@ class CustomerCsvExport
                  header('Content-Disposition: attachment; filename= '.$filename);
                  
                  $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status', 'customer_status', 'delivery_by')
-                                     ->whereNotIn('customer_code', ['0000','4494'])
-                                     ->get();
+                                    //  ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
+                                    ->get();
  
                  $data = $query->toArray();
                  // Clean up output buffer before writing anything to CSV file.
@@ -148,9 +157,10 @@ class CustomerCsvExport
                  header('Content-Disposition: attachment; filename= '.$filename);
                  
                  $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status', 'status_user')
-                                     ->whereNotIn('customer_code', ['0000','4494'])
-                                     ->where('status_user', "กำลังติดตาม")
-                                     ->get();
+                                    //  ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
+                                    ->where('status_user', "กำลังติดตาม")
+                                    ->get();
  
                  $data = $query->toArray();
                  // Clean up output buffer before writing anything to CSV file.

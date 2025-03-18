@@ -14,7 +14,7 @@
     {{-- <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"> --}}
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.1/dist/flowbite.min.js"></script>
     <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
-    <title>register-form</title>
+    <title>cms.vmdrug</title>
 </head>
 <body>
 
@@ -44,7 +44,7 @@
     <div class="contentArea" style="min-width: 1200px;">
 
         @section('col-2')
-            @if(isset($user_name))
+            @if(isset($user_name->name) != 'Natthaphon')
             <h6 class="mt-1" style=" padding-top: 5px;">{{$user_name->name}}</h6>
             @endif
         @endsection

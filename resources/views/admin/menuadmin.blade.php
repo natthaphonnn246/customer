@@ -34,6 +34,38 @@
     li {
         font-size: 15px;
     }
+    #dashboardAdmin {
+      background-color: none;
+      color: white;
+    }
+    #dashboardAdmin:hover {
+      background-color: rgb(2, 119, 54);
+      color: white;
+    }
+    #storeAdmin {
+      background-color: none;
+      color: white;
+    }
+    #storeAdmin:hover {
+      background-color: rgb(2, 119, 54);
+      color: white;
+    }
+    #allAdmin {
+      background-color: none;
+      color: white;
+    }
+    #allAdmin:hover {
+      background-color: rgba(122, 122, 122, 0.378);
+      color: white;
+    }
+    #logoutAdmin {
+      background-color: none;
+      color: white;
+    }
+    #logoutAdmin:hover {
+      background-color: rgb(181, 30, 43);
+      color: white;
+    }
 
   </style>
   <body>
@@ -51,7 +83,7 @@
                         <a href="#" class="flex items-center ps-2.5 mb-3 my-3">
                             {{-- <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 me-3 sm:h-7" alt="Flowbite Logo" /> --}}
                             <img class="w-8 h-8 rounded-full me-3" src="/profile/user.png" alt="user photo"> 
-                            <span class="self-center text-xl font-medium whitespace-nowrap dark:text-white">@yield('username')</span>
+                            <span class="self-center text-xl font-medium whitespace-nowrap" style="color:white;">@yield('username')</span>
                         </a>
                 </div>
             </ul>
@@ -59,22 +91,22 @@
   
             <ul class="space-y-2 font-medium">
                 <li class="py-1">
-                    <a href="/admin" class="py-2 flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-green-800 group">
-                        <i class="fa-solid fa-tv"></i>
+                    <a href="/admin" class="py-2 flex items-center p-2 text-gray-900 rounded-lg" id="dashboardAdmin">
+                        <i class="fa-solid fa-tv" style="color:white;"></i>
                         <span class="ms-3">หน้าหลัก</span>
                     </a>
                 </li>
                 {{-- <hr class="my-2" style="color:rgb(106, 109, 170);"> --}}
                 {{-- <hr class="my-2" style="color:rgb(106, 109, 170);"> --}}
                 <li>
-                    <button type="button" class="flex items-center w-full p-2 text-base  text-sm text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-green-800" aria-controls="dropdown-customer" data-collapse-toggle="dropdown-customer">
-                    <i class="fa-solid fa-store"></i>
+                    <button type="button" class="flex items-center w-full p-2 text-base  text-sm text-gray-900 transition duration-75 rounded-lg" id="storeAdmin" aria-controls="dropdown-customer" data-collapse-toggle="dropdown-customer">
+                    <i class="fa-solid fa-store" style="color:white;"></i>
                       <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">ร้านค้า</span>
                       <i class="fa-solid fa-plus m-2"></i>
                    </button>
                       <ul id="dropdown-customer" class="hidden py-2 space-y-2">
                             <li style="margin-left: 35px;">
-                               <a href="/admin/customer" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" style="font-size:14px;">ทั้งหมด</a>
+                               <a href="/admin/customer" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11" id="allAdmin" style="font-size:14px;">ทั้งหมด</a>
                             </li>
                          {{--   <li>
                                <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
@@ -85,8 +117,8 @@
               
                 {{-- <hr class="my-2" style="color:rgb(106, 109, 170);"> --}}
                <li>
-                    <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-red-700 group">
-                       <i class="fa-solid fa-power-off" style="margin-left:2px;"></i>
+                    <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg" id="logoutAdmin">
+                       <i class="fa-solid fa-power-off" style="margin-left:2px; color:white;"></i>
                        <span id="logout" class="flex-1 ms-3 whitespace-nowrap">ออกจากระบบ</span>
                     </a>
         

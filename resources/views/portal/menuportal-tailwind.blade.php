@@ -24,6 +24,86 @@
     li {
         font-size: 15px;
     }
+    #dashboardPortal {
+      background-color: none;
+      color: white;
+    }
+    #dashboardPortal:hover {
+      background-color: rgb(2, 119, 54);
+      color: white;
+    }
+    #storePortal {
+      background-color: none;
+      color: white;
+    }
+    #storePortal:hover {
+      background-color: rgb(2, 119, 54);
+      color: white;
+    }
+    #registerPortal {
+      background-color: none;
+      color: white;
+    }
+    #registerPortal:hover {
+      background-color: rgba(122, 122, 122, 0.378);
+      color: white;
+    }
+    #storeallPortal {
+      background-color: none;
+      color: white;
+    }
+    #storeallPortal:hover {
+      background-color: rgba(122, 122, 122, 0.378);
+      color: white;
+    }
+    #alertPortal {
+      background-color: none;
+      color: white;
+    }
+    #alertPortal:hover {
+      background-color: rgb(2, 119, 54);
+      color: white;
+    }
+    #alertlPortal_all {
+      background-color: none;
+      color: white;
+    }
+    #alertPortal_all:hover {
+      background-color: rgba(122, 122, 122, 0.378);
+      color: white;
+    }
+    #alertlPortal_waiting {
+      background-color: none;
+      color: white;
+    }
+    #alertPortal_waiting:hover {
+      background-color: rgba(122, 122, 122, 0.378);
+      color: white;
+    }
+    #alertlPortal_action {
+      background-color: none;
+      color: white;
+    }
+    #alertPortal_action:hover {
+      background-color: rgba(122, 122, 122, 0.378);
+      color: white;
+    }
+    #alertlPortal_completed {
+      background-color: none;
+      color: white;
+    }
+    #alertPortal_completed:hover {
+      background-color: rgba(122, 122, 122, 0.378);
+      color: white;
+    }
+    #logoutPortal {
+      background-color: none;
+      color: white;
+    }
+    #logoutPortal:hover {
+      background-color: rgb(181, 30, 43);
+      color: white;
+    }
 
   </style>
   <body>
@@ -47,7 +127,7 @@
         <a href="#" class="flex ms-2 md:me-24">
           {{-- <img src="https://flowbite.com/docs/images/logo.svg" class="h-8 me-3" alt="FlowBite Logo" /> --}}
           {{-- <img src="/profile/logocat.jpg" class="h-8 me-3" alt="FlowBite Logo" style="border-radius:5px;"> --}}
-          <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">nntpn.com</span>
+          <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap" style="color:white;">cms.vmdrug</span>
         </a>
       </div>
       <div class="flex items-center">
@@ -84,7 +164,7 @@
    <div class="h-full px-3 pb-4 overflow-y-auto dark:bg-gray-800" style="background-color:rgb(24, 24, 34);">
       <ul class="space-y-2 font-medium">
          <li>
-            <a href="/portal/dashboard" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <a href="/portal/dashboard" class="flex items-center p-2 text-gray-900 rounded-lg" id="dashboardPortal">
               {{--  <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
                   <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
                   <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
@@ -94,17 +174,17 @@
             </a>
          </li>
          <li>
-          <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+          <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg" id="storePortal" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
             <i class="fa-solid fa-store"></i>
             <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">ร้านค้า</span>
             <i class="fa-solid fa-plus m-2"></i>
          </button>
             <ul id="dropdown-example" class="hidden py-2 space-y-2">
                   <li style="margin-left: 35px;">
-                     <a href="/portal/signin" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">ลงทะเบียน <span style="background-color:rgba(26, 81, 221, 0.79); padding: 5px; border-radius:20px; font-size:12px; margin-left:6px;">new</span></a>
+                     <a href="/portal/signin" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11" id="registerPortal">ลงทะเบียน <span style="background-color:rgba(26, 81, 221, 0.79); padding: 5px; border-radius:20px; font-size:12px; margin-left:6px;">new</span></a>
                   </li>
                   <li style="margin-left: 35px;">
-                     <a href="/portal/customer" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">ทั้งหมด</a>
+                     <a href="/portal/customer" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11" id="storeallPortal">ทั้งหมด</a>
                   </li>
                {{--   <li>
                      <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
@@ -112,40 +192,41 @@
             </ul>
          </li>
          <li>
-            <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-alert" data-collapse-toggle="dropdown-alert">
+            <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg" id="alertPortal" aria-controls="dropdown-alert" data-collapse-toggle="dropdown-alert">
                   <i class="fa-regular fa-bell" style="font-size:18px;"></i>
                      <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">แจ้งเตือน</span>
                      <span class="inline-flex items-center justify-center p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:brown;"><p>@yield('status_alert')</p></span>
             </button>
             <ul id="dropdown-alert" class="hidden py-2 space-y-2">
                   <li style="margin-left: 25px;">
-                     <a href="/portal/customer" class="flex items-center w-full p-2 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                           <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">ทั้งหมด</span>
+                     {{-- <a href="/portal/customer" class="flex items-center w-full p-2 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"> --}}
+                     <a href="/portal/customer" class="flex items-center w-full p-2 transition duration-75 rounded-lg" id="alertPortal_all">
+                           <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="color:white;">ทั้งหมด</span>
                            <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(17, 88, 211);"><p>@yield('status_all')</p></span>
                      </a>
                   </li>
                   <li style="margin-left: 25px;">
-                     <a href="/portal/customer/status/waiting" class="flex items-center w-full p-2 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                           <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">รอดำเนินการ</span>
+                     <a href="/portal/customer/status/waiting" class="flex items-center w-full p-2 transition duration-75 rounded-lg" id="alertPortal_waiting">
+                           <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="color:white;">รอดำเนินการ</span>
                            <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(186, 26, 69);"><p>@yield('status_waiting')</p></span>
                      </a>
                   </li>
                   <li style="margin-left: 25px;">
-                     <a href="/portal/customer/status/action" class="flex items-center w-full p-2 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                           <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">ต้องดำเนินการ</span>
+                     <a href="/portal/customer/status/action" class="flex items-center w-full p-2 transition duration-75 rounded-lg" id="alertPortal_action">
+                           <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="color:white;">ต้องดำเนินการ</span>
                            <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(211, 150, 17);"><p>@yield('status_action')</p></span>
                      </a>
                   </li>
                   <li style="margin-left: 25px;">
-                     <a href="/portal/customer/status/completed" class="flex items-center w-full p-2 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                           <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">ดำเนินการแล้ว</span>
+                     <a href="/portal/customer/status/completed" class="flex items-center w-full p-2 transition duration-75 rounded-lg" id="alertPortal_completed">
+                           <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="color:white;">ดำเนินการแล้ว</span>
                            <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(17, 211, 49);"><p>@yield('status_completed')</p></span>
                      </a>
                   </li>
             </ul>
          </li>
          <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-red-700 group">
+            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg" id="logoutPortal">
                <i class="fa-solid fa-power-off" style="margin-left:2px;"></i>
                <span id="logout" class="flex-1 ms-3 whitespace-nowrap">ออกจากระบบ</span>
             </a>

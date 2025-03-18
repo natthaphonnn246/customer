@@ -13,19 +13,23 @@ class CustomerAreaExport
     public function exportCustomerAreaExcel($status, $admin_id)
     {
         $date = date('d-m-Y');
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         switch ($status)
         {
             case ($status == 'getexcel_customer'):
                 return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status')
-                                ->whereNotIn('customer_code', ['0000','4494'])
+                                // ->whereNotIn('customer_code', ['0000','4494'])
+                                ->whereNotIn('customer_code', $code_notin)
                                 ->where('admin_area', $admin_id)
                                 ->downloadExcel('Customer_all'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
             break;
 
             case ($status == 'getexcel_waiting'):
                 return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status')
-                                ->whereNotIn('customer_code', ['0000','4494'])
+                                // ->whereNotIn('customer_code', ['0000','4494'])
+                                ->whereNotIn('customer_code', $code_notin)
                                 ->where('admin_area', $admin_id)
                                 ->where('status', 'รอดำเนินการ')
                                 ->downloadExcel('Customer_waiting'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
@@ -33,7 +37,8 @@ class CustomerAreaExport
 
             case ($status == 'getexcel_action'):
                 return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status')
-                                ->whereNotIn('customer_code', ['0000','4494'])
+                                // ->whereNotIn('customer_code', ['0000','4494'])
+                                ->whereNotIn('customer_code', $code_notin)
                                 ->where('admin_area', $admin_id)
                                 ->where('status', 'ต้องดำเนินการ')
                                 ->downloadExcel('Customer_action'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
@@ -41,7 +46,8 @@ class CustomerAreaExport
 
             case ($status == 'getexcel_completed'):
                 return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status')
-                                ->whereNotIn('customer_code', ['0000','4494'])
+                                // ->whereNotIn('customer_code', ['0000','4494'])
+                                ->whereNotIn('customer_code', $code_notin)
                                 ->where('admin_area', $admin_id)
                                 ->where('status', 'ดำเนินการแล้ว')
                                 ->downloadExcel('Customer_completed'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
@@ -57,6 +63,9 @@ class CustomerAreaExport
    {
         // dd($admin_id);
 
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
         switch ($status && $admin_id) 
         {
 
@@ -71,7 +80,8 @@ class CustomerAreaExport
                 header('Content-Disposition: attachment; filename= '.$filename);
 
                 $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
+                                    // ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
                                     ->where('admin_area', $admin_id)
                                     ->get();
 
@@ -91,7 +101,8 @@ class CustomerAreaExport
                 header('Content-Disposition: attachment; filename= '.$filename);
                 
                 $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
+                                    // ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
                                     ->where('admin_area', $admin_id)
                                     ->where('status', 'รอดำเนินการ')
                                     ->get();
@@ -112,7 +123,8 @@ class CustomerAreaExport
                 header('Content-Disposition: attachment; filename= '.$filename);
                 
                 $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
+                                    // ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
                                     ->where('admin_area', $admin_id)
                                     ->where('status', 'ต้องดำเนินการ')
                                     ->get();
@@ -133,7 +145,8 @@ class CustomerAreaExport
                 header('Content-Disposition: attachment; filename= '.$filename);
                 
                 $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
+                                    // ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
                                     ->where('admin_area', $admin_id)
                                     ->where('status', 'ดำเนินการแล้ว')
                                     ->get();
@@ -154,7 +167,8 @@ class CustomerAreaExport
                 header('Content-Disposition: attachment; filename= '.$filename);
                 
                 $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
+                                    // ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
                                     ->where('customer_status', "inactive")
                                     ->get();
 
@@ -174,7 +188,8 @@ class CustomerAreaExport
                 header('Content-Disposition: attachment; filename= '.$filename);
                 
                 $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status', 'customer_status')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
+                                    // ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
                                     ->get();
 
                 $data = $query->toArray();
@@ -194,7 +209,8 @@ class CustomerAreaExport
                 header('Content-Disposition: attachment; filename= '.$filename);
                 
                 $query = Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area', 'status', 'status_user')
-                                    ->whereNotIn('customer_code', ['0000','4494'])
+                                    // ->whereNotIn('customer_code', ['0000','4494'])
+                                    ->whereNotIn('customer_code', $code_notin)
                                     ->where('status_user', "กำลังติดตาม")
                                     ->get();
 
