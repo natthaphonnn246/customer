@@ -15,6 +15,9 @@
 <style>
     body{
         font-family: 'Prompt', sans-serif;
+        background-color: rgb(232, 232, 232);
+
+     
     }
     li {
         font-size: 15px;
@@ -29,17 +32,19 @@
       color: white;
       font-size: 16px;
     }
-    #bg_login {
-        min-height: 1000px;
+   #bg_login {
+        /* min-width: 100%; */
+        background-color: rgb(232, 232, 232);
         display: flex;
     }
+ 
 </style>
 <body>
 
+    {{-- flex flex-col items-center justify-center px-6 py-4 mx-auto md:h-screen lg:py-0 --}}
 
-
-    <section class="bg-gray-50" style="background-color:rgb(223, 223, 223);" id="bg_login">
-        <div class="flex flex-col items-center justify-center px-6 py-4 mx-auto md:h-screen lg:py-0" text>
+    <div class="bg-gray-50" id="bg_login">
+        <div class="flex flex-col items-center justify-center px-6 py-4 mx-auto md:h-screen lg:py-0">
             {{-- <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
                 <img class="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo">
                 nntpn.com   
@@ -85,11 +90,8 @@
                 </div>
             </div>
         </div>
-    </section>
-
-      <script>
-
-      </script>
+       
+    </div>
 </body>
 </html>
   
