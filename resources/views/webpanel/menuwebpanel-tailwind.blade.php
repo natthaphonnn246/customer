@@ -254,18 +254,26 @@
                      <span class="inline-flex items-center justify-center p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:brown;"><p>@yield('status_alert')</p></span>
                </button>
                <ul id="dropdown-alert" class="hidden py-2 space-y-2">
-                     <li style="margin-left: 25px;">
+                    <li style="margin-left: 25px;">
                         <a href="/webpanel/customer/status/waiting" class="flex items-center w-full p-2 transition duration-75 rounded-lg group" id="alert_register">
-                              <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:14px;">ลงทะเบียนใหม่</span>
+                              <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:14px;">รอดำเนินการ</span>
                               <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(17, 88, 211);"><p>@yield('status_waiting')</p></span>
                         </a>
-                     </li>
-                     <li style="margin-left: 25px;">
+                    </li>
+
+                    <li style="margin-left: 25px;">
+                      <a href="/webpanel/customer/status/new_registration" class="flex items-center w-full p-2 transition duration-75 rounded-lg group" id="alert_update">
+                            <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:14px;">ลงทะเบียนใหม่</span>
+                            <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(12, 172, 220);"><p>@yield('status_registration')</p></span>
+                      </a>
+                    </li>
+
+                    <li style="margin-left: 25px;">
                         <a href="/webpanel/customer/status/latest_update" class="flex items-center w-full p-2 transition duration-75 rounded-lg group" id="alert_update">
                               <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:14px;">อัปเดตข้อมูล</span>
                               <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(186, 26, 69);"><p>@yield('status_updated')</p></span>
                         </a>
-                     </li>
+                    </li>
                </ul>
                 {{-- <hr class="my-2" style="color:rgb(106, 109, 170);"> --}}
                <li>

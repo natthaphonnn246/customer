@@ -11,8 +11,8 @@
         {{-- <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" /> --}}
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=prompt:400" rel="stylesheet" />
+        {{-- <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=prompt:400" rel="stylesheet" /> --}}
 
         
 
@@ -30,21 +30,16 @@
 
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    {{-- <x-application-logo class="w-20 h-20 fill-current text-gray-500" /> --}}
-                </a>
-            </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <div class="w-full">
                 {{ $slot }}
             </div>
         </div>
 
-        <footer style="background-color:rgb(24, 24, 24); padding: 20px; text-align: center;">
+        {{-- <footer style="background-color:rgb(24, 24, 24); padding: 20px; text-align: center;"> --}}
             {{-- <span style="font-size: 14px; color:rgb(255, 255, 255);">Powered by nntpn</span> --}}
-            <span style="font-size: 14px; color:rgb(255, 255, 255); margin-left: 10px; font-family: 'Prompt', sans-serif;"> Copyright © 2025 nntpn.com All Rights Reserved.</span>
-        </footer>
+       {{--      <span style="font-size: 14px; color:rgb(255, 255, 255); margin-left: 10px; font-family: 'Prompt', sans-serif;"> Copyright © 2025 nntpn.com All Rights Reserved.</span>
+        </footer> --}}
 
     </body>
 </html>

@@ -210,7 +210,8 @@ class PortalCustomerController
             $cert_id = $request->file('cert_id');
 
             $cert_expire = $request->cert_expire;
-            $status = 'รอดำเนินการ';
+            // $status = 'รอดำเนินการ';
+            $status = 'ลงทะเบียนใหม่';
         }   
 
             if($cert_store != '' && $customer_id != '')

@@ -66,6 +66,11 @@ class WebpanelCustomerController
         //เพิ่มลูกค้า;
         // $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
 
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
         $status_waiting = Customer::where('status', 'รอดำเนินการ')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
@@ -115,7 +120,7 @@ class WebpanelCustomerController
             // dd($check_search->admin_area);
             if(!$check_keyword  == null) {
                 return view('webpanel/customer', compact('check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                            'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated'));
+                            'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_registration', 'status_updated'));
         
             }
 
@@ -124,7 +129,7 @@ class WebpanelCustomerController
         }
 
         return view('webpanel/customer', compact('admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated'));
+                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_registration', 'status_updated'));
         
     }
 
@@ -427,11 +432,33 @@ class WebpanelCustomerController
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
         $status_alert = $status_waiting + $status_updated;
 
         //แสดงข้อมูลลูกค้า;
 
-        if($status_check == 'waiting') {
+        if (($status_check == 'new_registration')) {
+            $row_customer = Customer::customerRegistration($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+           /*  $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count(); */
+
+            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+            $total_status_registration = Customer::where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
+
+            return view('webpanel/new-registration', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_registration', 'status_waiting','status_registration',  'status_updated', 'status_alert'));
+        }
+        else if($status_check == 'waiting') {
 
             $row_customer = Customer::customerWaiting($page);
             $customer = $row_customer[0];
@@ -447,7 +474,7 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
             $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
 
-            return view('webpanel/customer-waiting', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting', 'status_waiting', 'status_updated', 'status_alert'));
+            return view('webpanel/customer-waiting', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting', 'status_waiting', 'status_updated','status_registration', 'status_alert'));
 
         } else if ($status_check == 'action') {
 
@@ -649,7 +676,8 @@ class WebpanelCustomerController
             $cert_id = $request->file('cert_id');
        
             $cert_expire = $request->cert_expire;
-            $status = 'รอดำเนินการ';
+            // $status = 'รอดำเนินการ';
+            $status = 'ลงทะเบียนใหม่';
 
         }   
 
