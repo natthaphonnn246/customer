@@ -34,20 +34,6 @@
       color: white;
       font-size: 16px;
     }
-    #logintail {
-        width: 450px;
-        
-        /* position:fixed;
-        height: 100%;
-        width:100%;
-        left: 0;
-        right: 0;
-        z-index: 0; */
-        /* display: flex; */
-        
-       
-    
-    }
     #login_tail {
         min-width: 400px;
         width:450px;
