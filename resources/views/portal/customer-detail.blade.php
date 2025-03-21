@@ -605,7 +605,7 @@
                                     +'<form action="/portal/customer-detail/upload-store/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">'
                                     +'@csrf'
                                     // +'<img src="/storage/certs/{{$customer_edit->cert_store ; }}" id="fileImage" style="width: 100%";/>'
-                                    +'<img src="{{asset($customer_edit->cert_store)}}" id="fileImage" style="width: 100%";/>'
+                                    +'<img src="{{asset("storage/".$customer_edit->cert_store)}}" id="fileImage" style="width: 100%";/>'
                                     +'<hr>'
                                     +'<input type="file" id="image" class="form-control" name="cert_store" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
                                     +'<hr>'
