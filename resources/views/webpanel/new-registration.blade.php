@@ -261,7 +261,7 @@
     <div class="contentArea">
         <div class="py-2">
         </div>
-        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / รอดำเนินการ Waiting</span>
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / ลงทะเบียนใหม่</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         <div class="mr-6" style="text-align: right;">

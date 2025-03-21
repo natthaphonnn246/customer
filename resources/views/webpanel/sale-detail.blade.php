@@ -60,6 +60,10 @@
             <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
             @endsection
 
+            @section('status_registration')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_registration)}}</h6>
+            @endsection
+
             @section('status_updated')
             <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
             @endsection

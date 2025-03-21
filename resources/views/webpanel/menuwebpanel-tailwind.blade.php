@@ -324,12 +324,21 @@
                 </div>
                 <p class="mb-3 text-sm dark:text-blue-400" style="color:white;">
                   
+                  <!-- อัปเดตใหม่ -->
                   <ul class="py-2">
                      <a href="/webpanel/customer/status/latest_update" class="flex items-center w-full p-2 transition duration-75 rounded-lg group" id="alertMessage">
                            <span class="flex-1 text-left rtl:text-left whitespace-nowrap" style="font-size:18px; color:white;">อัปเดต<sup style="background-color:rgba(198, 92, 92, 0.79); padding: 5px; border-radius:20px; font-size:12px; margin-left:6px; color:white;">New</sup></span>
                            <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(186, 26, 69);"><p>@yield('status_updated')</p></span>
                      </a>
                   </ul>
+
+                  <!-- ลงทะเบียนใหม่ -->
+                  <ul class="py-2">
+                    <a href="/webpanel/customer/status/new_registration" class="flex items-center w-full p-2 transition duration-75 rounded-lg group" id="alertMessage">
+                          <span class="flex-1 text-left rtl:text-left whitespace-nowrap" style="font-size:18px; color:white;">ลงทะเบียนใหม่</span>
+                          <span class="inline-flex items-center justify-center text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:rgb(26, 101, 186);"><p>@yield('status_registration')</p></span>
+                    </a>
+                 </ul>
                
                     <?php date_default_timezone_set("Asia/Bangkok"); ?>
                     <blockquote style="color:white; font-size:16px; text-align:center;">

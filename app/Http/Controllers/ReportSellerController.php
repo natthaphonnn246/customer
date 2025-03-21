@@ -135,12 +135,20 @@ class ReportSellerController extends Controller
         //เพิ่มลูกค้า;
         // $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
 
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
         $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_updated = Customer::where('status_update', 'updated')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_alert = $status_waiting + $status_updated;
@@ -178,7 +186,7 @@ class ReportSellerController extends Controller
             // dd($check_search->admin_area);
             if(!$check_keyword  == null) {
                 return view('report/seller', compact('check_from','check_to', 'check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                            'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated'));
+                            'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert','status_registration', 'status_waiting', 'status_updated'));
         
             }
             
@@ -187,25 +195,33 @@ class ReportSellerController extends Controller
         }
 
         return view('report/seller', compact('check_from','check_to', 'admin_area', 'report_seller', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated'));
+                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting','status_registration', 'status_updated'));
 
     }
     
 
     public function import()
     {
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
          //menu alert;
          $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_updated = Customer::where('status_update', 'updated')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_alert = $status_waiting + $status_updated;
 
-        return view('/report/importseller', compact('status_alert', 'status_waiting', 'status_updated'));
+        return view('/report/importseller', compact('status_alert', 'status_waiting', 'status_updated', 'status_registration'));
     }
 
     //เก็บไว้ดู

@@ -57,6 +57,7 @@ class WebpanelCustomerController
         $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count(); */
 
         $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+        $total_status_registration = Customer::where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
@@ -119,7 +120,7 @@ class WebpanelCustomerController
 
             // dd($check_search->admin_area);
             if(!$check_keyword  == null) {
-                return view('webpanel/customer', compact('check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
+                return view('webpanel/customer', compact('check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting', 'total_status_registration',
                             'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_registration', 'status_updated'));
         
             }
@@ -128,7 +129,7 @@ class WebpanelCustomerController
 
         }
 
-        return view('webpanel/customer', compact('admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
+        return view('webpanel/customer', compact('admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting', 'total_status_registration',
                 'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_registration', 'status_updated'));
         
     }
@@ -152,6 +153,11 @@ class WebpanelCustomerController
 
           //menu alert;
         $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
@@ -183,6 +189,7 @@ class WebpanelCustomerController
         $total_status_waiting = Customer::where('admin_area', $admin_id)->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_action = Customer::where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_completed = Customer::where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_registration = Customer::where('admin_area', $admin_id)->where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
 
             //dropdown admin_area;
             $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
@@ -237,7 +244,7 @@ class WebpanelCustomerController
         
                     // dd($check_search->admin_area);
                     if(!$check_keyword  == null) {
-                        return view('webpanel/adminarea-waiting',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                        return view('webpanel/adminarea-waiting',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting','status_registration', 'status_updated', 'status_alert'));
                 
                     }
         
@@ -245,7 +252,7 @@ class WebpanelCustomerController
         
             }
             $count_page = 1;
-            return view('webpanel/adminarea-waiting' ,compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+            return view('webpanel/adminarea-waiting' ,compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting','status_registration', 'status_updated', 'status_alert'));
             break;
 
             case 'status-action':
@@ -293,7 +300,7 @@ class WebpanelCustomerController
             
                         // dd($check_search->admin_area);
                         if(!$check_keyword  == null) {
-                            return view('webpanel/adminarea-action',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                            return view('webpanel/adminarea-action',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration',  'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_registration',  'status_updated', 'status_alert'));
                     
                         }
             
@@ -301,7 +308,7 @@ class WebpanelCustomerController
             
                 }
                 $count_page = 1;
-                return view('webpanel/adminarea-action' ,compact('count_page_master','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                return view('webpanel/adminarea-action' ,compact('count_page_master','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_registration' , 'status_updated', 'status_alert'));
                 break;
 
                 case 'status-completed':
@@ -347,7 +354,7 @@ class WebpanelCustomerController
                 
                             // dd($check_search->admin_area);
                             if(!$check_keyword  == null) {
-                                return view('webpanel/adminarea-completed',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                                return view('webpanel/adminarea-completed',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting','status_registration', 'status_updated', 'status_alert'));
                         
                             }
                 
@@ -355,8 +362,62 @@ class WebpanelCustomerController
                 
                     }
                     $count_page = 1;
-                    return view('webpanel/adminarea-completed' ,compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+                    return view('webpanel/adminarea-completed' ,compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting','status_registration', 'status_updated', 'status_alert'));
                     break;
+
+                    case 'new-registration':
+
+                        $row_customer = Customer::viewCustomerAdminAreaRegistration($page, $admin_id);
+                        $customer = $row_customer[0];
+                        $start = $row_customer[1];
+                        $total_page = $row_customer[2];
+                        $page = $row_customer[3];
+        
+                        if($keyword_search != '') {
+                    
+                                $count_page = Customer::where('status','ลงทะเบียนใหม่')
+                                                        ->where('admin_area', $admin_id)
+                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                        ->whereNotIn('customer_id', $code_notin)
+                                                        ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
+                                // dd(gettype($count_page));
+                    
+                                $perpage = 10;
+                                $total_page = ceil($count_page / $perpage);
+                                $start = ($perpage * $page) - $perpage;
+            
+                                $customer = Customer::where('status','ลงทะเบียนใหม่')
+                                                        ->where('admin_area', $admin_id)
+                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                        ->whereNotIn('customer_id', $code_notin)
+                                                        ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                                        // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                        ->offset($start)
+                                                        ->limit($perpage)
+                                                        ->get();
+                    
+                                $check_keyword = Customer::where('status','ลงทะเบียนใหม่')
+                                                            ->where('admin_area', $admin_id)
+                                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                            ->whereNotIn('customer_id', $code_notin)
+                                                            ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                                            // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                            ->get();
+                    
+                                // dd($check_customer_code);
+                    
+                                // dd($check_search->admin_area);
+                                if(!$check_keyword  == null) {
+                                    return view('webpanel/adminarea-registration',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed','total_status_registration' ,'status_waiting','status_registration', 'status_updated', 'status_alert'));
+                            
+                                }
+                    
+                                    return back();
+                    
+                        }
+                        $count_page = 1;
+                        return view('webpanel/adminarea-registration' ,compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed', 'total_status_registration', 'status_waiting','status_registration', 'status_updated', 'status_alert'));
+                        break;
                     
 
             //customer/adminarea;
@@ -390,7 +451,8 @@ class WebpanelCustomerController
             
                         // dd($check_search->admin_area);
                         if(!$check_keyword  == null) {
-                            return view('webpanel/adminarea-detail',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+         
+                            return view('webpanel/adminarea-detail',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed','total_status_registration' ,'status_waiting','status_registration', 'status_updated', 'status_alert'));
                     
                         }
             
@@ -398,7 +460,8 @@ class WebpanelCustomerController
             
                 }
                 $count_page = 1;
-                return view('webpanel/adminarea-detail',compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
+
+                return view('webpanel/adminarea-detail',compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed','total_status_registration' ,'status_waiting','status_registration', 'status_updated', 'status_alert'));
         }
         
     }
@@ -492,7 +555,7 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
             $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
 
-            return view('webpanel/customer-action', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_action', 'status_waiting', 'status_updated', 'status_alert'));
+            return view('webpanel/customer-action', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_action', 'status_waiting','status_registration', 'status_updated', 'status_alert'));
        
         } else if ($status_check == 'completed') {
 
@@ -510,7 +573,7 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
             $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
 
-            return view('webpanel/customer-completed', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_completed', 'status_waiting', 'status_updated', 'status_alert'));
+            return view('webpanel/customer-completed', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_completed', 'status_waiting','status_registration', 'status_updated', 'status_alert'));
         } else if ($status_check == 'latest_update') {
 
             $row_customer = Customer::latestUpdate($page);
@@ -527,7 +590,7 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
             $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
 
-            return view('webpanel/update-latest', compact('customer', 'start', 'total_page', 'page', 'total_customer','total_status_updated', 'status_waiting', 'status_updated', 'status_alert'));
+            return view('webpanel/update-latest', compact('customer', 'start', 'total_page', 'page', 'total_customer','total_status_updated', 'status_waiting', 'status_registration', 'status_updated', 'status_alert'));
 
         } else if ($status_check == 'inactive') {
 
@@ -545,7 +608,7 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
             $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count();
 
-            return view('webpanel/customer-inactive', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_inactive', 'status_waiting', 'status_updated', 'status_alert'));
+            return view('webpanel/customer-inactive', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_inactive', 'status_waiting', 'status_registration', 'status_updated', 'status_alert'));
 
         } else if ($status_check == 'following') {
 
@@ -563,7 +626,7 @@ class WebpanelCustomerController
             $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
             $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', $code_notin)->count();
 
-            return view('webpanel/customer-following', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_following', 'status_waiting', 'status_updated', 'status_alert'));
+            return view('webpanel/customer-following', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_following', 'status_waiting', 'status_registration',  'status_updated', 'status_alert'));
 
         } 
         
@@ -592,6 +655,11 @@ class WebpanelCustomerController
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
         $status_updated = Customer::where('status_update', 'updated')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
@@ -599,7 +667,7 @@ class WebpanelCustomerController
 
         $status_alert = $status_waiting + $status_updated;
 
-        return view('webpanel/customer-create', compact('provinces', 'admin_area_list', 'sale_area', 'status_alert', 'status_waiting', 'status_updated'));
+        return view('webpanel/customer-create', compact('provinces', 'admin_area_list', 'sale_area', 'status_alert', 'status_waiting', 'status_registration', 'status_updated'));
     }
     public function create(Request $request)
     {
@@ -802,6 +870,11 @@ class WebpanelCustomerController
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
         $status_updated = Customer::where('status_update', 'updated')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
@@ -809,7 +882,7 @@ class WebpanelCustomerController
 
         $status_alert = $status_waiting + $status_updated;
 
-        return view('webpanel/customer-detail', compact('customer_view', 'province', 'amphur', 'district', 'admin_area_list', 'admin_area_check', 'sale_area', 'status_waiting', 'status_alert', 'status_updated'));
+        return view('webpanel/customer-detail', compact('customer_view', 'province', 'amphur', 'district', 'admin_area_list', 'admin_area_check', 'sale_area', 'status_waiting', 'status_registration', 'status_alert', 'status_updated'));
     }
 
     /**
@@ -1161,6 +1234,11 @@ class WebpanelCustomerController
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
         $status_updated = Customer::where('status_update', 'updated')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
@@ -1168,7 +1246,7 @@ class WebpanelCustomerController
 
         $status_alert = $status_waiting + $status_updated;
 
-        return view('/webpanel/importcustomer', compact('status_alert', 'status_waiting', 'status_updated'));
+        return view('/webpanel/importcustomer', compact('status_alert', 'status_waiting', 'status_updated', 'status_registration'));
     }
     //เก็บไว้ดู Import_csv;
     public function importFile(Request $request)
@@ -1395,6 +1473,12 @@ class WebpanelCustomerController
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
         $status_updated = Customer::where('status_update', 'updated')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
@@ -1402,7 +1486,7 @@ class WebpanelCustomerController
 
         $status_alert = $status_waiting + $status_updated;
 
-        return view('/webpanel/groups-customer', compact('row_salearea', 'customer_area_list', 'admin_area_list', 'status_waiting','status_updated', 'status_alert'));
+        return view('/webpanel/groups-customer', compact('row_salearea', 'customer_area_list', 'admin_area_list', 'status_waiting', 'status_registration', 'status_updated', 'status_alert'));
    }
    public function updateAdminarea(Request $request, $sale_area)
    {

@@ -127,20 +127,20 @@
                                 </li>
                                 <li class="my-4" style="width: 100%;">
                                     <span>Admin area</span> <span style="font-size: 12px; color:red;">*เขตรับผิดชอบ</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="admin_area" value="{{$admin_master->admin_area;}}">
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" id="adminarea" name="admin_area" value="{{$admin_master->admin_area;}}">
                                 </li>
                             </ul>
                         </div>
                         <div class="col-sm-6 my-1">
                             <ul style="width: 100%;">
                                 <span>สิทธิ์แอดมิน</span>
-                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="role">
+                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="role" id="rightsrole">
                         
                                     @if(($admin_master->user_code) == 0000)
                                     <option value="2" selected>มี</option>
                                     @else
                                     <option {{$admin_master->role == 0 ? 'selected': '' ; }} value="0">ไม่ระบุ</option>
-                                    <option {{$admin_master->role == 1 ? 'selected': '' ; }} value="1">มี (ดูรายงาน)</option>
+                                    <option {{$admin_master->role == 1 ? 'selected': '' ; }} value="1">มีสิทธิ์ดูรายงาน</option>
                                     @endif
 
                                 </select>
@@ -149,14 +149,34 @@
                         <div class="col-sm-6 my-1">
                             <ul style="width: 100%;">
                                 <span>สิทธิ์รับผิดชอบ</span>
-                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="rights_area">
+                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="rights_area" >
 
                                     <option {{$admin_master->rights_area == 0 ? 'selected' : '' ; }} value="0">ไม่ระบุ</option>
-                                    <option  {{$admin_master->rights_area == 1 ? 'selected' : '' ; }} value="1">ระบุ</option>
+                                    <option {{$admin_master->rights_area == 1 ? 'selected' : '' ; }} value="1">ระบุ</option>
                                     
                                 </select>
                             </ul>
                         </div>
+
+                        <script text="type/javascript">
+                             $(document).ready(function() {
+                                $("#rightsrole").on('change',function (){
+                                   let rights = $(this).val();
+                                   console.log(rights);
+
+                                   if(rights == '1') {
+                                    console.log('pass');
+                                    $("#adminarea").val('');
+                                   }
+
+                                });
+
+                                $("#adminarea").keyup(function() {
+                                    console.log('keyup');
+                                    $("#rightsrole").val(0);
+                                });
+                             });
+                        </script>
                         <div class="col-sm-12">
                             <ul style="width: 100%;">
                                 <li class="mt-4">

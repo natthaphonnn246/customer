@@ -356,4 +356,29 @@ class Customer extends Model
 
         return [$customer, $start, $total_page, $page];
      }
+
+     public static function viewCustomerAdminAreaRegistration($page, $admin_id)
+     {
+
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        // $count_page = Customer::where('status', 'ดำเนินการแล้ว')->where('admin_area', $admin_id)->whereNotIn('customer_id', ['0000', '4494'])->count();
+        $count_page = Customer::where('status', 'ดำเนินการแล้ว')->where('admin_area', $admin_id)->whereNotIn('customer_id', $code_notin)->count();
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('status', 'ลงทะเบียนใหม่')
+                    ->where('admin_area',$admin_id)
+                    // ->whereNotIn('customer_code',['0000', '4494'])
+                    ->whereNotIn('customer_code',$code_notin)
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+     }
 }

@@ -27,6 +27,7 @@
             /* padding: 12px; */
             background-color: #FFFFFF;
             border-radius: 2px;
+            min-width: 1500px;
             /* text-align: left; */
         }
         #admin {

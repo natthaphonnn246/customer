@@ -27,6 +27,7 @@
             /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
+            min-width: 1500px;
             /* text-align: left; */
         }
         #exportcsv {
@@ -245,6 +246,10 @@
         <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
         @endsection
 
+        @section('status_registration')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_registration)}}</h6>
+        @endsection
+        
         @section('status_updated')
         <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
         @endsection
@@ -328,6 +333,17 @@
                 </span>
             </div>
 
+            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
+                <span style="color: white; text-align: center;">
+                    <a href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/new-registration">ลงทะเบียนใหม่</a><br/>
+                    @if (isset($total_status_registration))
+                    <span>{{$total_status_registration != '' ? $total_status_registration : '0' ;}}</span>
+                    @else
+                    <span>error</span>
+                    @endif
+                </span>
+            </div>
+
         </div>
 
         <hr class="my-3" style="color: #8E8E8E; width: 100%;">
@@ -383,15 +399,15 @@
                 <thead>
 
                 <tr>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">#</td>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">CODE</td>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">อีเมล</td>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">ชื่อร้านค้า</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">STATUS</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">UPDATE</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">วันที่สมัคร</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">สถานะ</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">จัดการ</td>
+                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">#</td>
+                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">CODE</td>
+                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">อีเมล</td>
+                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">ชื่อร้านค้า</td>
+                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">STATUS</td>
+                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">UPDATE</td>
+                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">วันที่สมัคร</td>
+                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">สถานะ</td>
+                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">จัดการ</td>
                 </tr>
                 </thead>
                 <tbody>

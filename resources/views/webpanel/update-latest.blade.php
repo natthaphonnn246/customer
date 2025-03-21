@@ -246,6 +246,10 @@
             <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
             @endsection
 
+            @section('status_registration')
+            <h6 class="justifiy-content:center;" style="">{{number_format($status_registration)}}</h6>
+            @endsection
+
             @section('status_updated')
             <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
             @endsection
@@ -552,7 +556,8 @@
                 </tbody>
             </table>
         </div>
-
+<!-- -->
+    @if($total_page >= 1)
         <div class="ms-6">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
@@ -601,6 +606,7 @@
                 </ul>
             </nav>
         </div>
+    @endif
         <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
         <div class="py-3">
             <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>

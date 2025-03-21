@@ -506,6 +506,7 @@ class WebpanelAdminController extends Controller
         $total_status_waiting = Customer::where('admin_area', $admin_id)->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_action = Customer::where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_completed = Customer::where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_registration = Customer::where('admin_area', $admin_id)->where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
 
             //dropdown admin_area;
             $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
@@ -680,7 +681,6 @@ class WebpanelAdminController extends Controller
                     $count_page = 1;
                     return view('admin/adminarea-completed' ,compact('user_name', 'admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
                     break;
-
 
             //customer/adminarea;
             default:

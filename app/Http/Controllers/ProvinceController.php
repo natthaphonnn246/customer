@@ -12,19 +12,26 @@ class ProvinceController
 {
     public function index()
     {     
+            //notin code;
+            $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
             $provinces = Province::province();
 
-            $status_waiting = Customer::where('status', '0')
-                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+            $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                        ->whereNotIn('customer_id', $code_notin)
                                         ->count();
 
             $status_updated = Customer::where('status_update', 'updated')
-                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                        ->whereNotIn('customer_id', $code_notin)
                                         ->count();
 
                     $status_alert = $status_waiting + $status_updated;
 
-            return view('/webpanel/admin-create', compact('provinces', 'status_alert', 'status_waiting', 'status_updated'));
+            return view('/webpanel/admin-create', compact('provinces', 'status_alert', 'status_waiting', 'status_updated', 'status_registration'));
     }
  /*    public function customerCreate()
     {

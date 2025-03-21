@@ -160,20 +160,27 @@ Class UserController
 
     public function userData()
     {
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
         $row_user = User::user();
         $user_master = $row_user[0];
 
         $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_updated = Customer::where('status_update', 'updated')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_alert = $status_waiting + $status_updated;
 
-        return view('webpanel/admin', compact('user_master', 'status_waiting', 'status_updated', 'status_alert'));
+        return view('webpanel/admin', compact('user_master', 'status_waiting', 'status_updated','status_registration', 'status_alert'));
     }
 
     public function edit($id)

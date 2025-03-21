@@ -245,6 +245,10 @@
         <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
         @endsection
 
+        @section('status_registration')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_registration)}}</h6>
+        @endsection
+        
         @section('status_updated')
         <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
         @endsection
@@ -316,15 +320,15 @@
                 <thead>
 
                 <tr>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">#</td>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">CODE</td>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">อีเมล</td>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 600;">ชื่อร้านค้า</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">STATUS</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">UPDATE</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">วันที่สมัคร</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">สถานะ</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 600;">จัดการ</td>
+                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">#</td>
+                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">CODE</td>
+                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">อีเมล</td>
+                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">ชื่อร้านค้า</td>
+                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">STATUS</td>
+                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">UPDATE</td>
+                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">วันที่สมัคร</td>
+                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">สถานะ</td>
+                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">จัดการ</td>
                 </tr>
                 </thead>
                 <tbody>

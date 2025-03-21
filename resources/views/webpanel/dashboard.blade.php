@@ -39,6 +39,10 @@
         <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
         @endsection
 
+        @section('status_registration')
+        <h6 class="justifiy-content:center;" style="">{{$status_registration}}</h6>
+        @endsection
+
         @section('status_updated')
         <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
         @endsection
@@ -63,6 +67,17 @@
                     ร้านค้าทั้งหมด<br/>
                     @if (isset($customer_all))
                     <span>{{$customer_all != '' ? $customer_all : '0' ;}}</span>
+                    @else
+                    <span>error</span>
+                    @endif
+                </span>
+            </div>
+
+            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
+                <span style="color: white; text-align: center;">
+                    <a href="/webpanel/customer/status/new_registration">ลงทะเบียนใหม่</a><br/>
+                    @if (isset($status_registration))
+                    <span>{{$status_registration != '' ? $status_registration : '0' ;}}</span>
                     @else
                     <span>error</span>
                     @endif
