@@ -794,7 +794,9 @@ class PortalCustomerController
 
         $sale_name = Salearea::select('sale_name')->where('sale_area', $customer_edit->sale_area)->first();
         if($sale_name == null) {
-            return view('portal/customer-detail', compact('customer_edit', 'province', 'amphur', 'district', 'user_name'));
+            // return view('portal/customer-detail', compact('customer_edit', 'province', 'amphur', 'district', 'user_name'));
+            return view('portal/customer-detail', compact('customer_edit', 'province', 'amphur', 'district', 'user_name', 'count_all', 'count_waiting', 'count_action', 'count_completed', 'count_alert'));
+
         }
         
         return view('portal/customer-detail', compact('customer_edit', 'province', 'amphur', 'district', 'user_name', 'sale_name', 'count_all', 'count_waiting', 'count_action', 'count_completed', 'count_alert'));
