@@ -741,7 +741,7 @@
 
         </script>
 
-{{-- {{$customer_view->cert_store;}} --}}
+{{$customer_view->cert_store;}}
         <!--- php upload ใบอนุญาตขายยา/สถานพยาบาล--->
         <script>
 
@@ -758,7 +758,7 @@
                             // +'<img src="/storage/certs/{{$customer_view->cert_store ; }}" id="fileImage" style="width: 100%";/>'
                             // +'<img src="{{asset("storage/".$customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
                             //update = "storage/".$customer_view->cert_strore; //test;
-                            +'<img src="{{asset($customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
+                            +'<img src="{{asset("storage/".$customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'

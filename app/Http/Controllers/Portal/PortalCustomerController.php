@@ -217,35 +217,35 @@ class PortalCustomerController
             if($cert_store != '' && $customer_id != '')
             {
                 // $image_cert_store = $request->file('cert_store')->storeAs('img_certstore', $customer_id.'_certstore.jpg');
-                $image_cert_store = $request->file('cert_store')->storeAs("storage/".'img_certstore', $customer_id.'_certstore.jpg');
+                $image_cert_store = $request->file('cert_store')->storeAs('img_certstore', $customer_id.'_certstore.jpg');
             } else {
                 $image_cert_store = '';
             }
 
             if($cert_medical != '' && $customer_id != '')
             {
-                $image_cert_medical = $request->file('cert_medical')->storeAs("storage/".'img_certmedical', $customer_id.'_certmedical.jpg');
+                $image_cert_medical = $request->file('cert_medical')->storeAs('img_certmedical', $customer_id.'_certmedical.jpg');
             } else {
                 $image_cert_medical = '';
             }
 
             if($cert_commerce != '' && $customer_id != '')
             {
-                $image_cert_commerce = $request->file('cert_commerce')->storeAs("storage/".'img_certcommerce', $customer_id.'_certcommerce.jpg');
+                $image_cert_commerce = $request->file('cert_commerce')->storeAs('img_certcommerce', $customer_id.'_certcommerce.jpg');
             } else {
                 $image_cert_commerce = '';
             }
 
             if($cert_vat != '' && $customer_id != '')
             {
-                $image_cert_vat = $request->file('cert_vat')->storeAs("storage/".'img_certvat', $customer_id.'_certvat.jpg');
+                $image_cert_vat = $request->file('cert_vat')->storeAs('img_certvat', $customer_id.'_certvat.jpg');
             } else {
                 $image_cert_vat = '';
             }
 
             if($cert_id != '' && $customer_id != '')
             {
-                $image_cert_id = $request->file('cert_id')->storeAs("storage/".'img_certid', $customer_id.'_certid.jpg');
+                $image_cert_id = $request->file('cert_id')->storeAs('img_certid', $customer_id.'_certid.jpg');
             } else {
                 $image_cert_id = '';
             }
