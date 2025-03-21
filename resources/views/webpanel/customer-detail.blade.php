@@ -740,8 +740,8 @@
                 });
 
         </script>
-
-{{$customer_view->cert_store;}}
+{{-- 
+{{$customer_view->cert_store;}} --}}
         <!--- php upload ใบอนุญาตขายยา/สถานพยาบาล--->
         <script>
 
@@ -809,7 +809,7 @@
                             +'<form action="/webpanel/customer-detail/upload-medical/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
                             +'@if ((($customer_view->cert_medical)) != '')'
-                            +'<img src="{{asset($customer_view->cert_medical)}}" id="fileImage" style="width: 100%";/>'
+                            +'<img src="{{asset("storage/".$customer_view->cert_medical)}}" id="fileImage" style="width: 100%";/>'
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
@@ -860,7 +860,7 @@
                             +'<form action="/webpanel/customer-detail/upload-commerce/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
                             +'@if ((($customer_view->cert_commerce)) != '')'
-                            +'<img src="{{asset($customer_view->cert_commerce)}}" id="fileImage" style="width: 100%";/>'
+                            +'<img src="{{asset("storage/".$customer_view->cert_commerce)}}" id="fileImage" style="width: 100%";/>'
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
@@ -911,7 +911,7 @@
                                 +'<form action="/webpanel/customer-detail/upload-vat/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                                 +'@csrf'
                                 +'@if ((($customer_view->cert_vat)) != '')'
-                                +'<img src="{{asset($customer_view->cert_vat)}}" id="fileImage" style="width: 100%";/>'
+                                +'<img src="{{asset("storage/".$customer_view->cert_vat)}}" id="fileImage" style="width: 100%";/>'
                                 +'@else'
                                 +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                                 +'@endif'
@@ -963,7 +963,7 @@
                                 +'<form action="/webpanel/customer-detail/upload-id/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                                 +'@csrf'
                                 +'@if ((($customer_view->cert_id)) != '')'
-                                +'<img src="{{asset($customer_view->cert_id)}}" id="fileImage" style="width: 100%";/>'
+                                +'<img src="{{asset("storage/".$customer_view->cert_id)}}" id="fileImage" style="width: 100%";/>'
                                 +'@else'
                                 +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                                 +'@endif'
