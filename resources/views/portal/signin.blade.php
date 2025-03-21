@@ -117,19 +117,19 @@
                     <ul class="text-muted py-3" style="padding-top: 10px;">
                         <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span></br>
                         {{-- <input class="btn btn-primary my-2" style="width:100%; border:none;" id="cert_store" value="ใบอนุญาตขายยา/สถานพยาบาล"> --}}
-                        <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_store" accept="image/png, image/jpg, image/jpeg" required><br>
+                        <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_store" id="cert_store" accept="image/png, image/jpg, image/jpeg" required><br>
 
                         <span>ใบประกอบวิชาชีพ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                        <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_medical" accept="image/png, image/jpg, image/jpeg" required><br>
+                        <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_medical" id="cert_medical" accept="image/png, image/jpg, image/jpeg" required><br>
 
                         <span>ใบทะเบียนพาณิชย์</span>
-                        <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_commerce" accept="image/png, image/jpg, image/jpeg"><br>
+                        <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_commerce" id="cert_commerce" accept="image/png, image/jpg, image/jpeg"><br>
 
                         <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span>
-                        <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_vat" accept="image/png, image/jpg, image/jpeg"><br>
+                        <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_vat" id="cert_vat" accept="image/png, image/jpg, image/jpeg"><br>
 
                         <span>สำเนาบัตรประชาชน</span>
-                        <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" accept="image/png, image/jpg, image/jpeg"><br>
+                        <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" id="cert_id" accept="image/png, image/jpg, image/jpeg"><br>
 
                         <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                         <input style="margin-top:10px; color:grey;" type="text" class="form-control" name="cert_number"><br>
@@ -312,13 +312,15 @@
                             <button type="submit" name="submit_form" class="btn py-3" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>   
                             <hr style="color:rgb(157, 157, 157);">
 
-                            @if(Session::get('error_code'))
-                            <div class="alert alert-danger"><i class="fa-solid fa-circle-xmark" style="color: rgb(172, 27, 27);"></i> {{ Session::get('error_code') }}</div>
-                            @elseif (Session::get('success'))
-                            <div class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success') }}</div>
-                            @else
-                            <p class="textrow py-3" style="text-align: center; font-weight:500; font-size: 16px; color:rgb(72, 72, 72);"><span>ลงทะเบียนแล้ว กรุณาติดต่อผู้ดูแล</span></p>
-                            @endif
+                            <ul class="mt-4">
+                                @if(Session::get('error_code'))
+                                <div class="alert alert-danger"><i class="fa-solid fa-circle-xmark" style="color: rgb(172, 27, 27);"></i> {{ Session::get('error_code') }}</div>
+                                @elseif (Session::get('success'))
+                                <div class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success') }}</div>
+                                @else
+                                <p class="textrow py-3" style="text-align: center; font-weight:500; font-size: 16px; color:rgb(72, 72, 72);"><span>ลงทะเบียนแล้ว กรุณาติดต่อผู้ดูแล</span></p>
+                                @endif
+                            </ul>
                         </div>
                     </div>
         </form>
@@ -436,6 +438,113 @@
                         });
                     });
 
+        </script>
+
+         <!--- ตรวจสอบขนสดภาพก่อน upload -->
+         <script>
+            $('#cert_store').bind('change', function() {
+                  const maxSize = 1000000; //byte
+                  const mb = maxSize/maxSize;
+                  let size = this.files[0].size;
+                  if( size > maxSize ) {
+
+                      Swal.fire({
+                          icon:'warning',
+                          title: 'ภาพใหญ่เกิน',
+                          text: 'ขนาดภาพไม่เกิน 1 MB (ใบอนุญาตขายยา)',
+                          showConfirmButton: true,
+                          confirmButtonText: 'ตกลง'
+
+                      }).then(function() {
+                          $("#cert_store").val('');
+                      });
+
+                    /*   $("#alert_store").html('ขนาดใหญ่เกิน');
+                      $("#image").val(''); */
+                      /* alert("ระบบไม่รองรับไฟล์ภาพขนาดใหญ่เกินกว่า "+mb+" mb");
+                      $("#submit").prop( "disabled", true ); */
+                  }
+              });    
+
+              $('#cert_medical').bind('change', function() {
+                  const maxSize = 1000000; //byte
+                  const mb = maxSize/maxSize;
+                  let size = this.files[0].size;
+                  if( size > maxSize ) {
+
+                      Swal.fire({
+                          icon:'warning',
+                          title: 'ภาพใหญ่เกิน',
+                          text: 'ขนาดภาพไม่เกิน 1 MB (ใบประกอบวิชาชีพ)',
+                          showConfirmButton: true,
+                          confirmButtonText: 'ตกลง'
+
+                      }).then(function() {
+                          $("#cert_medical").val('');
+                      });
+
+                  }
+              });
+              
+              $('#cert_commerce').bind('change', function() {
+                  const maxSize = 1000000; //byte
+                  const mb = maxSize/maxSize;
+                  let size = this.files[0].size;
+                  if( size > maxSize ) {
+
+                      Swal.fire({
+                          icon:'warning',
+                          title: 'ภาพใหญ่เกิน',
+                          text: 'ขนาดภาพไม่เกิน 1 MB (ใบทะเบียนพาณิชย์)',
+                          showConfirmButton: true,
+                          confirmButtonText: 'ตกลง'
+
+                      }).then(function() {
+                          $("#cert_commerce").val('');
+                      });
+
+                  }
+              });
+              
+              $('#cert_vat').bind('change', function() {
+                  const maxSize = 1000000; //byte
+                  const mb = maxSize/maxSize;
+                  let size = this.files[0].size;
+                  if( size > maxSize ) {
+
+                      Swal.fire({
+                          icon:'warning',
+                          title: 'ภาพใหญ่เกิน',
+                          text: 'ขนาดภาพไม่เกิน 1 MB (ใบทะเบียนมูลค่าเพิ่ม)',
+                          showConfirmButton: true,
+                          confirmButtonText: 'ตกลง'
+
+                      }).then(function() {
+                          $("#cert_vat").val('');
+                      });
+
+                  }
+              });  
+
+              $('#cert_id').bind('change', function() {
+                  const maxSize = 1000000; //byte
+                  const mb = maxSize/maxSize;
+                  let size = this.files[0].size;
+                  if( size > maxSize ) {
+
+                      Swal.fire({
+                          icon:'warning',
+                          title: 'ภาพใหญ่เกิน',
+                          text: 'ขนาดภาพไม่เกิน 1 MB (สำเนาบัตรประชาชน)',
+                          showConfirmButton: true,
+                          confirmButtonText: 'ตกลง'
+
+                      }).then(function() {
+                          $("#cert_id").val('');
+                      });
+
+                  }
+              });  
         </script>
 
 @endsection

@@ -203,6 +203,9 @@ class PortalCustomerController
             }
 
             $admin_area = $request->admin_area;
+            if($admin_area == null) {
+                $admin_area = '';
+            }
             $cert_store = $request->file('cert_store');
             $cert_medical = $request->file('cert_medical');
             $cert_commerce = $request->file('cert_commerce');
@@ -913,6 +916,7 @@ class PortalCustomerController
 
                             // 'cert_store' => "storage/".$image_cert_store,
                             'cert_store' => $image_cert_store,
+                            'status_update' => 'updated',
 
                         ]);
 
@@ -944,6 +948,7 @@ class PortalCustomerController
                         ->update ([
                             
                             'cert_medical' =>  $image_cert_medical,
+                            'status_update' => 'updated',
 
                         ]);
 
@@ -975,6 +980,7 @@ class PortalCustomerController
                         ->update ([
                             // 'cert_commerce' =>  $image_cert_commerce,
                             'cert_commerce' => $image_cert_commerce,
+                            'status_update' => 'updated',
 
                         ]);
 
@@ -1005,6 +1011,7 @@ class PortalCustomerController
                         ->update ([
 
                             'cert_vat' =>  $image_cert_vat,
+                            'status_update' => 'updated',
 
                         ]);
 
@@ -1035,6 +1042,7 @@ class PortalCustomerController
                         ->update ([
 
                             'cert_id' => $image_cert_id,
+                            'status_update' => 'updated',
 
                         ]);
 

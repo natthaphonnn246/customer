@@ -357,7 +357,9 @@
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$email}}</td>
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px; width: 20%;">{{$user_name}}</td>
 
-                        @if ($status == 'รอดำเนินการ')
+                        @if ($status == 'ลงทะเบียนใหม่')
+                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(59, 195, 237);">ลงทะเบียนใหม่</span></td>
+                        @elseif ($status == 'รอดำเนินการ')
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(237, 59, 59);">รอดำเนินการ</span></td>
                         {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(255, 70, 70);"></i> รอดำเนินการ</td> --}}
                         @elseif ($status == 'ต้องดำเนินการ')

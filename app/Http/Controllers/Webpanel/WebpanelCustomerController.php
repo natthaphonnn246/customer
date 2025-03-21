@@ -1047,6 +1047,8 @@ class WebpanelCustomerController
                             'cert_store' => $image_cert_store,
                             // 'cert_store' => "storage/".$image_cert_store,
 
+                            'status_update' => 'updated',
+
                         ]);
 
             }
@@ -1077,6 +1079,7 @@ class WebpanelCustomerController
                         ->update ([
                             
                             'cert_medical' =>  $image_cert_medical,
+                            'status_update' => 'updated',
 
                         ]);
 
@@ -1108,6 +1111,7 @@ class WebpanelCustomerController
                         ->update ([
 
                             'cert_commerce' =>  $image_cert_commerce,
+                            'status_update' => 'updated',
 
                         ]);
 
@@ -1138,6 +1142,7 @@ class WebpanelCustomerController
                         ->update ([
 
                             'cert_vat' =>  $image_cert_vat,
+                            'status_update' => 'updated',
 
                         ]);
 
@@ -1168,6 +1173,7 @@ class WebpanelCustomerController
                         ->update ([
 
                             'cert_id' =>  $image_cert_id,
+                            'status_update' => 'updated',
 
                         ]);
 

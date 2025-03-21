@@ -825,9 +825,10 @@
 
                             // confirmButtonText: 'บันทึก',
                             // showCancelButton: true,
+
+           
                         
                             });
-
                                     /// preview image swal filre;
                                         let image = document.querySelector('#image');
                                         let fileImage = document.querySelector('#fileImage');

@@ -36,6 +36,13 @@
     }
     #logintail {
         width: 450px;
+        
+        /* position:fixed;
+        height: 100%;
+        width:100%;
+        left: 0;
+        right: 0;
+        z-index: 0; */
         /* display: flex; */
         
        
@@ -48,7 +55,13 @@
         
     }
     #bg_login {
-        /* min-width: 1000px; */
+        position:fixed;
+        height: 100%;
+        width:100%;
+        left: 0;
+        right: 0;
+        z-index: 0;
+        overflow: auto;
     }
 
  
@@ -58,8 +71,7 @@
 
     {{-- flex flex-col items-center justify-center px-6 py-4 mx-auto md:h-screen lg:py-0 --}}
 
-  <div class="" id="bg_login">
-        <div class="flex flex-col items-center justify-center px-6 py-4 mx-auto md:h-screen lg:py-2">
+        <div class="flex flex-col items-center justify-center px-6 py-4 mx-auto md:h-screen lg:py-2" id="bg_login">
   
             <div class="rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:border-gray-700" id="logintail" style="background-color:rgb(255, 255, 255);">
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -90,7 +102,7 @@
                 </div>
             </div>
         </div>
-    </div> 
+
 
 
 
