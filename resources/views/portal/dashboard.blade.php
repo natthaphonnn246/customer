@@ -43,9 +43,18 @@
             max-width: 80%;
             height: 100%;
             margin: 5px auto;
+            /* overflow: auto; */
             }
 
-        
+     /*    #dashPortal {
+            position:fixed;
+            height: 100%;
+            width:100%;
+            left: 0;
+            right: 0;
+            z-index: 0;
+            overflow: auto;
+        } */
     </style>
 
 

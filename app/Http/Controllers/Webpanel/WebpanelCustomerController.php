@@ -751,7 +751,8 @@ class WebpanelCustomerController
 
             if($cert_store != '' && $customer_id != '')
             {
-                $image_cert_store = $request->file('cert_store')->storeAs('img_certstore', $customer_id.'_certstore.jpg');
+                // $image_cert_store = $request->file('cert_store')->storeAs('img_certstore', $customer_id.'_certstore.jpg');
+                $image_cert_store = $request->file('cert_store')->storeAs('img_certstore', $customer_id.'_certstore.jpg', 'cert_image');
             } else {
                 $image_cert_store = '';
             }
@@ -1031,7 +1032,8 @@ class WebpanelCustomerController
                 $cert_store = $check_cert_store;
     
                 if($cert_store != '' && $id != '') {
-                    $image_cert_store = $request->file('cert_store')->storeAs('img_certstore', $id.'_certstore.jpg');
+                    // $image_cert_store = $request->file('cert_store')->storeAs('img_certstore', $id.'_certstore.jpg');
+                    $image_cert_store = $request->file('cert_store')->storeAs('img_certstore', $id.'_certstore.jpg', 'cert_image');
 
                 } else if ($cert_store == '') {
                     $cert_store_old = Customer::select('cert_store')->where('customer_id', $id)->first();

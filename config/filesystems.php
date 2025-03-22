@@ -38,14 +38,21 @@ return [
             'throw' => false,
         ],
 
-        'public' => [
+        /* 'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public/certs'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
+        ], */
+        'cert_image' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
         ],
-
+//import;
         'importfiles' => [
             'driver' => 'local',
             'root' => storage_path('app/public/'),
@@ -80,9 +87,9 @@ return [
     */
 
     //certs;
-    'links' => [
+  /*   'links' => [
         public_path('storage') => storage_path('app/public/certs'),
 
-    ],
+    ], */
 
 ];
