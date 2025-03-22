@@ -87,9 +87,10 @@ return [
     */
 
     //certs;
-  /*   'links' => [
-        public_path('storage') => storage_path('app/public/certs'),
+    'links' => [
+        // public_path('storage') => storage_path('app/public/certs'),
+        public_path('storage') => storage_path('app/public/'),
 
-    ], */
+    ],
 
 ];
