@@ -188,21 +188,29 @@ Class UserController
         $admin_master = User::adminEdit($id);
         // $admin_row = $master[0];
 
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
         $province = DB::table('provinces')->select('id', 'name_th')->orderBy('id', 'asc')->get();
         $amphur = DB::table('amphures')->select('name_th', 'province_id')->get();
         $district = DB::table('districts')->select('name_th', 'amphure_id')->get();
 
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
         $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereNotIn('customer_id', $code_notin)
                                 ->count();
 
         $status_updated = Customer::where('status_update', 'updated')
-                                ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereNotIn('customer_id',$code_notin)
                                 ->count();
 
         $status_alert = $status_waiting + $status_updated;
 
-        return view('webpanel/admin-detail', compact('admin_master', 'province', 'amphur', 'district', 'status_alert', 'status_waiting', 'status_updated'));
+        return view('webpanel/admin-detail', compact('admin_master', 'province', 'amphur', 'district', 'status_alert','status_registration', 'status_waiting', 'status_updated'));
     }
 
     public function update(Request $request, $id)

@@ -337,9 +337,15 @@ class PortalCustomerController
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
+        // $count_page = Customer::where('admin_area', $id)
+        //                         ->whereNotIn('customer_id', $code_notin)
+        //                         ->count();
+
         $count_page = Customer::where('admin_area', $id)
                                 ->whereNotIn('customer_id', $code_notin)
+                                ->where('customer_status', '!=', 'inactive')
                                 ->count();
+                                // dd($count_page);
    
         $perpage = 10;
         $total_page = ceil($count_page / $perpage);

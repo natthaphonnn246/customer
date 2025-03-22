@@ -1567,11 +1567,12 @@ class WebpanelCustomerController
             // dd($customer->cert_store);
 
             //delete image storage;
-            Storage::delete($customer->cert_store);
-            Storage::delete($customer->cert_medical);
-            Storage::delete($customer->cert_commerce);
-            Storage::delete($customer->cert_vat);
-            Storage::delete($customer->cert_id);
+            // Storage::delete($customer->cert_store);
+            Storage::disk('cert_image')->delete($customer->cert_store);
+            Storage::disk('cert_image')->delete($customer->cert_medical);
+            Storage::disk('cert_image')->delete($customer->cert_commerce);
+            Storage::disk('cert_image')->delete($customer->cert_vat);
+            Storage::disk('cert_image')->delete($customer->cert_id);
 
             $customer->delete();
 

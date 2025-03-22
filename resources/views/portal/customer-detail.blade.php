@@ -631,6 +631,26 @@
                                                 fileImage.src = URL.createObjectURL(file);
                                                 }
                                                 }
+                                                //ตรวจสอบ image size;
+                                                $('#image').bind('change', function() {
+                                                const maxSize = 1000000; //byte
+                                                const mb = maxSize/maxSize;
+                                                let size = this.files[0].size;
+                                                if( size > maxSize ) {
+
+                                                    Swal.fire({
+                                                        icon:'warning',
+                                                        title: 'ภาพใหญ่เกิน',
+                                                        text: 'ขนาดภาพไม่เกิน 1 MB (ใบอนุญาตขายยา)',
+                                                        showConfirmButton: true,
+                                                        confirmButtonText: 'ตกลง'
+
+                                                    }).then(function() {
+                                                        $("#image").val('');
+                                                    });
+
+                                                }
+                                            });
                                         });
                                     });
                             //close window reload window;
@@ -679,6 +699,26 @@
                                                 fileImage.src = URL.createObjectURL(file);
                                                 }
                                                 }
+                                                //ตรวจสอบ image size;
+                                                $('#image').bind('change', function() {
+                                                const maxSize = 1000000; //byte
+                                                const mb = maxSize/maxSize;
+                                                let size = this.files[0].size;
+                                                if( size > maxSize ) {
+
+                                                    Swal.fire({
+                                                        icon:'warning',
+                                                        title: 'ภาพใหญ่เกิน',
+                                                        text: 'ขนาดภาพไม่เกิน 1 MB (ใบประกอบวิชาชีพ)',
+                                                        showConfirmButton: true,
+                                                        confirmButtonText: 'ตกลง'
+
+                                                    }).then(function() {
+                                                        $("#image").val('');
+                                                    });
+
+                                                }
+                                            });
                                         });
                                     });
                             //close window reload window;
@@ -727,6 +767,26 @@
                                                 fileImage.src = URL.createObjectURL(file);
                                                 }
                                                 }
+                                                //ตรวจสอบ image size;
+                                                $('#image').bind('change', function() {
+                                                const maxSize = 1000000; //byte
+                                                const mb = maxSize/maxSize;
+                                                let size = this.files[0].size;
+                                                if( size > maxSize ) {
+
+                                                    Swal.fire({
+                                                        icon:'warning',
+                                                        title: 'ภาพใหญ่เกิน',
+                                                        text: 'ขนาดภาพไม่เกิน 1 MB (ใบทะเบียนพาณิชย์)',
+                                                        showConfirmButton: true,
+                                                        confirmButtonText: 'ตกลง'
+
+                                                    }).then(function() {
+                                                        $("#image").val('');
+                                                    });
+
+                                                }
+                                            });
                                         });
                                     });
                             //close window reload window;
@@ -775,6 +835,26 @@
                                                 fileImage.src = URL.createObjectURL(file);
                                                 }
                                                 }
+                                                //ตรวจสอบ image size;
+                                                $('#image').bind('change', function() {
+                                                const maxSize = 1000000; //byte
+                                                const mb = maxSize/maxSize;
+                                                let size = this.files[0].size;
+                                                if( size > maxSize ) {
+
+                                                    Swal.fire({
+                                                        icon:'warning',
+                                                        title: 'ภาพใหญ่เกิน',
+                                                        text: 'ขนาดภาพไม่เกิน 1 MB (ใบภาษีมูลค่าเพิ่ม)',
+                                                        showConfirmButton: true,
+                                                        confirmButtonText: 'ตกลง'
+
+                                                    }).then(function() {
+                                                        $("#image").val('');
+                                                    });
+
+                                                }
+                                            });
                                         });
                                     });
                             //close window reload window;
@@ -824,6 +904,26 @@
                                                     fileImage.src = URL.createObjectURL(file);
                                                     }
                                                     }
+                                                    //ตรวจสอบ image size;
+                                                    $('#image').bind('change', function() {
+                                                    const maxSize = 1000000; //byte
+                                                    const mb = maxSize/maxSize;
+                                                    let size = this.files[0].size;
+                                                    if( size > maxSize ) {
+
+                                                        Swal.fire({
+                                                            icon:'warning',
+                                                            title: 'ภาพใหญ่เกิน',
+                                                            text: 'ขนาดภาพไม่เกิน 1 MB (สำเนาบัตรประชาชน)',
+                                                            showConfirmButton: true,
+                                                            confirmButtonText: 'ตกลง'
+
+                                                        }).then(function() {
+                                                            $("#image").val('');
+                                                        });
+
+                                                    }
+                                                });
                                             });
                                         });
                                 //close window reload window;

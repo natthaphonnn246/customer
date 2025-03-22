@@ -92,6 +92,10 @@
         <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
         @endsection
 
+        @section('status_registration')
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_registration)}}</h6>
+        @endsection
+        
         @section('text_alert')
         <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
         @endsection

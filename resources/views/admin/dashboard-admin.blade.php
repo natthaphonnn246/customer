@@ -142,7 +142,7 @@
             <p class="text-gray-900 dark:text-gray text-lm leading-none mt-4 ms-10" style="color: #8E8E8E;">Customer chart</p>
             {{-- <hr class="my-2"> --}}
 
-                <div class="row bg-white rounded-sm dark:bg-gray-800 mr-10 ms-10">
+                <div class="row bg-white rounded-sm dark:bg-gray-800 mr-10 ms-10 py-2">
 
                     <div class="col-sm-6">
                         <canvas id="myNorth" style="width:100%;"></canvas>
@@ -157,7 +157,7 @@
 
                 </div> 
 
-                <hr class="my-4" style="border: solid 4px; color:#666666">
+                {{-- <hr class="my-4" style="border: solid 4px; color:#666666"> --}}
            
     </div>
     </div>
