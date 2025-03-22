@@ -759,28 +759,28 @@ class WebpanelCustomerController
 
             if($cert_medical != '' && $customer_id != '')
             {
-                $image_cert_medical = $request->file('cert_medical')->storeAs('img_certmedical', $customer_id.'_certmedical.jpg');
+                $image_cert_medical = $request->file('cert_medical')->storeAs('img_certmedical', $customer_id.'_certmedical.jpg', 'cert_image');
             } else {
                 $image_cert_medical = '';
             }
 
             if($cert_commerce != '' && $customer_id != '')
             {
-                $image_cert_commerce = $request->file('cert_commerce')->storeAs('img_certcommerce', $customer_id.'_certcommerce.jpg');
+                $image_cert_commerce = $request->file('cert_commerce')->storeAs('img_certcommerce', $customer_id.'_certcommerce.jpg', 'cert_image');
             } else {
                 $image_cert_commerce = '';
             }
 
             if($cert_vat != '' && $customer_id != '')
             {
-                $image_cert_vat = $request->file('cert_vat')->storeAs('img_certvat', $customer_id.'_certvat.jpg');
+                $image_cert_vat = $request->file('cert_vat')->storeAs('img_certvat', $customer_id.'_certvat.jpg', 'cert_image');
             } else {
                 $image_cert_vat = '';
             }
 
             if($cert_id != '' && $customer_id != '')
             {
-                $image_cert_id = $request->file('cert_id')->storeAs('img_certid', $customer_id.'_certid.jpg');
+                $image_cert_id = $request->file('cert_id')->storeAs('img_certid', $customer_id.'_certid.jpg', 'cert_image');
             } else {
                 $image_cert_id = '';
             }
@@ -1067,7 +1067,7 @@ class WebpanelCustomerController
                 $cert_medical =  $check_cert_medical ;
 
                 if($cert_medical != '' && $id != '') {
-                    $image_cert_medical = $request->file('cert_medical')->storeAs('img_certmedical', $id.'_certmedical.jpg');
+                    $image_cert_medical = $request->file('cert_medical')->storeAs('img_certmedical', $id.'_certmedical.jpg', 'cert_image');
 
                 } else if ($cert_medical == '') {
                     $cert_medical_old = Customer::select('cert_medical')->where('customer_id',$id)->first();
@@ -1099,7 +1099,7 @@ class WebpanelCustomerController
 
                 if($cert_commerce != '' && $id != '')
                 {
-                    $image_cert_commerce = $request->file('cert_commerce')->storeAs('img_certcommerce', $id.'_certcommerce.jpg');
+                    $image_cert_commerce = $request->file('cert_commerce')->storeAs('img_certcommerce', $id.'_certcommerce.jpg', 'cert_image');
 
                 } elseif($cert_commerce == '') {
                     $cert_commerce_old = Customer::select('cert_commerce')->where('customer_id', $id)->first();
@@ -1130,7 +1130,7 @@ class WebpanelCustomerController
                 $cert_vat = $check_cert_vat;
 
                 if($cert_vat != '' && $id != '') {
-                    $image_cert_vat = $request->file('cert_vat')->storeAs('img_certvat', $id.'_certvat.jpg');
+                    $image_cert_vat = $request->file('cert_vat')->storeAs('img_certvat', $id.'_certvat.jpg', 'cert_image');
 
                 } else if($cert_vat == '') {
                     $cert_vat_old = Customer::select('cert_vat')->where('customer_id', $id)->first();
@@ -1161,7 +1161,7 @@ class WebpanelCustomerController
                 $cert_id = $check_cert_id;
 
                 if($cert_id != '' && $id != '') {
-                    $image_cert_id = $request->file('cert_id')->storeAs('img_certid', $id.'_certid.jpg');
+                    $image_cert_id = $request->file('cert_id')->storeAs('img_certid', $id.'_certid.jpg', 'cert_image');
 
                 } elseif ($cert_id == '') {
                     $cert_id_old = Customer::select('cert_id')->where('customer_id', $id)->first();
