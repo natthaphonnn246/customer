@@ -748,6 +748,8 @@
                 $(document).ready(function(){
                     $('#certStore').click(function(){
                         // e.preventDefault(); ปิดใช้งาน submit ปกติ
+                        const now = new Date().getTime();
+
                         Swal.fire ({
                             html:
                             '<p style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล/Code : {{$customer_view->customer_code; }}</p>'
@@ -758,7 +760,7 @@
                             // +'<img src="/storage/certs/{{$customer_view->cert_store ; }}" id="fileImage" style="width: 100%";/>'
                             // +'<img src="{{asset("storage/".$customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
                             //update = "storage/".$customer_view->cert_strore; //test;
-                            +'<img src="{{asset("storage/".$customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
+                            +`<img src="{{asset("storage/".$customer_view->cert_store)}}?v=${now}" id="fileImage" style="width: 100%";/>`
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
@@ -822,6 +824,8 @@
                 $(document).ready(function(){
                     $('#certMedical').click(function(){
                         // e.preventDefault(); ปิดใช้งาน submit ปกติ
+                        const now = new Date().getTime();
+
                         Swal.fire ({
                             html:
                             '<p style="text-align: start;">แก้ไขใบประกอบวิชาชีพ/Code : {{$customer_view->customer_code; }}</p>'
@@ -829,7 +833,7 @@
                             +'<form action="/webpanel/customer-detail/upload-medical/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
                             +'@if ((($customer_view->cert_medical)) != '')'
-                            +'<img src="{{asset("storage/".$customer_view->cert_medical)}}" id="fileImage" style="width: 100%";/>'
+                            +`<img src="{{asset("storage/".$customer_view->cert_medical)}}?v=${now}" id="fileImage" style="width: 100%";/>`
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
@@ -894,6 +898,8 @@
                 $(document).ready(function(){
                     $('#certCommerce').click(function(){
                         // e.preventDefault(); ปิดใช้งาน submit ปกติ
+                        const now = new Date().getTime();
+
                         Swal.fire ({
                             html:
                             '<p style="text-align: start;">แก้ไขใบทะเบียนพาณิชย์/Code : {{$customer_view->customer_code; }}</p>'
@@ -901,7 +907,7 @@
                             +'<form action="/webpanel/customer-detail/upload-commerce/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                             +'@csrf'
                             +'@if ((($customer_view->cert_commerce)) != '')'
-                            +'<img src="{{asset("storage/".$customer_view->cert_commerce)}}" id="fileImage" style="width: 100%";/>'
+                            +`<img src="{{asset("storage/".$customer_view->cert_commerce)}}?v=${now}" id="fileImage" style="width: 100%";/>`
                             +'@else'
                             +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                             +'@endif'
@@ -965,14 +971,16 @@
                     $(document).ready(function(){
                         $('#certVat').click(function(){
                             // e.preventDefault(); ปิดใช้งาน submit ปกติ
-                            Swal.fire ({
+                        const now = new Date().getTime();
+
+                        Swal.fire ({
                                 html:
                                 '<p style="text-align: start;">แก้ไขใบภาษีมูลค่าเพิ่ม (ภ.พ.20)/Code : {{$customer_view->customer_code; }}</p>'
                                 +'<hr>'
                                 +'<form action="/webpanel/customer-detail/upload-vat/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                                 +'@csrf'
                                 +'@if ((($customer_view->cert_vat)) != '')'
-                                +'<img src="{{asset("storage/".$customer_view->cert_vat)}}" id="fileImage" style="width: 100%";/>'
+                                +`<img src="{{asset("storage/".$customer_view->cert_vat)}}?v=${now}" id="fileImage" style="width: 100%";/>`
                                 +'@else'
                                 +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                                 +'@endif'
@@ -1037,6 +1045,8 @@
                     $(document).ready(function(){
                         $('#certId').click(function(){
                             // e.preventDefault(); ปิดใช้งาน submit ปกติ
+                            const now = new Date().getTime();
+
                             Swal.fire ({
                                 html:
                                 '<p style="text-align: start;">แก้ไขสำเนาบัตรประจำตัวประชาชน/Code : {{$customer_view->customer_code; }}</p>'
@@ -1044,7 +1054,7 @@
                                 +'<form action="/webpanel/customer-detail/upload-id/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
                                 +'@csrf'
                                 +'@if ((($customer_view->cert_id)) != '')'
-                                +'<img src="{{asset("storage/".$customer_view->cert_id)}}" id="fileImage" style="width: 100%";/>'
+                                +`<img src="{{asset("storage/".$customer_view->cert_id)}}?v=${now}" id="fileImage" style="width: 100%";/>`
                                 +'@else'
                                 +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
                                 +'@endif'
