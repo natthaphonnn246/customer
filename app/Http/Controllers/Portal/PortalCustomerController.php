@@ -1066,6 +1066,7 @@ class PortalCustomerController
 
         $check_search_code = Customer::where('customer_id', 'like', '%'.$keyword.'%')
                                         ->orWhere('customer_name', 'like', '%'.$keyword.'%')
+                                        ->whereNotIn('customer_status', ['inactive'])
                                         ->where('admin_area', $id)->first();
         
         // echo json_encode(array('code' => $check_search_code->admin_area, 'id'=>$id));
@@ -1082,6 +1083,7 @@ class PortalCustomerController
         } else {
 
             $customers = Customer::where('customer_id', 'like', "%{$keyword}%")
+                                    ->whereNotIn('customer_status', ['inactive'])
                                     ->where('admin_area', $id)
                                     ->orWhere('customer_name', 'like', "%{$keyword}%")
                                     ->whereIn('admin_area', [$id])
