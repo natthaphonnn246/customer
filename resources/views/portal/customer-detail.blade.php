@@ -215,9 +215,8 @@
     @if (isset($customer_edit) != '')
 
     <div class="ms-6 mr-6">
-        <form id="form">
             {{-- action="/webpanel/admin-detail/update/{{$row_edit->user_code}}" enctype="multipart/form-data" --}}
-            @csrf
+            {{-- @csrf --}}
             <div class="row">
                 <div class="col-sm-6">
                     <ul class="text-title" style="margin-top: 20px;">
@@ -225,45 +224,300 @@
                         <hr style="color: #8E8E8E; width: 100%; margin-top: 15px;">
                     </ul>
                     <ul class="text-muted py-3" style="padding-top: 10px;">
-                        <span>ใบอนุญาตขายยา/สถานพยาบาล</span>
+
+                        <!-- Button trigger modal -->
+                        <li class="mt-4">
+                            <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                            <button type="button" class="btn mt-2" id="certStore" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_store">
+                                ใบบอนุญาตขายยา/สถานพยาบาล
+                            </button>
+                            @if ($customer_edit->cert_store == '')
+                            <div class="py-2">
+                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                            </div>
+                            <hr class="my-2 mb-2" style="color: #8E8E8E; width: 100%;">
+                            @endif
+
+                            <div class="modal fade" id="staticBackdrop_store" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">แก้ไขใบอนุญาตขายยา</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <span class="ms-3 py-2" style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล/Code : {{$customer_edit->customer_code; }}</span>
+                                <hr style="color:#a5a5a5;">
+                                    <div class="modal-body">
+                                        <form action="/portal/customer-detail/upload-store/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">
+                                        @csrf
+                                        @if ((($customer_edit->cert_store)) != '')
+                                        
+                                            <img src={{asset("storage/".$customer_edit->cert_store)}}?v=<?php echo time(); ?>" id="previewStore" style="width: 100%";/>
+                                        {{-- {{time()}} --}}
+                                        @else
+                                        <img src="/profile/image.jpg" width="100%" id="previewStore">
+                                        @endif
+                                    
+                                        <input type="file" id="imageStore" class="form-control" name="cert_store" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>
+                                        {{-- <hr class="py-2 mt-2"> --}}
+                                        <div class="modal-footer mt-4">
+
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                                            <button type="submit" name="submit_store" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>
+                                            {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
+
+                                        </div>
+                                    
+                                        </form>
+                                    </div>
+                            
+                                </div>
+                            </div>
+                            </div>
+                        </li>
+
+                        <li class="mt-4">
+                            <span>ใบประกอบวิชาชีพ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                            <button type="button" class="btn mt-2" id="certMedical" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_medical">
+                                ใบประกอบวิชาชีพ
+                            </button>
+                            @if ($customer_edit->cert_medical == '')
+                            <div class="py-2">
+                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                            </div>
+                            <hr class="my-2 mb-2" style="color: #8E8E8E; width: 100%;">
+                            @endif
+
+                            <div class="modal fade" id="staticBackdrop_medical" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบประกอบวิชาชีพ</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <span class="ms-3 py-2" style="text-align: start;">ใบประกอบวิชาชีพ/Code : {{$customer_edit->customer_code; }}</span>
+                                <hr style="color:#a5a5a5;">
+                                    <div class="modal-body">
+                                        <form action="/portal/customer-detail/upload-medical/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">
+                                        @csrf
+                                        @if ((($customer_edit->cert_medical)) != '')
+                                        
+                                            <img src={{asset("storage/".$customer_edit->cert_medical)}}?v=<?php echo time(); ?>" id="previewMedical" style="width: 100%";/>
+                                        {{-- {{time()}} --}}
+                                        @else
+                                        <img src="/profile/image.jpg" width="100%" id="previewMedical">
+                                        @endif
+                                    
+                                        <input type="file" id="imageMedical" class="form-control" name="cert_medical" style="margin-top: 10px;" accept="image/png, image/jpg, image/jpeg"/>
+                                        {{-- <hr class="py-2 mt-2"> --}}
+                                        <div class="modal-footer mt-4">
+
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                                            <button type="submit" name="submit_medical" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>
+                                            {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
+
+                                        </div>
+                                    
+                                        </form>
+                                    </div>
+                            
+                                </div>
+                            </div>
+                            </div>
+                        </li>
+
+
+                        <li class="mt-4">
+                            <span>ใบทะเบียนพาณิชย์</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                            <button type="button" class="btn mt-2" id="certCommerce" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_commerce">
+                                ใบทะเบียนพาณิชย์
+                            </button>
+                            @if ($customer_edit->cert_commerce == '')
+                            <div class="py-2">
+                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                            </div>
+                            <hr class="my-2 mb-2" style="color: #8E8E8E; width: 100%;">
+                            @endif
+
+                            <div class="modal fade" id="staticBackdrop_commerce" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบทะเบียนพาณิชย์</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนพาณิชย์/Code : {{$customer_edit->customer_code; }}</span>
+                                <hr style="color:#a5a5a5;">
+                                    <div class="modal-body">
+                                        <form action="/portal/customer-detail/upload-commerce/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">
+                                        @csrf
+                                        @if ((($customer_edit->cert_commerce)) != '')
+                                        
+                                            <img src={{asset("storage/".$customer_edit->cert_commerce)}}?v=<?php echo time(); ?>" id="previewCommerce" style="width: 100%";/>
+                                        {{-- {{time()}} --}}
+                                        @else
+                                        <img src="/profile/image.jpg" width="100%" id="previewCommerce">
+                                        @endif
+                                    
+                                        <input type="file" id="imageCommerce" class="form-control" name="cert_commerce" style="margin-top: 10px;" accept="image/png, image/jpg, image/jpeg"/>
+                                        {{-- <hr class="py-2 mt-2"> --}}
+                                        <div class="modal-footer mt-4">
+
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                                            <button type="submit" name="submit_commerce" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>
+                                            {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
+
+                                        </div>
+                                    
+                                        </form>
+                                    </div>
+                            
+                                </div>
+                            </div>
+                            </div>
+                        </li>
+
+                        <li class="mt-4">
+                            <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                            <button type="button" class="btn mt-2" id="certVat" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_vat">
+                                ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)
+                            </button>
+                            @if ($customer_edit->cert_vat == '')
+                            <div class="py-2">
+                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                            </div>
+                            <hr class="my-2 mb-2" style="color: #8E8E8E; width: 100%;">
+                            @endif
+
+                            <div class="modal fade" id="staticBackdrop_vat" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)/Code : {{$customer_edit->customer_code; }}</span>
+                                <hr style="color:#a5a5a5;">
+                                    <div class="modal-body">
+                                        <form action="/portal/customer-detail/upload-vat/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">
+                                        @csrf
+                                        @if ((($customer_edit->cert_vat)) != '')
+                                        
+                                            <img src={{asset("storage/".$customer_edit->cert_vat)}}?v=<?php echo time(); ?>" id="previewVat" style="width: 100%";/>
+                                        {{-- {{time()}} --}}
+                                        @else
+                                        <img src="/profile/image.jpg" width="100%" id="previewVat">
+                                        @endif
+                                    
+                                        <input type="file" id="imageVat" class="form-control" name="cert_vat" style="margin-top: 10px;" accept="image/png, image/jpg, image/jpeg"/>
+                                        {{-- <hr class="py-2 mt-2"> --}}
+                                        <div class="modal-footer mt-4">
+
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                                            <button type="submit" name="submit_vat" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>
+                                            {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
+
+                                        </div>
+                                    
+                                        </form>
+                                    </div>
+                            
+                                </div>
+                            </div>
+                            </div>
+                        </li>
+
+                        <li class="mt-4">
+                            <span>สำเนาบัตรประชาชน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                            <button type="button" class="btn mt-2" id="certId" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_id">
+                                สำเนาบัตรประชาชน
+                            </button>
+                            @if ($customer_edit->cert_id == '')
+                            <div class="py-2">
+                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                            </div>
+                            <hr class="my-2 mb-2" style="color: #8E8E8E; width: 100%;">
+                            @endif
+
+                            <div class="modal fade" id="staticBackdrop_id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">สำเนาบัตรประชาชน</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <span class="ms-3 py-2" style="text-align: start;">สำเนาบัตรประชาชน/Code : {{$customer_edit->customer_code; }}</span>
+                                <hr style="color:#a5a5a5;">
+                                    <div class="modal-body">
+                                        <form action="/portal/customer-detail/upload-id/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">
+                                        @csrf
+                                        @if ((($customer_edit->cert_id)) != '')
+                                        
+                                            <img src={{asset("storage/".$customer_edit->cert_id)}}?v=<?php echo time(); ?>" id="previewId" style="width: 100%";/>
+                                        {{-- {{time()}} --}}
+                                        @else
+                                        <img src="/profile/image.jpg" width="100%" id="previewId">
+                                        @endif
+                                    
+                                        <input type="file" id="imageId" class="form-control" name="cert_id" style="margin-top: 10px;" accept="image/png, image/jpg, image/jpeg"/>
+                                        {{-- <hr class="py-2 mt-2"> --}}
+                                        <div class="modal-footer mt-4">
+
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                                            <button type="submit" name="submit_id" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>
+                                            {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
+
+                                        </div>
+                                    
+                                        </form>
+                                    </div>
+                            
+                                </div>
+                            </div>
+                            </div>
+                        </li>
+                        {{-- <span>ใบอนุญาตขายยา/สถานพยาบาล</span>
                         <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certStore" >ใบอนุญาตขายยา/สถานพยาบาล</div>
                         @if ($customer_edit->cert_store == '')
                         <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
                         @endif
-                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;">
+                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;"> --}}
 
-                        <span>ใบประกอบวิชาชีพ</span>
+                        {{-- <span>ใบประกอบวิชาชีพ</span>
                         <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certMedical" >ใบประกอบวิชาชีพ</div>
                         @if ($customer_edit->cert_medical == '')
                         <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
                         @endif
-                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;">
+                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;"> --}}
                         {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_medical" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
-                        <span>ใบทะเบียนพาณิชย์</span>
+                       {{--  <span>ใบทะเบียนพาณิชย์</span>
                         <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certCommerce" >ใบทะเบียนพาณิชย์</div>
                         @if ($customer_edit->cert_commerce == '')
                         <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
                         @endif
-                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;">
+                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;"> --}}
                         {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_commerce" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
-                        <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span>
+                        {{-- <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span>
                         <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certVat" >ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</div>
                         @if ($customer_edit->cert_vat == '')
                         <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
                         @endif
-                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;">
+                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;"> --}}
                         {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_vat" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
-                        <span>สำเนาบัตรประชาชน</span>
+                       {{--  <span>สำเนาบัตรประชาชน</span>
                         <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certId" >สำเนาบัตรประชาชน</div>
                         @if ($customer_edit->cert_id == '')
                         <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
                         @endif
-                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;">
+                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;"> --}}
                         {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" accept="image/png, image/jpg, image/jpeg"><br> --}}
-
+                    </ul>
+                <form id="form">
+                    @csrf
+                    <ul class="text-muted py-3" style="padding-top: 10px;">
                         <li class="py-2">
                             <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                             <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$customer_edit->cert_number}}">
@@ -436,7 +690,7 @@
 
                         </div>
                     </div>
-        </form>
+            </form>
     </div>
 </div>
 
@@ -593,7 +847,7 @@
                     </script>
 
                     <!--- php upload ใบอนุญาตขายยา/สถานพยาบาล--->
-                    <script>
+                  {{--   <script>
 
                         $(document).ready(function(){
                             $('#certStore').click(function(){
@@ -658,10 +912,10 @@
                             Swal.close();
                             // window.location.reload();
                             }
-                    </script>
+                    </script> --}}
 
                     <!--- php upload ใบประกอบวิชาชีพ--->
-                    <script>
+                   {{--  <script>
 
                         $(document).ready(function(){
                             $('#certMedical').click(function(){
@@ -726,10 +980,10 @@
                             Swal.close();
                             // window.location.reload();
                             }
-                    </script>
+                    </script> --}}
 
                     <!--- php upload ใบทะเบียนพาณิชย์--->
-                    <script>
+                   {{--  <script>
 
                         $(document).ready(function(){
                             $('#certCommerce').click(function(){
@@ -795,9 +1049,9 @@
                             // window.location.reload();
                             }
                     </script>
-
+ --}}
                     <!--- php upload ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)--->
-                    <script>
+                  {{--   <script>
 
                         $(document).ready(function(){
                             $('#certVat').click(function(){
@@ -862,11 +1116,11 @@
                             Swal.close();
                             // window.location.reload();
                             }
-                    </script>
+                    </script> --}}
 
 
                     <!--- php upload สำเนาบัตรประจำตัวประชาชน--->
-                    <script>
+                   {{--  <script>
 
                             $(document).ready(function(){
                                 $('#certId').click(function(){
@@ -932,7 +1186,200 @@
                                 // window.location.reload();
                                 }
                     </script>
+ --}}
 
+                    <!-- preview image -->
+                    <script>
+                        document.getElementById('imageStore').addEventListener('change', function(event) {
+                            const file = event.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    const img = document.getElementById('previewStore');
+                                    img.src = e.target.result;
+                                    img.style.display = 'block';
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
+
+                        //ตรวจสอบ image size;
+                        $('#imageStore').bind('change', function() {
+                                                const maxSize = 1000000; //byte
+                                                const mb = maxSize/maxSize;
+                                                let size = this.files[0].size;
+                                                if( size > maxSize ) {
+
+                                                    Swal.fire({
+                                                        icon:'warning',
+                                                        title: 'ภาพใหญ่เกิน',
+                                                        text: 'ขนาดภาพไม่เกิน 1 MB (ใบอนุญาตขายยา)',
+                                                        showConfirmButton: true,
+                                                        confirmButtonText: 'ตกลง'
+
+                                                    }).then(function() {
+                                                        $("#imageStore").val('');
+                                                        window.location.reload();
+                                                    });
+
+                                                }
+
+                                            });
+                    </script>
+
+
+
+                    <script>
+                            document.getElementById('imageMedical').addEventListener('change', function(event) {
+                                const file = event.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        const img = document.getElementById('previewMedical');
+                                        img.src = e.target.result;
+                                        img.style.display = 'block';
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+
+                            //ตรวจสอบ image size;
+                            $('#imageMedical').bind('change', function() {
+                                                    const maxSize = 1000000; //byte
+                                                    const mb = maxSize/maxSize;
+                                                    let size = this.files[0].size;
+                                                    if( size > maxSize ) {
+
+                                                        Swal.fire({
+                                                            icon:'warning',
+                                                            title: 'ภาพใหญ่เกิน',
+                                                            text: 'ขนาดภาพไม่เกิน 1 MB (ใบอนุญาตขายยา)',
+                                                            showConfirmButton: true,
+                                                            confirmButtonText: 'ตกลง'
+
+                                                        }).then(function() {
+                                                            $("#imageMedical").val('');
+                                                            window.location.reload();
+                                                        });
+
+                                                    }
+
+                                                });
+                    </script>
+
+                    <script>
+                            document.getElementById('imageCommerce').addEventListener('change', function(event) {
+                                const file = event.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        const img = document.getElementById('previewCommerce');
+                                        img.src = e.target.result;
+                                        img.style.display = 'block';
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+
+                            //ตรวจสอบ image size;
+                            $('#imageCommerce').bind('change', function() {
+                                                    const maxSize = 1000000; //byte
+                                                    const mb = maxSize/maxSize;
+                                                    let size = this.files[0].size;
+                                                    if( size > maxSize ) {
+
+                                                        Swal.fire({
+                                                            icon:'warning',
+                                                            title: 'ภาพใหญ่เกิน',
+                                                            text: 'ขนาดภาพไม่เกิน 1 MB (ใบอนุญาตขายยา)',
+                                                            showConfirmButton: true,
+                                                            confirmButtonText: 'ตกลง'
+
+                                                        }).then(function() {
+                                                            $("#imageCommerce").val('');
+                                                            window.location.reload();
+                                                        });
+
+                                                    }
+
+                                                });
+                    </script>
+
+                    <script>
+                            document.getElementById('imageVat').addEventListener('change', function(event) {
+                                const file = event.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        const img = document.getElementById('previewVat');
+                                        img.src = e.target.result;
+                                        img.style.display = 'block';
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+
+                            //ตรวจสอบ image size;
+                            $('#imageVat').bind('change', function() {
+                                                    const maxSize = 1000000; //byte
+                                                    const mb = maxSize/maxSize;
+                                                    let size = this.files[0].size;
+                                                    if( size > maxSize ) {
+
+                                                        Swal.fire({
+                                                            icon:'warning',
+                                                            title: 'ภาพใหญ่เกิน',
+                                                            text: 'ขนาดภาพไม่เกิน 1 MB (ใบอนุญาตขายยา)',
+                                                            showConfirmButton: true,
+                                                            confirmButtonText: 'ตกลง'
+
+                                                        }).then(function() {
+                                                            $("#imageVat").val('');
+                                                            window.location.reload();
+                                                        });
+
+                                                    }
+
+                                                });
+                    </script>
+
+                    <script>
+                            document.getElementById('imageId').addEventListener('change', function(event) {
+                                const file = event.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        const img = document.getElementById('previewId');
+                                        img.src = e.target.result;
+                                        img.style.display = 'block';
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+
+                            //ตรวจสอบ image size;
+                            $('#imageId').bind('change', function() {
+                                                    const maxSize = 1000000; //byte
+                                                    const mb = maxSize/maxSize;
+                                                    let size = this.files[0].size;
+                                                    if( size > maxSize ) {
+
+                                                        Swal.fire({
+                                                            icon:'warning',
+                                                            title: 'ภาพใหญ่เกิน',
+                                                            text: 'ขนาดภาพไม่เกิน 1 MB (ใบอนุญาตขายยา)',
+                                                            showConfirmButton: true,
+                                                            confirmButtonText: 'ตกลง'
+
+                                                        }).then(function() {
+                                                            $("#imageId").val('');
+                                                            window.location.reload();
+                                                        });
+
+                                                    }
+
+                                                });
+                    </script>
         @endif
     </div>
 </div>

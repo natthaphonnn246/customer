@@ -26,6 +26,7 @@
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
+            min-width: 1400px;
         }
         #submitForm {
             background-color: #4355ff;
@@ -202,65 +203,269 @@
                             <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
                         </ul>
                         <ul class="text-muted" style="padding-top: 10px;">
-                            <li class="mt-2">
+                           {{--  <li class="mt-2">
                             <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                 <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certStore" >ใบอนุญาตขายยา/สถานพยาบาล</div>
                                 @if ($customer_view->cert_store == '')
                                 <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
                                 @endif
                             <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
+                            </li> --}}
+
+
+                            <!-- Button trigger modal -->
+                            <li class="mt-4">
+                                <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                <button type="button" class="btn mt-2" id="certStore" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_store">
+                                    ใบบอนุญาตขายยา/สถานพยาบาล
+                                </button>
+                                @if ($customer_view->cert_store == '')
+                                <div class="py-2">
+                                    <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                </div>
+                                <hr class="my-2 mb-2" style="color: #8E8E8E; width: 100%;">
+                                @endif
+
+                                <div class="modal fade" id="staticBackdrop_store" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">แก้ไขใบอนุญาตขายยา</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <span class="ms-3 py-2" style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล/Code : {{$customer_view->customer_code; }}</span>
+                                    <hr style="color:#a5a5a5;">
+                                        <div class="modal-body">
+                                            {{-- <form action="/webpanel/customer-detail/upload-store/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
+                                            @csrf
+                                            @if ((($customer_view->cert_store)) != '')
+                                            
+                                                <img src={{asset("storage/".$customer_view->cert_store)}}?v=<?php echo time(); ?>" id="previewStore" style="width: 100%";/>
+                                            {{-- {{time()}} --}}
+                                            @else
+                                            <img src="/profile/image.jpg" width="100%" id="previewStore">
+                                            @endif
+                                        
+                                            {{-- <input type="file" id="imageStore" class="form-control" name="cert_store" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/> --}}
+                                            {{-- <hr class="py-2 mt-2"> --}}
+                                            <div class="modal-footer mt-4">
+
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                                                {{-- <button type="submit" name="submit_store" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button> --}}
+                                                {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
+
+                                            </div>
+                                        
+                                            {{-- </form> --}}
+                                        </div>
+                                
+                                    </div>
+                                </div>
+                                </div>
                             </li>
 
                             <li class="mt-4">
-                            <span>ใบประกอบวิชาชีพ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certMedical" >ใบประกอบวิชาชีพ</div>
+                                <span>ใบประกอบวิชาชีพ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                <button type="button" class="btn mt-2" id="certMedical" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_medical">
+                                    ใบประกอบวิชาชีพ
+                                </button>
                                 @if ($customer_view->cert_medical == '')
-                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                <div class="py-2">
+                                    <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                </div>
+                                <hr class="my-2 mb-2" style="color: #8E8E8E; width: 100%;">
                                 @endif
-                            <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
+
+                                <div class="modal fade" id="staticBackdrop_medical" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบประกอบวิชาชีพ</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <span class="ms-3 py-2" style="text-align: start;">ใบประกอบวิชาชีพ/Code : {{$customer_view->customer_code; }}</span>
+                                    <hr style="color:#a5a5a5;">
+                                        <div class="modal-body">
+                                            {{-- <form action="/webpanel/customer-detail/upload-medical/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
+                                            @csrf
+                                            @if ((($customer_view->cert_medical)) != '')
+                                            
+                                                <img src={{asset("storage/".$customer_view->cert_medical)}}?v=<?php echo time(); ?>" id="previewMedical" style="width: 100%";/>
+                                            {{-- {{time()}} --}}
+                                            @else
+                                            <img src="/profile/image.jpg" width="100%" id="previewMedical">
+                                            @endif
+                                        
+                                            {{-- <input type="file" id="imageMedical" class="form-control" name="cert_medical" style="margin-top: 10px;" accept="image/png, image/jpg, image/jpeg"/> --}}
+                                            {{-- <hr class="py-2 mt-2"> --}}
+                                            <div class="modal-footer mt-4">
+
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                                                {{-- <button type="submit" name="submit_medical" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button> --}}
+                                                {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
+
+                                            </div>
+                                        
+                                            {{-- </form> --}}
+                                        </div>
+                                
+                                    </div>
+                                </div>
+                                </div>
                             </li>
-                            {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_medical" accept="image/png, image/jpg, image/jpeg"><br> --}}
+
 
                             <li class="mt-4">
-                            <span>ใบทะเบียนพาณิชย์</span>
-                                <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certCommerce" >ใบทะเบียนพาณิชย์</div>
+                                <span>ใบทะเบียนพาณิชย์</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                <button type="button" class="btn mt-2" id="certCommerce" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_commerce">
+                                    ใบทะเบียนพาณิชย์
+                                </button>
                                 @if ($customer_view->cert_commerce == '')
-                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                <div class="py-2">
+                                    <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                </div>
+                                <hr class="my-2 mb-2" style="color: #8E8E8E; width: 100%;">
                                 @endif
-                            <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
+
+                                <div class="modal fade" id="staticBackdrop_commerce" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบทะเบียนพาณิชย์</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนพาณิชย์/Code : {{$customer_view->customer_code; }}</span>
+                                    <hr style="color:#a5a5a5;">
+                                        <div class="modal-body">
+                                            {{-- <form action="/webpanel/customer-detail/upload-commerce/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
+                                            @csrf
+                                            @if ((($customer_view->cert_commerce)) != '')
+                                            
+                                                <img src={{asset("storage/".$customer_view->cert_commerce)}}?v=<?php echo time(); ?>" id="previewCommerce" style="width: 100%";/>
+                                            {{-- {{time()}} --}}
+                                            @else
+                                            <img src="/profile/image.jpg" width="100%" id="previewCommerce">
+                                            @endif
+                                        
+                                            {{-- <input type="file" id="imageCommerce" class="form-control" name="cert_commerce" style="margin-top: 10px;" accept="image/png, image/jpg, image/jpeg"/> --}}
+                                            {{-- <hr class="py-2 mt-2"> --}}
+                                            <div class="modal-footer mt-4">
+
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                                                {{-- <button type="submit" name="submit_commerce" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button> --}}
+                                                {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
+
+                                            </div>
+                                        
+                                            {{-- </form> --}}
+                                        </div>
+                                
+                                    </div>
+                                </div>
+                                </div>
                             </li>
-                            {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_commerce" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
                             <li class="mt-4">
-                            <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span>
-                                <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certVat" >ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</div>
+                                <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                <button type="button" class="btn mt-2" id="certVat" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_vat">
+                                    ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)
+                                </button>
                                 @if ($customer_view->cert_vat == '')
-                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                <div class="py-2">
+                                    <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                </div>
+                                <hr class="my-2 mb-2" style="color: #8E8E8E; width: 100%;">
                                 @endif
-                            <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
+
+                                <div class="modal fade" id="staticBackdrop_vat" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)/Code : {{$customer_view->customer_code; }}</span>
+                                    <hr style="color:#a5a5a5;">
+                                        <div class="modal-body">
+                                            {{-- <form action="/webpanel/customer-detail/upload-vat/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
+                                            @csrf
+                                            @if ((($customer_view->cert_vat)) != '')
+                                            
+                                                <img src={{asset("storage/".$customer_view->cert_vat)}}?v=<?php echo time(); ?>" id="previewVat" style="width: 100%";/>
+                                            {{-- {{time()}} --}}
+                                            @else
+                                            <img src="/profile/image.jpg" width="100%" id="previewVat">
+                                            @endif
+                                        
+                                            {{-- <input type="file" id="imageVat" class="form-control" name="cert_vat" style="margin-top: 10px;" accept="image/png, image/jpg, image/jpeg"/> --}}
+                                            {{-- <hr class="py-2 mt-2"> --}}
+                                            <div class="modal-footer mt-4">
+
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                                                {{-- <button type="submit" name="submit_vat" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button> --}}
+                                                {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
+
+                                            </div>
+                                        
+                                            {{-- </form> --}}
+                                        </div>
+                                
+                                    </div>
+                                </div>
+                                </div>
                             </li>
-                            {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_vat" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
                             <li class="mt-4">
-                            <span>สำเนาบัตรประชาชน</span>
-                                <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certId" >สำเนาบัตรประชาชน</div>
+                                <span>สำเนาบัตรประชาชน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                <button type="button" class="btn mt-2" id="certId" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_id">
+                                    สำเนาบัตรประชาชน
+                                </button>
                                 @if ($customer_view->cert_id == '')
-                                <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                <div class="py-2">
+                                    <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร</span>
+                                </div>
+                                <hr class="my-2 mb-2" style="color: #8E8E8E; width: 100%;">
                                 @endif
-                            <hr class="my-3 mb-2" style="color: #8E8E8E; width: 100%;">
-                            </li>
-                            {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" accept="image/png, image/jpg, image/jpeg"><br> --}}
 
-                            <li class="mt-4">
-                                <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$customer_view->cert_number}}" disabled><br>
-                            </li>
-                            <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                            <input class="form-control" style="margin-top:10px;  color: rgb(171, 171, 171);"  type="text" id="datepicker" name="cert_expire" value="{{$customer_view->cert_expire}}" disabled>
-                            {{-- <input id="date" style="margin-top:10px;  color: rgb(171, 171, 171);" type="date"  class="form-control" name="cert_expire" value="{{$customer_view->cert_expire}}"><br> --}}
+                                <div class="modal fade" id="staticBackdrop_id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">สำเนาบัตรประชาชน</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <span class="ms-3 py-2" style="text-align: start;">สำเนาบัตรประชาชน/Code : {{$customer_view->customer_code; }}</span>
+                                    <hr style="color:#a5a5a5;">
+                                        <div class="modal-body">
+                                            {{-- <form action="/webpanel/customer-detail/upload-id/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
+                                            @csrf
+                                            @if ((($customer_view->cert_id)) != '')
+                                            
+                                                <img src={{asset("storage/".$customer_view->cert_id)}}?v=<?php echo time(); ?>" id="previewId" style="width: 100%";/>
+                                            {{-- {{time()}} --}}
+                                            @else
+                                            <img src="/profile/image.jpg" width="100%" id="previewId">
+                                            @endif
+                                        
+                                            {{-- <input type="file" id="imageId" class="form-control" name="cert_id" style="margin-top: 10px;" accept="image/png, image/jpg, image/jpeg"/> --}}
+                                            {{-- <hr class="py-2 mt-2"> --}}
+                                            <div class="modal-footer mt-4">
 
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                                                {{-- <button type="submit" name="submit_id" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button> --}}
+                                                {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
+
+                                            </div>
+                                        
+                                            {{-- </form> --}}
+                                        </div>
+                                
+                                    </div>
+                                </div>
+                                </div>
+                            </li>
+                           
                         </ul>
-
                              
                         <script>
                             $(document).ready(function () {
@@ -736,263 +941,6 @@
 
         </script>
 
-        <!--- php upload ใบอนุญาตขายยา/สถานพยาบาล--->
-        <script>
-
-                $(document).ready(function(){
-                    $('#certStore').click(function(){
-                        // e.preventDefault(); ปิดใช้งาน submit ปกติ
-                        Swal.fire ({
-                            html:
-                            '<p style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล/Code : {{$customer_view->customer_code; }}</p>'
-                            +'<hr>'
-                            +'<form action="/webpanel/customer-detail/upload-store/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
-                            +'@csrf'
-                            +'@if ((($customer_view->cert_store)) != '')'
-                            +'<img src="/storage/certs/{{$customer_view->cert_store ; }}" id="fileImage" style="width: 100%";/>'
-                            +'@else'
-                            +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
-                            +'@endif'
-                           /*  +'<hr>'
-                            +'<input type="file" id="image" class="form-control" name="cert_store" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
-                            +'<hr>'
-                            +'<div style="margin-top: 10px; text-align: end;">'
-                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
-                            +'<button type="submit" name="submit_store" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>' */
-                            +'</div>'
-                            + '</form>',
-                            showConfirmButton: false, 
-
-                            // confirmButtonText: 'บันทึก',
-                            // showCancelButton: true,
-                        
-                            });
-
-                                    /// preview image swal filre;
-                                        let image = document.querySelector('#image');
-                                        let fileImage = document.querySelector('#fileImage');
-
-                                        image.onchange = evt => {
-                                        const [file] = image.files;
-                                        if(file) {
-                                        fileImage.src = URL.createObjectURL(file);
-                                        }
-                                        }
-                                });
-                            });
-                    //close window reload window;
-                    function closeWin() {
-                    Swal.close();
-                    // window.location.reload();
-                    }
-        </script>
-
-        <!--- php upload ใบประกอบวิชาชีพ--->
-        <script>
-
-                $(document).ready(function(){
-                    $('#certMedical').click(function(){
-                        // e.preventDefault(); ปิดใช้งาน submit ปกติ
-                        Swal.fire ({
-                            html:
-                            '<p style="text-align: start;">แก้ไขใบประกอบวิชาชีพ/Code : {{$customer_view->customer_code; }}</p>'
-                            +'<hr>'
-                            +'<form action="/webpanel/customer-detail/upload-medical/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
-                            +'@csrf'
-                            +'@if ((($customer_view->cert_medical)) != '')'
-                            +'<img src="/storage/certs/{{$customer_view->cert_medical ; }}" id="fileImage" style="width: 100%";/>'
-                            +'@else'
-                            +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
-                            +'@endif'
-                       /*      +'<hr>'
-                            +'<input type="file" id="image" class="form-control" name="cert_medical" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
-                            +'<hr>'
-                            +'<div style="margin-top: 10px; text-align: end;">'
-                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
-                            +'<button type="submit" name="submit_medical" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>' */
-                            +'</div>'
-                            + '</form>',
-                            showConfirmButton: false, 
-
-                            // confirmButtonText: 'บันทึก',
-                            // showCancelButton: true,
-                        
-                            });
-
-                                    /// preview image swal filre;
-                                        let image = document.querySelector('#image');
-                                        let fileImage = document.querySelector('#fileImage');
-
-                                        image.onchange = evt => {
-                                        const [file] = image.files;
-                                        if(file) {
-                                        fileImage.src = URL.createObjectURL(file);
-                                        }
-                                        }
-                                });
-                            });
-                    //close window reload window;
-                    function closeWin() {
-                    Swal.close();
-                    // window.location.reload();
-                    }
-        </script>
-
-        <!--- php upload ใบทะเบียนพาณิชย์--->
-        <script>
-
-                $(document).ready(function(){
-                    $('#certCommerce').click(function(){
-                        // e.preventDefault(); ปิดใช้งาน submit ปกติ
-                        Swal.fire ({
-                            html:
-                            '<p style="text-align: start;">แก้ไขใบทะเบียนพาณิชย์/Code : {{$customer_view->customer_code; }}</p>'
-                            +'<hr>'
-                            +'<form action="/webpanel/customer-detail/upload-commerce/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
-                            +'@csrf'
-                            +'@if ((($customer_view->cert_commerce)) != '')'
-                            +'<img src="/storage/certs/{{$customer_view->cert_commerce ; }}" id="fileImage" style="width: 100%";/>'
-                            +'@else'
-                            +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
-                            +'@endif'
-                            /* +'<hr>'
-                            +'<input type="file" id="image" class="form-control" name="cert_commerce" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
-                            +'<hr>'
-                            +'<div style="margin-top: 10px; text-align: end;">'
-                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
-                            +'<button type="submit" name="submit_commerce" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>' */
-                            +'</div>'
-                            + '</form>',
-                            showConfirmButton: false, 
-
-                            // confirmButtonText: 'บันทึก',
-                            // showCancelButton: true,
-                        
-                            });
-
-                                    /// preview image swal filre;
-                                        let image = document.querySelector('#image');
-                                        let fileImage = document.querySelector('#fileImage');
-
-                                        image.onchange = evt => {
-                                        const [file] = image.files;
-                                        if(file) {
-                                        fileImage.src = URL.createObjectURL(file);
-                                        }
-                                        }
-                                });
-                            });
-                    //close window reload window;
-                    function closeWin() {
-                    Swal.close();
-                    // window.location.reload();
-                    }
-        </script>
-
-         <!--- php upload ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)--->
-         <script>
-
-                    $(document).ready(function(){
-                        $('#certVat').click(function(){
-                            // e.preventDefault(); ปิดใช้งาน submit ปกติ
-                            Swal.fire ({
-                                html:
-                                '<p style="text-align: start;">แก้ไขใบภาษีมูลค่าเพิ่ม (ภ.พ.20)/Code : {{$customer_view->customer_code; }}</p>'
-                                +'<hr>'
-                                +'<form action="/webpanel/customer-detail/upload-vat/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
-                                +'@csrf'
-                                +'@if ((($customer_view->cert_vat)) != '')'
-                                +'<img src="/storage/certs/{{$customer_view->cert_vat; }}" id="fileImage" style="width: 100%";/>'
-                                +'@else'
-                                +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
-                                +'@endif'
-                              /*   +'<hr>'
-                                +'<input type="file" id="image" class="form-control" name="cert_vat" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
-                                +'<hr>'
-                                +'<div style="margin-top: 10px; text-align: end;">'
-                                +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
-                                +'<button type="submit" name="submit_vat" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>' */
-                                +'</div>'
-                                + '</form>',
-                                showConfirmButton: false, 
-
-                                // confirmButtonText: 'บันทึก',
-                                // showCancelButton: true,
-                            
-                                });
-
-                                        /// preview image swal filre;
-                                            let image = document.querySelector('#image');
-                                            let fileImage = document.querySelector('#fileImage');
-
-                                            image.onchange = evt => {
-                                            const [file] = image.files;
-                                            if(file) {
-                                            fileImage.src = URL.createObjectURL(file);
-                                            }
-                                            }
-                                    });
-                                });
-                        //close window reload window;
-                        function closeWin() {
-                        Swal.close();
-                        // window.location.reload();
-                        }
-            </script>
-
-
-         <!--- php upload สำเนาบัตรประจำตัวประชาชน--->
-         <script>
-
-                    $(document).ready(function(){
-                        $('#certId').click(function(){
-                            // e.preventDefault(); ปิดใช้งาน submit ปกติ
-                            Swal.fire ({
-                                html:
-                                '<p style="text-align: start;">แก้ไขสำเนาบัตรประจำตัวประชาชน/Code : {{$customer_view->customer_code; }}</p>'
-                                +'<hr>'
-                                +'<form action="/webpanel/customer-detail/upload-id/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
-                                +'@csrf'
-                                +'@if ((($customer_view->cert_id)) != '')'
-                                +'<img src="/storage/certs/{{$customer_view->cert_id; }}" id="fileImage" style="width: 100%";/>'
-                                +'@else'
-                                +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
-                                +'@endif'
-                             /*    +'<hr>'
-                                +'<input type="file" id="image" class="form-control" name="cert_id" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
-                                +'<hr>'
-                                +'<div style="margin-top: 10px; text-align: end;">'
-                                +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
-                                +'<button type="submit" name="submit_id" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>' */
-                                +'</div>'
-                                + '</form>',
-                                showConfirmButton: false, 
-
-                                // confirmButtonText: 'บันทึก',
-                                // showCancelButton: true,
-                            
-                                });
-
-                                        /// preview image swal filre;
-                                            let image = document.querySelector('#image');
-                                            let fileImage = document.querySelector('#fileImage');
-
-                                            image.onchange = evt => {
-                                            const [file] = image.files;
-                                            if(file) {
-                                            fileImage.src = URL.createObjectURL(file);
-                                            }
-                                            }
-                                    });
-                                });
-                        //close window reload window;
-                        function closeWin() {
-                        Swal.close();
-                        // window.location.reload();
-                        }
-            </script>
-
-        
         @endif
 </div>
 @endsection
