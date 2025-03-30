@@ -741,6 +741,9 @@
             <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
         </div>
         @elseif ($count_page <= 1)
+        <div class="py-3">
+            <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
+        </div>
         @else
         <div class="ms-6">
             <nav aria-label="Page navigation example">
