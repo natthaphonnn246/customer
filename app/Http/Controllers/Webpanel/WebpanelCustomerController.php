@@ -1015,8 +1015,9 @@ class WebpanelCustomerController
 
                 if ($customer_id == $id)
                 {
-                    echo 'success';
+                    // echo 'success';
                 //    return redirect('/webpanel/customer/'.$id)->with('success', 'check_success');
+                echo 'success';
                 }
                 else {
                     echo 'fail';
@@ -1029,7 +1030,7 @@ class WebpanelCustomerController
 
             if($request->has('submit_store'))
             {
-
+                // dd('image');
                 $check_cert_store = $request->file('cert_store');
                 $cert_store = $check_cert_store;
     

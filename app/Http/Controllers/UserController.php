@@ -4,13 +4,22 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Customer;
+use DateTime;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Carbon;
+use Illuminate\Process\Exceptions\ProcessFailedException;
+use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Sleep;
+use Illuminate\Support\Facades\Auth;
 
 Class UserController
 {
     
     public function create(Request $request)
     {
+        
        //timestamp;
     date_default_timezone_set("Asia/Bangkok");
     
@@ -65,6 +74,9 @@ Class UserController
                                /*  'maintenance_status' => '0',
                                 'allowed_maintenance_status' => '0', */
                                 'allowed_user_status' => '0',
+                                'check_login' => '',
+                                'login_date' => '',
+                                'last_activity' => '',
 
                             ]);
 
@@ -89,6 +101,9 @@ Class UserController
                                /*  'maintenance_status' => '0',
                                 'allowed_maintenance_status' => '0', */
                                 'allowed_user_status' => '0',
+                                'check_login' => '',
+                                'login_date' => '',
+                                'last_activity' => '',
                         
                             ]);
 
@@ -158,8 +173,18 @@ Class UserController
         return view('webpanel/admin', compact('status_admin'));
     } */
 
-    public function userData()
+    public function userData(Request $request)
     {
+
+
+ /*    $response = Http::connectTimeout(4)->get('http://127.0.0.1:8000/');
+    $date_update = date_default_timezone_set("Asia/Bangkok"); */
+    // dd($ipAddresses = $request->ips());
+    /* $now = now();
+    dd($now); */
+ /*    $result = Process::timeout(30)->run('bash import.sh');
+    dd($result); */
+
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
@@ -367,3 +392,6 @@ Class UserController
    }
 
 }
+
+/* 1893832645000
+1742789132 */

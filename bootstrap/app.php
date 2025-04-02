@@ -70,6 +70,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
 
+    ->withMiddleware(function (Middleware $middleware) {
+
+        $middleware->alias([
+            'statusOnline' => \App\Http\Middleware\StatusOnline::class,
+        ]);
+    })
+
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

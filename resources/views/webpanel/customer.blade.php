@@ -27,7 +27,7 @@
             /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
-            min-width: 1400px;
+            /* min-width: 1200px; */
             /* text-align: left; */
         }
         #admin {
@@ -402,7 +402,7 @@
                 </button> 
 
                 <!-- Dropdown menu -->
-                <div id="dropdownDivider" class="z-10 hidden bg-gray divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
+                <div id="dropdownDivider" class="z-10 hidden divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600" style="background-color: #3c3c3c;">
 
                     @if(isset($admin_area))
 

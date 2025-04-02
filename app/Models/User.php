@@ -37,6 +37,9 @@ class User extends Authenticatable
         'email_login',
         'text_add',
         'allowed_user_status',
+        'check_login',
+        'login_date',
+        'last_activity',
     ];
     protected $table = 'users';
     protected $connection = 'mysql';

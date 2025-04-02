@@ -197,7 +197,7 @@
                                 </li>
                                 <li class="mt-2 ms-2 mr-2 mb-3 ">
                                     <span>รหัสผ่าน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="password">
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="password" required>
 
                                 </li>
                             </ul>

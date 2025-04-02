@@ -13,19 +13,26 @@
     use App\Http\Controllers\SettingController;
     use App\Http\Controllers\SaleareaController;
     use App\Http\Controllers\DashboardController;
-    use App\Http\Controllers\ReportSellerController;
+use App\Http\Controllers\LogStatusController;
+use App\Http\Controllers\ReportSellerController;
     use Illuminate\Support\Facades\Route;
     use App\Http\Middleware\EnsureUserHasRole;
-use App\Imports\SellersImport;
-use App\Models\Customer;
+    use App\Imports\SellersImport;
+    use App\Models\Customer;
     use App\Models\Salearea;
     use Illuminate\Support\Facades\DB;
     use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+
+    // Route::get('/', function() { return view('auth.login-tailwind');})->name('login');
+
 
     Route::get('/', function () {
         return view('auth.login-tailwind');
     });
 
+    //middleware statusOnline;
+Route::middleware('statusOnline')->group(function (){
+    
     Route::get('/signin', function () {
         return view('portal/portal-sign');
     })->middleware('auth', 'status','maintenance');
@@ -63,6 +70,12 @@ use App\Models\Customer;
         Route::get('/admin/customer/export/getcsv/{status}/{admin_id}', [CustomerAreaExport::class, 'exportCustomerAreaCsv']);
         Route::get('/admin/customer/adminarea/{admin_id}/{status}', [WebpanelAdminController::class, 'indexAdminArea']);
     });
+
+    //test;
+  
+    // Route::get('/webpanel/customer-status' , [LogStatusController::class, 'statusOnline']);
+   
+    // Route::get('/webpanel/customer-status' , [LogStatusController::class, 'statusOnline']);
 
     Route::get('/dashboard', function () {
         return view('dashboard');
@@ -243,6 +256,10 @@ use App\Models\Customer;
 
         Route::get('/webpanel/customer/adminarea/{admin_id}/{status}', [WebpanelCustomerController::class, 'indexAdminArea']);
 
+        
+        //customer-status;
+        Route::get('/webpanel/customer-status' , [LogStatusController::class, 'statusOnline']);
+
     });
 
     //report seller;
@@ -358,6 +375,7 @@ use App\Models\Customer;
    /*  Route::get('/logintail', function() {
         return view('auth/login-tailwind');
     }); */
+});
 
     Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
