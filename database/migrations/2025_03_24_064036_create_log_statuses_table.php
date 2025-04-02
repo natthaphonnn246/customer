@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //test
         Schema::create('tb_log_status', function (Blueprint $table) {
             $table->id();
             $table->string('user_id');
