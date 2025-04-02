@@ -22,6 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        //add;
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['check_login', 'date_login']);
         });
