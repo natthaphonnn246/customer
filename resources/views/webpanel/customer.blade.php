@@ -27,7 +27,7 @@
             /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
-            /* min-width: 1200px; */
+            min-width: 1400px;
             /* text-align: left; */
         }
         #admin {
@@ -254,6 +254,19 @@
         .sliders.round:before {
             border-radius: 50%;
         }
+        #dropdownDivider {
+            background-color: rgb(67, 68, 68);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #dropdownlist:hover {
+            background-color: rgba(8, 123, 110, 0.544);
+            color: white;
+            border-radius: 5px;
+            
+        }
+
     </style>
     
         @section('status_alert')
@@ -402,13 +415,13 @@
                 </button> 
 
                 <!-- Dropdown menu -->
-                <div id="dropdownDivider" class="z-10 hidden divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600" style="background-color: #3c3c3c;">
+                <div id="dropdownDivider" class="z-10 hidden divide-y divide-gray-100 shadow-sm w-44" style="text-align: center;">
 
                     @if(isset($admin_area))
 
                         @foreach($admin_area as $row_area)
-                        <div class="py-2">
-                            <a href="/webpanel/customer/adminarea/{{$row_area->admin_area}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{$row_area->admin_area}}</a>
+                        <div class="">
+                            <a href="/webpanel/customer/adminarea/{{$row_area->admin_area}}" class="block px-4 py-2 text-sm" id="dropdownlist">{{$row_area->admin_area}} ({{$row_area->name}})</a>
                         </div>
                         @endforeach
                         @else
