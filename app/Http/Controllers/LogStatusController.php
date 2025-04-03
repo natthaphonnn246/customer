@@ -58,7 +58,7 @@ class LogStatusController extends Controller
         $arr_new_time = explode(" ", date('Y-m-d H:i:s', $new_time));
         // dd($arr_new_time[1]); // Format and display the new time
  */
-        $code_notin = ['1111', '5585', '7777', '8888', '9002'];
+        $code_notin = ['1111', '5585', '7777', '8888', '9088'];
 
         $check_row = User::select('user_id', 'user_code', 'email', 'name', 'last_activity', 'login_date')
                             ->whereNotIn('user_id', $code_notin)
