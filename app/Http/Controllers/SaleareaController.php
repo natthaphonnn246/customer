@@ -14,35 +14,53 @@ class SaleareaController extends Controller
     public function viewCreate()
     {
          //menu alert;
-         $status_waiting = Customer::where('status', '0')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+         $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
+
+         $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_updated = Customer::where('status_update', 'updated')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_alert = $status_waiting + $status_updated;
         // dd($salearea);
-        return view('/webpanel/sale-create', compact('status_alert', 'status_waiting', 'status_updated'));
+        return view('/webpanel/sale-create', compact('status_alert', 'status_waiting', 'status_updated', 'status_registration'));
     }
 
     public function index()
     {
+
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
         $salearea = Salearea::orderBy('sale_area', 'asc')->get();
 
          //menu alert;
-         $status_waiting = Customer::where('status', '0')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
+
+         $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_updated = Customer::where('status_update', 'updated')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_alert = $status_waiting + $status_updated;
         // dd($salearea);
-        return view('/webpanel/sale', compact('salearea', 'status_alert', 'status_waiting', 'status_updated'));
+        return view('/webpanel/sale', compact('salearea', 'status_alert', 'status_waiting', 'status_updated', 'status_registration'));
     }
 
     /**
@@ -92,10 +110,17 @@ class SaleareaController extends Controller
     {
         $salearea = Salearea::where('id', $id)->first();
 
+                $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
                  //menu alert;
-                 $status_waiting = Customer::where('status', '0')
-                                            ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                            ->count();
+
+                $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+                $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                        ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->count();
 
                 $status_updated = Customer::where('status_update', 'updated')
                                             ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
@@ -103,7 +128,7 @@ class SaleareaController extends Controller
 
                 $status_alert = $status_waiting + $status_updated;
 
-        return view('/webpanel/sale-detail', compact('salearea', 'status_alert', 'status_waiting','status_updated'));
+        return view('/webpanel/sale-detail', compact('salearea', 'status_alert', 'status_waiting','status_updated', 'status_registration'));
     }
 
     /**
@@ -161,18 +186,25 @@ class SaleareaController extends Controller
 
     public function importsale()
     {
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
          //menu alert;
-         $status_waiting = Customer::where('status', '0')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
+        
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
 
         $status_updated = Customer::where('status_update', 'updated')
-                                    ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
         $status_alert = $status_waiting + $status_updated;
 
-        return view('/webpanel/importsale', compact('status_alert', 'status_waiting', 'status_updated'));
+        return view('/webpanel/importsale', compact('status_alert', 'status_waiting', 'status_updated', 'status_registration'));
     }
 
     public function importFile(Request $request)
