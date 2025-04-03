@@ -415,7 +415,7 @@
                 </button> 
 
                 <!-- Dropdown menu -->
-                <div id="dropdownDivider" class="z-10 hidden divide-y divide-gray-100 shadow-sm w-44" style="text-align: center;">
+                <div id="dropdownDivider" class="z-10 hidden divide-y divide-gray-100 shadow-sm w-44" style="text-align: left;">
 
                     @if(isset($admin_area))
 
