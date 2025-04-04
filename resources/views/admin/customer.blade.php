@@ -254,6 +254,18 @@
         .sliders.round:before {
             border-radius: 50%;
         }
+        #dropdownDivider {
+            background-color: rgb(67, 68, 68);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #dropdownlist:hover {
+            background-color: rgba(8, 123, 110, 0.544);
+            color: white;
+            border-radius: 5px;
+            
+        }
     </style>
     
         @section('status_alert')
@@ -375,29 +387,28 @@
                     </ul>
                     {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
         
-                <button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="" style="background-color:rgb(9, 179, 74); width: 100%; border-radius:8px; color:#ffffff; height:70px;" type="button">
+                    <button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="" style="background-color:rgb(9, 179, 74); width: 100%; border-radius:8px; color:#ffffff; height:70px;" type="button">
                     
-                    เขตรับผิดชอบ
-                      
-                </button> 
-
-                <!-- Dropdown menu -->
-                <div id="dropdownDivider" class="z-10 hidden bg-gray divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
-
-                    @if(isset($admin_area))
-
-                        @foreach($admin_area as $row_area)
-                        <div class="py-2">
-                            <a href="/admin/customer/adminarea/{{$row_area->admin_area}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{$row_area->admin_area}}</a>
-                        </div>
-                        @endforeach
-                        @else
-                        <div class="py-2">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Separated link</a>
-                        </div>
-                    @endif
-                </div>
-                
+                        เขตรับผิดชอบ
+                          
+                    </button> 
+    
+                    <!-- Dropdown menu -->
+                    <div id="dropdownDivider" class="z-10 hidden divide-y divide-gray-100 shadow-sm w-44" style="text-align: left;">
+    
+                        @if(isset($admin_area))
+    
+                            @foreach($admin_area as $row_area)
+                            <div class="">
+                                <a href="/admin/customer/adminarea/{{$row_area->admin_area}}" class="block px-4 py-2 text-sm" id="dropdownlist">{{$row_area->admin_area}} ({{$row_area->name}})</a>
+                            </div>
+                            @endforeach
+                            @else
+                            <div class="py-2">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Separated link</a>
+                            </div>
+                        @endif
+                    </div>
     
                     <p class="py-2" id="keyword_search"></p>
                     @csrf   
