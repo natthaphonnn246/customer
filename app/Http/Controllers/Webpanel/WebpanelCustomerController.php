@@ -94,13 +94,16 @@ class WebpanelCustomerController
 
         if($keyword_search != '') {
 
-            $count_page = Customer::where('customer_id', 'Like', "%{$keyword_search}%")
-                                    ->whereNotIn('customer_id', $code_notin)
+            $count_page = Customer::whereNotIn('customer_id', $code_notin)
+                                    ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                    ->OrWhere('customer_name', 'Like', "%{$keyword_search}%")
                                     ->count();
             // dd($count_page);
 
             $perpage = 10;
             $total_page = ceil($count_page / $perpage);
+
+            // dd($total_page);
             $start = ($perpage * $page) - $perpage;
 
             // $customer = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
@@ -129,6 +132,7 @@ class WebpanelCustomerController
                 // return back();
 
         }
+        
 
         return view('webpanel/customer', compact('admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting', 'total_status_registration',
                 'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_registration', 'status_updated'));
