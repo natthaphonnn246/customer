@@ -27,6 +27,7 @@
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
+            min-width: 1400px;
         }
         #admin {
             background-color: #007bff;
@@ -79,14 +80,14 @@
             text-decoration: underline;
         }
         #copy {
-            background-color: #e0e0e0;
-            color:rgb(71, 71, 71);
+            background-color: #80ec98;
+            color:rgb(2, 55, 20);
             border-radius: 5px;
         }
         #copy:hover {
             width: auto;
             height: auto;
-            background-color: #c5c5c5;
+            background-color: #34cb55;
             border-radius: 5px;
         }
     </style>
@@ -224,27 +225,27 @@
                                         @if($admin_master->role == '0')
 
                                             @if($admin_master->rights_area == '0')
-                                                <span style="font-size: 14px; color:red;">*ลิงก์ทดสอบ (ไม่ระบุ, สิทธิ์รับผิดชอบ = ไม่ระบุ) :
-                                                <input  style="margin-top:5px; width:80%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/signin') }}" id="myInput">
-                                                <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px;">Copy</button>
+                                                <span style="font-size: 14px; color:red; width: 100%;">*ลิงก์ทดสอบ (ไม่ระบุ, สิทธิ์รับผิดชอบ = ไม่ระบุ) :
+                                                <input  style="margin-top:5px; width:100%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/signin') }}" id="myInput">
+                                                <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px; margin-top:10px;">Copy</button>
                                             @else
-                                                <span style="font-size: 14px; color:red;">*ลิงก์ทดสอบ (ไม่ระบุ, สิทธิ์รับผิดชอบ = ระบุ) :
-                                                <input  style="margin-top:5px; width:80%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/portal/dashboard') }}" id="myInput">
-                                                <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px;">Copy</button>
+                                                <span style="font-size: 14px; color:red; width: 100%;">*ลิงก์ทดสอบ (ไม่ระบุ, สิทธิ์รับผิดชอบ = ระบุ) :
+                                                <input  style="margin-top:5px; width:100%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/portal/dashboard') }}" id="myInput">
+                                                <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px; margin-top:10px;">Copy</button>
                                             @endif
 
                                         @elseif($admin_master->role == '1')
 
-                                        <span style="font-size: 14px; color:red;">*ลิงก์ทดสอบ (ดูรายงาน) :
-                                        <input  style="margin-top:5px; width:80%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/admin') }}" id="myInput">
-                                        <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px;">Copy</button>
+                                        <span style="font-size: 14px; color:red; width: 100%;">*ลิงก์ทดสอบ (ดูรายงาน) :
+                                        <input  style="margin-top:5px; width:100%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/admin') }}" id="myInput">
+                                        <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px; margin-top:10px;">Copy</button>
 
                                         @else
-
-                                        <span style="font-size: 14px; color:red;">*ลิงก์ทดสอบ (แอดมินหลัก) :
-                                        <input  style="margin-top:5px; width:80%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/webpanel') }}" id="myInput">
-                                        <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px;">Copy</button>
-
+                         
+                                        <span style="font-size: 14px; color:red; width: 100%;">*ลิงก์ทดสอบ (แอดมินหลัก) :
+                                        <input  style="margin-top:5px; width: 100%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/webpanel') }}" id="myInput">
+                                        <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px; margin-top:10px;">Copy</button>
+                                        
                                         @endif
                                     @endif
                                 </li>
