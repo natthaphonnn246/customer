@@ -515,7 +515,7 @@
                         <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;"> --}}
                         {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" accept="image/png, image/jpg, image/jpeg"><br> --}}
                     </ul>
-                <form id="form">
+            <form action="/portal/customer-detail/update/{{$customer_edit->id}}" method="post" enctype="multipart/form-data">
                     @csrf
                     <ul class="text-muted py-3" style="padding-top: 10px;">
                         <li class="py-2">
@@ -685,7 +685,7 @@
                                
 
                                 <div style="text-align:right; margin-top: 20px;">
-                                    <button type="button" id="updateForm" name="submit_update" class="btn my-2" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
+                                    <button type="submit" id="updateForm" name="submit_update" class="btn my-2" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
                                 </div>
 
                         </div>
@@ -694,8 +694,45 @@
     </div>
 </div>
 
+                    @if (session('status') == 'updated_success')
+                        <script> 
+                                $('#bgs').css('display', 'none');
+                                Swal.fire({
+                                    title: 'กรุณาติดต่อผู้ดูแล',
+                                    text: 'บันทึกเรียบร้อย',
+                                    icon: "success",
+                                    // showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    // cancelButtonColor: "#d33",
+                                    confirmButtonText: "ตกลง"
+                                    }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.reload();
+                                    }
+                                });
+                        </script>
+                    @endif
+
+                    @if (session('status') == 'updated_fail')
+                        <script> 
+                                $('#bgs').css('display', 'none');
+                                Swal.fire({
+                                    title: "ล้มเหลว",
+                                    text: "เกิดข้อผิดพลาด",
+                                    icon: "error",
+                                    // showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    // cancelButtonColor: "#d33",
+                                    confirmButtonText: "ตกลง"
+                                    }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.reload();
+                                    }
+                                });
+                        </script>
+                    @endif
                     <!--- update user information-->
-                    <script>
+                   {{--  <script>
                             $('#updateForm').click(function() {
                                 
                                 $('#bgs').css('display', 'none');
@@ -733,7 +770,7 @@
                                     }
                                 });
                             });
-                    </script>
+                    </script> --}}
 
     {{-- @endif --}}
                 

@@ -16,12 +16,21 @@ class RightsArea
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if(Auth::user()->admin_role == 1) {
+            if(Auth::user()->rights_area == '0') {
+
+                return redirect('/signin');
+
+            } 
+            return $next($request);
+        }
+
         if(Auth::user()->rights_area == '0') {
 
             return redirect('/signin');
 
         } 
         return $next($request);
-        
+            
     }
 }

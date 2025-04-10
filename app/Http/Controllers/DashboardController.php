@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $customer_north = Customer::where('geography', 'ภาคเหนือ')->count();
         $customer_central = Customer::where('geography', 'ภาคกลาง')->count();
@@ -142,6 +142,7 @@ class DashboardController extends Controller
                                         ->count();
 
             $status_alert = $status_waiting + $status_updated;
+            $user_id_admin = $request->user()->user_id;
 
         // dd($customer_view);
 
@@ -158,7 +159,7 @@ class DashboardController extends Controller
                 'normal_customer_western', 'follow_customer_western','suspend_customer_western', 'percentage_normal_customer_western', 'closed_customer_western', 'percentage_follow_customer_western', 'percentage_suspend_customer_western', 'percentage_closed_customer_western',
                 'normal_customer_south', 'follow_customer_south','suspend_customer_south', 'percentage_normal_customer_south', 'percentage_follow_customer_south', 'closed_customer_south', 'percentage_suspend_customer_south', 'percentage_closed_customer_south',
                 'customer_all', 'count_status_normal', 'count_status_follow', 'count_status_suspend', 'count_status_closed',
-                'status_waiting', 'status_updated', 'status_alert', 'status_registration'
+                'status_waiting', 'status_updated', 'status_alert', 'status_registration', 'user_id_admin'
                     
                 
                 ));

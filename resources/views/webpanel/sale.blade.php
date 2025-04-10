@@ -225,6 +225,16 @@
         }
     </style>
 
+            @if($user_id_admin == '0000')
+                @section('profile_img')
+                <img class="w-8 h-8 rounded-full me-3" src="/profile/profiles-2 copy.jpg" alt="user photo">
+                @endsection
+            @else
+                @section('profile_img')
+                <img class="w-8 h-8 rounded-full me-3" src="/profile/user.png" alt="user photo">
+                @endsection
+            @endif
+
             @section('status_alert')
             <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
             @endsection
@@ -246,6 +256,7 @@
             @endsection
 
     <div class="contentArea">
+        
         <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
         </div>

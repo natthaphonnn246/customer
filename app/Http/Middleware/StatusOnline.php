@@ -31,6 +31,8 @@ class StatusOnline
                     // 'date_login'=> date("h:i:s"),
                     'last_activity'=> $date,
                             ]);
+
+                            
                     $log_login_date = LogStatus::select('id','login_date')->where('user_id', $user_id)->orderBy('id', 'desc')->first();
                     // dd($log_login_date->id);
 

@@ -50,41 +50,58 @@ class AuthenticatedSessionController extends Controller
         {
             
                 //superadmin;
-                if(Auth::user()->user_id == '0000') {
+                if(Auth::user()->user_id == '0000' || Auth::user()->user_id == '4494' || Auth::user()->user_id == '9000') {
 
-                    //check login;
-                    $count_login = User::select('check_login')->where('email',$request->email)->first();
-                    // dd(gettype($count_login->check_login));
-                    if(($count_login->check_login) == '') {
-                        $check_login = User::where('email',$request->email)
-                                            ->update([
-                                                'check_login' => 0 +1,
-                                                'login_date' => $date_time,
+                       //check login;
+                       $count_login = User::select('check_login')->where('email',$request->email)->first();
+                       // dd(gettype($count_login->check_login));
+                       if(($count_login->check_login) == '') {
+                           $check_login = User::where('email',$request->email)
+                                                ->update([
+                                                    'check_login' => 0 +1,
+                                                    'login_date' => $date_time,
 
-                                                ]);
+                                                   ]);
+
+                       } else {
+                           $check_login = User::where('email',$request->email)
+                                                ->update([
+                                                    'check_login' => intval($count_login->check_login) +1,
+                                                    'login_date' => $date_time,
+                                                   
+                                                   ]);
+                       }
+
+                       //table_log_status;4
+                       LogStatus::create([
+                                   'user_id' => Auth::user()->user_id,
+                                   'email' => Auth::user()->email,
+                                   'user_name' => Auth::user()->name,
+                                   'login_count' => '1',
+                                   'login_check' => 'success',
+                                   'login_date' => $date,
+                                   'ip_address' => $request->ip(),
+                                   'last_activity' => $date,
+                               ]);
+
+
+                    // if(Auth::user()->role == '2') 
+                    if(Auth::user()->admin_role == 1) {
+
+                        return redirect('webpanel');
+                    
+                    } elseif (Auth::user()->role == '2') {
+
+                        return redirect('webpanel');
+
+                    } elseif (Auth::user()->role == '1') {
+
+                        return redirect()->route('webpanel.report');
 
                     } else {
-                        $check_login = User::where('email',$request->email)
-                                            ->update([
-                                                'check_login' => intval($count_login->check_login) +1,
-                                                'login_date' => $date_time,
-                                                
-                                                ]);
+                        
+                        return redirect()->route('portal');
                     }
-
-                    //table_log_status;4
-                    LogStatus::create([
-                                'user_id' => Auth::user()->user_id,
-                                'email' => Auth::user()->email,
-                                'user_name' => Auth::user()->name,
-                                'login_count' => '1',
-                                'login_check' => 'success',
-                                'login_date' => $date,
-                                'ip_address' => $request->ip(),
-                                'last_activity' => $date,
-                            ]);
-
-                    return redirect('webpanel');
                     
                 }
 /* if(Auth::user()->status_checked == 'active')

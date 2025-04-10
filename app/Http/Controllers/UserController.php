@@ -28,6 +28,7 @@ Class UserController
                 $code = $request->code;
                 $name = $request->admin_name;
                 $role = $request->role;
+                // $admin_role = $request->admin_role;
                 $email = $request->email;
                 $password = $request->password;
                 $address = $request->address;
@@ -60,6 +61,7 @@ Class UserController
                                 'admin_area' => '',
                                 'name' => $name,
                                 'role' => $role,
+                                // 'admin_role' => $admin_role,
                                 'status_checked' => '',
                                 'email' => $email,
                                 'password' => $password,
@@ -87,6 +89,7 @@ Class UserController
                                 'code' => $code,
                                 'admin_area' => '',
                                 'role' => $role,
+                                // 'admin_role' => $admin_role,
                                 'status_checked' => '',
                                 'email' => $email,
                                 'telephone' => $telephone,
@@ -205,10 +208,12 @@ Class UserController
 
         $status_alert = $status_waiting + $status_updated;
 
-        return view('webpanel/admin', compact('user_master', 'status_waiting', 'status_updated','status_registration', 'status_alert'));
+        $user_id_admin = $request->user()->user_id;
+
+        return view('webpanel/admin', compact('user_master', 'status_waiting', 'status_updated','status_registration', 'status_alert', 'user_id_admin'));
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $admin_master = User::adminEdit($id);
         // $admin_row = $master[0];
@@ -235,7 +240,12 @@ Class UserController
 
         $status_alert = $status_waiting + $status_updated;
 
-        return view('webpanel/admin-detail', compact('admin_master', 'province', 'amphur', 'district', 'status_alert','status_registration', 'status_waiting', 'status_updated'));
+        $user_id_admin = $request->user()->user_id;
+
+        $count_check_login = User::select('check_login')->where('id',$id)->first();
+        // dd($count_check_login->check_login);
+
+        return view('webpanel/admin-detail', compact('admin_master', 'province', 'amphur', 'district', 'status_alert','status_registration', 'status_waiting', 'status_updated', 'user_id_admin', 'count_check_login'));
     }
 
     public function update(Request $request, $id)
@@ -252,6 +262,7 @@ Class UserController
                 $user_code = $request->code;
                 $name = $request->admin_name;
                 $role = $request->role;
+                $admin_role = $request->admin_role;
                 $rights_area = $request->rights_area;
                 $email = $request->email_login;
                 $address = $request->address;
@@ -293,6 +304,7 @@ Class UserController
                     'user_id' => $user_code,
                     'name' => $name,
                     'role' => $role,
+                    'admin_role' => $admin_role,
                     'admin_area' => $admin_area,
                     'rights_area' => $rights_area,
                     'email' => $email,
@@ -318,6 +330,7 @@ Class UserController
                     'admin_area' => $admin_area,
                     'admin_name' => $name,
                     'role' => $role,
+                    // 'admin_role' => $admin_role,
                     'rights_area' => $rights_area,
                     'email' => $email,
                     'telephone' => $telephone,
@@ -332,15 +345,22 @@ Class UserController
                     'allowed_user_status' => $allowed_mtnance,
                 
                 ]);
+                usleep(200000);
                 // check user id;
                 $check_user_id = User::select('id')->where('id', $id)->first();
                 $user_id = $check_user_id->id;
 
                 if ($user_id == $id) {
-                    echo 'success';
+
+                    // echo 'success';
+
+                    return redirect('/webpanel/admin/'.$id)->with('status', 'updated_success');
 
                 } else {
-                    echo 'fail';
+
+                    return redirect('/webpanel/admin/'.$id)->with('status', 'updated_fail');
+
+                    // echo 'fail';
                 }
     }
     

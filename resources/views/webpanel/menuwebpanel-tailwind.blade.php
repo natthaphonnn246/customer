@@ -172,7 +172,8 @@
                 <div class="h-full px-3 py-2 overflow-y-auto bg-black-50" style="background-color: #081524;">
                         <a href="#" class="flex items-center ps-2.5 mb-3 my-3">
                             {{-- <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 me-3 sm:h-7" alt="Flowbite Logo" /> --}}
-                            <img class="w-8 h-8 rounded-full me-3" src="/profile/profiles-2 copy.jpg" alt="user photo"> 
+                            {{-- <img class="w-8 h-8 rounded-full me-3" src="/profile/profiles-2 copy.jpg" alt="user photo"> --}}
+                            @yield('profile_img'); 
                             <span class="self-center text-xl font-semibold whitespace-nowrap" style="color:white;">cms.vmdrug</span>
                         </a>
                 </div>
@@ -202,7 +203,7 @@
                                <a href="/webpanel/admin" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="admin_all" style="font-size:14px;">ทั้งหมด</a>
                             </li>
                             <li style="margin-left: 35px;">
-                              <a href="/webpanel/customer-status" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="saleareaMenu" style="font-size:14px;">สถานะการออนไลน์แอดมิน</a>
+                              <a href="/webpanel/active-user" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="saleareaMenu" style="font-size:14px;">สถานะการออนไลน์แอดมิน</a>
                            </li>
                             <li style="margin-left: 35px;">
                                <a href="/webpanel/sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="saleareaMenu" style="font-size:14px;">เขตการขาย<span style="background-color:rgba(26, 81, 221, 0.79); padding: 5px; border-radius:20px; font-size:12px; margin-left:6px;">sale</span></a>

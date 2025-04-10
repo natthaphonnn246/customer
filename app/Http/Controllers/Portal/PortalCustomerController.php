@@ -881,17 +881,19 @@ class PortalCustomerController
                     
                     ]);
 
+                usleep(200000);
                 // check user id;
                 $check_customer_id = Customer::select('id')->where('id', $id)->first();
                 $customer_id =  $check_customer_id->id;
 
                 if ($customer_id == $id)
                 {
-                    echo 'success';
-                //    return redirect('/webpanel/customer/'.$id)->with('success', 'check_success');
+                    // echo 'success';
+                    return redirect('/portal/customer/'.$id)->with('status', 'updated_success');
                 }
                 else {
-                    echo 'fail';
+                    // echo 'fail';
+                    return redirect('/portal/customer/'.$id)->with('status', 'updated_fail');
                 }
             
     }

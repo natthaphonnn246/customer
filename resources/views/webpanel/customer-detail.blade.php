@@ -154,6 +154,16 @@
 
     </style>
 
+        @if($user_id_admin == '0000')
+            @section('profile_img')
+            <img class="w-8 h-8 rounded-full me-3" src="/profile/profiles-2 copy.jpg" alt="user photo">
+            @endsection
+        @else
+            @section('profile_img')
+            <img class="w-8 h-8 rounded-full me-3" src="/profile/user.png" alt="user photo">
+            @endsection
+        @endif
+
         @section('status_alert')
         <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
         @endsection
@@ -498,7 +508,7 @@
                             {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" accept="image/png, image/jpg, image/jpeg"><br> --}}
                         </ul>
             
-                        <form id="form">
+            <form action="/webpanel/customer-detail/update/{{$customer_view->id}}" method="post" enctype="multipart/form-data">
                         @csrf
                         <ul class="text-muted" style="padding-top: 10px;">
                             <li class="mt-4">
@@ -811,14 +821,53 @@
                                 </div>
                                 <hr class="mr-6 ms-6 mt-4" style="color:#8E8E8E;">
                                 <div style="text-align:right;">
-                                    <button type="button" id="updateForm" name="submit_update" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
+                                    <button type="submit" id="updateForm" name="submit_update" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
                                     <a href="/webpanel/customer/getcsv/{{$admin_area_check->customer_id}}" type="button" id="exportCsv" class="btn my-2" style="border:none; width: 120px; color: rgb(67, 67, 67); padding: 10px;">Export CSV</a>
                                 </div>
                         </div>
                 </div>
+            </form>
 
+            <!-- updated customer; -->
+                        @if (session('status') == 'updated_success')
+                            <script> 
+                                    $('#bg').css('display', 'none');
+                                    Swal.fire({
+                                        title: "สำเร็จ",
+                                        text: "อัปเดตข้อมูลเรียบร้อย",
+                                        icon: "success",
+                                        // showCancelButton: true,
+                                        confirmButtonColor: "#3085d6",
+                                        // cancelButtonColor: "#d33",
+                                        confirmButtonText: "ตกลง"
+                                        }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.reload();
+                                        }
+                                    });
+                            </script>
+                        @endif
+                
+                        @if (session('status') == 'updated_fail')
+                            <script> 
+                                    $('#bg').css('display', 'none');
+                                    Swal.fire({
+                                        title: "ล้มเหลว",
+                                        text: "เกิดข้อผิดพลาด",
+                                        icon: "error",
+                                        // showCancelButton: true,
+                                        confirmButtonColor: "#3085d6",
+                                        // cancelButtonColor: "#d33",
+                                        confirmButtonText: "ตกลง"
+                                        }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.reload();
+                                        }
+                                    });
+                            </script>
+                        @endif
                                 <!--- update user information-->
-                                    <script>
+                                  {{--   <script>
                                             $('#updateForm').click(function() {
                                                 
                                                 $('#bg').css('display', 'none');
@@ -864,10 +913,9 @@
                                                     }
                                                 });
                                             });
-                                    </script>
+                                    </script> --}}
 
                 </div>
-            </form>
        
     </div>
     

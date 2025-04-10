@@ -1,8 +1,9 @@
 <?php
-
+    use Illuminate\Support\Facades\Auth;
     use App\Http\Controllers\ProfileController;
     use App\Http\Controllers\UserController;
     use App\Exports;
+    use App\Models\User;
     use App\Exports\CustomerExcelExport;
     use App\Exports\CustomerAreaExport;
     use App\Exports\CustomerCsvExport;
@@ -13,8 +14,8 @@
     use App\Http\Controllers\SettingController;
     use App\Http\Controllers\SaleareaController;
     use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LogStatusController;
-use App\Http\Controllers\ReportSellerController;
+    use App\Http\Controllers\LogStatusController;
+    use App\Http\Controllers\ReportSellerController;
     use Illuminate\Support\Facades\Route;
     use App\Http\Middleware\EnsureUserHasRole;
     use App\Imports\SellersImport;
@@ -56,7 +57,7 @@ Route::middleware('statusOnline')->group(function (){
     });
 
     //admin for reports;
-    Route::middleware('auth', 'status','maintenance', 'adminRole','verified')->group(function () {
+    Route::middleware('auth', 'status','maintenance', 'adminRole', 'verified')->group(function () {
         Route::get('/admin', [WebpanelAdminController::class, 'dashboard'])->name('webpanel.report');
         Route::get('/admin/customer', [WebpanelAdminController::class, 'indexCustomer']);
         Route::get('/admin/customer/{id}', [WebpanelAdminController::class, 'edit']);
@@ -257,10 +258,30 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/customer/adminarea/{admin_id}/{status}', [WebpanelCustomerController::class, 'indexAdminArea']);
 
         
-        //customer-status;
-        Route::get('/webpanel/customer-status' , [LogStatusController::class, 'statusOnline']);
+        //admin-status;
+        // Route::get('/webpanel/customer-status' , [LogStatusController::class, 'statusOnline']);
+
+        //test update;
+        // Route::get('/webpanel/customer-status' , [LogStatusController::class, 'statusOnline']);
+
+        Route::get('/webpanel/active-user', [LogStatusController::class, 'create']);
+
+        Route::get('/webpanel/active-user/updated', [LogStatusController::class, 'updated']);
+
+        /* Route::get('/webpanel/active-user/updated', function () {
+            $status = time();
+            return response()->json(["status" => $status]);
+        }); */
 
     });
+
+    // Route::get('/webpanel/customer-status', [LogStatusController::class, 'create']);
+
+/*     Route::get('/webpanel/update-status', function() {
+        $date = time();
+        return response()->json(['data' => $date]);
+    }); */
+
 
     //report seller;
     Route::middleware('auth', 'role','status', 'verified')->group(function () {

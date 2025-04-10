@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-    @section ('title', 'customer')
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" conten="{{ csrf_token() }}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -13,11 +12,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    {{-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script>  --}}
-    <title>CMS VMDRUG System</title>
+    <title>Document</title>
 </head>
 <body>
-
+{{--   <div id="content-container">
+        <p>Loading content... {{$date}}</p>
+    </div>  --}}
     @extends ('webpanel/menuwebpanel-tailwind')
     @section('content')
     @csrf
@@ -256,7 +256,17 @@
             border-radius: 50%;
         }
     </style>
-    
+       
+        @if($user_id_admin == '0000')
+            @section('profile_img')
+            <img class="w-8 h-8 rounded-full me-3" src="/profile/profiles-2 copy.jpg" alt="user photo">
+            @endsection
+        @else
+            @section('profile_img')
+            <img class="w-8 h-8 rounded-full me-3" src="/profile/user.png" alt="user photo">
+            @endsection
+        @endif
+
         @section('status_alert')
         <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
         @endsection
@@ -280,12 +290,10 @@
 
         {{-- {{$_SERVER['REMOTE_ADDR'];}} --}}
 
-    
-
-
     <div class="contentArea">
    {{--  --}}
-    
+    <div id="user"></div>
+   {{-- <div id="content-container"> สถานะ</div> --}}
    
         <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
@@ -295,7 +303,7 @@
 
         <div class="ms-6 mr-6 mb-2">
             <hr class="mt-4 py-2" style="color: #8E8E8E; width: 100%;">
-            <table class="table table-striped">
+          {{--   <table class="table table-striped"  id="user-table">
                 <thead>
                     <tr>
                         <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">#</td>
@@ -307,6 +315,11 @@
                     </tr>
                 </thead>
                 <tbody>
+
+                    <tr>
+                        <td scope="row" id="user_id1" style="color:#9C9C9C; text-align: center; width: 15%; padding:20px;"></td>
+                        <td scope="row" id="user_id2" style="color:#9C9C9C; text-align: center; width: 15%; padding:20px;"></td>
+                    </tr>
                     <?php 
                         @$start += 1;
                     ?>
@@ -316,15 +329,15 @@
 
                     <?php
                     
-                        $count_time = (time() - (intval($row->last_activity)))/60;
+                        $count_time = ($date - (intval($row->last_activity)))/60;
                     ?>
 
         
 
-                    @if((time() - (intval($row->last_activity))) < 30)
+                    @if(($date - (intval($row->last_activity))) < 30)
                     <tr>
                         <td scope="row" style="color:#9C9C9C; text-align: center; width: 5%; padding:20px;">{{$start++}}</td>
-                        <td scope="row" style="color:#9C9C9C; text-align: center; width: 15%; padding:20px;">{{$row->user_id}}</td>
+                        <td scope="row" id="user_id" style="color:#9C9C9C; text-align: center; width: 15%; padding:20px;">{{$row->user_id}}</td>
                         <td scope="row" style="color:#9C9C9C; text-align: left; width: 15%; padding: 20px 8px 20px;">{{$row->email}}</td>
                         <td scope="row" style="color:#9C9C9C; text-align: left; width: 20%; padding: 20px 8px 20px;">{{$row->name}}</td>
                         <td scope="row" style="color:#9C9C9C; text-align: left; width: 20%; padding: 20px 8px 20px">{{$row->login_date}}</td>
@@ -357,31 +370,118 @@
                     @endif
 
                 </tbody>
+            </table> --}}
+
+            <table class="table table-striped" id="user-table">
+                <thead>
+                    <tr>
+                        <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">#</td>
+                        <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">CODE</td>
+                        <td scope="col" style="color:#838383; text-align: left;  font-weight: 500;">อีเมล</td>
+                        <td scope="col" style="color:#838383; text-align: left;  font-weight: 500;">ชื่อ</td>
+                        <td scope="col" style="color:#838383; text-align: left;  font-weight: 500;">เข้าระบบล่าสุด</td>
+                        <td scope="col" style="color:#838383; text-align: left;  font-weight: 500;">สถานะ</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JSON Data will be inserted here -->
+                </tbody>
             </table>
         </div>
 
         <div class="py-2"></div>
     </div>
 
-    {{$date}}
+    {{-- {{$date}} --}}
 @endsection
 
-<script>
+    <script>
 
-    function fetchContent() {
-    fetch('/webpanel/customer-status') // Laravel route returning HTML
-        .then(response => response.text()) // Get response as HTML
-        .then(html => {
-            document.getElementById('content-container').innerHTML = html;
-        })
-        .catch(error => console.error('Error fetching content:', error)); 
-}
+     async function fetchStatus() {
+        const response = await fetch('/webpanel/active-user/updated');
+        const data =  await response.json();
+        // console.log(data.date);
 
-// Auto-refresh every 5 seconds
-setInterval(fetchContent, 5000);
+        const data_row = data[0];
 
-</script>
+        const tableBody = document.querySelector("#user-table tbody");
+        // console.log(data[1]);
+
+        let start = 1;
+        //เคลียร์ตาราง;
+        tableBody.innerHTML = "";
+        data_row.forEach(rowd => {
+
+            const count_time = (data[1].date - rowd.last_activity)/60;
+            // console.log(count_time);
+
+            const row = document.createElement("tr");
+        
+                if(data[1].date - rowd.last_activity < 300) {
+                    row.innerHTML = `<td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${start++}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.user_id}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.email}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.name}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.login_date}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;"><i class="fa-solid fa-circle" style="color: #03ae3f; font-size:18px;"></i> ออนไลน์</td>`;
+                
+                } else if (count_time < 59) {
+                    row.innerHTML = `<td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${start++}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.user_id}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.email}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.name}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.login_date}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;"><i class="fa-solid fa-circle" style="color: #ee2c2c; font-size:18px;"></i> ออฟไลน์เมื่อ ${Math.round(count_time)} นาทีที่แล้ว</td>`;
+                
+                } else {
+                    row.innerHTML = `<td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${start++}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.user_id}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.email}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.name}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.login_date}</td>
+                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;"><i class="fa-solid fa-circle" style="color: rgb(193, 193, 193); font-size:18px;"></i> ออฟไลน์</td>`;
+
+                }
+                tableBody.appendChild(row);
+            
+  
+                // console.log(rowd.user_id.length);
+           
+        });
+
+    }
+    
+
+    // fetchStatus();
+    const timer = setInterval(fetchStatus, 5000);
+
+    /* setTimeout(() => {
+        clearInterval(timer);
+        console.log("หยุดการทำงานของ Interval");
+    }, 6000);   */
 
 
+
+    </script>
+
+{{--     <script>
+
+setInterval(() => {
+  
+
+
+    let userData = {
+        userId: 1,
+        username: "john_doe",
+        status: "offline"
+        };
+
+        // อัปเดตค่าเดิม
+        userData.status = "online";
+        console.log(userData);
+
+    }, 3000);
+    </script>
+ --}}
 </body>
 </html>

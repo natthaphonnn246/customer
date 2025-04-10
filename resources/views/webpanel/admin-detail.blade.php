@@ -78,7 +78,28 @@
             color: #3b25ff;
             text-decoration: underline;
         }
+        #copy {
+            background-color: #e0e0e0;
+            color:rgb(71, 71, 71);
+            border-radius: 5px;
+        }
+        #copy:hover {
+            width: auto;
+            height: auto;
+            background-color: #c5c5c5;
+            border-radius: 5px;
+        }
     </style>
+
+        @if($user_id_admin == '0000')
+            @section('profile_img')
+            <img class="w-8 h-8 rounded-full me-3" src="/profile/profiles-2 copy.jpg" alt="user photo">
+            @endsection
+        @else
+            @section('profile_img')
+            <img class="w-8 h-8 rounded-full me-3" src="/profile/user.png" alt="user photo">
+            @endsection
+        @endif
 
         @section('status_alert')
         <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
@@ -107,12 +128,15 @@
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         <ul class="text-title my-2 ms-6" style="text-align: start;">
+            <span style="font-size: 15px; color:#00a6ff;">ล็อกอินทั้งหมด : {{$count_check_login->check_login != '' ? $count_check_login->check_login : '0'}} ครั้ง</span> 
+        </ul>
+        <ul class="text-title my-3 ms-6" style="text-align: start;">
             <span style="font-size: 18px; font-weight: 500;">ข้อมูลแอดมิน</span>
         </ul>
         <hr class="my-3" style="color: #8E8E8E; width: 100%;">
     @if (isset($admin_master) != '')
     {{-- @foreach ($admin_row as $row_edit) --}}
-        <form id="form">
+        <form action="/webpanel/admin-detail/update/{{$admin_master->id}}" method="post" id="form" enctype="multipart/form-data">
             {{-- action="/webpanel/admin-detail/update/{{$row_edit->user_code}}" enctype="multipart/form-data" --}}
             @csrf
             <div class="row ms-6 mr-6">
@@ -133,19 +157,35 @@
                                     <span>Admin area</span> <span style="font-size: 12px; color:red;">*เขตรับผิดชอบ</span>
                                     <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" id="adminarea" name="admin_area" value="{{$admin_master->admin_area;}}">
                                 </li>
+                                <li class="my-4" style="width: 100%;">
+                                    <ul style="width: 100%;">
+                                        <span>สิทธิ์แอดมิน</span> <span style="font-size: 12px; color:red;">*มีสิทธิ์ = ทดสอบได้ทุกประเภทแอดมิน</span>
+                                        <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="admin_role" id="rolemain">
+                                
+                                            {{-- @if(($admin_master->user_code) == 0000)
+                                            <option value="2" selected>มี</option>
+                                            @else --}}
+                                            <option {{$admin_master->admin_role == 0 ? 'selected': '' ; }} value="0">ไม่มีสิทธิ์</option>
+                                            <option {{$admin_master->admin_role == 1 ? 'selected': '' ; }} value="1">มีสิทธิ์</option>
+                                          {{--   @endif --}}
+        
+                                        </select>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                         <div class="col-sm-6 my-1">
                             <ul style="width: 100%;">
-                                <span>สิทธิ์แอดมิน</span>
+                                <span>ประเภทแอดมิน</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="role" id="rightsrole">
                         
-                                    @if(($admin_master->user_code) == 0000)
+                                    {{-- @if(($admin_master->user_code) == 0000)
                                     <option value="2" selected>มี</option>
-                                    @else
+                                    @else --}}
                                     <option {{$admin_master->role == 0 ? 'selected': '' ; }} value="0">ไม่ระบุ</option>
-                                    <option {{$admin_master->role == 1 ? 'selected': '' ; }} value="1">มีสิทธิ์ดูรายงาน</option>
-                                    @endif
+                                    <option {{$admin_master->role == 1 ? 'selected': '' ; }} value="1">ดูรายงาน</option>
+                                    <option {{$admin_master->role == 2 ? 'selected': '' ; }} value="2">แอดมินหลัก</option>
+                                  {{--   @endif --}}
 
                                 </select>
                             </ul>
@@ -153,7 +193,7 @@
                         <div class="col-sm-6 my-1">
                             <ul style="width: 100%;">
                                 <span>สิทธิ์รับผิดชอบ</span>
-                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="rights_area" >
+                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="rights_area" id="rights_area_role">
 
                                     <option {{$admin_master->rights_area == 0 ? 'selected' : '' ; }} value="0">ไม่ระบุ</option>
                                     <option {{$admin_master->rights_area == 1 ? 'selected' : '' ; }} value="1">ระบุ</option>
@@ -162,15 +202,81 @@
                             </ul>
                         </div>
 
+                     {{--    <div class="col-sm-12">
+                            <ul style="width: 100%;">
+                                <li class="mt-4">
+                                    @if($admin_master->role == '0')
+                                    <span style="font-size: 14px; color:red;">*ลิงก์ทดสอบ (ไม่ระบุ) : </span> <a href="" style="background-color:#a3cfff; padding:10px;">{{ asset('/portal') }} </a>
+                                    @elseif($admin_master->role == '1')
+                                    <span style="font-size: 14px; color:red;">*ลิงก์ทดสอบ (ดูรายงาน) : </span> <a href="" style="background-color:#a3cfff; padding:10px;">{{ asset('/admin') }} </a>
+                                    @else
+                                    <span style="font-size: 14px; color:red;">*ลิงก์ทดสอบ (แอดมินหลัก) : </span> <a href="" style="background-color:#a3cfff; padding:10px;">{{ asset('/webpanel') }} </a>
+                                    @endif
+                                </li>
+                            </ul>
+        
+                        </div> --}}
+
+                        <div class="col-sm-12">
+                            <ul style="width: 100%;">
+                                <li class="mt-2">
+                                    @if($admin_master->admin_role == '1')
+                                        @if($admin_master->role == '0')
+
+                                            @if($admin_master->rights_area == '0')
+                                                <span style="font-size: 14px; color:red;">*ลิงก์ทดสอบ (ไม่ระบุ, สิทธิ์รับผิดชอบ = ไม่ระบุ) :
+                                                <input  style="margin-top:5px; width:80%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/signin') }}" id="myInput">
+                                                <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px;">Copy</button>
+                                            @else
+                                                <span style="font-size: 14px; color:red;">*ลิงก์ทดสอบ (ไม่ระบุ, สิทธิ์รับผิดชอบ = ระบุ) :
+                                                <input  style="margin-top:5px; width:80%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/portal/dashboard') }}" id="myInput">
+                                                <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px;">Copy</button>
+                                            @endif
+
+                                        @elseif($admin_master->role == '1')
+
+                                        <span style="font-size: 14px; color:red;">*ลิงก์ทดสอบ (ดูรายงาน) :
+                                        <input  style="margin-top:5px; width:80%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/admin') }}" id="myInput">
+                                        <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px;">Copy</button>
+
+                                        @else
+
+                                        <span style="font-size: 14px; color:red;">*ลิงก์ทดสอบ (แอดมินหลัก) :
+                                        <input  style="margin-top:5px; width:80%; border: solid 1px #c8c8c8; padding:6px; border-radius:5px; color: rgb(171, 171, 171);" type="text" value="{{ asset('/webpanel') }}" id="myInput">
+                                        <button type="button" id="copy" onclick="myFunction()" style="font-size: 14px; padding:7px; width:80px;">Copy</button>
+
+                                        @endif
+                                    @endif
+                                </li>
+                            </ul>
+                        </div>
+
+                        <script>
+
+                                function myFunction() {
+                                // Get the text field
+                                var copyText = document.getElementById("myInput");
+
+                                // Select the text field
+                                copyText.select();
+                                copyText.setSelectionRange(0, 99999); // For mobile devices
+
+                                // Copy the text inside the text field
+                                navigator.clipboard.writeText(copyText.value);
+                                }
+
+                        </script>
                         <script text="type/javascript">
                              $(document).ready(function() {
                                 $("#rightsrole").on('change',function (){
-                                   let rights = $(this).val();
+                                   const rights = $(this).val();
+                                   const rights_main = $(this).val();
                                    console.log(rights);
 
-                                   if(rights == '1') {
+                                   if(rights == '1' || rights_main == '2') {
                                     console.log('pass');
-                                    $("#adminarea").val('');
+                                    $("#adminarea").val(''); //เขตรับผิดชอบ;
+                                    $("#rights_area_role").val('0'); //เขตรับผิดชอบ;
                                    }
 
                                 });
@@ -289,7 +395,7 @@
                         </div>
 
                         <div style="text-align:right;">
-                            <button type="button" id="updateForm" name="submit_update" class="btn my-2" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
+                            <button type="submit" id="updateForm" name="submit_update" class="btn my-2" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
                             {{-- <a href="" type="button" id="exportCsv" class="btn my-2" style="border:none; width: 120px; color: rgb(67, 67, 67); padding: 10px;">Export CSV</a> --}}
 
                         </div>
@@ -297,17 +403,56 @@
                     </div>
         </form>
 
+        @if (session('status') == 'updated_success')
+            <script> 
+                    $('#bg').css('display', 'none');
+                    Swal.fire({
+                        title: "สำเร็จ",
+                        text: "อัปเดตข้อมูลเรียบร้อย",
+                        icon: "success",
+                        // showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        // cancelButtonColor: "#d33",
+                        confirmButtonText: "ตกลง"
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+            </script>
+        @endif
+
+        @if (session('status') == 'updated_fail')
+            <script> 
+                    $('#bg').css('display', 'none');
+                    Swal.fire({
+                        title: "ล้มเหลว",
+                        text: "เกิดข้อผิดพลาด",
+                        icon: "error",
+                        // showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        // cancelButtonColor: "#d33",
+                        confirmButtonText: "ตกลง"
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+            </script>
+        @endif
+
                     <!--- update user information-->
-                    <script>
+                  {{--   <script>
+                         
                             $('#updateForm').click(function() {
-                                
                                 $('#bg').css('display', 'none');
                                 let user = $('#form').serialize();
-
+               
                                 $.ajax({
                                     url: '/webpanel/admin-detail/update/{{$admin_master->id}}',
                                     type: 'post',
                                     data: user,
+                                    // dataType: 'text',
                                     success: function(data) {
 
                                         if (data == 'success') {
@@ -336,8 +481,10 @@
                                         console.log(data);
                                     }
                                 });
+
                             });
-                    </script>
+                            
+                    </script> --}}
 
     {{-- @endforeach --}}
     @endif

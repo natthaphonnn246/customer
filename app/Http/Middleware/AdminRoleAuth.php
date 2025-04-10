@@ -17,7 +17,23 @@ class AdminRoleAuth
     public function handle(Request $request, Closure $next): Response
     {
 
+         //test;
+        if(Auth::user()->admin_role == 1) {
+
+            if (Auth::user()->role != 1) {
+                
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect('/');
+            }
+
+            return $next($request);
+        }
+        
         if (Auth::user()->role != 1) {
+
             Auth::guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

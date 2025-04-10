@@ -16,18 +16,35 @@ class UserRoleAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->role == 0) 
-        {
-            return $next($request);
+
+        //test;
+        if(Auth::user()->admin_role == 1) {
+
+            if (Auth::user()->role == 0) {
+                return $next($request);
+
+            } else {
+                // return back();
+
+                // return logout;
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return redirect('/');
+            }
         }
-        else{
-            // return back();
+        
+        if (Auth::user()->role == 0) {
+            return $next($request);
+
+        } else{
 
             // return logout;
             Auth::guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
             return redirect('/');
+            
         }
-    }
+}
 }
