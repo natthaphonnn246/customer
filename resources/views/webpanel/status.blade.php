@@ -12,7 +12,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <title>Document</title>
+ {{--    <!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> --}}
+
+
+    <title>CMS VMDRUG System</title>
 </head>
 <body>
 {{--   <div id="content-container">
@@ -292,6 +298,16 @@
 
     <div class="contentArea">
    {{--  --}}
+
+   {{-- <input type="text" id="datepicker" placeholder="Select Date"> --}}
+
+{{--    <script>
+    flatpickr("#datepicker", {
+      dateFormat: "Y-m-d",  // Customize format as needed
+      defaultDate: "today", // Optional
+    });
+  </script> --}}
+  
     <div id="user"></div>
    {{-- <div id="content-container"> สถานะ</div> --}}
    
@@ -453,7 +469,7 @@
     
 
     // fetchStatus();
-    const timer = setInterval(fetchStatus, 5000);
+    const timer = setInterval(fetchStatus, 2000);
 
     /* setTimeout(() => {
         clearInterval(timer);
