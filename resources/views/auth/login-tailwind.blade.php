@@ -9,6 +9,13 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- recaptcha -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function enableSubmitbtn() {
+            document.getElementById("submitBtn").disabled = false;
+        }
+    </script>
 
    {{--  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> --}}
@@ -28,7 +35,7 @@
     li {
         font-size: 15px;
     }
-    #loginTail {
+   /*  #loginTail {
       background-color: rgb(0, 94, 255);
       color: white;
       font-size: 16px;
@@ -38,7 +45,7 @@
       background-color: rgb(10, 80, 202);
       color: white;
       font-size: 16px;
-    }
+    } */
     #login_tail {
         min-width: 400px;
         width:450px;
@@ -54,12 +61,33 @@
         z-index: 0;
         overflow: auto;
     }
-
+    #submitBtn {
+          padding: 10px 20px;
+          background-color: rgb(0, 94, 255);
+          color: white;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+          font-weight: medium;
+          transition: background-color 0.3s ease;
+        }
+      
+        #submitBtn:hover:not(:disabled) {
+          background-color:rgb(2, 81, 219);
+          color: white;
+        }
+      
+        #submitBtn:disabled {
+          background-color: rgb(92, 152, 255);/* Gray */
+          color: #ffffff; /* Darker gray text */
+          cursor: not-allowed;
+        }
  
 </style>
     
 <body>
-
+      
+      
     {{-- flex flex-col items-center justify-center px-6 py-4 mx-auto md:h-screen lg:py-0 --}}
 
         <div class="flex flex-col items-center justify-center px-6 py-4 mx-auto md:h-screen lg:py-2" id="bg_login">
@@ -83,10 +111,14 @@
                             <input type="password" name="password" id="password" placeholder="" class="bg-gray-50 border border-gray-300 font-regular text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500" style="font-weight:300;" placeholder="" required="">
                         </div>
 
-                        <ul class="text-center">
-                            <button type="submit" class="w-full text-white bg-primary-400 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" id="loginTail" style="width:100px;">Login</button>
+                        <!-- Google reCAPTCHA -->
+                        <ul class="ms-10">
+                            <div class="g-recaptcha" data-sitekey="6LfCCxkrAAAAAFupTbUe6slwpcWBXUdWLx30dztX" data-callback="enableSubmitbtn"></div>
                         </ul>
 
+                        <ul class="text-center">
+                            <button type="submit" id="submitBtn" style="width:125px; font-size:16px;" disabled>Login</button>
+                        </ul>
                  
                         @if (session('login_fail') == 'fail')
                         <script> 
@@ -125,6 +157,44 @@
 
                         @endif
 
+                        @if (session('recaptcha_error') == 'recaptcha_error')
+                        <script> 
+                                Swal.fire({
+                                    title: "เกิดข้อผิดพลาด",
+                                    text: "กรุณาติดต่อผู้ดูแล",
+                                    icon: "warning",
+                                    // showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    // cancelButtonColor: "#d33",
+                                    confirmButtonText: "ตกลง"
+                                    }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.reload();
+                                    }
+                                });
+                        </script>
+
+                        @endif
+                        {{-- 'allowed_status', 'ปิดปรับปรุงระบบ' --}}
+                        {{-- 'error_active', 'กรุณาติดต่อผู้ดูแล' --}}
+                        @if (session('error_active') == 'กรุณาติดต่อผู้ดูแล')
+                        <script> 
+                                Swal.fire({
+                                    title: "ปิดปรับปรุงระบบ",
+                                    text: "กรุณารอสักครู่",
+                                    icon: "warning",
+                                    // showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    // cancelButtonColor: "#d33",
+                                    confirmButtonText: "ตกลง"
+                                    }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.reload();
+                                    }
+                                });
+                        </script>
+
+                        @endif
                         
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
                             &copy; 2025 cms.vmdrug.co.th All rights reserved
