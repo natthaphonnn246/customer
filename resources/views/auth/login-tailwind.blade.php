@@ -11,6 +11,7 @@
 
     <!-- recaptcha -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    
     <script>
         function enableSubmitbtn() {
             document.getElementById("submitBtn").disabled = false;
@@ -82,6 +83,131 @@
           color: #ffffff; /* Darker gray text */
           cursor: not-allowed;
         }
+        /* เปลี่ยนสีไอคอน */
+        .swal2-icon.custom-icon-color.swal2-warning {
+            border-color:#F5B041; 
+            color: #F5B041;
+        }
+
+        .swal2-icon.custom-icon-color .swal2-warning-ring {
+            border: 4px solid #F5B041; 
+        }
+
+        .custom-confirm-button {
+            background-color: #f2a426!important; /* เขียว */
+            border-radius: 100px !important;     /* โค้งสุด */
+            width:90px;
+            padding: 10px 24px !important;
+            font-weight: medium;
+            box-shadow: none !important;     /* 🔥 ลบเงา */
+            outline: none !important;        /* ลบขอบเมื่อ focus */
+            border: none !important;         /* ลบ border ถ้าต้องการ */
+        }
+
+        .custom-confirm-button:hover {
+            background-color:#ffad2a!important;
+            border: none;
+        }
+        .rounded-popup {
+            border-radius: 20px !important; /* 👈 ปรับความโค้ง */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* เปลี่ยนสีไอคอน */
+        .swal2-icon.custom-icon-color-error.swal2-error {
+           /*  border-color:#fd5f43; 
+            color: #f24526;
+        } */
+        }
+
+        .swal2-icon.custom-icon-color-error .swal2-error-ring {
+            border: 4px solid #f24526;
+        }
+
+        .custom-confirm-button-error {
+            background-color: #E74C3C !important; /* เขียว */
+            border-radius: 100px !important;     /* โค้งสุด */
+            width:90px;
+            padding: 10px 24px !important;
+            font-weight: medium;
+            box-shadow: none !important;     /* 🔥 ลบเงา */
+            outline: none !important;        /* ลบขอบเมื่อ focus */
+            border: none !important;         /* ลบ border ถ้าต้องการ */
+        }
+
+        .custom-confirm-button-error:hover {
+            background-color:#e94432 !important;
+            border: none;
+        }
+        .rounded-popup-error {
+            border-radius: 20px !important; /* 👈 ปรับความโค้ง */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+         /* เปลี่ยนสีไอคอน */
+         .swal2-icon.custom-icon-color-close.swal2-warning {
+            border-color:#fd5f43; 
+            color: #f24526;
+        
+        }
+
+        .swal2-icon.custom-icon-color-close .swal2-warning-ring {
+            border: 4px solid #f24526;
+        }
+
+        .custom-confirm-button-close {
+            background-color: #E74C3C !important; /* เขียว */
+            border-radius: 100px !important;     /* โค้งสุด */
+            width:90px;
+            padding: 10px 24px !important;
+            font-weight: medium;
+            box-shadow: none !important;     /* 🔥 ลบเงา */
+            outline: none !important;        /* ลบขอบเมื่อ focus */
+            border: none !important;         /* ลบ border ถ้าต้องการ */
+        }
+
+        .custom-confirm-button-close:hover {
+            background-color:#e94432 !important;
+            border: none;
+        }
+        .rounded-popup-close {
+            border-radius: 20px !important; /* 👈 ปรับความโค้ง */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+         /* เปลี่ยนสีไอคอน */
+         .swal2-icon.custom-icon-color-recaptcha.swal2-warning {
+            border-color:#fd5f43; 
+            color: #f24526;
+        
+        }
+
+        .swal2-icon.custom-icon-color-recaptcha .swal2-warning-ring {
+            border: 4px solid #f24526;
+        }
+
+        .custom-confirm-button-recaptcha {
+            background-color: #E74C3C !important; /* เขียว */
+            border-radius: 100px !important;     /* โค้งสุด */
+            width:90px;
+            padding: 10px 24px !important;
+            font-weight: medium;
+            box-shadow: none !important;     /* 🔥 ลบเงา */
+            outline: none !important;        /* ลบขอบเมื่อ focus */
+            border: none !important;         /* ลบ border ถ้าต้องการ */
+        }
+
+        .custom-confirm-button-recaptcha:hover {
+            background-color:#e94432 !important;
+            border: none;
+        }
+        .rounded-popup-recaptcha {
+            border-radius: 20px !important; /* 👈 ปรับความโค้ง */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+
+
  
 </style>
     
@@ -123,13 +249,18 @@
                         @if (session('login_fail') == 'fail')
                         <script> 
                                 Swal.fire({
-                                    title: "บัญชีถูกระงับ",
-                                    text: "กรุณาติดต่อผู้ดูแล",
+                                    title: "⚠️ บัญชีของท่านถูกระงับ",
+                                    // text: "กรุณาติดต่อผู้ดูแล",
                                     icon: "warning",
-                                    // showCancelButton: true,
-                                    confirmButtonColor: "#3085d6",
-                                    // cancelButtonColor: "#d33",
-                                    confirmButtonText: "ตกลง"
+                                    confirmButtonText: "ตกลง",
+                                    width: '400px', 
+                                    height: '200px',
+                                    customClass: {
+                                        popup: 'rounded-popup-close',
+                                        title: 'text-xl',
+                                        icon: 'custom-icon-color-close',
+                                        confirmButton: 'custom-confirm-button-close'
+                                    }
                                     }).then((result) => {
                                     if (result.isConfirmed) {
                                         window.location.reload();
@@ -141,13 +272,18 @@
                         @if (session('login_error') == 'error')
                         <script> 
                                 Swal.fire({
-                                    title: "ล้มเหลว",
-                                    text: "กรุณาติดต่อผู้ดูแล",
+                                    title: "⚠️ ไม่พบบัญชีผู้ใช้งาน",
+                                    // text: "กรุณาติดต่อผู้ดูแล",
                                     icon: "error",
-                                    // showCancelButton: true,
-                                    confirmButtonColor: "#3085d6",
-                                    // cancelButtonColor: "#d33",
-                                    confirmButtonText: "ตกลง"
+                                    confirmButtonText: "ตกลง",
+                                    width: '400px', 
+                                    height: '200px',
+                                    customClass: {
+                                        popup: 'rounded-popup-error',
+                                        title: 'text-xl',
+                                        icon: 'custom-icon-color-error',
+                                        confirmButton: 'custom-confirm-button-error'
+                                    }
                                     }).then((result) => {
                                     if (result.isConfirmed) {
                                         window.location.reload();
@@ -160,13 +296,19 @@
                         @if (session('recaptcha_error') == 'recaptcha_error')
                         <script> 
                                 Swal.fire({
-                                    title: "เกิดข้อผิดพลาด",
-                                    text: "กรุณาติดต่อผู้ดูแล",
+                                    title: "⚠️ เกิดข้อผิดพลาด",
+                                    // text: "กรุณาติดต่อผู้ดูแล",
                                     icon: "warning",
-                                    // showCancelButton: true,
                                     confirmButtonColor: "#3085d6",
-                                    // cancelButtonColor: "#d33",
-                                    confirmButtonText: "ตกลง"
+                                    confirmButtonText: "ตกลง",
+                                    width: '400px', 
+                                    height: '200px',
+                                    customClass: {
+                                        popup: 'rounded-popup-recaptcha',
+                                        title: 'text-xl',
+                                        icon: 'custom-icon-color-recaptcha',
+                                        confirmButton: 'custom-confirm-button-recaptcha'
+                                    }
                                     }).then((result) => {
                                     if (result.isConfirmed) {
                                         window.location.reload();
@@ -180,21 +322,28 @@
                         @if (session('error_active') == 'กรุณาติดต่อผู้ดูแล')
                         <script> 
                                 Swal.fire({
-                                    title: "ปิดปรับปรุงระบบ",
-                                    text: "กรุณารอสักครู่",
+                                    title: "⚠️ ปิดปรับปรุงระบบ",
+                                    // text: "กรุณารอสักครู่",
                                     icon: "warning",
-                                    // showCancelButton: true,
-                                    confirmButtonColor: "#3085d6",
-                                    // cancelButtonColor: "#d33",
-                                    confirmButtonText: "ตกลง"
+                                    confirmButtonText: "ตกลง",
+                                    width: '400px', 
+                                    height: '200px',
+                                    customClass: {
+                                        popup: 'rounded-popup',
+                                        title: 'text-xl',
+                                        icon: 'custom-icon-color',
+                                        confirmButton: 'custom-confirm-button'
+                                    }
                                     }).then((result) => {
                                     if (result.isConfirmed) {
                                         window.location.reload();
                                     }
+                                    
                                 });
                         </script>
 
                         @endif
+
                         
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
                             &copy; 2025 cms.vmdrug.co.th All rights reserved

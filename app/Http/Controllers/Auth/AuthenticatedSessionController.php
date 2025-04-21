@@ -423,7 +423,11 @@ class AuthenticatedSessionController extends Controller
                                                             } else {
 
                                                                 /// ปิดระบบ;
-                                                                return back();
+                                                                // return back();
+                                                                Auth::guard('web')->logout();
+                                                                $request->session()->invalidate();
+                                                                $request->session()->regenerateToken();
+                                                                return redirect()->back()->with('login_fail', 'fail');
                                                             }
 
                                                         // }
@@ -760,12 +764,15 @@ class AuthenticatedSessionController extends Controller
                                 'last_activity' => $date,
                             ]);
 
-                            $request->authenticate();
+                            /* $request->authenticate();
 
-                            $request->session()->regenerate();
-                            
-                            // return redirect()->intended(route('login', absolute: false));
+                            $request->session()->regenerate(); */
 
+                            // return redirect()->back()->with('login_fail', 'fail');
+
+                            Auth::guard('web')->logout();
+                            $request->session()->invalidate();
+                            $request->session()->regenerateToken();
                             return redirect()->back()->with('login_fail', 'fail');
                         
                         } 
