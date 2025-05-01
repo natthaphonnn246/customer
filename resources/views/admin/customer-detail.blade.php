@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <title>cms.vmdrug</title>
 </head>
 <body>
     @extends ('admin/menuadmin')
@@ -233,7 +233,7 @@
                                         <h1 class="modal-title fs-5" id="staticBackdropLabel">แก้ไขใบอนุญาตขายยา</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <span class="ms-3 py-2" style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล/Code : {{$customer_view->customer_code; }}</span>
+                                    <span class="ms-3 py-2" style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล/Code : {{$customer_view->customer_code}}</span>
                                     <hr style="color:#a5a5a5;">
                                         <div class="modal-body">
                                             {{-- <form action="/webpanel/customer-detail/upload-store/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
@@ -283,7 +283,7 @@
                                         <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบประกอบวิชาชีพ</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <span class="ms-3 py-2" style="text-align: start;">ใบประกอบวิชาชีพ/Code : {{$customer_view->customer_code; }}</span>
+                                    <span class="ms-3 py-2" style="text-align: start;">ใบประกอบวิชาชีพ/Code : {{$customer_view->customer_code}}</span>
                                     <hr style="color:#a5a5a5;">
                                         <div class="modal-body">
                                             {{-- <form action="/webpanel/customer-detail/upload-medical/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
@@ -334,7 +334,7 @@
                                         <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบทะเบียนพาณิชย์</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนพาณิชย์/Code : {{$customer_view->customer_code; }}</span>
+                                    <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนพาณิชย์/Code : {{$customer_view->customer_code}}</span>
                                     <hr style="color:#a5a5a5;">
                                         <div class="modal-body">
                                             {{-- <form action="/webpanel/customer-detail/upload-commerce/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
@@ -384,7 +384,7 @@
                                         <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)/Code : {{$customer_view->customer_code; }}</span>
+                                    <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)/Code : {{$customer_view->customer_code}}</span>
                                     <hr style="color:#a5a5a5;">
                                         <div class="modal-body">
                                             {{-- <form action="/webpanel/customer-detail/upload-vat/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
@@ -434,7 +434,7 @@
                                         <h1 class="modal-title fs-5" id="staticBackdropLabel">สำเนาบัตรประชาชน</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <span class="ms-3 py-2" style="text-align: start;">สำเนาบัตรประชาชน/Code : {{$customer_view->customer_code; }}</span>
+                                    <span class="ms-3 py-2" style="text-align: start;">สำเนาบัตรประชาชน/Code : {{$customer_view->customer_code}}</span>
                                     <hr style="color:#a5a5a5;">
                                         <div class="modal-body">
                                             {{-- <form action="/webpanel/customer-detail/upload-id/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data"> --}}
@@ -579,10 +579,10 @@
                                     {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
             
                                     <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="province" id="province" disabled>
-                                        @if(isset($province) != '')
+                                        @if(isset($province))
                                         @foreach($province as $row)
                         
-                                            <option value="{{$row->id}}" {{$row->name_th == $customer_view->province ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->id}}" {{$row->name_th == $customer_view->province ? 'selected' : ''}}>{{$row->name_th}}</option>
                                         
                                         @endforeach
                                     @endif
@@ -594,9 +594,9 @@
                                     <span>อำเภอ/แขวง</span>
                                     <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="amphur" id="amphures" disabled>
                                         
-                                        @if(isset($amphur) == '')
+                                        @if(!isset($amphur))
                                         @foreach($amphur as $row)
-                                            <option value="{{$row->province_id}}" {{$row->name_th == $customer_view->amphur ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->province_id}}" {{$row->name_th == $customer_view->amphur ? 'selected' : ''}}>{{$row->name_th}}</option>
                                         @endforeach
 
                                         @else
@@ -609,9 +609,9 @@
                                 <ul class="mt-3" style="width: 100%;">
                                     <span>ตำบล/เขต</span>
                                     <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="district" id="districts" disabled>
-                                        @if(isset($district) == '')
+                                        @if(!isset($district))
                                         @foreach($district as $row)
-                                            <option value="{{$row->amphure_id}}" {{$row->name_th == $customer_view->district ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->amphure_id}}" {{$row->name_th == $customer_view->district ? 'selected' : ''}}>{{$row->name_th}}</option>
                                         @endforeach
 
                                         @else
@@ -648,7 +648,7 @@
                                     <span>แอดมินผู้ดูแล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                     <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="admin_area" disabled>
 
-                                        @if(isset($admin_area_list) != '')
+                                        @if(isset($admin_area_list))
                                         @foreach($admin_area_list as $row)
     
                                             @if($row->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
@@ -667,7 +667,7 @@
 
                                             <option {{$customer_view->sale_area == 'ไม่ระบุ' ? 'selected': ''}} value="ไม่ระบุ"> ไม่ระบุ </option>
 
-                                            @if(isset($sale_area)!= '')
+                                            @if(isset($sale_area))
                                                 @foreach($sale_area as $row_sale_area)
                                                     <option {{$customer_view->sale_area == $row_sale_area->sale_area ? 'selected': ''}} value="{{$row_sale_area->sale_area}}"> {{$row_sale_area->sale_area .' '. '('. $row_sale_area->sale_name.')'}} </option>
                                                 @endforeach

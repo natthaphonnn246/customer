@@ -421,14 +421,16 @@ class PortalCustomerController
             // dd($check_customer_code);
 
             // dd($check_search->admin_area);
-            if(!$check_customer_code  == null) {
+            if (!empty($check_customer_code)) {
                 return view('portal/customer', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'status_waiting', 'status_action', 'status_completed', 'status_all', 'status_alert'));
+            //  dd('check');
             }
 
                 return redirect()->route('portal.customer');
             
  
         }
+        // dd($customer_list);
         return view('portal/customer', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'status_waiting', 'status_action', 'status_completed', 'status_all', 'status_alert'));
     }
     
@@ -549,7 +551,7 @@ class PortalCustomerController
                 // dd($check_customer_code);
 
                 // dd($check_search->admin_area);
-                if(!$check_customer_code  == null) {
+                if (!empty($check_customer_code)) {
                     return view('portal/customer-waiting', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'count_all',  'count_waiting', 'count_action', 'count_completed', 'count_alert', 'status_customer'));
                 }
 
@@ -645,7 +647,7 @@ class PortalCustomerController
                 // dd($check_customer_code);
 
                 // dd($check_search->admin_area);
-                if(!$check_customer_code  == null) {
+                if (!empty($check_customer_code)) {
                     return view('portal/customer-action', compact('customer_list', 'user_name', 'page', 'total_page', 'start','count_all', 'count_waiting', 'count_action', 'count_completed','count_alert',  'status_customer'));
                 }
                 return back();
@@ -740,7 +742,7 @@ class PortalCustomerController
                 // dd($check_customer_code);
 
                 // dd($check_search->admin_area);
-                if(!$check_customer_code  == null) {
+                if (!empty($check_customer_code)) {
                     return view('portal/customer-completed', compact('customer_list', 'user_name', 'page', 'total_page', 'start','count_all', 'count_waiting', 'count_action', 'count_completed','count_alert', 'status_customer'));
                 }
                 return back();
@@ -881,7 +883,7 @@ class PortalCustomerController
                     
                     ]);
 
-                usleep(200000);
+                usleep(100000);
                 // check user id;
                 $check_customer_id = Customer::select('id')->where('id', $id)->first();
                 $customer_id =  $check_customer_id->id;

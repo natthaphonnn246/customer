@@ -313,7 +313,7 @@
                                         <label for="sale_area" style="color:#838383; font-weight:500;">Admin area</label>
                                         <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="admin_area">                  
                                             <option value="">ไม่ระบุ</option>
-                                            @if(isset($customer_area_list) != '')
+                                            @if(!empty($customer_area_list))
                                                  
                                                 @foreach($admin_area_list as $row)
                                                 
@@ -333,7 +333,7 @@
                                             <a href="" type="button" id="refreshForm" name="submit_update" class="btn my-3" style="border:none; width: 80px; color: rgb(111, 111, 111); padding: 8px;">ยกเลิก</a>
                                         </div>
 
-                                        @if(@$row_sale->updated_at != '')
+                                        @if (!empty($row_sale->updated_at))
                                         <div class="my-3" style="text-align: right;">
                                             <span style="color:#a4a2a2;">อัปเดตข้อมูล : </span> <span style="color:#939393; border:solid 1px #404147; width: 50%; padding: 10px; border-radius: 5px;">{{$row_sale->updated_at}}</span></span></br>
                                         </div>

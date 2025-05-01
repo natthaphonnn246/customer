@@ -19,7 +19,7 @@ class RoleAuth
     {
 
         //test;
-        if(Auth::user()->admin_role == 1) {
+        if(Auth::user()->admin_role === 1) {
 
             if(Auth::user()->user_id == '0000' || Auth::user()->user_id == '4494' || Auth::user()->user_id == '9000') {
 
@@ -35,7 +35,7 @@ class RoleAuth
             
         }
 
-        if (Auth::user()->role == 2) 
+        if (Auth::user()->role === 2) 
         {
 
             // return $next($request);

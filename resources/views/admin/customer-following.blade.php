@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <title>cutomer</title>
+    <title>cms.vmdrug</title>
 </head>
 <body>
 
@@ -27,7 +27,7 @@
             /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
-            min-width: 1200px;
+            min-width: 1400px;
             /* text-align: left; */
         }
         #exportcsv {
@@ -291,7 +291,7 @@
                 <span style="color: white; text-align: center;">
                     ร้านค้าทั้งหมด<br/>
                     @if (isset($total_customer))
-                    <span>{{$total_customer != '' ? $total_customer : '0' ;}}</span>
+                    <span>{{$total_customer != '' ? $total_customer : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -302,7 +302,7 @@
                 <span style="color: white; text-align: center;">
                     กำลังติดตาม<br/>
                     @if (isset($customer_status_following))
-                    <span>{{$customer_status_following != '' ? $customer_status_following : '0' ;}}</span>
+                    <span>{{$customer_status_following != '' ? $customer_status_following : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -331,7 +331,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @if(isset($customer) != '')
+                    @if(!empty($customer))
                     <?php 
                         @$start += 1;
                     ?>
@@ -560,11 +560,11 @@
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/admin/customer/status/following?page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/admin/customer/status/following?page={{ 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/admin/customer/status/following?page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/admin/customer/status/following?page={{ $page - 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -573,16 +573,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer/status/following?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer/status/following?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/admin/customer/status/following?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/admin/customer/status/following?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer/status/following?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer/status/following?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                 
                 @endif
@@ -590,11 +590,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/admin/customer/status/following?page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/admin/customer/status/following?page={{ $page }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/admin/customer/status/following?page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/admin/customer/status/following?page={{ $page + 1 }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif

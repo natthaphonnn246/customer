@@ -122,8 +122,8 @@
                             <span style="color:#8E8E8E;">สถานะของเว็บไซต์</span>
                             <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="maintenance_status">
 
-                                <option {{$setting_view->web_status == '0' ? 'selected': '' ; }} value="0">ปกติ</option>
-                                <option {{$setting_view->web_status == '1' ? 'selected': '' ; }} value="1">อยู่ระหว่างการปรับปรุง</option>
+                                <option {{$setting_view->web_status == '0' ? 'selected': ''}} value="0">ปกติ</option>
+                                <option {{$setting_view->web_status == '1' ? 'selected': ''}} value="1">อยู่ระหว่างการปรับปรุง</option>
                                 
                             </select>
                         </ul>
@@ -134,8 +134,8 @@
                             <span style="color:#8E8E8E;">สิทธิ์ในการทดสอบระบบ</span> <span style="font-size: 12px; color:red;">*เมื่ออยู่ระหว่างปรับปรุงระบบ</span>
                             <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="allowed_maintenance_status">
 
-                                <option {{$setting_view->allowed_web_status == '0' ? 'selected': '' ; }} value="0">ไม่ระบุ</option>
-                                <option {{$setting_view->allowed_web_status == '1' ? 'selected': '' ; }} value="1">ระบุ</option>
+                                <option {{$setting_view->allowed_web_status == '0' ? 'selected': ''}} value="0">ไม่ระบุ</option>
+                                <option {{$setting_view->allowed_web_status == '1' ? 'selected': ''}} value="1">ระบุ</option>
                                 
                             </select>
                         </ul>

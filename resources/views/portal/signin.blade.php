@@ -61,31 +61,31 @@
         @endsection
 
         @section('status_alert')
-        @if(!($admin_area_list->rights_area) == '0')
+        @if($admin_area_list->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_alert}}</h6>
             @endif
         @endsection
 
         @section('status_all')
-        @if(!($admin_area_list->rights_area) == '0')
+        @if($admin_area_list->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_all}}</h6>
             @endif
         @endsection
 
         @section('status_waiting')
-        @if(!($admin_area_list->rights_area) == '0')
+        @if($admin_area_list->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_waiting}}</h6>
             @endif
         @endsection
 
         @section('status_action')
-        @if(!($admin_area_list->rights_area) == '0')
+        @if($admin_area_list->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_action}}</h6>
             @endif
         @endsection
 
         @section('status_completed')
-        @if(!($admin_area_list->rights_area) == '0')
+        @if($admin_area_list->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_completed}}</h6>
             @endif
         @endsection
@@ -219,7 +219,7 @@
                                 {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
 
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="province" id="province">
-                                    @if(isset($provinces) != '')
+                                    @if(isset($provinces))
                                         @foreach($provinces as $row)
                                         
                                             <option value="{{$row->id}}">{{$row->name_th}}</option>
@@ -234,7 +234,7 @@
                                 <span>อำเภอ/แขวง</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="amphur" id="amphures">
                                     
-                                    @if(isset($ampures) != '')
+                                    @if(isset($ampures))
                                         @foreach($ampures as $row)
                                             <option value="{{$row->province_id}}">{{$row->name_th}}</option>
                                         @endforeach
@@ -248,7 +248,7 @@
                                 <span>ตำบล/เขต</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts">
 
-                                    @if(isset($district) != '')
+                                    @if(isset($district))
                                         @foreach($district as $row)
                                             <option value="{{$row->amphure_id}}">{{$row->name_th}}</option>
                                         @endforeach
@@ -278,7 +278,7 @@
                                 <span>แอดมินผู้ดูแล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                 {{-- <input style="margin-top:10px;" type="text" class="form-control" name="admins"><br> --}}
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="admin_area">
-                                    @if(isset($admin_area_list) != '')
+                                    @if(isset($admin_area_list))
                                     {{-- @foreach($admin_area_list as $row) --}}
 
                                         @if($admin_area_list->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->

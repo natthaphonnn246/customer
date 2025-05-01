@@ -297,18 +297,9 @@
         {{-- {{$_SERVER['REMOTE_ADDR'];}} --}}
 
     <div class="contentArea">
-   {{--  --}}
-
-   {{-- <input type="text" id="datepicker" placeholder="Select Date"> --}}
-
-{{--    <script>
-    flatpickr("#datepicker", {
-      dateFormat: "Y-m-d",  // Customize format as needed
-      defaultDate: "today", // Optional
-    });
-  </script> --}}
+          
   
-    <div id="user"></div>
+    {{-- <div id="user"></div> --}}
    {{-- <div id="content-container"> สถานะ</div> --}}
    
         <div class="py-2">

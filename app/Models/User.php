@@ -41,6 +41,7 @@ class User extends Authenticatable
         'check_login',
         'login_date',
         'last_activity',
+        'is_blocked',
     ];
     protected $table = 'users';
     protected $connection = 'mysql';
@@ -72,7 +73,7 @@ class User extends Authenticatable
 
     public static function user()
     {
-        $user = User::select('id', 'name', 'user_code','admin_area', 'email', 'status_checked', 'created_at')->get();
+        $user = User::select('id', 'name', 'user_code','admin_area', 'email', 'status_checked','is_blocked', 'created_at')->get();
         return [$user];
     }
 

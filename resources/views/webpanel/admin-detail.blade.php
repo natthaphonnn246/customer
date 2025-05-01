@@ -135,7 +135,7 @@
             <span style="font-size: 18px; font-weight: 500;">ข้อมูลแอดมิน</span>
         </ul>
         <hr class="my-3" style="color: #8E8E8E; width: 100%;">
-    @if (isset($admin_master) != '')
+    @if (isset($admin_master))
     {{-- @foreach ($admin_row as $row_edit) --}}
         <form action="/webpanel/admin-detail/update/{{$admin_master->id}}" method="post" id="form" enctype="multipart/form-data">
             {{-- action="/webpanel/admin-detail/update/{{$row_edit->user_code}}" enctype="multipart/form-data" --}}
@@ -152,11 +152,11 @@
                                 </li>
                                 <li class="my-4" style="width: 100%;">
                                     <span>CODE</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="code" value="{{$admin_master->user_code;}}">
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="code" value="{{$admin_master->user_code}}">
                                 </li>
                                 <li class="my-4" style="width: 100%;">
                                     <span>Admin area</span> <span style="font-size: 12px; color:red;">*เขตรับผิดชอบ</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" id="adminarea" name="admin_area" value="{{$admin_master->admin_area;}}">
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" id="adminarea" name="admin_area" value="{{$admin_master->admin_area}}">
                                 </li>
                                 <li class="my-4" style="width: 100%;">
                                     <ul style="width: 100%;">
@@ -166,8 +166,8 @@
                                             {{-- @if(($admin_master->user_code) == 0000)
                                             <option value="2" selected>มี</option>
                                             @else --}}
-                                            <option {{$admin_master->admin_role == 0 ? 'selected': '' ; }} value="0">ไม่มีสิทธิ์</option>
-                                            <option {{$admin_master->admin_role == 1 ? 'selected': '' ; }} value="1">มีสิทธิ์</option>
+                                            <option {{$admin_master->admin_role == 0 ? 'selected': '' }} value="0">ไม่มีสิทธิ์</option>
+                                            <option {{$admin_master->admin_role == 1 ? 'selected': '' }} value="1">มีสิทธิ์</option>
                                           {{--   @endif --}}
         
                                         </select>
@@ -183,9 +183,11 @@
                                     {{-- @if(($admin_master->user_code) == 0000)
                                     <option value="2" selected>มี</option>
                                     @else --}}
-                                    <option {{$admin_master->role == 0 ? 'selected': '' ; }} value="0">ไม่ระบุ</option>
-                                    <option {{$admin_master->role == 1 ? 'selected': '' ; }} value="1">ดูรายงาน</option>
-                                    <option {{$admin_master->role == 2 ? 'selected': '' ; }} value="2">แอดมินหลัก</option>
+                                    <option {{$admin_master->role == 0 ? 'selected': '' }} value="0">ไม่ระบุ</option>
+                                    <option {{$admin_master->role == 1 ? 'selected': '' }} value="1">ดูรายงาน</option>
+                                    @if ($admin_master->user_id == '0000' || $admin_master->user_id == '4494' || $admin_master->user_id == '9000')
+                                    <option {{$admin_master->role == 2 ? 'selected': '' }} value="2">แอดมินหลัก</option>
+                                    @endif
                                   {{--   @endif --}}
 
                                 </select>
@@ -196,8 +198,8 @@
                                 <span>สิทธิ์รับผิดชอบ</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="rights_area" id="rights_area_role">
 
-                                    <option {{$admin_master->rights_area == 0 ? 'selected' : '' ; }} value="0">ไม่ระบุ</option>
-                                    <option {{$admin_master->rights_area == 1 ? 'selected' : '' ; }} value="1">ระบุ</option>
+                                    <option {{$admin_master->rights_area == 0 ? 'selected' : '' }} value="0">ไม่ระบุ</option>
+                                    <option {{$admin_master->rights_area == 1 ? 'selected' : '' }} value="1">ระบุ</option>
                                     
                                 </select>
                             </ul>
@@ -294,8 +296,8 @@
                                     <span>สิทธิ์ในการทดสอบระบบ</span> <span style="font-size: 12px; color:red;">*เมื่ออยู่ระหว่างปรับปรุงระบบ</span>
                                     <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="allowed_user_status">
 
-                                        <option {{$admin_master->allowed_user_status == 0 ? 'selected' : '' ; }} value="0">ไม่ระบุ</option>
-                                        <option  {{$admin_master->allowed_user_status == 1 ? 'selected' : '' ; }} value="1">ระบุ</option>
+                                        <option {{$admin_master->allowed_user_status == 0 ? 'selected' : '' }} value="0">ไม่ระบุ</option>
+                                        <option  {{$admin_master->allowed_user_status == 1 ? 'selected' : '' }} value="1">ระบุ</option>
                                         
                                     </select>
                                 </li>
@@ -319,10 +321,10 @@
                                 {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
 
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="province" id="province">
-                                    @if(isset($province) != '')
+                                    @if(isset($province))
                                         @foreach($province as $row)
                         
-                                            <option value="{{$row->id}}" {{$row->name_th == $admin_master->province ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->id}}" {{$row->name_th == $admin_master->province ? 'selected' : '' }}>{{$row->name_th}}</option>
                                         
                                         @endforeach
                                     @endif
@@ -334,9 +336,9 @@
                                 <span>อำเภอ/เขต</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" id="amphures" name="amphur">
 
-                                    @if(isset($amphur) == '')
+                                    @if(isset($amphur) && $amphur == '')
                                         @foreach($amphur as $row)
-                                            <option value="{{$row->province_id}}" {{$row->name_th == $admin_master->amphur ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->province_id}}" {{$row->name_th == $admin_master->amphur ? 'selected' : '' }}>{{$row->name_th}}</option>
                                         @endforeach
 
                                     @else
@@ -349,9 +351,9 @@
                             <ul class="mt-3" style="width: 100%;">
                                 <span>ตำบล/แขวง</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="district" id="districts">
-                                    @if(isset($district) == '')
+                                    @if(isset($district) && $district == '')
                                         @foreach($district as $row)
-                                            <option value="{{$row->amphure_id}}" {{$row->name_th == $admin_master->district ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->amphure_id}}" {{$row->name_th == $admin_master->district ? 'selected' : '' }}>{{$row->name_th}}</option>
                                         @endforeach
 
                                     @else

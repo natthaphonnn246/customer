@@ -18,9 +18,9 @@ class AdminRoleAuth
     {
 
          //test;
-        if(Auth::user()->admin_role == 1) {
+        if(Auth::user()->admin_role === 1) {
 
-            if (Auth::user()->role != 1) {
+            if (Auth::user()->role !== 1) {
                 
                 Auth::guard('web')->logout();
                 $request->session()->invalidate();
@@ -32,7 +32,7 @@ class AdminRoleAuth
             return $next($request);
         }
         
-        if (Auth::user()->role != 1) {
+        if (Auth::user()->role !== 1) {
 
             Auth::guard('web')->logout();
             $request->session()->invalidate();

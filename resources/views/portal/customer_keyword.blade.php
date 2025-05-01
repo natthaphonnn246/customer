@@ -232,31 +232,31 @@
         @endsection --}}
 
         @section('status_alert')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_alert}}</h6>
             @endif
         @endsection
 
         @section('status_all')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_all}}</h6>
             @endif
         @endsection
 
         @section('status_waiting')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_waiting}}</h6>
             @endif
         @endsection
 
         @section('status_action')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_action}}</h6>
             @endif
         @endsection
 
         @section('status_completed')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_completed}}</h6>
             @endif
         @endsection
@@ -325,7 +325,7 @@
               </tr>
             </thead>
             <tbody>
-                @if(isset($admin_area) != '')
+                @if(isset($admin_area))
                 <?php 
                     @$start += 1;
                 ?>

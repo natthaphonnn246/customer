@@ -24,11 +24,13 @@ class AdminArea
             $user = Customer::select('admin_area')->where('admin_area', $admin_check)->first();
 
             // check admin_area between customers and users;
-            if($user != null) 
+            // if($user != null) 
+            if($user) 
             {
                 $admin_area = $user->admin_area;
                 
-                    if(!Auth::user()->admin_area == $admin_area) {
+                    // if(!Auth::user()->admin_area == $admin_area) {
+                    if (Auth::user()->admin_area != $admin_area) {
 
                         return back();
 

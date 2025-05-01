@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-    <title>nntpn.com</title>
+    <title>cms.vmdrug</title>
 </head>
 <body>
 
@@ -66,7 +66,7 @@
                 <span style="color: white; text-align: center;">
                     ร้านค้าทั้งหมด<br/>
                     @if (isset($customer_all))
-                    <span>{{$customer_all != '' ? $customer_all : '0' ;}}</span>
+                    <span>{{$customer_all != '' ? $customer_all : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -77,7 +77,7 @@
                 <span style="color: white; text-align: center;">
                     บัญชีปกติ<br/>
                     @if (isset($count_status_normal))
-                    <span>{{$customer_all != '' ? $count_status_normal : '0' ;}}</span>
+                    <span>{{$customer_all != '' ? $count_status_normal : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -88,7 +88,7 @@
                 <span style="color: white; text-align: center;">
                     <a href="/admin/customer/status/following" style="text-decoration: none; color:white;">กำลังติดตาม</a><br/>
                     @if (isset($count_status_follow))
-                    <span>{{$count_status_follow != '' ? $count_status_follow : '0' ;}}</span>
+                    <span>{{$count_status_follow != '' ? $count_status_follow : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -99,7 +99,7 @@
                 <span style="color: white; text-align: center;">
                     ระงับบัญชี (ไม่เคลื่อนไหว)<br/>
                     @if (isset($count_status_suspend))
-                    <span>{{$count_status_suspend != '' ? $count_status_suspend : '0' ;}}</span>
+                    <span>{{$count_status_suspend != '' ? $count_status_suspend : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -110,7 +110,7 @@
                 <span style="color: white; text-align: center;">
                     ปิดบัญชี<br/>
                     @if (isset($count_status_closed))
-                    <span>{{$count_status_closed != '' ? $count_status_closed : '0' ;}}</span>
+                    <span>{{$count_status_closed != '' ? $count_status_closed : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif

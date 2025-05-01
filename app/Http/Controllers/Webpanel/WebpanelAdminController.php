@@ -258,7 +258,7 @@ class WebpanelAdminController extends Controller
             // dd($check_customer_code);
 
             // dd($check_search->admin_area);
-            if(!$check_keyword  == null) {
+            if (!empty($check_keyword)) {
                 return view('admin/customer', compact('count_page', 'check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
                             'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated', 'user_name'));
 
@@ -396,6 +396,7 @@ class WebpanelAdminController extends Controller
             $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('admin/customer-completed', compact('user_name', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_completed', 'status_waiting', 'status_updated', 'status_alert'));
+       
         } else if ($status_check == 'latest_update') {
 
             $row_customer = Customer::latestUpdate($page);
@@ -560,7 +561,7 @@ class WebpanelAdminController extends Controller
                     // dd($check_customer_code);
 
                     // dd($check_search->admin_area);
-                    if(!$check_keyword  == null) {
+                    if (!empty($check_keyword)) {
                         return view('admin/adminarea-waiting',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
 
                     }
@@ -616,7 +617,7 @@ class WebpanelAdminController extends Controller
                         // dd($check_customer_code);
 
                         // dd($check_search->admin_area);
-                        if(!$check_keyword  == null) {
+                        if (!empty($check_keyword)) {
                             return view('admin/adminarea-action',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
 
                         }
@@ -670,7 +671,7 @@ class WebpanelAdminController extends Controller
                             // dd($check_customer_code);
 
                             // dd($check_search->admin_area);
-                            if(!$check_keyword  == null) {
+                            if (!empty($check_keyword)) {
                                 return view('admin/adminarea-completed',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
 
                             }
@@ -714,7 +715,7 @@ class WebpanelAdminController extends Controller
                         // dd($check_customer_code);
 
                         // dd($check_search->admin_area);
-                        if(!$check_keyword  == null) {
+                        if (!empty($check_keyword)) {
                             return view('admin/adminarea-detail',compact('user_name', 'check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
 
                         }

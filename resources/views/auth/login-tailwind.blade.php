@@ -212,7 +212,9 @@
 </style>
     
 <body>
-      
+   
+    {{-- @dd(config('services.recaptcha.site_key')) --}}
+
       
     {{-- flex flex-col items-center justify-center px-6 py-4 mx-auto md:h-screen lg:py-0 --}}
 
@@ -239,11 +241,14 @@
 
                         <!-- Google reCAPTCHA -->
                         <ul class="ms-10">
-                            <div class="g-recaptcha" data-sitekey="6LfCCxkrAAAAAFupTbUe6slwpcWBXUdWLx30dztX" data-callback="enableSubmitbtn"></div>
+                            {{-- <div class="g-recaptcha" data-sitekey="6LfCCxkrAAAAAFupTbUe6slwpcWBXUdWLx30dztX" data-callback="enableSubmitbtn"></div> --}}
+                           <!--เอา--><div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"  data-callback="enableSubmitbtn"></div>
+
                         </ul>
 
                         <ul class="text-center">
                             <button type="submit" id="submitBtn" style="width:125px; font-size:16px;" disabled>Login</button>
+                            {{-- <button type="submit" id="submitBtn" style="width:125px; font-size:16px;" >Login</button> --}}
                         </ul>
                  
                         @if (session('login_fail') == 'fail')
@@ -293,6 +298,12 @@
 
                         @endif
 
+                        @if ($errors->has('g-recaptcha-response'))
+                        <div class="text-red-500 text-center">
+                            {{ $errors->first('g-recaptcha-response') }}
+                        </div>
+                        @endif
+
                         @if (session('recaptcha_error') == 'recaptcha_error')
                         <script> 
                                 Swal.fire({
@@ -323,6 +334,56 @@
                         <script> 
                                 Swal.fire({
                                     title: "⚠️ ปิดปรับปรุงระบบ",
+                                    // text: "กรุณารอสักครู่",
+                                    icon: "warning",
+                                    confirmButtonText: "ตกลง",
+                                    width: '400px', 
+                                    height: '200px',
+                                    customClass: {
+                                        popup: 'rounded-popup',
+                                        title: 'text-xl',
+                                        icon: 'custom-icon-color',
+                                        confirmButton: 'custom-confirm-button'
+                                    }
+                                    }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.reload();
+                                    }
+                                    
+                                });
+                        </script>
+
+                        @endif
+
+                        @if (session('email') == 'บัญชีถูกบล็อกชั่วคราว')
+                        <script> 
+                                Swal.fire({
+                                    title: "⚠️ บัญชีถูกบล็อกชั่วคราว",
+                                    // text: "กรุณารอสักครู่",
+                                    icon: "error",
+                                    confirmButtonText: "ตกลง",
+                                    width: '400px', 
+                                    height: '200px',
+                                    customClass: {
+                                        popup: 'rounded-popup',
+                                        title: 'text-xl',
+                                        icon: 'custom-icon-color',
+                                        confirmButton: 'custom-confirm-button'
+                                    }
+                                    }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.reload();
+                                    }
+                                    
+                                });
+                        </script>
+
+                        @endif
+
+                        @if (session('attepmt_fail') == 'ข้อมูลไม่ถูกต้อง')
+                        <script> 
+                                Swal.fire({
+                                    title: "⚠️ ข้อมูลไม่ถูกต้อง",
                                     // text: "กรุณารอสักครู่",
                                     icon: "warning",
                                     confirmButtonText: "ตกลง",

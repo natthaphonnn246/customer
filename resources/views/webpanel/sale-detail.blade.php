@@ -99,7 +99,7 @@
         
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
         
-        @if(isset($salearea) != null)
+        @if(isset($salearea))
             <form action="/webpanel/sale-detail/update/{{$salearea->id}}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="row ms-6 mr-1">

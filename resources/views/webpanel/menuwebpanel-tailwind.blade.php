@@ -243,7 +243,7 @@
                  </button>
                     <ul id="dropdown-report" class="hidden py-2 space-y-2">
                           <li style="margin-left: 35px;">
-                             <a href="/webpanel/report/seller" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_all" style="font-size:14px;">ขายสินค้า</a>
+                             <a href="/webpanel/report/seller" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_all" style="font-size:14px;">การขายสินค้า</a>
                           </li>
                           <li style="margin-left: 35px;">
                              <a href="/webpanel/sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_salearea" style="font-size:14px;">ขายสินค้าตามเขต</a>

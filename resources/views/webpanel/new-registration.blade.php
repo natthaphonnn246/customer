@@ -303,7 +303,7 @@
                 <span style="color: white; text-align: center;">
                     ร้านค้าทั้งหมด<br/>
                     @if (isset($total_customer))
-                    <span>{{$total_customer != '' ? $total_customer : '0' ;}}</span>
+                    <span>{{$total_customer != '' ? $total_customer : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -314,7 +314,7 @@
                 <span style="color: white; text-align: center;">
                     ลงทะเบียนใหม่<br/>
                     @if (isset($total_status_registration))
-                    <span>{{$total_status_registration != '' ? $total_status_registration : '0' ;}}</span>
+                    <span>{{$total_status_registration != '' ? $total_status_registration : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -343,7 +343,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @if(isset($customer) != '')
+                    @if(!empty($customer))
                     <?php 
                         @$start += 1;
                     ?>
@@ -575,11 +575,11 @@
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer/status/new_registration?page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/new_registration?page={{ 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/new_registration?page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/new_registration?page={{ $page - 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -588,16 +588,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/new_registration?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/new_registration?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/new_registration?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/new_registration?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/new_registration?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/new_registration?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                 
                 @endif
@@ -605,11 +605,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer/status/new_registration?page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/new_registration?page={{ $page }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/new_registration?page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/new_registration?page={{ $page + 1 }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif

@@ -7,6 +7,8 @@
     use App\Exports\CustomerExcelExport;
     use App\Exports\CustomerAreaExport;
     use App\Exports\CustomerCsvExport;
+    use App\Exports\SellerCsvExport;
+    use App\Exports\SellerExcelExport;
     use App\Http\Controllers\ProvinceController;
     use App\Http\Controllers\Webpanel\WebpanelCustomerController;
     use App\Http\Controllers\Portal\PortalCustomerController;
@@ -21,6 +23,7 @@
     use App\Imports\SellersImport;
     use App\Models\Customer;
     use App\Models\Salearea;
+    use App\Http\Controllers\RecaptchaV2;
     use Illuminate\Support\Facades\DB;
     use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
@@ -30,6 +33,9 @@
     Route::get('/', function () {
         return view('auth.login-tailwind');
     });
+
+    //recaptcah v-2;
+    // Route::post('/', [RecaptchaV2::class, 'reCaptcha']);
 
     //middleware statusOnline;
 Route::middleware('statusOnline')->group(function (){
@@ -58,7 +64,7 @@ Route::middleware('statusOnline')->group(function (){
 
     //admin for reports;
     Route::middleware('auth', 'status','maintenance', 'adminRole', 'verified')->group(function () {
-        Route::get('/admin', [WebpanelAdminController::class, 'dashboard'])->name('webpanel.report');
+        Route::get('/admin', [WebpanelAdminController::class, 'dashboard'])->name('admin.report');
         Route::get('/admin/customer', [WebpanelAdminController::class, 'indexCustomer']);
         Route::get('/admin/customer/{id}', [WebpanelAdminController::class, 'edit']);
         Route::get('/admin/customer/status/{status_check}', [WebpanelAdminController::class, 'indexStatus']);
@@ -153,6 +159,9 @@ Route::middleware('statusOnline')->group(function (){
         Route::post('/webpanel/admin/status-inactive', [UserController::class,'statusiAct']);
         Route::get('/webpanel/admin', [UserController::class,'userData'])->name('wbpanel-status');
 
+        //is_blocked;
+        Route::post('/webpanel/admin/status-unblocked', [UserController::class,'unBlocked']);
+        Route::post('/webpanel/admin/status-isblocked', [UserController::class,'isBlocked']);
         //webpanel for admin-detail;
         Route::get('/webpanel/admin/{id}', [UserController::class, 'edit']);
 
@@ -290,8 +299,13 @@ Route::middleware('statusOnline')->group(function (){
         Route::post('/webpanel/report/seller/importcsv', [ReportSellerController::class, 'importFile']);
         Route::get('/webpanel/report/seller/search_date', [ReportSellerController::class, 'index']);
         Route::get('/webpanel/report/seller/range', [ReportSellerController::class, 'index']);
-    });
+        Route::get('/webpanel/report/seller/{id}', [ReportSellerController::class, 'show']);
+        Route::get('/webpanel/report/seller/exportcsv/check', [SellerCsvExport::class, 'exportSellerCsv']);
+        Route::get('/webpanel/report/seller/exportexcel/check', [SellerExcelExport::class, 'exportSellerExcel']);
+        Route::get('/webpanel/report/seller/search/keyword', [ReportSellerController::class, 'search']);
 
+    });
+   
     Route::get('/webpanel/datepicker', function (){
         return view('webpanel/datepicker');
     });
@@ -397,7 +411,6 @@ Route::middleware('statusOnline')->group(function (){
         return view('auth/login-tailwind');
     }); */
 });
-
     Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

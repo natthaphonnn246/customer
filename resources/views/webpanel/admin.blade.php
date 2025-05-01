@@ -26,7 +26,7 @@
             padding: 0px;
             background-color: #FFFFFF;
             border-radius: 2px;
-            min-width: 1200px;
+            min-width: 1400px;
             /* text-align: left; */
         }
         #admin {
@@ -123,6 +123,10 @@
         input:checked + .slider {
             background-color: #03ae3f;
     
+        }
+
+        .is_blocked:checked + .slider {
+            background-color: #f52e2e;
         }
 
         input:focus + .slider {
@@ -265,7 +269,8 @@
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500;">Admin area</td>
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500;">อีเมล</td>
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500;">ชื่อแอดมิน</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">อนุมัติ</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">สถานะอนุมัติ</td>
+                <td scope="col" style="color:#838383; text-align: left; font-weight:500;"><span style="font-size: 12px; color:rgb(255, 78, 78); font-weight:400;">*ล็อกอินผิดเกิน 5 ครั้ง</span></br>ระงับบัญชี</td>
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500;">วันที่สมัคร</td>
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500;">จัดการ</td>
               </tr>
@@ -284,20 +289,21 @@
                         $user_code = $row->user_code;
                         $admin_area = $row->admin_area;
                         $status_admin = $row->status_checked;
+                        $is_blocked = $row->is_blocked;
                         $email = $row->email;
                         $created_at = $row->created_at;
                     ?>
                 
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$start++}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$user_code}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$admin_area}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$email}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$user_name}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;">{{$start++}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;">{{$user_code}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;">{{$admin_area}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;">{{$email}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;">{{$user_name}}</td>
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;; width:8%;">
                   
-                    @if ($user_code === '0000')
+                    @if ($user_code === '0000' || $user_code === '4494')
                         <label class="switch" style="opacity:0.6;">
-                            <input type="checkbox" name="check" id="status_on{{$id}}" {{ $status_admin == 'active' ? 'checked disabled' : '' ;}}>
+                            <input type="checkbox" name="check" id="status_on{{$id}}" {{ $status_admin == 'active' ? 'checked disabled' : ''}}>
                             <span class="slider round" style="text-align: center;">
                                 <span style="color: white; font-size: 10px; text-align: center;">ON</span>
                                 <span style="color: white; font-size: 10px;">OFF</span>
@@ -305,12 +311,44 @@
                         </label>
                     @else
                         <label class="switch">
-                            <input type="checkbox" name="check" id="status_on{{$id}}" {{ $status_admin == 'active' ? 'checked' : '' ;}}>
+                            {{-- <input type="checkbox" name="check" id="status_on{{$id}}" {{ $status_admin == 'active' && $is_blocked == 0 ? 'checked' : ''}}> --}}
+                            <input type="checkbox" name="check" id="status_on{{$id}}" {{ $status_admin == 'active' ? 'checked' : ''}}>
                             <span class="slider round" style="text-align: center;">
                                 <span style="color: white; font-size: 10px; text-align: center;">ON</span>
                                 <span style="color: white; font-size: 10px;">OFF</span>
                             </span>
                         </label>
+
+  {{--                       <label class="switch">
+                            <input class="is_blocked" type="checkbox" name="is_blocked" id="status_onblocked{{$id}}" {{ $is_blocked == 1 ? 'checked' : ''}}>
+                            <span class="slider round" style="text-align: center;">
+                                <span style="color: white; font-size: 10px; text-align: center;">ON</span>
+                                <span style="color: white; font-size: 10px;">OFF</span>
+                            </span>
+                        </label> --}}
+                    @endif
+                  
+                </td>
+
+                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px; width:8%;">
+                  
+                    @if ($user_code == '0000' || $user_code == '4494')
+                    <label class="switch">
+                        <input class="is_blocked" type="checkbox" name="is_blocked" disabled>
+                        <span class="slider round" style="text-align: center;">
+                            <span style="color: white; font-size: 10px; text-align: center;">ON</span>
+                            <span style="color: white; font-size: 10px;">OFF</span>
+                        </span>
+                    </label>
+
+                    @else
+                    <label class="switch">
+                        <input class="is_blocked" type="checkbox" name="is_blocked" id="status_onblocked{{$id}}" {{ $is_blocked == 1 ? 'checked' : ''}}>
+                        <span class="slider round" style="text-align: center;">
+                            <span style="color: white; font-size: 10px; text-align: center;">ON</span>
+                            <span style="color: white; font-size: 10px;">OFF</span>
+                        </span>
+                    </label>
                     @endif
                   
                 </td>
@@ -399,6 +437,7 @@
 
                 </script>
 
+                <!-- status_checked -->
                 <script text="type/javascript">
                         $(document).ready(function() {
                             // $('#status_on').prop('checked', false);
@@ -423,6 +462,7 @@
                                         data: {
                                             id_act: 2,
                                             status: 'active',
+                                            is_blocked: 0,
                                             code_id: user_code,
                                             _token: "{{ csrf_token() }}",
                                         },
@@ -457,6 +497,7 @@
                                         data: {
                                             id_inact: 1,
                                             status_in: 'inactive',
+                                            is_blocked: 1,
                                             code_id: user_code,
                                             _token: "{{ csrf_token() }}",
                                         },
@@ -477,6 +518,85 @@
                                 }
                             });
                         });
+                </script>
+
+                <!-- is_blocked -->
+                <script text="type/javascript">
+                    $(document).ready(function() {
+                        // $('#status_on').prop('checked', false);
+                        $('#status_onblocked{{$id}}').change(function() {
+            
+                            if($(this).is(':checked')) 
+                            {
+                                $('#status_onblocked{{$id}}').prop('checked', true);
+                                console.log('ON');
+                                // var admin_code = $(this).val();
+                                const user_code = '{{$id}}';
+                                console.log(user_code);
+            
+                                $.ajaxSetup({
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    }
+                                });
+                                $.ajax({
+                                    url: '/webpanel/admin/status-isblocked',
+                                    type: 'POST',
+                                    data: {
+                                        is_blocked: 1,
+                                        code_blocked: user_code,
+                                        _token: "{{ csrf_token() }}",
+                                    },
+                                    success: function(response) {
+            
+                                        if(response == 'isblocked') {
+                                            console.log('isblocked');
+
+                                        }
+                
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.log(xhr);
+                                        console.log(status);
+                                        console.log(error);
+                                    }
+                                });
+            
+                            } else {
+
+                                const user_code = '{{$id}}';
+                                console.log(user_code);
+
+                                $.ajaxSetup({
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    }
+                                });
+                                $.ajax({
+                                    url: '/webpanel/admin/status-unblocked',
+                                    type: 'POST',
+                                    data: {
+                                        is_blocked: 0,
+                                        code_blocked: user_code,
+                                        _token: "{{ csrf_token() }}",
+                                    },
+                                    success: function(response) {
+            
+                                        if(response == 'unblocked') {
+                                            console.log('unblocked');
+
+                                        }
+                
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.log(xhr);
+                                        console.log(status);
+                                        console.log(error);
+                                    }
+                                });
+                            }
+                        });
+                    });
                 </script>
               @endforeach
               @endif

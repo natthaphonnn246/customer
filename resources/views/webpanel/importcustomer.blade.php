@@ -268,7 +268,7 @@
             @error('import_csv')
 
             <div class="alert alert-danger my-2" role="alert">
-                {{@$message}}
+                {{ $message ?? '' }}
             </div>
         
             @enderror

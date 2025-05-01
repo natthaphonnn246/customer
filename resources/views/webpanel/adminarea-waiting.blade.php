@@ -27,7 +27,7 @@
             /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
-            min-width: 1500px;
+            min-width: 1400px;
             /* text-align: left; */
         }
         #exportcsv {
@@ -303,7 +303,7 @@
                 <span style="color: white; text-align: center;">
                     <a href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}">ร้านค้าทั้งหมด</a><br/>
                     @if (isset($total_customer_adminarea))
-                    <span>{{$total_customer_adminarea != '' ? $total_customer_adminarea : '0' ;}}</span>
+                    <span>{{$total_customer_adminarea != '' ? $total_customer_adminarea : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -314,7 +314,7 @@
                 <span style="color: white; text-align: center;">
                     <a href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting">รอดำเนินการ</a><br/>
                     @if (isset($total_status_waiting))
-                    <span>{{$total_status_waiting != '' ? $total_status_waiting : '0' ;}}</span>
+                    <span>{{$total_status_waiting != '' ? $total_status_waiting : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -325,7 +325,7 @@
                 <span style="color: white; text-align: center;">
                     <a href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action">ต้องดำเนินการ</a><br/>
                     @if (isset($total_status_action))
-                    <span>{{$total_status_action != '' ? $total_status_action : '0' ;}}</span>
+                    <span>{{$total_status_action != '' ? $total_status_action : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -336,7 +336,7 @@
                 <span style="color: white; text-align: center;">
                     <a href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-completed">ดำเนินการแล้ว</a><br/>
                     @if (isset($total_status_completed))
-                    <span>{{$total_status_completed != '' ? $total_status_completed : '0' ;}}</span>
+                    <span>{{$total_status_completed != '' ? $total_status_completed : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -347,7 +347,7 @@
                 <span style="color: white; text-align: center;">
                     <a href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/new-registration">ลงทะเบียนใหม่</a><br/>
                     @if (isset($total_status_registration))
-                    <span>{{$total_status_registration != '' ? $total_status_registration : '0' ;}}</span>
+                    <span>{{$total_status_registration != '' ? $total_status_registration : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -421,7 +421,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @if(isset($customer) != '')
+                    @if(!empty($customer))
                     <?php 
                         @$start += 1;
                     ?>
@@ -644,17 +644,17 @@
             </table>
         </div>
 
-        @if(isset($check_keyword) == null && $total_page > 1)
-        <div class="ms-6">
+        @if(!isset($check_keyword) && $total_page > 1)
+        <div class="ms-6"> 
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                 <li class="page-item">
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page={{ 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page={{ $page-1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -663,16 +663,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                 
                 @endif
@@ -680,11 +680,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page={{ $page }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?page={{ $page+1 }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif
@@ -700,11 +700,11 @@
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $page - 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -713,16 +713,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                 
                 @endif
@@ -730,11 +730,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $page }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword=<?php echo $_GET['keyword'] ; ?>&_token=<?php echo $_GET['_token']; ?>&page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-waiting?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $page + 1 }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif

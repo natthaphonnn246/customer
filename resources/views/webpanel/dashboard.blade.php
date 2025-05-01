@@ -76,7 +76,7 @@
                 <span style="color: white; text-align: center;">
                     ร้านค้าทั้งหมด<br/>
                     @if (isset($customer_all))
-                    <span>{{$customer_all != '' ? $customer_all : '0' ;}}</span>
+                    <span>{{$customer_all != '' ? $customer_all : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -87,7 +87,7 @@
                 <span style="color: white; text-align: center;">
                     <a href="/webpanel/customer/status/new_registration">ลงทะเบียนใหม่</a><br/>
                     @if (isset($status_registration))
-                    <span>{{$status_registration != '' ? $status_registration : '0' ;}}</span>
+                    <span>{{$status_registration != '' ? $status_registration : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -98,7 +98,7 @@
                 <span style="color: white; text-align: center;">
                     บัญชีปกติ<br/>
                     @if (isset($count_status_normal))
-                    <span>{{$customer_all != '' ? $count_status_normal : '0' ;}}</span>
+                    <span>{{$customer_all != '' ? $count_status_normal : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -109,7 +109,7 @@
                 <span style="color: white; text-align: center;">
                     <a href="/webpanel/customer/status/following" style="text-decoration: none; color:white;">กำลังติดตาม</a><br/>
                     @if (isset($count_status_follow))
-                    <span>{{$count_status_follow != '' ? $count_status_follow : '0' ;}}</span>
+                    <span>{{$count_status_follow != '' ? $count_status_follow : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -120,7 +120,7 @@
                 <span style="color: white; text-align: center;">
                     ระงับบัญชี (ไม่เคลื่อนไหว)<br/>
                     @if (isset($count_status_suspend))
-                    <span>{{$count_status_suspend != '' ? $count_status_suspend : '0' ;}}</span>
+                    <span>{{$count_status_suspend != '' ? $count_status_suspend : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -131,7 +131,7 @@
                 <span style="color: white; text-align: center;">
                     ปิดบัญชี<br/>
                     @if (isset($count_status_closed))
-                    <span>{{$count_status_closed != '' ? $count_status_closed : '0' ;}}</span>
+                    <span>{{$count_status_closed != '' ? $count_status_closed : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif

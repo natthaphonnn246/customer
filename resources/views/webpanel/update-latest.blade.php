@@ -303,7 +303,7 @@
                 <span style="color: white; text-align: center;">
                     ร้านค้าทั้งหมด<br/>
                     @if (isset($total_customer))
-                    <span>{{$total_customer != '' ? $total_customer : '0' ;}}</span>
+                    <span>{{$total_customer != '' ? $total_customer : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -314,7 +314,7 @@
                 <span style="color: white; text-align: center;">
                     UPDATE<br/>
                     @if (isset($total_status_updated))
-                    <span>{{$total_status_updated != '' ? $total_status_updated : '0' ;}}</span>
+                    <span>{{$total_status_updated != '' ? $total_status_updated : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
@@ -344,7 +344,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @if(isset($customer) != '')
+                    @if(!empty($customer))
                     <?php 
                         @$start += 1;
                     ?>
@@ -393,7 +393,7 @@
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">
                     
                             <label class="switch">
-                                <input type="checkbox" name="check" id="status_on{{$id}}" {{$customer_status == 'active' ? 'checked' : '' ;}}>
+                                <input type="checkbox" name="check" id="status_on{{$id}}" {{$customer_status == 'active' ? 'checked' : ''}}>
                                 {{-- {{dd($customer_status);}} --}}
                                 <span class="slider round" style="text-align: center;">
                                     <span style="color: white; font-size: 10px; text-align: center;">ON</span>
@@ -576,11 +576,11 @@
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer/status/latest_update?page=<?=1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/latest_update?page={{ 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $page-1 ; ?>" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/latest_update?page={{ $page - 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -589,16 +589,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/latest_update?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/latest_update?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/latest_update?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                 
                 @endif
@@ -606,11 +606,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $page ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/latest_update?page={{ $page }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/latest_update?page=<?= $page+1 ; ?>" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/latest_update?page={{ $page + 1 }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif

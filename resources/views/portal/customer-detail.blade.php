@@ -179,31 +179,31 @@
         @endsection
 
         @section('status_alert')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$count_alert}}</h6>
             @endif
         @endsection
 
         @section('status_all')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$count_all}}</h6>
             @endif
         @endsection
 
         @section('status_waiting')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$count_waiting}}</h6>
             @endif
         @endsection
 
         @section('status_action')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$count_action}}</h6>
             @endif
         @endsection
 
         @section('status_completed')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$count_completed}}</h6>
             @endif
         @endsection
@@ -245,7 +245,7 @@
                                     <h1 class="modal-title fs-5" id="staticBackdropLabel">แก้ไขใบอนุญาตขายยา</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <span class="ms-3 py-2" style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล/Code : {{$customer_edit->customer_code; }}</span>
+                                <span class="ms-3 py-2" style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล/Code : {{$customer_edit->customer_code}}</span>
                                 <hr style="color:#a5a5a5;">
                                     <div class="modal-body">
                                         <form action="/portal/customer-detail/upload-store/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">
@@ -295,7 +295,7 @@
                                     <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบประกอบวิชาชีพ</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <span class="ms-3 py-2" style="text-align: start;">ใบประกอบวิชาชีพ/Code : {{$customer_edit->customer_code; }}</span>
+                                <span class="ms-3 py-2" style="text-align: start;">ใบประกอบวิชาชีพ/Code : {{$customer_edit->customer_code}}</span>
                                 <hr style="color:#a5a5a5;">
                                     <div class="modal-body">
                                         <form action="/portal/customer-detail/upload-medical/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">
@@ -346,7 +346,7 @@
                                     <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบทะเบียนพาณิชย์</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนพาณิชย์/Code : {{$customer_edit->customer_code; }}</span>
+                                <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนพาณิชย์/Code : {{$customer_edit->customer_code}}</span>
                                 <hr style="color:#a5a5a5;">
                                     <div class="modal-body">
                                         <form action="/portal/customer-detail/upload-commerce/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">
@@ -396,7 +396,7 @@
                                     <h1 class="modal-title fs-5" id="staticBackdropLabel">ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)/Code : {{$customer_edit->customer_code; }}</span>
+                                <span class="ms-3 py-2" style="text-align: start;">ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)/Code : {{$customer_edit->customer_code}}</span>
                                 <hr style="color:#a5a5a5;">
                                     <div class="modal-body">
                                         <form action="/portal/customer-detail/upload-vat/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">
@@ -446,7 +446,7 @@
                                     <h1 class="modal-title fs-5" id="staticBackdropLabel">สำเนาบัตรประชาชน</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <span class="ms-3 py-2" style="text-align: start;">สำเนาบัตรประชาชน/Code : {{$customer_edit->customer_code; }}</span>
+                                <span class="ms-3 py-2" style="text-align: start;">สำเนาบัตรประชาชน/Code : {{$customer_edit->customer_code}}</span>
                                 <hr style="color:#a5a5a5;">
                                     <div class="modal-body">
                                         <form action="/portal/customer-detail/upload-id/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">
@@ -595,10 +595,10 @@
                                 {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
 
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="province" id="province">
-                                    @if(isset($province) != '')
+                                    @if(isset($province))
                                         @foreach($province as $row)
                         
-                                            <option value="{{$row->id}}" {{$row->name_th == $customer_edit->province ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->id}}" {{$row->name_th == $customer_edit->province ? 'selected' : ''}}>{{$row->name_th}}</option>
                                         
                                         @endforeach
                                     @endif
@@ -610,9 +610,9 @@
                                 <span>อำเภอ/เขต</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" id="amphures" name="amphur">
 
-                                    @if(isset($amphur) == '')
+                                    @if(isset($amphur) && $amphur == '')
                                         @foreach($amphur as $row)
-                                            <option value="{{$row->province_id}}" {{$row->name_th == $customer_edit->amphur ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->province_id}}" {{$row->name_th == $customer_edit->amphur ? 'selected' : ''}}>{{$row->name_th}}</option>
                                         @endforeach
 
                                     @else
@@ -625,9 +625,9 @@
                             <ul class="mb-8" style="width: 100%;">
                                 <span>ตำบล/แขวง</span>
                                 <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="district" id="districts">
-                                    @if(isset($district) == '')
+                                    @if(isset($district) && $district == '')
                                         @foreach($district as $row)
-                                            <option value="{{$row->amphure_id}}" {{$row->name_th == $customer_edit->district ? 'selected' : '' ;}}>{{$row->name_th}}</option>
+                                            <option value="{{$row->amphure_id}}" {{$row->name_th == $customer_edit->district ? 'selected' : ''}}>{{$row->name_th}}</option>
                                         @endforeach
 
                                     @else

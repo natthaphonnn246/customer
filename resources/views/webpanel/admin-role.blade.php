@@ -241,7 +241,7 @@
                   
                     @if ($user_code === '0000')
                         <label class="switch" style="opacity:0.6;">
-                            <input type="checkbox" name="check" id="status_on{{$user_code}}" {{ $status_admin == 'active' ? 'checked disabled' : '' ;}}>
+                            <input type="checkbox" name="check" id="status_on{{$user_code}}" {{ $status_admin == 'active' ? 'checked disabled' : ''}}>
                             <span class="slider round" style="text-align: center;">
                                 <span style="color: white; font-size: 10px; text-align: center;">ON</span>
                                 <span style="color: white; font-size: 10px;">OFF</span>
@@ -249,7 +249,7 @@
                         </label>
                     @else
                         <label class="switch">
-                            <input type="checkbox" name="check" id="status_on{{$user_code}}" {{ $status_admin == 'active' ? 'checked' : '' ;}}>
+                            <input type="checkbox" name="check" id="status_on{{$user_code}}" {{ $status_admin == 'active' ? 'checked' : ''}}>
                             <span class="slider round" style="text-align: center;">
                                 <span style="color: white; font-size: 10px; text-align: center;">ON</span>
                                 <span style="color: white; font-size: 10px;">OFF</span>

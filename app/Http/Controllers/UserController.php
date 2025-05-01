@@ -139,12 +139,14 @@ Class UserController
 
     public function statusAct(Request $request)
     {
-        if($request->id_act == 2 && $request->status == 'active')
+        if($request->id_act == 2 && $request->status == 'active' && $request->is_blocked == 0)
         {
             $code_id = $request->code_id;
     
             User::where('id', [$code_id])
-                ->update(['status_checked' => 'active']);
+                ->update(['status_checked' => 'active',
+                        'is_blocked' => 0,
+                        ]);
 
             echo "success".$code_id;
         }
@@ -153,14 +155,46 @@ Class UserController
 
     public function statusiAct(Request $request)
     {
-        if($request->id_inact == 1 && $request->status_in == 'inactive')
+        if($request->id_inact == 1 && $request->status_in == 'inactive' && $request->is_blocked == 1)
         {
             $code_id = $request->code_id;
 
             User::where('id', [$code_id])
-                ->update(['status_checked' => 'inactive']);
+                ->update(['status_checked' => 'inactive',
+                'is_blocked' => 1,
+                ]);
 
             echo "inactive";
+        }
+
+    }
+
+    public function isBlocked(Request $request)
+    {
+        if($request->is_blocked == 1)
+        {
+            $code_id = $request->code_blocked;
+    
+            $user = User::where('id', $code_id)->first();
+            $user->is_blocked = 1;
+            $user->save();
+
+            echo "isblocked";
+        }
+
+    }
+
+    public function unBlocked(Request $request)
+    {
+        if($request->is_blocked == 0)
+        {
+            $code_id = $request->code_blocked;
+    
+            $user = User::where('id', $code_id)->first();
+            $user->is_blocked = 0;
+            $user->save();
+
+            echo "unblocked";
         }
 
     }

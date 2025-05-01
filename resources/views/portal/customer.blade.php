@@ -233,31 +233,31 @@
         @endsection
 
         @section('status_alert')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_alert}}</h6>
             @endif
         @endsection
 
         @section('status_all')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_all}}</h6>
             @endif
         @endsection
 
         @section('status_waiting')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_waiting}}</h6>
             @endif
         @endsection
 
         @section('status_action')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_action}}</h6>
             @endif
         @endsection
 
         @section('status_completed')
-        @if(!($user_name->rights_area) == '0')
+        @if($user_name->rights_area != '0')
             <h6 class="justifiy-content:center;" style="">{{$status_completed}}</h6>
             @endif
         @endsection
@@ -406,7 +406,7 @@
               </tr>
             </thead>
             <tbody>
-                @if(isset($customer_list) != '')
+                @if(!empty($customer_list))
                 <?php 
                     $start += 1;
                 ?>
@@ -478,16 +478,16 @@
             @if($total_page > 14)
 
                 @for ($i= 1; $i <= 10 ; $i++)
-                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer?page={{ $i }}">{{ $i }}</a></li>
                 @endfor
                 <li class="page-item"><a class="page-link">...</a></li>
                 @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/portal/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/portal/customer?page={{ $i }}">{{ $i }}</a></li>
                 @endfor
 
             @else
                 @for ($i= 1; $i <= $total_page ; $i++)
-                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer?page=<?= $i ; ?>"><?php echo $i ; ?></a></li>
+                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/portal/customer?page={{ $i }}">{{ $i }}</a></li>
                 @endfor
             
             @endif
@@ -495,11 +495,11 @@
             <li class="page-item">
             
             @if ($page == $total_page)
-                <a class="page-link" href="/portal/customer?page=<?= $page ; ?>" aria-label="Next">
+                <a class="page-link" href="/portal/customer?page={{ $page }}" aria-label="Next">
                 <span aria-hidden="true">next</span>
                 </a>
             @else
-                <a class="page-link" href="/portal/customer?page=<?= $page+1 ; ?>" aria-label="Next">
+                <a class="page-link" href="/portal/customer?page={{ $page + 1 }}" aria-label="Next">
                 <span aria-hidden="true">next</span>
                 </a>
             @endif

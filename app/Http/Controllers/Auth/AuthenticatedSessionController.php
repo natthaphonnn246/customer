@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Http;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -33,35 +34,88 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request) : RedirectResponse
     {
 
-        if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
-            $secretKey = "6LfCCxkrAAAAAL2vzY9zfXfBfQ1JMHoOjzrOWQ2K";
+        // if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
+        // if ($request->has('g-recaptcha-response') && !empty($request->input('g-recaptcha-response'))) {
+            
+           /*  $secretKey = "6LfCCxkrAAAAAL2vzY9zfXfBfQ1JMHoOjzrOWQ2K";
             $response = $_POST['g-recaptcha-response'];
             $remoteIP = $_SERVER['REMOTE_ADDR'];
             $verifyUrl = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secreat=$secretKey&response=$response&remoteip=$remoteIP");
-            $captchaSuccess = json_decode($verifyUrl);
-        
-                /*  if ($captchaSuccess->success) {
-                        echo "✅ ผ่าน reCAPTCHA!";
-                    } else {
-                        echo "❌ ไม่ผ่าน reCAPTCHA!";
-                    }
-                */
+            $captchaSuccess = json_decode($verifyUrl); */
+     
+            //chat GPT;
+                // Validate ว่า g-recaptcha-response ต้องมี
+/* 
+                $request->validate([
+                    'g-recaptcha-response' => 'required',
+                ]);
+            
+                // ยิง request ไปเช็คกับ Google
+                $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                    'secret' => env('GOOGLE_RECAPTCHA_SECRET'), // key ลับของคุณ (เก็บใน .env)
+                    'response' => $request->input('g-recaptcha-response'),
+                    'remoteip' => $request->ip(), // IP ผู้ใช้ (optional)
+                ]);
+            
+                $responseBody = $response->json();
+            
+                if (!($responseBody['success'] ?? false)) {
+                    return back()->with('recaptcha_error', 'recaptcha_error');
+                }
+             */
+                // ถ้า success = true
+                // ทำงานต่อได้ เช่น save ข้อมูล
+                // return redirect()->back()->with('message', 'ส่งข้อมูลเรียบร้อยแล้ว!');
+            // }
 
-                date_default_timezone_set("Asia/Bangkok");
-                $date_time = date("Y-m-d H:i:s");
-                // dd($date);
-
-                $date = time();
-
+                //recaptcha;
+                $request->validate([
+                    'g-recaptcha-response' => ['required', new \App\Rules\Recaptcha],
+                ]);
+            
+                //login;
                 $credentials = $request->validate([
                     'email' => ['required', 'email'],
                     'password' => ['required'],
                     ]);
+                    
+                date_default_timezone_set("Asia/Bangkok");
+                $date_time = date("Y-m-d H:i:s");
+                $date = time();
+
+                $attemptKey = 'login_attempts_' . sha1($request->email . '|' . $request->ip());
+                $attempts = cache($attemptKey, 0); //จำนวนครั้งที่ล็ฮกอินได้;
+
+                $user_admin = User::where('email', $request->email)->first();
+
+                
+                if ($user_admin && $user_admin->is_blocked) {
+                    return back()->with(['email' => 'บัญชีถูกบล็อกชั่วคราว']);
+
+                }
+
+                if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+                    
+                    cache([$attemptKey => $attempts + 1]); //บล็อกถาวร;
+
+                    if ($user_admin && $attempts >= 5) {
+
+                        $user_admin->is_blocked = true;
+                        $user_admin->save();
+                        
+                        return back()->with(['email' => 'บัญชีถูกบล็อกชั่วคราว']);
+                    }
+
+                    return back()->with(['attepmt_fail' => 'ข้อมูลไม่ถูกต้อง']);
+
+                }
+
+                cache()->forget($attemptKey); // ถ้า login สำเร็จ → รีเซ็ต
                 
                 $check_email_rights = $request->email;
                 // dd($check_email_rights);
             
-                if (Auth::attempt($credentials) && Auth::user()->status_checked == 'active')
+                if (Auth::attempt($credentials) && Auth::user()->status_checked == 'active' || Auth::user()->is_blocked)
                 {
                     
                         //superadmin;
@@ -70,21 +124,34 @@ class AuthenticatedSessionController extends Controller
                             //check login;
                             $count_login = User::select('check_login')->where('email',$request->email)->first();
                             // dd(gettype($count_login->check_login));
-                            if(($count_login->check_login) == '') {
-                                $check_login = User::where('email',$request->email)
-                                                        ->update([
-                                                            'check_login' => 0 +1,
-                                                            'login_date' => $date_time,
+                            if(empty($count_login->check_login)) {
+                               /*  $check_login = User::where('email',$request->email)
+                                                    ->update([
+                                                        'check_login' => 0 +1,
+                                                        'login_date' => $date_time,
 
-                                                        ]);
+                                                    ]); */
+
+                                    $login_attempts = User::where('email',$request->email)->first();
+
+                                    $login_attempts->check_login = 0+1;
+                                    $login_attempts->login_date = $date_time;
+                                    $login_attempts->save();
 
                             } else {
-                                $check_login = User::where('email',$request->email)
-                                                        ->update([
-                                                            'check_login' => intval($count_login->check_login) +1,
-                                                            'login_date' => $date_time,
-                                                        
-                                                        ]);
+                               /*  $check_login = User::where('email',$request->email)
+                                                    ->update([
+                                                        'check_login' => intval($count_login->check_login) +1,
+                                                        'login_date' => $date_time,
+                                                    
+                                                    ]); */
+
+                                    $login_attempts = User::where('email',$request->email)->first();
+
+                                    $login_attempts->check_login = intval($count_login->check_login) +1;
+                                    $login_attempts->login_date = $date_time;
+                                    $login_attempts->save();
+                                
                             }
 
                             //table_log_status;4
@@ -101,17 +168,17 @@ class AuthenticatedSessionController extends Controller
 
 
                             // if(Auth::user()->role == '2') 
-                            if(Auth::user()->admin_role == 1) {
+                            if(Auth::user()->admin_role === 1) {
 
                                 return redirect('webpanel');
                             
-                            } elseif (Auth::user()->role == '2') {
+                            } elseif (Auth::user()->role === 2) {
 
                                 return redirect('webpanel');
 
-                            } elseif (Auth::user()->role == '1') {
+                            } elseif (Auth::user()->role === 1) {
 
-                                return redirect()->route('webpanel.report');
+                                return redirect()->route('admin.report');
 
                             } else {
                                 
@@ -148,7 +215,7 @@ class AuthenticatedSessionController extends Controller
                                             {
                                                 // dd('Please select');
                                             
-                                                if(Auth::user()->rights_area == '1')
+                                                if(Auth::user()->rights_area === 1)
                                                 {
                     
                                                         $admin_check = $request->user()->admin_area;
@@ -178,21 +245,32 @@ class AuthenticatedSessionController extends Controller
                                                                 //check login;
                                                                 $count_login = User::select('check_login')->where('email',$request->email)->first();
                                                                 // dd(gettype($count_login->check_login));
-                                                                if(($count_login->check_login) == '') {
-                                                                    $check_login = User::where('email',$request->email)
+                                                                if(empty($count_login->check_login)) {
+                                                                    /* $check_login = User::where('email',$request->email)
                                                                                         ->update([
                                                                                             'check_login' => 0 +1,
                                                                                             'login_date' => $date_time,
 
-                                                                                            ]);
+                                                                                            ]); */
+                                                                        $login_attempts = User::where('email',$request->email)->first();
+
+                                                                        $login_attempts->check_login = 0+1;
+                                                                        $login_attempts->login_date = $date_time;
+                                                                        $login_attempts->save();
 
                                                                 } else {
-                                                                    $check_login = User::where('email',$request->email)
+                                                                   /*  $check_login = User::where('email',$request->email)
                                                                                         ->update([
                                                                                             'check_login' => intval($count_login->check_login) +1,
                                                                                             'login_date' => $date_time,
                                                                                             
-                                                                                            ]);
+                                                                                            ]); */
+
+                                                                        $login_attempts = User::where('email',$request->email)->first();
+
+                                                                        $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                                        $login_attempts->login_date = $date_time;
+                                                                        $login_attempts->save();
                                                                 }
                                                                 //table_log_status;
                                                                 LogStatus::create([
@@ -225,21 +303,34 @@ class AuthenticatedSessionController extends Controller
                                                             //check login;
                                                             $count_login = User::select('check_login')->where('email',$request->email)->first();
                                                             // dd(gettype($count_login->check_login));
-                                                            if(($count_login->check_login) == '') {
-                                                                $check_login = User::where('email',$request->email)
+                                                            if(empty($count_login->check_login)) {
+                                                                /* $check_login = User::where('email',$request->email)
                                                                                     ->update([
                                                                                         'check_login' => 0 +1,
                                                                                         'login_date' => $date_time,
 
-                                                                                        ]);
+                                                                                        ]); */
+
+                                                                    $login_attempts = User::where('email',$request->email)->first();
+
+                                                                    $login_attempts->check_login = 0+1;
+                                                                    $login_attempts->login_date = $date_time;
+                                                                    $login_attempts->save();
 
                                                             } else {
-                                                                $check_login = User::where('email',$request->email)
+                                                                /* $check_login = User::where('email',$request->email)
                                                                                     ->update([
                                                                                         'check_login' => intval($count_login->check_login) +1,
                                                                                         'login_date' => $date_time,
                                                                                         
-                                                                                        ]);
+                                                                                        ]); */
+
+                                                                    $login_attempts = User::where('email',$request->email)->first();
+
+                                                                    $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                                    $login_attempts->login_date = $date_time;
+                                                                    $login_attempts->save();
+
                                                             }
                                                             //table_log_status;
                                                             LogStatus::create([
@@ -263,26 +354,39 @@ class AuthenticatedSessionController extends Controller
                                                             return redirect()->route('portal');
                                                         }
                                                 //admin;
-                                                } elseif (Auth::user()->role == '1') {
+                                                } elseif (Auth::user()->role === 1) {
                                                     
                                                     //check login;
                                                     $count_login = User::select('check_login')->where('email',$request->email)->first();
                                                     // dd(gettype($count_login->check_login));
-                                                    if(($count_login->check_login) == '') {
-                                                        $check_login = User::where('email',$request->email)
+                                                    if(empty($count_login->check_login)) {
+                                                        /* $check_login = User::where('email',$request->email)
                                                                             ->update([
                                                                                 'check_login' => 0 +1,
                                                                                 'login_date' => $date_time,
 
-                                                                                ]);
+                                                                                ]); */
+
+                                                            $login_attempts = User::where('email',$request->email)->first();
+
+                                                            $login_attempts->check_login = 0+1;
+                                                            $login_attempts->login_date = $date_time;
+                                                            $login_attempts->save();
 
                                                     } else {
-                                                        $check_login = User::where('email',$request->email)
+                                                        /* $check_login = User::where('email',$request->email)
                                                                             ->update([
                                                                                 'check_login' => intval($count_login->check_login) +1,
                                                                                 'login_date' => $date_time,
                                                                                 
-                                                                                ]);
+                                                                                ]); */
+
+                                                            $login_attempts = User::where('email',$request->email)->first();
+
+                                                            $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                            $login_attempts->login_date = $date_time;
+                                                            $login_attempts->save();
+
                                                     }
                                                     //table_log_status;
                                                     LogStatus::create([
@@ -297,28 +401,41 @@ class AuthenticatedSessionController extends Controller
                                                             ]);
 
                                                     // return redirect()->route('portal.sign');
-                                                    return redirect()->route('webpanel.report');
+                                                    return redirect()->route('admin.report');
                                                 
                                                 } else {
 
                                                     //check login;
                                                     $count_login = User::select('check_login')->where('email',$request->email)->first();
                                                     // dd(gettype($count_login->check_login));
-                                                    if(($count_login->check_login) == '') {
-                                                        $check_login = User::where('email',$request->email)
+                                                    if(empty($count_login->check_login)) {
+                                                        /* $check_login = User::where('email',$request->email)
                                                                             ->update([
                                                                                 'check_login' => 0 +1,
                                                                                 'login_date' => $date_time,
 
-                                                                                ]);
+                                                                                ]); */
+
+                                                            $login_attempts = User::where('email',$request->email)->first();
+
+                                                            $login_attempts->check_login = 0+1;
+                                                            $login_attempts->login_date = $date_time;
+                                                            $login_attempts->save();
 
                                                     } else {
-                                                        $check_login = User::where('email',$request->email)
+                                                        /* $check_login = User::where('email',$request->email)
                                                                             ->update([
                                                                                 'check_login' => intval($count_login->check_login) +1,
                                                                                 'login_date' => $date_time,
                                                                                 
-                                                                                ]);
+                                                                                ]); */
+
+                                                            $login_attempts = User::where('email',$request->email)->first();
+
+                                                            $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                            $login_attempts->login_date = $date_time;
+                                                            $login_attempts->save();
+
                                                     }
                                                     //table_log_status;
                                                     LogStatus::create([
@@ -355,7 +472,7 @@ class AuthenticatedSessionController extends Controller
                                         {
 
 
-                                            if(Auth::user()->rights_area == '1')
+                                            if(Auth::user()->rights_area === 1)
                                             {
                                         
                                                     $admin_check = $request->user()->admin_area;
@@ -386,21 +503,34 @@ class AuthenticatedSessionController extends Controller
                                                             //check login;
                                                             $count_login = User::select('check_login')->where('email',$request->email)->first();
                                                             // dd(gettype($count_login->check_login));
-                                                            if(($count_login->check_login) == '') {
-                                                                $check_login = User::where('email',$request->email)
+                                                            if(empty($count_login->check_login)) {
+                                                                /* $check_login = User::where('email',$request->email)
                                                                                     ->update([
                                                                                         'check_login' => 0 +1,
                                                                                         'login_date' => $date_time,
 
-                                                                                        ]);
+                                                                                        ]); */
+
+                                                                    $login_attempts = User::where('email',$request->email)->first();
+
+                                                                    $login_attempts->check_login = 0+1;
+                                                                    $login_attempts->login_date = $date_time;
+                                                                    $login_attempts->save();
 
                                                             } else {
-                                                                $check_login = User::where('email',$request->email)
+                                                               /*  $check_login = User::where('email',$request->email)
                                                                                     ->update([
                                                                                         'check_login' => intval($count_login->check_login) +1,
                                                                                         'login_date' => $date_time,
                                                                                         
-                                                                                        ]);
+                                                                                        ]); */
+
+                                                                    $login_attempts = User::where('email',$request->email)->first();
+
+                                                                    $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                                    $login_attempts->login_date = $date_time;
+                                                                    $login_attempts->save();
+
                                                             }
                                                             //table_log_status;
                                                             LogStatus::create([
@@ -437,21 +567,34 @@ class AuthenticatedSessionController extends Controller
                                                         //check login;
                                                         $count_login = User::select('check_login')->where('email',$request->email)->first();
                                                         // dd(gettype($count_login->check_login));
-                                                        if(($count_login->check_login) == '') {
-                                                            $check_login = User::where('email',$request->email)
+                                                        if(empty($count_login->check_login)) {
+                                                           /*  $check_login = User::where('email',$request->email)
                                                                                 ->update([
                                                                                     'check_login' => 0 +1,
                                                                                     'login_date' => $date_time,
 
-                                                                                    ]);
+                                                                                    ]); */
+
+                                                                $login_attempts = User::where('email',$request->email)->first();
+
+                                                                $login_attempts->check_login = 0+1;
+                                                                $login_attempts->login_date = $date_time;
+                                                                $login_attempts->save();
 
                                                         } else {
-                                                            $check_login = User::where('email',$request->email)
+                                                            /* $check_login = User::where('email',$request->email)
                                                                                 ->update([
                                                                                     'check_login' => intval($count_login->check_login) +1,
                                                                                     'login_date' => $date_time,
                                                                                     
-                                                                                    ]);
+                                                                                    ]); */
+
+                                                                $login_attempts = User::where('email',$request->email)->first();
+
+                                                                $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                                $login_attempts->login_date = $date_time;
+                                                                $login_attempts->save();
+
                                                         }
                                                         //table_log_status;
                                                         LogStatus::create([
@@ -468,26 +611,39 @@ class AuthenticatedSessionController extends Controller
                                                         return redirect()->route('portal');
                                                     }
                                 
-                                            } elseif (Auth::user()->role == '1') {
+                                            } elseif (Auth::user()->role === 1) {
                                                     
                                                 //check login;
                                                 $count_login = User::select('check_login')->where('email',$request->email)->first();
                                                 // dd(gettype($count_login->check_login));
-                                                if(($count_login->check_login) == '') {
-                                                    $check_login = User::where('email',$request->email)
+                                                if(empty($count_login->check_login)) {
+                                                    /* $check_login = User::where('email',$request->email)
                                                                         ->update([
                                                                             'check_login' => 0 +1,
                                                                             'login_date' => $date_time,
 
-                                                                            ]);
+                                                                            ]); */
+
+                                                    $login_attempts = User::where('email',$request->email)->first();
+
+                                                    $login_attempts->check_login = 0+1;
+                                                    $login_attempts->login_date = $date_time;
+                                                    $login_attempts->save();
 
                                                 } else {
-                                                    $check_login = User::where('email',$request->email)
+                                                   /*  $check_login = User::where('email',$request->email)
                                                                         ->update([
                                                                             'check_login' => intval($count_login->check_login) +1,
                                                                             'login_date' => $date_time,
                                                                             
-                                                                            ]);
+                                                                            ]); */
+
+                                                        $login_attempts = User::where('email',$request->email)->first();
+
+                                                        $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                        $login_attempts->login_date = $date_time;
+                                                        $login_attempts->save();
+
                                                 }
                                                 //table_log_status;
                                                 LogStatus::create([
@@ -501,28 +657,41 @@ class AuthenticatedSessionController extends Controller
                                                             'last_activity' => $date,
                                                         ]);
                                                 // return redirect()->route('portal.sign');
-                                                return redirect()->route('webpanel.report');
+                                                return redirect()->route('admin.report');
                                             
                                             } else {
 
                                                 //check login;
                                                 $count_login = User::select('check_login')->where('email',$request->email)->first();
                                                 // dd(gettype($count_login->check_login));
-                                                if(($count_login->check_login) == '') {
-                                                    $check_login = User::where('email',$request->email)
+                                                if(empty($count_login->check_login)) {
+                                                    /* $check_login = User::where('email',$request->email)
                                                                         ->update([
                                                                             'check_login' => 0 +1,
                                                                             'login_date' => $date_time,
 
-                                                                            ]);
+                                                                            ]); */
+
+                                                        $login_attempts = User::where('email',$request->email)->first();
+
+                                                        $login_attempts->check_login = 0+1;
+                                                        $login_attempts->login_date = $date_time;
+                                                        $login_attempts->save();
 
                                                 } else {
-                                                    $check_login = User::where('email',$request->email)
+                                                    /* $check_login = User::where('email',$request->email)
                                                                         ->update([
                                                                             'check_login' => intval($count_login->check_login) +1,
                                                                             'login_date' => $date_time,
                                                                             
-                                                                            ]);
+                                                                            ]); */
+
+                                                        $login_attempts = User::where('email',$request->email)->first();
+
+                                                        $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                        $login_attempts->login_date = $date_time;
+                                                        $login_attempts->save();
+
                                                 }
                                                 //table_log_status;
                                                 LogStatus::create([
@@ -557,7 +726,7 @@ class AuthenticatedSessionController extends Controller
                                 if($check_admin_customer != null) 
                                 {
 
-                                    if(Auth::user()->rights_area == '1') {
+                                    if(Auth::user()->rights_area === 1) {
                                 
                                             $admin_check = $request->user()->admin_area;
                                 
@@ -586,21 +755,34 @@ class AuthenticatedSessionController extends Controller
                                                     //check login;
                                                     $count_login = User::select('check_login')->where('email',$request->email)->first();
                                                     // dd(gettype($count_login->check_login));
-                                                    if(($count_login->check_login) == '') {
-                                                        $check_login = User::where('email',$request->email)
+                                                    if(empty($count_login->check_login)) {
+                                                        /* $check_login = User::where('email',$request->email)
                                                                             ->update([
                                                                                 'check_login' => 0 +1,
                                                                                 'login_date' => $date_time,
 
-                                                                                ]);
+                                                                                ]); */
+
+                                                            $login_attempts = User::where('email',$request->email)->first();
+
+                                                            $login_attempts->check_login = 0+1;
+                                                            $login_attempts->login_date = $date_time;
+                                                            $login_attempts->save();
 
                                                     } else {
-                                                        $check_login = User::where('email',$request->email)
+                                                        /* $check_login = User::where('email',$request->email)
                                                                             ->update([
                                                                                 'check_login' => intval($count_login->check_login) +1,
                                                                                 'login_date' => $date_time,
                                                                                 
-                                                                                ]);
+                                                                                ]); */
+
+                                                            $login_attempts = User::where('email',$request->email)->first();
+
+                                                            $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                            $login_attempts->login_date = $date_time;
+                                                            $login_attempts->save();
+
                                                     }
                                                     //table_log_status;
                                                     LogStatus::create([
@@ -632,21 +814,34 @@ class AuthenticatedSessionController extends Controller
                                                 //check login;
                                                 $count_login = User::select('check_login')->where('email',$request->email)->first();
                                                 // dd(gettype($count_login->check_login));
-                                                if(($count_login->check_login) == '') {
-                                                    $check_login = User::where('email',$request->email)
+                                                if(empty($count_login->check_login)) {
+                                                   /*  $check_login = User::where('email',$request->email)
                                                                         ->update([
                                                                             'check_login' => 0 +1,
                                                                             'login_date' => $date_time,
 
-                                                                            ]);
+                                                                            ]); */
+
+                                                        $login_attempts = User::where('email',$request->email)->first();
+
+                                                        $login_attempts->check_login = 0+1;
+                                                        $login_attempts->login_date = $date_time;
+                                                        $login_attempts->save();
 
                                                 } else {
-                                                    $check_login = User::where('email',$request->email)
+                                                    /* $check_login = User::where('email',$request->email)
                                                                         ->update([
                                                                             'check_login' => intval($count_login->check_login) +1,
                                                                             'login_date' => $date_time,
                                                                             
-                                                                            ]);
+                                                                            ]); */
+
+                                                        $login_attempts = User::where('email',$request->email)->first();
+
+                                                        $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                        $login_attempts->login_date = $date_time;
+                                                        $login_attempts->save();
+
                                                 }
                                                 //table_log_status;
                                                 LogStatus::create([
@@ -663,26 +858,40 @@ class AuthenticatedSessionController extends Controller
 
                                             }
                         
-                                    } elseif (Auth::user()->role == '1') {
+                                    } elseif (Auth::user()->role === 1) {
                                                     
                                         //check login;
                                         $count_login = User::select('check_login')->where('email',$request->email)->first();
                                         // dd(gettype($count_login->check_login));
-                                        if(($count_login->check_login) == '') {
-                                            $check_login = User::where('email',$request->email)
+                                        if(empty($count_login->check_login)) {
+                                            /* $check_login = User::where('email',$request->email)
                                                                 ->update([
                                                                     'check_login' => 0 +1,
                                                                     'login_date' => $date_time,
 
-                                                                    ]);
+                                                                    ]); */
+
+                                                $login_attempts = User::where('email',$request->email)->first();
+
+                                                $login_attempts->check_login = 0+1;
+                                                $login_attempts->login_date = $date_time;
+                                                $login_attempts->save();
 
                                         } else {
-                                            $check_login = User::where('email',$request->email)
+                                            /* $check_login = User::where('email',$request->email)
                                                                 ->update([
                                                                     'check_login' => intval($count_login->check_login) +1,
                                                                     'login_date' => $date_time,
                                                                     
-                                                                    ]);
+                                                                    ]); */
+
+
+                                                $login_attempts = User::where('email',$request->email)->first();
+
+                                                $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                $login_attempts->login_date = $date_time;
+                                                $login_attempts->save();
+
                                         }
                                         //table_log_status;
                                         LogStatus::create([
@@ -696,28 +905,40 @@ class AuthenticatedSessionController extends Controller
                                                     'last_activity' => $date,
                                                 ]);
                                         // return redirect()->route('portal.sign');
-                                        return redirect()->route('webpanel.report');
+                                        return redirect()->route('admin.report');
                                     
                                     } else {
                                         
                                         //check login;
                                         $count_login = User::select('check_login')->where('email',$request->email)->first();
                                         // dd(gettype($count_login->check_login));
-                                        if(($count_login->check_login) == '') {
-                                            $check_login = User::where('email',$request->email)
+                                        if(empty($count_login->check_login)) {
+                                            /* $check_login = User::where('email',$request->email)
                                                                 ->update([
                                                                     'check_login' => 0 +1,
                                                                     'login_date' => $date_time,
 
-                                                                    ]);
+                                                                    ]); */
+
+                                                $login_attempts = User::where('email',$request->email)->first();
+
+                                                $login_attempts->check_login = 0+1;
+                                                $login_attempts->login_date = $date_time;
+                                                $login_attempts->save();
 
                                         } else {
-                                            $check_login = User::where('email',$request->email)
+                                           /*  $check_login = User::where('email',$request->email)
                                                                 ->update([
                                                                     'check_login' => intval($count_login->check_login) +1,
                                                                     'login_date' => $date_time,
                                                                     
-                                                                    ]);
+                                                                    ]); */
+
+                                                $login_attempts = User::where('email',$request->email)->first();
+
+                                                $login_attempts->check_login = intval($count_login->check_login) +1;
+                                                $login_attempts->login_date = $date_time;
+                                                $login_attempts->save();
                                         }
                                         //table_log_status;
                                         LogStatus::create([
@@ -801,10 +1022,10 @@ class AuthenticatedSessionController extends Controller
                         
                     }
 
-                }
+                // } //recaptcha;
 
             // เพิ่ม return ค่า default
-            return back()->with('recaptcha_error', 'recaptcha_error');;
+            // return back()->with('recaptcha_error', 'recaptcha_error');;
     
         
         /* $request->authenticate();

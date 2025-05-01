@@ -198,7 +198,7 @@
                                 {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
 
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="province" id="province">
-                                    @if(isset($provinces) != '')
+                                    @if(isset($provinces))
                                         @foreach($provinces as $row)
                                         
                                             <option value="{{$row->id}}">{{$row->name_th}}</option>
@@ -213,7 +213,7 @@
                                 <span>อำเภอ/แขวง</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="amphur" id="amphures">
                                     
-                                    @if(isset($ampures) != '')
+                                    @if(isset($ampures))
                                         @foreach($ampures as $row)
                                             <option value="{{$row->province_id}}">{{$row->name_th}}</option>
                                         @endforeach
@@ -225,7 +225,7 @@
                             <ul class="mt-3 mb-6" style="width: 100%; margin-top:15px;">
                                 <span>ตำบล/เขต</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts">
-                                    @if(isset($district) != '')
+                                    @if(isset($district))
                                         @foreach($district as $row)
                                             <option value="{{$row->amphure_id}}">{{$row->name_th}}</option>
                                         @endforeach

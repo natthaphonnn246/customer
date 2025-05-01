@@ -284,7 +284,7 @@
               </tr>
             </thead>
             <tbody>
-                @if(isset($salearea) != '')
+                @if(!empty($salearea))
 
                 <?php 
                     @$start = 1;
