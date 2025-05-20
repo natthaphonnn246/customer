@@ -8,6 +8,8 @@
     use App\Exports\CustomerAreaExport;
     use App\Exports\CustomerCsvExport;
     use App\Exports\SellerCsvExport;
+    use App\Exports\ProductCsvExport;
+    use App\Exports\ProductExcelExport;
     use App\Exports\SellerExcelExport;
     use App\Http\Controllers\ProvinceController;
     use App\Http\Controllers\Webpanel\WebpanelCustomerController;
@@ -18,6 +20,9 @@
     use App\Http\Controllers\DashboardController;
     use App\Http\Controllers\LogStatusController;
     use App\Http\Controllers\ReportSellerController;
+    use App\Http\Controllers\ProductController;
+    use App\Http\Controllers\CategoryController;
+    use App\Http\Controllers\SubcategoryController;
     use Illuminate\Support\Facades\Route;
     use App\Http\Middleware\EnsureUserHasRole;
     use App\Imports\SellersImport;
@@ -297,12 +302,25 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/report/seller', [ReportSellerController::class, 'index']);
         Route::get('webpanel/report/seller/importseller', [ReportSellerController::class, 'import']);
         Route::post('/webpanel/report/seller/importcsv', [ReportSellerController::class, 'importFile']);
-        Route::get('/webpanel/report/seller/search_date', [ReportSellerController::class, 'index']);
-        Route::get('/webpanel/report/seller/range', [ReportSellerController::class, 'index']);
+        // Route::get('/webpanel/report/seller/search_date', [ReportSellerController::class, 'index']);
+        // Route::get('/webpanel/report/seller', [ReportSellerController::class, 'index']);
+        // Route::get('/webpanel/report/seller/range', [ReportSellerController::class, 'index']);
         Route::get('/webpanel/report/seller/{id}', [ReportSellerController::class, 'show']);
         Route::get('/webpanel/report/seller/exportcsv/check', [SellerCsvExport::class, 'exportSellerCsv']);
         Route::get('/webpanel/report/seller/exportexcel/check', [SellerExcelExport::class, 'exportSellerExcel']);
         Route::get('/webpanel/report/seller/search/keyword', [ReportSellerController::class, 'search']);
+        Route::get('/webpanel/report/product', [ProductController::class, 'index']);
+        // Route::get('/webpanel/report/product', [ProductController::class, 'preload']);
+        Route::get('webpanel/report/product/importproduct', [ProductController::class, 'import']);
+        Route::post('/webpanel/report/product/importcsv', [ProductController::class, 'importFile']);
+        Route::get('webpanel/report/product/importcategory', [CategoryController::class, 'import']);
+        Route::post('/webpanel/report/product/importcsv/category', [CategoryController::class, 'importFile']);
+        Route::get('webpanel/report/product/importsubcategory', [SubcategoryController::class, 'import']);
+        Route::post('/webpanel/report/product/importcsv/subcategory', [SubcategoryController::class, 'importFile']);
+        Route::get('/webpanel/product/product-detail/{id}', [ProductController::class, 'show']);
+        Route::get('/webpanel/report/product/exportcsv/check', [ProductCsvExport::class, 'exportProductCsv']);
+        Route::get('/webpanel/report/product/exportexcel/check', [ProductExcelExport::class, 'exportSellerExcel']);
+        Route::get('/webpanel/report/product/sales/category', [ProductController::class, 'salesCategory']);
 
     });
    
@@ -411,6 +429,8 @@ Route::middleware('statusOnline')->group(function (){
         return view('auth/login-tailwind');
     }); */
 });
+
+
     Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

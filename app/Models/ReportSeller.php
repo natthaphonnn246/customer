@@ -16,6 +16,7 @@ class ReportSeller extends Model
         'product_id',
         'product_name',
         'price',
+        'cost',
         'quantity',
         'unit',
         'date_purchase',

@@ -291,17 +291,17 @@
         <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
         </div>
-        <span class="ms-6" style="color: #8E8E8E;">การขายสินค้า (Selling merchandise)</span>
+        <span class="ms-6" style="color: #8E8E8E;">รายงานการขายสินค้า</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         <div class="ms-6" style="text-align: left;">
             {{-- <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a> --}}
-            <a href="/webpanel/report/seller/importseller"  id="importSeller" class="btn" type="submit"  name="" style="width: 200px; padding: 8px;">Import Sales (vmdrug)</a>
+            <a href="/webpanel/report/seller/importseller"  id="importSeller" class="btn" type="submit"  name="" style="width: 200px; padding: 8px;">Import CSV (vmdrug)</a>
             {{-- @php
                 if($_GET['min_seller'])
             @endphp --}}
-            <a href="/webpanel/report/seller/exportcsv/check?min_seller={{$_GET['min_seller'] ?? ''}}&max_seller={{$_GET['max_seller'] ?? ''}}&from={{$_GET['from'] ?? ''}}&to={{$_GET['to'] ?? ''}}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export ALL CSV</a>
-            <a href="/webpanel/report/seller/exportexcel/check?min_seller={{$_GET['min_seller'] ?? ''}}&max_seller={{$_GET['max_seller'] ?? ''}}&from={{$_GET['from'] ?? ''}}&to={{$_GET['to'] ?? ''}}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export ALL Excel</a>
+            <a href="/webpanel/report/seller/exportcsv/check?min_seller={{ request('min_seller') ?? ''}}&max_seller={{ request('max_seller') ?? ''}}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export ALL CSV</a>
+            <a href="/webpanel/report/seller/exportexcel/check?min_seller={{ request('min_seller') ?? ''}}&max_seller={{ request('max_seller') ?? ''}}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export ALL Excel</a>
     
         </div>
 
@@ -462,7 +462,7 @@
             </div> --}}
 
             <div class="row ms-2">
-                <form method="get" action="/webpanel/report/seller/search_date">
+                <form method="get" action="/webpanel/report/seller">
                     @csrf
                     <div class="row">
 
@@ -605,9 +605,9 @@
                 </thead>
                 <tbody>
                     @if($total_page > 0)
-                    <?php 
-                        @$start += 1;
-                    ?>
+                    
+                    @php $start = ($start ?? 0) + 1; @endphp
+
                     @foreach ($report_seller as $row)
                 <tr>
                         <?php
@@ -672,7 +672,7 @@
                             {{-- <a href="/webpanel/customer/delete/{{$user_code}}" id="trash"><i class="fa-regular fa-trash-can"></i></a> --}}
                             {{-- <button class="trash-customer" type="submit" id="trash{{$id}}"><i class="fa-regular fa-trash-can"></i></button> --}}
 
-                    </td>
+                        </td>
                 </tr>
 
                 <!-- delete customer table -->
@@ -836,18 +836,18 @@
         @if($total_page > 0)
             {{-- @if(isset($_GET['from']) == '' || isset($_GET['to']) == '' || isset($_GET['min_seller']) == '' || isset($_GET['max_seller']) == '') --}}
             {{-- @if(!empty($_GET['keyword']))  --}}
-           @if(request()->filled('keyword')) <!-- ปลอดภัยกว่า -->
+           @if(request()->filled('from') && request()->filled('to')) <!-- ปลอดภัยกว่า -->
             <div class="ms-6">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
                     <li class="page-item">
 
                     @if ($page == 1)
-                        <a class="page-link" href="/webpanel/report/seller/search/keyword?_token={{ request('_token') }}&keyword={{ request('keyword') }}&page={{ 1 }}" aria-label="Previous">
+                        <a class="page-link" href="/webpanel/report/seller?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ 1 }}" aria-label="Previous">
                         <span aria-hidden="true">Previous</span>
                         </a>
                     @else
-                    <a class="page-link" href="/webpanel/report/seller/search/keyword?_token={{ request('_token') }}&keyword={{ request('keyword') }}&page={{ $page - 1 }}" aria-label="Previous">
+                        <a class="page-link" href="/webpanel/report/seller?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $page - 1 }}" aria-label="Previous">
                         <span aria-hidden="true">Previous</span>
                         </a>
                     @endif
@@ -856,16 +856,16 @@
                     @if($total_page > 14)
 
                         @for ($i= 1; $i <= 10 ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller/search/keyword?_token={{ request('_token') }}&keyword={{ request('keyword') }}&page={{ $i }}">{{ $i }}</a></a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $i }}">{{ $i }}</a></li>
                         @endfor
                         <li class="page-item"><a class="page-link">...</a></li>
                         @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                            <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/report/seller/search/keyword?_token={{ request('_token') }}&keyword={{ request('keyword') }}&page={{ $i }}">{{ $i }}</a></a></li>
+                            <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/report/seller?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $i }}">{{ $i }}</a></li>
                         @endfor
 
                     @else
                         @for ($i= 1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller/search/keyword?_token={{ request('_token') }}&keyword={{ request('keyword') }}&page={{ $i }}">{{ $i }}</a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $i }}">{{ $i }}</a></li>
                         @endfor
                     
                     @endif
@@ -873,11 +873,11 @@
                     <li class="page-item">
                     
                     @if ($page == $total_page)
-                        <a class="page-link" href="/webpanel/report/seller/search/keyword?_token={{ request('_token') }}&keyword={{ request('keyword') }}&page={{ $page }}" aria-label="Next">
+                        <a class="page-link" href="/webpanel/report/seller?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $page }}" aria-label="Next">
                         <span aria-hidden="true">next</span>
                         </a>
                     @else
-                    <a class="page-link" href="/webpanel/report/seller/search/keyword?_token={{ request('_token') }}&keyword={{ request('keyword') }}&page={{ $page + 1 }}" aria-label="Next">
+                        <a class="page-link" href="/webpanel/report/seller?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $page + 1 }}" aria-label="Next">
                         <span aria-hidden="true">next</span>
                         </a>
                     @endif
@@ -889,7 +889,6 @@
             <div class="py-3">
                 <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
             </div>
-            
             <!--- search not keyword -->
             @else
             <div class="ms-6">
@@ -898,11 +897,11 @@
                     <li class="page-item">
 
                     @if ($page == 1)
-                        <a class="page-link" href="/webpanel/report/seller/search_date?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ 1 }}" aria-label="Previous">
+                        <a class="page-link" href="/webpanel/report/seller?}page={{ 1 }}" aria-label="Previous">
                         <span aria-hidden="true">Previous</span>
                         </a>
                     @else
-                        <a class="page-link" href="/webpanel/report/seller/search_date?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $page - 1 }}" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/report/seller?page={{ $page - 1 }}" aria-label="Previous">
                         <span aria-hidden="true">Previous</span>
                         </a>
                     @endif
@@ -911,16 +910,16 @@
                     @if($total_page > 14)
 
                         @for ($i= 1; $i <= 10 ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller/search_date?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $i }}">{{ $i }}</a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller?page={{ $i }}">{{ $i }}</a></a></li>
                         @endfor
                         <li class="page-item"><a class="page-link">...</a></li>
                         @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                            <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/report/seller/search_date?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $i }}">{{ $i }}</a></li>
+                            <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/report/seller?page={{ $i }}">{{ $i }}</a></a></li>
                         @endfor
 
                     @else
                         @for ($i= 1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller/search_date?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $i }}">{{ $i }}</a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller?page={{ $i }}">{{ $i }}</a></li>
                         @endfor
                     
                     @endif
@@ -928,11 +927,11 @@
                     <li class="page-item">
                     
                     @if ($page == $total_page)
-                        <a class="page-link" href="/webpanel/report/seller/search_date?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $page }}" aria-label="Next">
+                        <a class="page-link" href="/webpanel/report/seller?page={{ $page }}" aria-label="Next">
                         <span aria-hidden="true">next</span>
                         </a>
                     @else
-                        <a class="page-link" href="/webpanel/report/seller/search_date?_token={{ request('_token') }}&salearea_seller={{ request('salearea_seller') }}&adminarea_seller={{ request('adminarea_seller') }}&region={{ request('region') }}&delivery={{ request('delivery') }}&min_seller={{ request('min_seller') }}&max_seller={{ request('max_seller') }}&from={{ request('from') }}&to={{ request('to')}}&page={{ $page + 1 }}" aria-label="Next">
+                    <a class="page-link" href="/webpanel/report/seller?page={{ $page + 1 }}" aria-label="Next">
                         <span aria-hidden="true">next</span>
                         </a>
                     @endif
@@ -940,6 +939,7 @@
                     </ul>
                 </nav>
             </div>
+
             <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
             <div class="py-3">
                 <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
