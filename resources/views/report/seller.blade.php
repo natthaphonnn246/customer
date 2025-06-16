@@ -44,7 +44,7 @@
             background-color: #0b59f6;
         }
         #importSeller {
-            background-color: #ff7692;
+            background-color: #2a5bfe;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -54,7 +54,7 @@
             text-align: center;
         }
         #importSeller:hover {
-            background-color:  #e44b69;
+            background-color: #1046f8;
             color: #ffffff;
         }
         #groupsCustomer {
@@ -296,12 +296,12 @@
 
         <div class="ms-6" style="text-align: left;">
             {{-- <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a> --}}
-            <a href="/webpanel/report/seller/importseller"  id="importSeller" class="btn" type="submit"  name="" style="width: 200px; padding: 8px;">Import CSV (vmdrug)</a>
+            <a href="/webpanel/report/seller/importseller"  id="importSeller" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">นำเข้าไฟล์</a>
             {{-- @php
                 if($_GET['min_seller'])
             @endphp --}}
-            <a href="/webpanel/report/seller/exportcsv/check?min_seller={{ request('min_seller') ?? ''}}&max_seller={{ request('max_seller') ?? ''}}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export ALL CSV</a>
-            <a href="/webpanel/report/seller/exportexcel/check?min_seller={{ request('min_seller') ?? ''}}&max_seller={{ request('max_seller') ?? ''}}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export ALL Excel</a>
+            <a href="/webpanel/report/seller/exportcsv/check?min_seller={{ request('min_seller') ?? ''}}&max_seller={{ request('max_seller') ?? ''}}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export CSV</a>
+            <a href="/webpanel/report/seller/exportexcel/check?min_seller={{ request('min_seller') ?? ''}}&max_seller={{ request('max_seller') ?? ''}}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export Excel</a>
     
         </div>
 
@@ -327,6 +327,7 @@
                     $total_sellings += $row_selling->total_sales;
                 }
 
+                // $total_sellings  = $total_report_selling?->total_sales;
             @endphp
 
             <div class="textbox" style="width: 240px; height: 90px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
@@ -387,26 +388,42 @@
   
         <div class="container"  style="width: 95%;">
 
-            <div class="row mb-2">
+            <div class="row mb-2 ms-2">
                 <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/report/seller/search/keyword">
                     <ul class="ms-2 my-2">
-                        <span>ค้นหาร้านค้า : </span>
+                        {{-- <span>ค้นหาร้านค้า : </span> --}}
                     </ul>
                     {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
                     <div class="relative">
                         <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                         <!---icon -->
                         </div>
-                        <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" />
-                        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
-                    
+                        {{-- <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" /> --}}
+                            <div class="row mt-2">
+                                <div class="col-sm-5">
+                                    <label class="py-2" for="from">ระบุรหัสร้านค้า : </label>
+                                    <input type="search" id="default-search" name="keyword" style="border:solid 1px rgb(208, 208, 208); padding: 10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" value="{{ str_replace('+', ' ', request('keyword')) }}" placeholder="CODE /ชื่อร้านค้า">
+                                </div>
+                                <div class="col-sm-5">
+                                    <label class="py-2" for="from">วันที่เริ่ม : </label>
+                                    <input type="text" class="block w-full" id="from" style="border:solid 1px rgb(208, 208, 208); padding: 10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="from" value="{{ request('from') == '' ? date('Y-m-d') : request('from')}}">
+                                </div>
+                                <div class="col-sm-5">
+                                    <label class="py-2 mt-2" for="to">ถึงวันที่ : </label>
+                                    <input type="text" class="block w-full" id="to" style="border:solid 1px rgb(208, 208, 208); padding:10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="to" value="{{ request('to') == '' ? date('Y-m-d') : request('to')}}">
+                                </div>
+                                <div class="col-sm-2 mt-10">
+                                    <button type="submit" class="btn btn-primary mt-2" style="width:80px; font-size:15px; font-weight:500; padding:8px;">ค้นหา</button>
+                                </div>
+                            </div>
+                        {{-- <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button> --}}
                     </div>
                     <p class="py-2" id="keyword_search"></p>
                     @csrf   
                 </form>
             </div>
         </div>
-
+        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
         <script>
             $(document).ready(function() {
                 $('#default-search').keyup(function(e) {
@@ -432,34 +449,7 @@
             });
         </script>
         <div class="row ms-6 mr-10">
-  
-     {{--        <div class="col-sm-2">
-                <button id="dropdownDividerCategory" data-dropdown-toggle="dropdownDivider" class="mt-9" style="background-color:rgb(227, 227, 227); width: 100%; border-radius:8px; color:#313131; height:70px; height:60%;" type="button">
-                
-                    การขายสินค้า
-                    
-                </button> 
 
-                <!-- Dropdown menu -->
-                <form action="/webpanel/report/seller/range" method="get">
-                <div id="dropdownDivider" class="z-10 hidden bg-gray divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
-
-                    <div class="py-2 text-center">
-                        <span style="color:white;">ต่ำสุด</span>
-                        <input type="text" name="min_price" value="0" style="width:80%; border-radius:2px; text-align:center; margin-top:5px; padding:5px;">
-                        <span style="color:white; font-size:12px; color:rgb(250, 62, 52);">*ตัวอย่าง 0, 1000</span>
-                    </div>
-                    <div class="py-2 text-center">
-                        <span style="color:white;">สูงสุด</span>
-                        <input type="text" name="max_price" value="5000" style="width:80%; border-radius:2px; text-align:center; margin-top:5px; padding:5px;">
-                        <span style="color:white; font-size:12px; color:rgb(250, 62, 52);">*ตัวอย่าง 0, 1000</span>
-                    </div>
-                    <div class="py-2 text-center">
-                        <button class="btn btn-primary" type="submit">ค้นหา</button>
-                    </div>
-                </div>
-                </form>
-            </div> --}}
 
             <div class="row ms-2">
                 <form method="get" action="/webpanel/report/seller">
@@ -525,21 +515,21 @@
                           
                         <div class="col-sm-5">
                             <label class="py-2" for="from">ต่ำสุด : </label>
-                            <input type="text" class="block w-full" style="border:solid 1px rgb(208, 208, 208); padding: 10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="min_seller" value="{{(isset($_GET['min_seller'])) == '' ? '' : $_GET['min_seller'] ;}}" placeholder="การขายต่ำสุด">
+                            <input type="text" class="block w-full" style="border:solid 1px rgb(208, 208, 208); padding: 10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="min_seller" value="{{ request('min_seller') == '' ? '' : request('min_seller')}}" placeholder="การขายต่ำสุด">
                         </div>
                         <div class="col-sm-5">
                             <label class="py-2" for="to">สูงสุด : </label>
-                            <input type="text" class="block w-full" style="border:solid 1px rgb(208, 208, 208); padding:10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="max_seller" value="{{(isset($_GET['max_seller'])) == '' ? '' : $_GET['max_seller'] ;}}" placeholder="การขายสูงสุด">
+                            <input type="text" class="block w-full" style="border:solid 1px rgb(208, 208, 208); padding:10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="max_seller" value="{{ request('max_seller') == '' ? '' : request('max_seller') }}" placeholder="การขายสูงสุด">
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-sm-5">
                             <label class="py-2" for="from">วันที่เริ่ม : </label>
-                            <input type="text" class="block w-full" id="from" style="border:solid 1px rgb(208, 208, 208); padding: 10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="from" value="{{(isset($_GET['from'])) == '' ? date('Y-m-d') : $_GET['from'] ;}}">
+                            <input type="text" class="block w-full" id="fromcheck" style="border:solid 1px rgb(208, 208, 208); padding: 10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="from" value="{{ request('from') == '' ? date('Y-m-d') : request('from') }}">
                         </div>
                         <div class="col-sm-5">
                             <label class="py-2" for="to">ถึงวันที่ : </label>
-                            <input type="text" class="block w-full" id="to" style="border:solid 1px rgb(208, 208, 208); padding:10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="to" value="{{(isset($_GET['to'])) == '' ? date('Y-m-d') : $_GET['to'] ;}}">
+                            <input type="text" class="block w-full" id="tocheck" style="border:solid 1px rgb(208, 208, 208); padding:10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="to" value="{{ request('to') == '' ? date('Y-m-d') : request('to') }}">
                         </div>
                         <div class="col-sm-2 mt-10">
                             <button type="submit" class="btn btn-primary" style="width:80px; font-size:15px; font-weight:500; padding:8px;">ค้นหา</button>
@@ -585,7 +575,44 @@
             });
     </script>
 
-        <div class="ms-6 mr-6 mb-2 mt-10">
+    <script>
+            $( function() {
+                var dateFormat = 'dd/mm/yy',
+                    from = $( "#fromcheck" )
+                    .datepicker({
+                        defaultDate: "+1w",
+                        changeMonth: true,
+                        numberOfMonths: 1,
+                        dateFormat: 'yy-mm-dd',
+                    })
+                    .on( "change", function() {
+                        to.datepicker( "option", "minDate", getDate( this ) );
+                    }),
+                    to = $( "#tocheck" ).datepicker({
+                    defaultDate: "+1w",
+                    changeMonth: true,
+                    dateFormat: 'yy-mm-dd',
+                    numberOfMonths: 1 //จำนวนปฎิืิทิน;
+                    })
+                    .on( "change", function() {
+                    from.datepicker( "option", "maxDate", getDate( this ) );
+                    });
+            
+                function getDate( element ) {
+                    var date;
+                    try {
+                    date = $.datepicker.parseDate( dateFormat, element.value );
+                    } catch( error ) {
+                    date = null;
+                    }
+            
+                    return date;
+                }
+            });
+    </script>
+
+        <hr class="mt-8" style="color: #8E8E8E; width: 100%;">
+        <div class="ms-6 mr-6 mb-2 mt-4">
 
             <span class="ms-2" style="font-size:18px; color:#202020;">แสดงใบสั่งซื้อ :</span>
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
@@ -836,7 +863,7 @@
         @if($total_page > 0)
             {{-- @if(isset($_GET['from']) == '' || isset($_GET['to']) == '' || isset($_GET['min_seller']) == '' || isset($_GET['max_seller']) == '') --}}
             {{-- @if(!empty($_GET['keyword']))  --}}
-           @if(request()->filled('from') && request()->filled('to')) <!-- ปลอดภัยกว่า -->
+           @if(request()->filled('from') && request()->filled('to') && !request()->filled('keyword')) <!-- ปลอดภัยกว่า -->
             <div class="ms-6">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
@@ -884,66 +911,123 @@
                     </li>
                     </ul>
                 </nav>
-            </div>
-            <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
-            <div class="py-3">
-                <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
-            </div>
-            <!--- search not keyword -->
-            @else
-            <div class="ms-6">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination">
-                    <li class="page-item">
+                </div>
+                <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
+                <div class="py-3">
+                    <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
+                </div>
+                <!--- search not keyword -->
+            @elseif (request()->filled('keyword'))
+    
+                <div class="ms-6">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                        <li class="page-item">
 
-                    @if ($page == 1)
-                        <a class="page-link" href="/webpanel/report/seller?}page={{ 1 }}" aria-label="Previous">
-                        <span aria-hidden="true">Previous</span>
-                        </a>
-                    @else
-                    <a class="page-link" href="/webpanel/report/seller?page={{ $page - 1 }}" aria-label="Previous">
-                        <span aria-hidden="true">Previous</span>
-                        </a>
-                    @endif
-                    </li>
+                        @if ($page == 1)
+                            <a class="page-link" href="/webpanel/report/seller/search/keyword?keyword={{ request('keyword') }}&from={{ request('from') }}&to={{ request('to') }}&_token={{ request('_token') }}&page={{ 1 }}" aria-label="Previous">
+                            <span aria-hidden="true">Previous</span>
+                            </a>
+                        @else
+                        <a class="page-link" href="/webpanel/report/seller/search/keyword?keyword={{ request('keyword') }}&from={{ request('from') }}&to={{ request('to') }}&_token={{ request('_token') }}&page={{ $page - 1 }}" aria-label="Previous">
+                            <span aria-hidden="true">Previous</span>
+                            </a>
+                        @endif
+                        </li>
 
-                    @if($total_page > 14)
+                        @if($total_page > 14)
 
-                        @for ($i= 1; $i <= 10 ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller?page={{ $i }}">{{ $i }}</a></a></li>
-                        @endfor
-                        <li class="page-item"><a class="page-link">...</a></li>
-                        @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                            <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/report/seller?page={{ $i }}">{{ $i }}</a></a></li>
-                        @endfor
+                            @for ($i= 1; $i <= 10 ; $i++)
+                            <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller/search/keyword?keyword={{ request('keyword') }}&from={{ request('from') }}&to={{ request('to') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></a></li>
+                            @endfor
+                            <li class="page-item"><a class="page-link">...</a></li>
+                            @for ($i= $total_page-1; $i <= $total_page ; $i++)
+                                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/report/seller/search/keyword?keyword={{ request('keyword') }}&from={{ request('from') }}&to={{ request('to') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></a></li>
+                            @endfor
 
-                    @else
-                        @for ($i= 1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller?page={{ $i }}">{{ $i }}</a></li>
-                        @endfor
-                    
-                    @endif
+                        @else
+                            @for ($i= 1; $i <= $total_page ; $i++)
+                            <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller/search/keyword?keyword={{ request('keyword') }}&from={{ request('from') }}&to={{ request('to') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></li>
+                            @endfor
+                        
+                        @endif
 
-                    <li class="page-item">
-                    
-                    @if ($page == $total_page)
-                        <a class="page-link" href="/webpanel/report/seller?page={{ $page }}" aria-label="Next">
-                        <span aria-hidden="true">next</span>
-                        </a>
-                    @else
-                    <a class="page-link" href="/webpanel/report/seller?page={{ $page + 1 }}" aria-label="Next">
-                        <span aria-hidden="true">next</span>
-                        </a>
-                    @endif
-                    </li>
-                    </ul>
-                </nav>
-            </div>
+                        <li class="page-item">
+                        
+                        @if ($page == $total_page)
+                            <a class="page-link" href="/webpanel/report/seller/search/keyword?keyword={{ request('keyword') }}&from={{ request('from') }}&to={{ request('to') }}&_token={{ request('_token') }}&page={{ $page }}" aria-label="Next">
+                            <span aria-hidden="true">next</span>
+                            </a>
+                        @else
+                        <a class="page-link" href="/webpanel/report/seller/search/keyword?keyword={{ request('keyword') }}&from={{ request('from') }}&to={{ request('to') }}&_token={{ request('_token') }}&page={{ $page + 1 }}" aria-label="Next">
+                            <span aria-hidden="true">next</span>
+                            </a>
+                        @endif
+                        </li>
+                        </ul>
+                    </nav>
+                </div>
 
-            <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
-            <div class="py-3">
-                <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
-            </div>
+                <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
+                <div class="py-3">
+                    <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
+                </div>
+                @else
+                
+                <div class="ms-6">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                        <li class="page-item">
+
+                        @if ($page == 1)
+                            <a class="page-link" href="/webpanel/report/seller?page={{ 1 }}" aria-label="Previous">
+                            <span aria-hidden="true">Previous</span>
+                            </a>
+                        @else
+                        <a class="page-link" href="/webpanel/report/seller?page={{ $page - 1 }}" aria-label="Previous">
+                            <span aria-hidden="true">Previous</span>
+                            </a>
+                        @endif
+                        </li>
+
+                        @if($total_page > 14)
+
+                            @for ($i= 1; $i <= 10 ; $i++)
+                            <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller?page={{ $i }}">{{ $i }}</a></a></li>
+                            @endfor
+                            <li class="page-item"><a class="page-link">...</a></li>
+                            @for ($i= $total_page-1; $i <= $total_page ; $i++)
+                                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/report/seller?page={{ $i }}">{{ $i }}</a></a></li>
+                            @endfor
+
+                        @else
+                            @for ($i= 1; $i <= $total_page ; $i++)
+                            <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/seller?page={{ $i }}">{{ $i }}</a></li>
+                            @endfor
+                        
+                        @endif
+
+                        <li class="page-item">
+                        
+                        @if ($page == $total_page)
+                            <a class="page-link" href="/webpanel/report/seller?page={{ $page }}" aria-label="Next">
+                            <span aria-hidden="true">next</span>
+                            </a>
+                        @else
+                        <a class="page-link" href="/webpanel/report/seller?page={{ $page + 1 }}" aria-label="Next">
+                            <span aria-hidden="true">next</span>
+                            </a>
+                        @endif
+                        </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
+                <div class="py-3">
+                    <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
+                </div>
+                {{-- <hr class="mt-3" style="color: #8E8E8E; width: 100%;"> --}}
             @endif
         @else
             <div class="text-center py-8">

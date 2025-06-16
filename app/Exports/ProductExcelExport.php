@@ -26,8 +26,8 @@ class ProductExcelExport
 
         if(!empty($from) && !empty($to))
         {
-           
-            if (!empty($regoion) && empty($category)) {
+        //    dd('test');
+            if (!empty($region) && empty($category)) {
 
                         $date = $from.'_'.'to'.'_'.$to;
                         $filename = ''.$region.'_'. $date;
@@ -38,13 +38,8 @@ class ProductExcelExport
                                             'products.product_name',
                                             'products.unit',
                                             DB::raw('SUM(report_sellers.quantity) as quantity_by'),
-                                            DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             DB::raw('AVG(report_sellers.cost) as average_cost'),
-                                            'products.category',
-                                            'products.sub_category',
-                                            'categories.categories_name',
-                                            'subcategories.subcategories_name',
-                                            'customers.geography',
+                                            DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             )
                                             ->join('products', function (JoinClause $join) {
                                                 $join->on('products.product_id', '=', 'report_sellers.product_id');
@@ -83,12 +78,8 @@ class ProductExcelExport
                                             'products.product_name',
                                             'products.unit',
                                             DB::raw('SUM(report_sellers.quantity) as quantity_by'),
-                                            DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             DB::raw('AVG(report_sellers.cost) as average_cost'),
-                                            'products.category',
-                                            'products.sub_category',
-                                            'categories.categories_name',
-                                            'subcategories.subcategories_name',
+                                            DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             )
                                             ->join('products', function (JoinClause $join) {
                                                 $join->on('products.product_id', '=', 'report_sellers.product_id');
@@ -116,20 +107,15 @@ class ProductExcelExport
                     } elseif(!empty($region) && !empty($category)) {
 
                         $date = $from.'_'.'to'.'_'.$to;
-                        $filename = 'Product_value_'.$region.'_'.$category.'_'.$date.'.csv';
+                        $filename = 'Product_value_'.$region.'_'.$category.'_'.$date;
 
                         return ReportSeller::select(
                                             'report_sellers.product_id',
                                             'products.product_name',
                                             'products.unit',
                                             DB::raw('SUM(report_sellers.quantity) as quantity_by'),
-                                            DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             DB::raw('AVG(report_sellers.cost) as average_cost'),
-                                            'products.category',
-                                            'products.sub_category',
-                                            'categories.categories_name',
-                                            'subcategories.subcategories_name',
-                                            'customers.geography',
+                                            DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             )
                                             ->join('products', function (JoinClause $join) {
                                                 $join->on('products.product_id', '=', 'report_sellers.product_id');
@@ -162,7 +148,7 @@ class ProductExcelExport
                     } else {
 
                         $date = $from.'_'.'to'.'_'.$to;
-                        $filename = 'Product_value_'. $date.'.csv';
+                        $filename = 'Product_value_'. $date;
                             // Start the output buffer.
 
                         return ReportSeller::select(
@@ -170,12 +156,8 @@ class ProductExcelExport
                                             'products.product_name',
                                             'products.unit',
                                             DB::raw('SUM(report_sellers.quantity) as quantity_by'),
-                                            DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             DB::raw('AVG(report_sellers.cost) as average_cost'),
-                                            'products.category',
-                                            'products.sub_category',
-                                            'categories.categories_name',
-                                            'subcategories.subcategories_name',
+                                            DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             )
                                             ->join('products', function (JoinClause $join) {
                                                 $join->on('products.product_id', '=', 'report_sellers.product_id');
@@ -204,19 +186,15 @@ class ProductExcelExport
             } else {
 
                         $date = $from.'_'.'to'.'_'.$to;
-                        $filename = 'Product_value_all_'. $date.'.csv';
+                        $filename = 'Product_value_all_'. $date;
 
                         return ReportSeller::select(
                                             'report_sellers.product_id',
                                             'products.product_name',
                                             'products.unit',
                                             DB::raw('SUM(report_sellers.quantity) as quantity_by'),
-                                            DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             DB::raw('AVG(report_sellers.cost) as average_cost'),
-                                            'products.category',
-                                            'products.sub_category',
-                                            'categories.categories_name',
-                                            'subcategories.subcategories_name',
+                                            DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             )
                                             ->join('products', function (JoinClause $join) {
                                                 $join->on('products.product_id', '=', 'report_sellers.product_id');
@@ -242,4 +220,126 @@ class ProductExcelExport
             }
             
     }
+
+    public function exportItemExcel(Request $request)
+        {
+            
+            // dd('test');
+            date_default_timezone_set("Asia/Bangkok");
+
+            $from = $request->from;
+            $to = $request->to;
+            $category = $request->category;
+            $region = $request->region;
+            $product_id = $request->id;
+            // dd($product_id);
+
+            if(!empty($from) && !empty($to))
+            {
+                if(!empty($category) && !empty($region)) {
+                   
+                    $date = $from.'_'.'to'.'_'.$to;
+                    $filename = '_'.$product_id.'_'.$category.'_'. $date;
+
+                    return ReportSeller::select(
+                                        'report_sellers.customer_id',
+                                        'customers.customer_name',
+                                        'products.unit',
+                                        DB::raw('SUM(report_sellers.quantity) as quantity_by'),
+                                        )
+                                        ->join('products', function (JoinClause $join) {
+                                            $join->on('products.product_id', '=', 'report_sellers.product_id');
+                                        })
+                                        ->join('customers', function (JoinClause $join) {
+                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                        })
+                                        ->join('categories', function (JoinClause $join) {
+                                            $join->on('categories.categories_id', '=', 'products.category');
+                                        })
+                          
+                                        ->groupBy(
+                                        'report_sellers.customer_id',
+                                        'customers.customer_name',
+                                        'products.unit'
+                            /*             'products.category',
+                                        'customers.geography', */
+                                        )
+                                        ->where('report_sellers.product_id', $product_id)
+                                        ->where('products.category', $category)
+                                        ->where('customers.geography', $region) 
+                                        ->whereBetween('report_sellers.date_purchase', [$from, $to])
+                                        ->orderBy('quantity_by', 'desc')
+                                        ->downloadExcel('Product_item'.'_'.$filename.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
+
+                
+                } else {
+
+                    // dd('excel');
+                    $date = $from.'_'.'to'.'_'.$to;
+                    $filename = '_'.$product_id.'_'.$date.'_';
+       
+                    return ReportSeller::select(
+                                        'report_sellers.customer_id',
+                                        'report_sellers.customer_name',
+                                        'products.unit',
+                                        DB::raw('SUM(report_sellers.quantity) as quantity_by'),
+/*                                         DB::raw('AVG(report_sellers.cost) as average_cost'),
+                                        DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'), */
+                                        )
+                                        ->join('products', function (JoinClause $join) {
+                                            $join->on('products.product_id', '=', 'report_sellers.product_id');
+                                        })
+                                      /*   ->join('customers', function (JoinClause $join) {
+                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                        }) */
+                                 /*   */
+                                        ->groupBy(
+                                        'report_sellers.customer_id',
+                                        'report_sellers.customer_name',
+                                        'products.unit'
+                                        )
+                                        ->where('report_sellers.product_id', $product_id)
+                                        ->whereBetween('report_sellers.date_purchase', [$from, $to])
+                                        ->orderBy('quantity_by', 'desc')
+                                        ->downloadExcel('Product_item'.'_'.$filename.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
+
+
+                }
+
+            } else {
+
+                $date = $from.'_'.'to'.'_'.$to;
+                $filename = '_'.$product_id.'_'.$date.'_';
+
+                return ReportSeller::select(
+                                    'report_sellers.customer_id',
+                                        'customers.customer_name',
+                                        'products.unit',
+                                        DB::raw('SUM(report_sellers.quantity) as quantity_by'),
+/*                                         DB::raw('AVG(report_sellers.cost) as average_cost'),
+                                        DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'), */
+                                        )
+                                        ->join('products', function (JoinClause $join) {
+                                            $join->on('products.product_id', '=', 'report_sellers.product_id');
+                                        })
+                                        ->join('customers', function (JoinClause $join) {
+                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                        })
+                                 /*   */
+                                        ->groupBy(
+                                        'report_sellers.customer_id',
+                                        'customers.customer_name',
+                                        'products.unit'
+                                        )
+                                        ->where('report_sellers.product_id', $product_id)
+                                        ->orderBy('quantity_by', 'desc')
+                                        ->cursor();
+
+                        $data = $report_product->toArray();
+                        // dd('dd');
+                        ob_end_clean();
+
+            }
+
+        }
 }

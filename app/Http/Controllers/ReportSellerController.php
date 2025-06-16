@@ -6,6 +6,7 @@ use App\Models\ReportSeller;
 use Illuminate\Http\Request;
 use App\Imports\SellersImport;
 use App\Models\Salearea;
+use App\Models\ImportStatus;
 use App\Models\Customer;
 use App\Models\user;
 use Illuminate\View\View;
@@ -16,8 +17,10 @@ use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 // use Illuminate\Http\JsonResponse;
 
+use App\Imports\import;
 
 class ReportSellerController extends Controller
 {
@@ -93,73 +96,109 @@ class ReportSellerController extends Controller
                                 if(!empty($salearea_seller && !empty($adminarea_seller))) {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
+                                    // dd($key_page);
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                        ->groupBy(
+                                                            'report_sellers.purchase_order', 
+                                                            'report_sellers.customer_id'
+                                                            )
                                                         ->where('customers.sale_area', $filters_page['salearea_seller'])
                                                         ->where('customers.admin_area', $filters_page['adminarea_seller'])
                                                         ->where('customers.geography', $filters_page['region'])
                                                         ->where('customers.delivery_by', $filters_page['delivery'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                        ->get();
+                                                        ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
+                                                        
+                                                        return (clone $page_query)->paginate(1)->total();
                                                     });
 
-                                    $count_page = count($pagination);
-                                    // dd($count_page);
+                                    $count_page = (int)$pagination;
+                                    // dd(($count_page));
 
                                     $perpage = 10;
                                     $total_page = ceil($count_page / $perpage);
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    // $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_customer['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_customer['region'])
-                                                        ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        ->get();
-                                                    });
+                                    $count_report_customer = ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                                                            ->join('customers', function (JoinClause $join) {
+                                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                            })
+                                                                            ->groupBy(
+                                                                                'report_sellers.customer_id', 
+                                                                                'report_sellers.purchase_order'
+                                                                                )
+                                                                            ->where('customers.sale_area', $filters_customer['salearea_seller'])
+                                                                            ->where('customers.admin_area', $filters_customer['adminarea_seller'])
+                                                                            ->where('customers.geography', $filters_customer['region'])
+                                                                            ->where('customers.delivery_by', $filters_customer['delivery'])
+                                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                                            ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
+                                                                            ->cursor();
+                                                    // });
+
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.sale_area', $filters_customer['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_customer['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_customer['region'])
+                                                            ->where('customers.delivery_by', $filters_customer['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                         
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                                                         /*    foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -171,58 +210,59 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'              => $request->from,
+                                        'to'                => $request->to,
+                                        'region'            => $region,
+                                        'delivery'          => $delivery,
+                                        'range_min'         => $range_min,
+                                        'range_max'         => $range_max,
+                                        'salearea_seller'   => $salearea_seller,
+                                        'adminarea_seller'  => $adminarea_seller,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_po['region'])
-                                                        ->where('customers.delivery_by', $filters_po['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
-                                                    });
+                                   $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_po['region'])
+                                                            ->where('customers.delivery_by', $filters_po['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
 
-                                    $count_purchase_range = count($count_po_range);
+                                                            return (clone $po_query)->paginate()->total();
+                                                        });
+
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                               /*      $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) { */
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                               $total_report_selling =  ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
@@ -233,74 +273,99 @@ class ReportSellerController extends Controller
                                                         ->where('customers.delivery_by', $filters_selling['delivery'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
                                                         ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
+                                                        ->cursor();
+                                                    // });
+
+                                               /*      $total_report_selling =   ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy('report_sellers.purchase_order')
+                                                    ->where('customers.sale_area', $filters_selling['salearea_seller'])
+                                                    ->where('customers.admin_area', $filters_selling['adminarea_seller'])
+                                                    ->where('customers.geography', $filters_selling['region'])
+                                                    ->where('customers.delivery_by', $filters_selling['delivery'])
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                    ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                    ->first(); */
 
                                     // dd($total_report_selling);
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.sale_area', $filters['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                        ->where('customers.geography', $filters['region'])
-                                                        ->where('customers.delivery_by', $filters['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                        /* ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.sale_area', $filters['salearea_seller'])
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                    /* ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                             
                                 } else if(!empty($salearea_seller)) {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'region'          => $region,
+                                        'delivery'        => $delivery,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
                                         'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_page = 'sales_customer_' . md5(json_encode($filters_page));
+                                    // dd($key_page);
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->join('customers', function (JoinClause $join) {
-                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                })
-                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->where('customers.sale_area', $filters_page['salearea_seller'])
-                                                ->where('customers.geography', $filters_page['region'])
-                                                ->where('customers.delivery_by', $filters_page['delivery'])
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                ->get();
-                                            });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                                ->join('customers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->groupBy(
+                                                                    'report_sellers.purchase_order', 
+                                                                    'report_sellers.customer_id'
+                                                                    )
+                                                                ->where('customers.sale_area', $filters_page['salearea_seller'])
+                                                                ->where('customers.geography', $filters_page['region'])
+                                                                ->where('customers.delivery_by', $filters_page['delivery'])
+                                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
+                                                                ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
+                                                                
+                                                                return (clone $page_query)->paginate(1)->total();
+                                                            });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -308,35 +373,48 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'region'          => $region,
+                                        'delivery'        => $delivery,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
                                         'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_customer['salearea_seller'])
-                                                        ->where('customers.geography', $filters_customer['region'])
-                                                        ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        ->get();
-                                                    });
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.sale_area', $filters_customer['salearea_seller'])
+                                                            ->where('customers.geography', $filters_customer['region'])
+                                                            ->where('customers.delivery_by', $filters_customer['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+                                                    // });
                                         
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                                                      /*       foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -348,78 +426,79 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'region'          => $region,
+                                        'delivery'        => $delivery,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
                                         'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                        ->where('customers.geography', $filters_po['region'])
-                                                        ->where('customers.delivery_by', $filters_po['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
-                                                    });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                            ->where('customers.geography', $filters_po['region'])
+                                                            ->where('customers.delivery_by', $filters_po['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+                                                            
+                                                            return (clone $po_query)->paginate(1)->total();
+                                                        });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'region'          => $region,
+                                        'delivery'        => $delivery,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
                                         'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_selling['salearea_seller'])
-                                                        ->where('customers.geography', $filters_selling['region'])
-                                                        ->where('customers.delivery_by', $filters_selling['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_selling['salearea_seller'])
+                                                            ->where('customers.geography', $filters_selling['region'])
+                                                            ->where('customers.delivery_by', $filters_selling['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            ->cursor();
+                                                    // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'page'            => $page,
+                                        'perpage'         => $perpage,
+                                        'region'          => $region,
+                                        'delivery'        => $delivery,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
                                         'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
@@ -427,51 +506,62 @@ class ReportSellerController extends Controller
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.sale_area', $filters['salearea_seller'])
-                                                        ->where('customers.geography', $filters['region'])
-                                                        ->where('customers.delivery_by', $filters['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                    /*   ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.sale_area', $filters['salearea_seller'])
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                /*   ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
 
                                 } else if(!empty($adminarea_seller)) {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
+                                    // dd('dd');
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->where('customers.admin_area', $filters_page['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_page['region'])
-                                                        ->where('customers.delivery_by', $filters_page['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                        ->get();
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                                ->join('customers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->groupBy(
+                                                                    'report_sellers.purchase_order', 
+                                                                    'report_sellers.customer_id'
+                                                                    )
+                                                                ->where('customers.admin_area', $filters_page['adminarea_seller'])
+                                                                ->where('customers.geography', $filters_page['region'])
+                                                                ->where('customers.delivery_by', $filters_page['delivery'])
+                                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
+                                                                ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
+                                                                
+                                                                return (clone $page_query)->paginate(1)->total();
                                                     });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -479,35 +569,46 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_customer['region'])
-                                                        ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        ->get();
-                                                    });
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.admin_area', $filters_customer['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_customer['region'])
+                                                            ->where('customers.delivery_by', $filters_customer['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
                                         
+                                    $count_customer_range = $count_unique_customers;
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                                                  /*           foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -519,26 +620,26 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range =Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
@@ -547,50 +648,51 @@ class ReportSellerController extends Controller
                                                         ->where('customers.geography', $filters_po['region'])
                                                         ->where('customers.delivery_by', $filters_po['delivery'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
+                                                        ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+                                                        
+                                                        return (clone $po_query)->paginate(1)->total();
                                                     });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.admin_area', $filters_selling['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_selling['region'])
-                                                        ->where('customers.delivery_by', $filters_selling['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.admin_area', $filters_selling['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_selling['region'])
+                                                            ->where('customers.delivery_by', $filters_selling['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            ->cursor();
+                                                    // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
@@ -598,50 +700,58 @@ class ReportSellerController extends Controller
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                        ->where('customers.geography', $filters['region'])
-                                                        ->where('customers.delivery_by', $filters['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                /*      ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                            /*      ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
 
-                                                    });
+                                                                });
                                 
                                 } else {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'region'    => $region,
+                                        'delivery'  => $delivery,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
+                                    // dd($key_page);
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('purchase_order', 'customer_id')
-                                                        ->where('customers.geography', $filters_page['region'])
-                                                        ->where('customers.delivery_by', $filters_page['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                        ->get();
-                                                    });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                                ->join('customers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->groupBy('purchase_order', 'customer_id')
+                                                                ->where('customers.geography', $filters_page['region'])
+                                                                ->where('customers.delivery_by', $filters_page['delivery'])
+                                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
+                                                                ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
 
-                                    $count_page = count($pagination);
+                                                                return (clone $page_query)->paginate(1)->total();
+                                                            });
+
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -649,33 +759,45 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'       => $request->from,
+                                        'to'         => $request->to,
+                                        'region'     => $region,
+                                        'delivery'   => $delivery,
+                                        'range_min'  => $range_min,
+                                        'range_max'  => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.geography', $filters_customer['region'])
-                                                        ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        ->get();
-                                                    });
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.geography', $filters_customer['region'])
+                                                            ->where('customers.delivery_by', $filters_customer['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                         
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                                               /*              foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -687,17 +809,17 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                         // dd($count_customer_range);
 
                                     //dashboard;
 
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'region'    => $region,
+                                        'delivery'  => $delivery,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
@@ -706,7 +828,7 @@ class ReportSellerController extends Controller
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
@@ -714,68 +836,76 @@ class ReportSellerController extends Controller
                                                         ->where('customers.geography', $filters_po['region'])
                                                         ->where('customers.delivery_by', $filters_po['delivery'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
+                                                        ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+                                                        
+                                                        return (clone $po_query)->paginate(1)->total();
                                                     });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'       => $request->from,
+                                        'to'         => $request->to,
+                                        'region'     => $region,
+                                        'delivery'   => $delivery,
+                                        'range_min'  => $range_min,
+                                        'range_max'  => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
                 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.geography', $filters_selling['region'])
-                                                        ->where('customers.delivery_by', $filters_selling['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.geography', $filters_selling['region'])
+                                                            ->where('customers.delivery_by', $filters_selling['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'page'      => $page,
+                                        'perpage'   => $perpage,
+                                        'region'    => $region,
+                                        'delivery'  => $delivery,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.geography', $filters['region'])
-                                                        ->where('customers.delivery_by', $filters['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                    /*   ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                /*   ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                                 }
 
                             } else if (!empty($region)) {
@@ -783,33 +913,35 @@ class ReportSellerController extends Controller
                                 if(!empty($salearea_seller && !empty($adminarea_seller))) {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
+                                    // dd($key_page);
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->where('customers.sale_area', $filters_page['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_page['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_page['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                        ->get();
-                                                    });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                                ->join('customers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                                ->where('customers.sale_area', $filters_page['salearea_seller'])
+                                                                ->where('customers.admin_area', $filters_page['adminarea_seller'])
+                                                                ->where('customers.geography', $filters_page['region'])
+                                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
+                                                                ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
+                                                                
+                                                                return (clone $page_query)->paginate(1)->total();
+                                                            });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -817,35 +949,48 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_customer['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_customer['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        ->get();
-                                                    });
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.sale_area', $filters_customer['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_customer['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_customer['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
                                         
+                                    $count_customer_range = $count_unique_customers;
+                                                        /*   }); */
+                                                
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                                                      /*       foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -857,245 +1002,83 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_po['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
-                                                    });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_po['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+                                                            
+                                                            return (clone $po_query)->paginate(1)->total();
+                                                        });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_selling['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_selling['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_selling['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_selling['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_selling['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_selling['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
+                                        'region'           => $region,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
-
-                                    $report_seller = Cache::remember($key, 1800, function () use ($filters) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.sale_area', $filters['salearea_seller'])
-                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                    ->where('customers.geography', $filters['region'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                    /* ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
-                        
-                                } else if(!empty($salearea_seller)) {
-
-                                    $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
-                                        ];
-
-                                    $key_page = 'sales_page_' . md5(json_encode($filters_page));
-
-                                    $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
-
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->where('customers.sale_area', $filters_page['salearea_seller'])
-                                                        ->where('customers.geography', $filters_page['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                        ->get();
-                                                    });
-
-                                    $count_page = count($pagination);
-                                    // dd($count_page);
-
-                                    $perpage = 10;
-                                    $total_page = ceil($count_page / $perpage);
-                                    $start = ($perpage * $page) - $perpage;
-
-                                    $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
-                                        ];
-
-                                    $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
-
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_customer['salearea_seller'])
-                                                        ->where('customers.geography', $filters_customer['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        ->get();
-                                                    });
-
-                                    //dd($count_report_customer);
-                                    //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
-
-                                        $arr_id[] = $row_id->customer_id;
-                                    } 
-
-                                    //นำตัวที่ซ้ำออก;
-                                    if(isset($arr_id)) {
-                                        $unique = array_unique($arr_id);
-                                        $count_customer_range = count($unique);
-
-                                    } else {
-                                        $count_customer_range = 0;
-                                    }
-
-                                    // dd($count_customer_range);
-
-                                    //dashboard;
-                                    $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
-                                        ];
-
-                                    $key_po = 'sales_po_' . md5(json_encode($filters_po));
-
-                                    $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
-
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                        ->where('customers.geography', $filters_po['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
-                                                    });
-
-                                    $count_purchase_range = count($count_po_range);
-                                    // dd($count_purchase_range);
-
-
-                                    $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
-                                        ];
-
-                                    $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
-
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
-
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_selling['salearea_seller'])
-                                                        ->where('customers.geography', $filters_selling['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
-
-
-                                    $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
-                                        ];
-
-                                    $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
@@ -1103,168 +1086,14 @@ class ReportSellerController extends Controller
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                        ->groupBy(
+                                                            'report_sellers.customer_id', 
+                                                            'customers.customer_name' , 
+                                                            'report_sellers.purchase_order', 
+                                                            'customers.admin_area', 
+                                                            'customers.sale_area'
+                                                            )
                                                         ->where('customers.sale_area', $filters['salearea_seller'])
-                                                        ->where('customers.geography', $filters['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                    /*  ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
-
-                                } else if(!empty($adminarea_seller)) {
-
-                                    $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
-                                        ];
-
-                                    $key_page = 'sales_page_' . md5(json_encode($filters_page));
-
-                                    $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
-
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->where('customers.admin_area', $filters_page['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_page['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                        ->get();
-                                                    });
-
-                                    $count_page = count($pagination);
-                                    // dd($count_page);
-
-                                    $perpage = 10;
-                                    $total_page = ceil($count_page / $perpage);
-                                    $start = ($perpage * $page) - $perpage;
-
-                                    $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
-                                        ];
-
-                                    $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
-
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_customer['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        ->get();
-                                                    });
-
-                                    //dd($count_report_customer);
-                                    //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
-
-                                        $arr_id[] = $row_id->customer_id;
-                                    } 
-
-                                    //นำตัวที่ซ้ำออก;
-                                    if(isset($arr_id)) {
-                                        $unique = array_unique($arr_id);
-                                        $count_customer_range = count($unique);
-
-                                    } else {
-                                        $count_customer_range = 0;
-                                    }
-
-                                    // dd($count_customer_range);
-
-                                    //dashboard;
-                                    $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
-                                        ];
-
-                                    $key_po = 'sales_po_' . md5(json_encode($filters_po));
-
-                                    $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
-
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_po['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
-                                                    });
-
-                                    $count_purchase_range = count($count_po_range);
-                                    // dd($count_purchase_range);
-
-                                    $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
-                                        ];
-
-                                    $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
-
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
-
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.admin_area', $filters_selling['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_selling['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
-
-                                    $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
-                                        ];
-
-                                    $key = 'sales_report_' . md5(json_encode($filters));
-
-                                    $report_seller = Cache::remember($key, 1800, function () use ($filters) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
                                                         ->where('customers.admin_area', $filters['adminarea_seller'])
                                                         ->where('customers.geography', $filters['region'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
@@ -1274,33 +1103,40 @@ class ReportSellerController extends Controller
                                                         ->get(); */
                                                         ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
                                                     });
-                                
-                                } else {
+                        
+                                } else if(!empty($salearea_seller)) {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'region'          => $region,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
+                                        'salearea_seller' => $salearea_seller,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
+                                    // dd($key_page);
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                        ->groupBy(
+                                                            'report_sellers.purchase_order', 
+                                                            'report_sellers.customer_id'
+                                                            )
+                                                        ->where('customers.sale_area', $filters_page['salearea_seller'])
                                                         ->where('customers.geography', $filters_page['region'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                        ->get();
+                                                        ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
+                                                        
+                                                        return (clone $page_query)->paginate(1)->total();
                                                     });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -1308,31 +1144,44 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'region' => $region,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'region'          => $region,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
+                                        'salearea_seller' => $salearea_seller,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.sale_area', $filters_customer['salearea_seller'])
                                                             ->where('customers.geography', $filters_customer['region'])
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                            ->get();
-                                                        });
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
 
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                 /*    foreach($count_report_customer as $row_id) {
 
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -1344,15 +1193,387 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'region'          => $region,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
+                                        'salearea_seller' => $salearea_seller,
+                                        ];
+
+                                    $key_po = 'sales_po_' . md5(json_encode($filters_po));
+
+                                    $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
+
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                            ->where('customers.geography', $filters_po['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+
+                                                            return (clone $po_query)->paginate(1)->total();
+                                                            
+                                                        });
+
+                                    $count_purchase_range = (int)$count_po_range;
+                                    // dd($count_purchase_range);
+
+
+                                    $filters_selling = [
                                         'from' => $request->from,
-                                        'to' => $request->to,
-                                        'region' => $region,
+                                        'to'   => $request->to,
+                                        'salearea_seller' => $salearea_seller,
+                                        'region'    => $region,
+                                        'range_min' => $range_min,
+                                        'range_max' => $range_max,
+                                        ];
+
+                                    $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
+
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_selling['salearea_seller'])
+                                                            ->where('customers.geography', $filters_selling['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            ->cursor();
+                                                        // });
+
+
+                                    $filters = [
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'page'            => $page,
+                                        'perpage'         => $perpage,
+                                        'region'          => $region,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
+                                        'salearea_seller' => $salearea_seller,
+                                        ];
+
+                                    $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
+
+                                    $report_seller = Cache::remember($key, 1800, function () use ($filters) {
+
+                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.sale_area', $filters['salearea_seller'])
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                /*  ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
+
+                                } else if(!empty($adminarea_seller)) {
+
+                                    $filters_page = [
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'region'           => $region,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        'adminarea_seller' => $adminarea_seller,
+                                        ];
+
+                                    $key_page = 'sales_page_' . md5(json_encode($filters_page));
+
+                                    $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
+
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                                ->join('customers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->groupBy(
+                                                                    'report_sellers.purchase_order', 
+                                                                    'report_sellers.customer_id'
+                                                                    )
+                                                                ->where('customers.admin_area', $filters_page['adminarea_seller'])
+                                                                ->where('customers.geography', $filters_page['region'])
+                                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
+                                                                ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
+                                                                
+                                                                return (clone $page_query)->paginate(1)->total();
+                                                            });
+
+                                    $count_page = (int)$pagination;
+                                    // dd($count_page);
+
+                                    $perpage = 10;
+                                    $total_page = ceil($count_page / $perpage);
+                                    $start = ($perpage * $page) - $perpage;
+
+                                    $filters_customer = [
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'adminarea_seller' => $adminarea_seller,
+                                        'region'           => $region,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        ];
+
+                                    $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
+
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.admin_area', $filters_customer['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_customer['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+
+                                    //dd($count_report_customer);
+                                    //นับจำนวนร้านค้าแบบไม่ซ้ำ;
+                              /*       foreach($count_report_customer as $row_id) {
+
+                                        $arr_id[] = $row_id->customer_id;
+                                    } 
+
+                                    //นำตัวที่ซ้ำออก;
+                                    if(isset($arr_id)) {
+                                        $unique = array_unique($arr_id);
+                                        $count_customer_range = count($unique);
+
+                                    } else {
+                                        $count_customer_range = 0;
+                                    } */
+
+                                    // dd($count_customer_range);
+
+                                    //dashboard;
+                                    $filters_po = [
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'adminarea_seller' => $adminarea_seller,
+                                        'region'           => $region,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        ];
+
+                                    $key_po = 'sales_po_' . md5(json_encode($filters_po));
+                                    // dd($key_po);
+
+                                    $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
+
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_po['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+                                                            
+                                                            return (clone $po_query)->paginate(1)->total();
+                                                        });
+
+                                    $count_purchase_range = (int)$count_po_range;
+                                    // dd($count_purchase_range);
+
+                                    $filters_selling = [
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'adminarea_seller' => $adminarea_seller,
+                                        'region'           => $region,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        ];
+
+                                    $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
+
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.admin_area', $filters_selling['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_selling['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            ->cursor();
+                                                        // });
+
+                                    $filters = [
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
+                                        'adminarea_seller' => $adminarea_seller,
+                                        'region'           => $region,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
+                                        ];
+
+                                    $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
+
+                                    $report_seller = Cache::remember($key, 1800, function () use ($filters) {
+
+                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                    /* ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
+                                            
+                                } else {
+
+                                    // dd('ภาคกลาง');
+                                    $filters_page = [
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'region'    => $region,
+                                        'range_min' => $range_min,
+                                        'range_max' => $range_max,
+                                        ];
+
+                                    $key_page = 'sales_page_' . md5(json_encode($filters_page));
+
+                                    $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
+
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                                ->join('customers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->groupBy(
+                                                                    'report_sellers.purchase_order', 
+                                                                    'report_sellers.customer_id'
+                                                                    )
+                                                                ->where('customers.geography', $filters_page['region'])
+                                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
+                                                                ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
+
+                                                                return (clone $page_query)->paginate(1)->total();
+                                                                
+                                                    });
+
+                                    $count_page = (int)$pagination;
+                                    // dd($count_page);
+
+                                    $perpage = 10;
+                                    $total_page = ceil($count_page / $perpage);
+                                    $start = ($perpage * $page) - $perpage;
+
+                                    $filters_customer = [
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'region'    => $region,
+                                        'range_min' => $range_min,
+                                        'range_max' => $range_max,
+                                        ];
+
+                                    $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
+
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.geography', $filters_customer['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+
+                                    //dd($count_report_customer);
+                                    //นับจำนวนร้านค้าแบบไม่ซ้ำ;
+                                  /*   foreach($count_report_customer as $row_id) {
+
+                                        $arr_id[] = $row_id->customer_id;
+                                    } 
+
+                                    //นำตัวที่ซ้ำออก;
+                                    if(isset($arr_id)) {
+                                        $unique = array_unique($arr_id);
+                                        $count_customer_range = count($unique);
+
+                                    } else {
+                                        $count_customer_range = 0;
+                                    } */
+
+                                    // dd($count_customer_range);
+
+                                    //dashboard;
+                                    $filters_po = [
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'region'    => $region,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
@@ -1361,49 +1582,51 @@ class ReportSellerController extends Controller
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.geography', $filters_po['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
-                                                    });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.geography', $filters_po['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
 
-                                    $count_purchase_range = count($count_po_range);
+                                                            return (clone $po_query)->paginate(1)->total();
+                                                            
+                                                        });
+
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'region' => $region,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'region'    => $region,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.geography', $filters_selling['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.geography', $filters_selling['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'region' => $region,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'page'      => $page,
+                                        'perpage'   => $perpage,
+                                        'region'    => $region,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
@@ -1413,18 +1636,24 @@ class ReportSellerController extends Controller
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.geography', $filters['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                    /*  ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                /*  ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                                 }
 
                             } else if (!empty($delivery)) {
@@ -1432,20 +1661,21 @@ class ReportSellerController extends Controller
                                 if(!empty($salearea_seller && !empty($adminarea_seller))) {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
+                                    // dd($key_page);
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
                                                 ->join('customers', function (JoinClause $join) {
                                                     $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                 })
@@ -1454,11 +1684,12 @@ class ReportSellerController extends Controller
                                                 ->where('customers.admin_area', $filters_page['adminarea_seller'])
                                                 ->where('customers.delivery_by', $filters_page['delivery'])
                                                 ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                ->get();
+                                                ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
+
+                                                return (clone $page_query)->paginate(1)->total();
                                             });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -1466,35 +1697,47 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer =  Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_customer['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                                        ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        ->get();
-                                                    });
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.sale_area', $filters_customer['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_customer['adminarea_seller'])
+                                                            ->where('customers.delivery_by', $filters_customer['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                         
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                                                    /*         foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -1506,26 +1749,26 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
@@ -1534,100 +1777,113 @@ class ReportSellerController extends Controller
                                                         ->where('customers.admin_area', $filters_po['adminarea_seller'])
                                                         ->where('customers.delivery_by', $filters_po['delivery'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
+                                                        ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+
+                                                        return (clone $po_query)->paginate(1)->total();
+                                                        
                                                     });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('purchase_order')
-                                                        ->where('customers.sale_area', $filters_selling['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_selling['adminarea_seller'])
-                                                        ->where('customers.delivery_by', $filters_selling['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('purchase_order')
+                                                            ->where('customers.sale_area', $filters_selling['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_selling['adminarea_seller'])
+                                                            ->where('customers.delivery_by', $filters_selling['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.sale_area', $filters['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                        ->where('customers.delivery_by', $filters['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                    /*  ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.sale_area', $filters['salearea_seller'])
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                /*  ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                         
                                 } else if(!empty($salearea_seller)) {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'        => $delivery,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
                                                 ->join('customers', function (JoinClause $join) {
                                                     $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                 })
-                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                ->groupBy(
+                                                    'report_sellers.purchase_order', 
+                                                    'report_sellers.customer_id'
+                                                    )
                                                 ->where('customers.sale_area', $filters_page['salearea_seller'])
                                                 ->where('customers.delivery_by', $filters_page['delivery'])
                                                 ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                ->get();
+                                                ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
+
+                                                return (clone $page_query)->paginate(1)->total();
                                             });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -1635,33 +1891,47 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'        => $delivery,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_customer['salearea_seller'])
-                                                        ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        ->get();
-                                                    });
+                                    // $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
                 
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.sale_area', $filters_customer['salearea_seller'])
+                                                            ->where('customers.delivery_by', $filters_customer['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                              /*       foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -1673,25 +1943,26 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'        => $delivery,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
+                                    // dd('dd');
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
@@ -1699,96 +1970,108 @@ class ReportSellerController extends Controller
                                                         ->where('customers.sale_area', $filters_po['salearea_seller'])
                                                         ->where('customers.delivery_by', $filters_po['delivery'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
+                                                        ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+
+                                                        return (clone $po_query)->paginate(1)->total();
                                                     });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'        => $delivery,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_selling['salearea_seller'])
-                                                        ->where('customers.delivery_by', $filters_selling['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_selling['salearea_seller'])
+                                                            ->where('customers.delivery_by', $filters_selling['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            ->cursor();
+                                                    // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'page'            => $page,
+                                        'perpage'         => $perpage,
                                         'salearea_seller' => $salearea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'        => $delivery,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.sale_area', $filters['salearea_seller'])
-                                                        ->where('customers.delivery_by', $filters['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                    /*  ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order',
+                                                                        'customers.admin_area',
+                                                                         'customers.sale_area'
+                                                                         )
+                                                                    ->where('customers.sale_area', $filters['salearea_seller'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                /*  ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
 
                                 } else if(!empty($adminarea_seller)) {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) { 
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                        ->groupBy(
+                                                            'report_sellers.purchase_order',
+                                                             'report_sellers.customer_id'
+                                                             )
                                                         ->where('customers.admin_area', $filters_page['adminarea_seller'])
                                                         ->where('customers.delivery_by', $filters_page['delivery'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                        ->get();
+                                                        ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
+                                                             
+                                                        return (clone $page_query)->paginate(1)->total();
                                                     });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -1796,33 +2079,45 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) { 
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
                                                             ->where('customers.admin_area', $filters_customer['adminarea_seller'])
                                                             ->where('customers.delivery_by', $filters_customer['delivery'])
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                            ->get();
-                                                        });
-                
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                /*     foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -1834,25 +2129,25 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) { 
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
@@ -1860,74 +2155,82 @@ class ReportSellerController extends Controller
                                                         ->where('customers.admin_area', $filters_po['adminarea_seller'])
                                                         ->where('customers.delivery_by', $filters_po['delivery'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
+                                                        ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+
+                                                        return (clone $po_query)->paginate(1)->total();
                                                     });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling =  Cache::remember($key_selling, 1800, function () use ($filters_selling) { 
+                                    // $total_report_selling =  Cache::remember($key_selling, 1800, function () use ($filters_selling) { 
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.admin_area', $filters_selling['adminarea_seller'])
-                                                        ->where('customers.delivery_by', $filters_selling['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.admin_area', $filters_selling['adminarea_seller'])
+                                                            ->where('customers.delivery_by', $filters_selling['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'delivery'         => $delivery,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) { 
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                    ->where('customers.delivery_by', $filters['delivery'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                  /*   ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                            'report_sellers.customer_id',
+                                                                            'customers.customer_name' ,
+                                                                            'report_sellers.purchase_order',
+                                                                            'customers.admin_area',
+                                                                            'customers.sale_area'
+                                                                            )
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                /*   ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                                 
                                 } else {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'delivery' => $delivery,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'delivery'  => $delivery,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
@@ -1936,18 +2239,23 @@ class ReportSellerController extends Controller
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('purchase_order', 'customer_id')
-                                                        ->where('customers.delivery_by', $filters_page['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                        ->get();
-                                                    });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                                ->join('customers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->groupBy(
+                                                                    'purchase_order', 
+                                                                    'customer_id'
+                                                                    )
+                                                                ->where('customers.delivery_by', $filters_page['delivery'])
+                                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
+                                                                ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
 
-                                    $count_page = count($pagination);
+                                                                return (clone $page_query)->paginate(1)->total();
+                                                                
+                                                            });
+
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -1955,31 +2263,45 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'delivery' => $delivery,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'delivery'  => $delivery,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    // $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                        ->whereBetween('date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        ->get();
-                                                    });
-                
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.delivery_by', $filters_customer['delivery'])
+                                                            ->whereBetween('date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                          /*           foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -1991,15 +2313,15 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'delivery' => $delivery,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'delivery'  => $delivery,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
@@ -2008,70 +2330,78 @@ class ReportSellerController extends Controller
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
                                                         ->groupBy('report_sellers.purchase_order')
                                                         ->where('customers.delivery_by', $filters_po['delivery'])
                                                         ->whereBetween('date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        ->get();
+                                                        ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+
+                                                        return (clone $po_query)->paginate(1)->total();
                                                     });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'delivery' => $delivery,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'delivery'  => $delivery,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.delivery_by', $filters_selling['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.delivery_by', $filters_selling['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'delivery' => $delivery,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'page'      => $page,
+                                        'perpage'   => $perpage,
+                                        'delivery'  => $delivery,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.delivery_by', $filters['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                    /*  ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name', 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                /*  ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                                 }
 
                             } else {
@@ -2080,34 +2410,36 @@ class ReportSellerController extends Controller
                                 if(!empty($salearea_seller && !empty($adminarea_seller))) {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'salearea_seller' => $salearea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
+                                    // dd($key_page);
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->where('customers.sale_area', $filters_page['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_page['adminarea_seller'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                        // ->where('customers.delivery_by', $delivery)
-                                                        /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                                ->join('customers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->groupBy(
+                                                                    'report_sellers.purchase_order', 
+                                                                    'report_sellers.customer_id'
+                                                                    )
+                                                                ->where('customers.sale_area', $filters_page['salearea_seller'])
+                                                                ->where('customers.admin_area', $filters_page['adminarea_seller'])
+                                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
+                                                                ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
 
-                                    $count_page = count($pagination);
+                                                                return (clone $page_query)->paginate(1)->total();
+                                                            });
+
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -2115,36 +2447,46 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'salearea_seller' => $salearea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_customer['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        // ->where('customers.delivery_by', $delivery)
-                                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                    // $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
                                         
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.sale_area', $filters_customer['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_customer['adminarea_seller'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                                                        /*     foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -2156,111 +2498,117 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'salearea_seller' => $salearea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        // ->where('customers.delivery_by', $delivery)
-                                                        /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
 
-                                    $count_purchase_range = count($count_po_range);
+                                                            return (clone $po_query)->paginate(1)->total();
+                                                        });
+
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'salearea_seller' => $salearea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('purchase_order')
-                                                        ->where('customers.sale_area', $filters_selling['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_selling['adminarea_seller'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
-                                                        // ->where('customers.delivery_by', $delivery)
-                                                        /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('purchase_order')
+                                                            ->where('customers.sale_area', $filters_selling['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_selling['adminarea_seller'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']])
+                                                            // ->where('customers.delivery_by', $delivery)
+                                                            /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'salearea_seller' => $salearea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.sale_area', $filters['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                        // ->where('customers.delivery_by', $delivery)
-                                                        /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    /*  ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.sale_area', $filters['salearea_seller'])
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                    // ->where('customers.delivery_by', $delivery)
+                                                                    /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                                /*  ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
+                                                                
                         
                                 } else if(!empty($salearea_seller)) {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
@@ -2271,17 +2619,20 @@ class ReportSellerController extends Controller
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                        ->groupBy(
+                                                            'report_sellers.purchase_order', 
+                                                            'report_sellers.customer_id'
+                                                            )
                                                         ->where('customers.sale_area', $filters_page['salearea_seller'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
                                                         ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
                                                         // ->where('customers.delivery_by', $delivery)
                                                         /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                         ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
+                                                        ->count();
                                                     });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -2289,34 +2640,46 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_customer['salearea_seller'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                        // ->where('customers.delivery_by', $delivery)
-                                                        /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
-                
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select(
+                                                                'report_sellers.customer_id', 
+                                                                DB::raw('SUM(price*quantity) as total_sales'), 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.sale_area', $filters_customer['salearea_seller'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
+                                                            ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                    /* foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -2328,105 +2691,103 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'range_min'       => $range_min,
+                                        'range_max'       => $range_max,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
+                                    // dd($key_po);
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
                                                         ->groupBy('report_sellers.purchase_order')
                                                         ->where('customers.sale_area', $filters_po['salearea_seller'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                        // ->where('customers.delivery_by', $delivery)
-                                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
+                                                        ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+
+                                                        return (clone $po_query)->paginate(1)->total();
+                                                       
                                                     });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_selling['salearea_seller'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']]) 
-                                                        // ->where('customers.delivery_by', $delivery)
-                                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_selling['salearea_seller'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->havingBetween('total_sales', [$filters_selling['range_min'], $filters_selling['range_max']]) 
+                                                            ->cursor();
+                                                        // });
 
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'salearea_seller' => $salearea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'range_min'        => $range_min,
+                                        'range_max'        => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.sale_area', $filters['salearea_seller'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                    /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                   /*  ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                                        ->join('customers', function (JoinClause $join) {
+                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                        })
+                                                        ->groupBy(
+                                                            'report_sellers.customer_id', 
+                                                            'customers.customer_name' , 
+                                                            'report_sellers.purchase_order', 
+                                                            'customers.admin_area', 
+                                                            'customers.sale_area'
+                                                            )
+                                                        ->where('customers.sale_area', $filters['salearea_seller'])
+                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                    });
 
                                 } else if(!empty($adminarea_seller)) {
 
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'              => $request->from,
+                                        'to'                => $request->to,
+                                        'adminarea_seller'  => $adminarea_seller,
+                                        'range_min'         => $range_min,
+                                        'range_max'         => $range_max,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
@@ -2437,17 +2798,17 @@ class ReportSellerController extends Controller
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                        ->groupBy(
+                                                            'report_sellers.purchase_order', 
+                                                            'report_sellers.customer_id'
+                                                            )
                                                         ->where('customers.admin_area', $filters_page['adminarea_seller'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
                                                         ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                        // ->where('customers.delivery_by', $delivery)
-                                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
+                                                        ->count();
                                                     });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -2455,34 +2816,50 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'              => $request->from,
+                                        'to'                => $request->to,
+                                        'adminarea_seller'  => $adminarea_seller,
+                                        'range_min'         => $range_min,
+                                        'range_max'         => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                    
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select(
+                                                                'report_sellers.customer_id',
+                                                                DB::raw('SUM(price*quantity) as total_sales'),
+                                                                'report_sellers.purchase_order'
+                                                            )
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
                                                             ->where('customers.admin_area', $filters_customer['adminarea_seller'])
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                            // ->where('customers.delivery_by', $delivery)
-                                                            /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
-                
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                            )
+                                                            ->havingBetween('total_sales', [
+                                                                $filters_customer['range_min'],
+                                                                $filters_customer['range_max']
+                                                            ]);
+
+                                                        }, 'subquery')
+
+                                                    ->distinct('customer_id')
+                                                    ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+                                    
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                             /*        foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -2494,17 +2871,17 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'              => $request->from,
+                                        'to'                => $request->to,
+                                        'adminarea_seller'  => $adminarea_seller,
+                                        'range_min'         => $range_min,
+                                        'range_max'         => $range_max,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
@@ -2519,28 +2896,25 @@ class ReportSellerController extends Controller
                                                     ->where('customers.admin_area', $filters_po['adminarea_seller'])
                                                     ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
                                                     ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
+                                                    ->count();
                                                 });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'              => $request->from,
+                                        'to'                => $request->to,
+                                        'adminarea_seller'  => $adminarea_seller,
+                                        'range_min'         => $range_min,
+                                        'range_max'         => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -2551,46 +2925,53 @@ class ReportSellerController extends Controller
                                                             // ->where('customers.delivery_by', $delivery)
                                                             /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                             ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'range_min' => $range_min,
-                                        'range_max' => $range_max,
+                                        'from'              => $request->from,
+                                        'to'                => $request->to,
+                                        'page'              => $page,
+                                        'perpage'           => $perpage,
+                                        'adminarea_seller'  => $adminarea_seller,
+                                        'range_min'         => $range_min,
+                                        'range_max'         => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                  /*   ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                    // ->where('customers.delivery_by', $delivery)
+                                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                                /*   ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                                 
                                 } else {
 
                                     // dd('dd');
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
@@ -2599,20 +2980,22 @@ class ReportSellerController extends Controller
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                    $pagination_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
                                                 ->join('customers', function (JoinClause $join) {
                                                     $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                 })
-                                                ->groupBy('purchase_order', 'customer_id')
+                                                ->groupBy(
+                                                    'purchase_order', 
+                                                    'customer_id'
+                                                    )
                                                 ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                ->havingBetween('total_sales', [$filters_page['range_min'], $filters_page['range_max']])
-                                                // ->where('customers.delivery_by', $delivery)
-                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                ->get();
+                                                ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_page['range_min'], $filters_page['range_max']]);
+    
+                                                //นับจำนวนกลุ่มโดยไม่โหลดทั้งหมด
+                                                return (clone $pagination_query)->paginate(1)->total();
                                             });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -2620,32 +3003,39 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                    $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price * quantity) as total_sales'))
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
                                                             ->whereBetween('date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            ->havingBetween('total_sales', [$filters_customer['range_min'], $filters_customer['range_max']])
-                                                            // ->where('customers.delivery_by', $delivery)
-                                                            /* ->whereBetween('date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
-                
+                                                            ->groupBy('report_sellers.customer_id')
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [
+                                                                $filters_customer['range_min'],
+                                                                $filters_customer['range_max']
+                                                            ]);
+
+                                                        }, 'subquery')
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                            
+                                                    });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                            /*         foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -2658,13 +3048,13 @@ class ReportSellerController extends Controller
                                     } else {
                                         $count_customer_range = 0;
                                     }
-                
+                 */
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
@@ -2673,34 +3063,33 @@ class ReportSellerController extends Controller
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->whereBetween('date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    ->havingBetween('total_sales', [$filters_po['range_min'], $filters_po['range_max']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                    /* ->whereBetween('date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->whereBetween('date_purchase', [$filters_po['from'], $filters_po['to']])
+                                                            ->havingRaw('total_sales BETWEEN ? AND ?', [$filters_po['range_min'], $filters_po['range_max']]);
+                                                    
+                                                        return (clone $po_query)->paginate(1)->total();
+                                                    });
+                                    
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -2710,47 +3099,69 @@ class ReportSellerController extends Controller
                                                             // ->where('customers.delivery_by', $delivery)
                                                             /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                             ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
+                                        'from'      => $request->from,
+                                        'to'        => $request->to,
+                                        'page'      => $page,
+                                        'perpage'   => $perpage,
                                         'range_min' => $range_min,
                                         'range_max' => $range_max,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
-                                                        // ->where('customers.delivery_by', $delivery)
-                                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    /*  ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name', 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->havingBetween('total_sales', [$filters['range_min'], $filters['range_max']])
+                                                                    // ->where('customers.delivery_by', $delivery)
+                                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                                /*  ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                                 }
+
                             }
 
-                        
-                        
                         $customers_data = Customer::select('customer_id', 'sale_area', 'admin_area')->get();
                         $customers_customer_name = Customer::select('customer_id', 'customer_name')->get();
 
-                        return view('report/seller', compact('check_from','check_to', 'admin_area', 'report_seller', 'start', 'total_page', 'page', 'status_alert', 'status_waiting','status_registration', 'status_updated', 'user_id_admin',
-                        'count_customer_range', 'count_purchase_range', 'customers_customer_name', 'total_report_selling', 'customers_data','sale_area'));
+                        return view('report/seller', compact(
+                                                            'check_from',
+                                                            'check_to', 
+                                                            'admin_area', 
+                                                            'report_seller', 
+                                                            'start', 'total_page', 
+                                                            'page', 'status_alert', 
+                                                            'status_waiting',
+                                                            'status_registration', 
+                                                            'status_updated', 
+                                                            'user_id_admin',
+                                                            'count_customer_range', 
+                                                            'count_purchase_range', 
+                                                            'customers_customer_name', 
+                                                            'total_report_selling', 
+                                                            'customers_data',
+                                                            'sale_area'
+                                                        ));
                    
                     } else {
 
@@ -2762,35 +3173,41 @@ class ReportSellerController extends Controller
                                 //code check region and delivery;
                                 if(!empty($salearea_seller && !empty($adminarea_seller))) {
 
+                                    // dd($delivery);
+                                    // dd('test');
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->join('customers', function (JoinClause $join) {
-                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                })
-                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->where('customers.sale_area', $filters_page['salearea_seller'])
-                                                ->where('customers.admin_area', $filters_page['adminarea_seller'])
-                                                ->where('customers.geography', $filters_page['region'])
-                                                ->where('customers.delivery_by', $filters_page['delivery'])
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                // ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                // ->havingBetween('total_sales', [$range_min, $range_max])
-                                                ->get();
-                                            });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                        ->join('customers', function (JoinClause $join) {
+                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                        })
+                                                        ->groupBy(
+                                                            'report_sellers.purchase_order', 
+                                                            'report_sellers.customer_id'
+                                                            )
+                                                        ->where('customers.sale_area', $filters_page['salearea_seller'])
+                                                        ->where('customers.admin_area', $filters_page['adminarea_seller'])
+                                                        ->where('customers.geography', $filters_page['region'])
+                                                        ->where('customers.delivery_by', $filters_page['delivery'])
+                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
 
-                                    $count_page = count($pagination);
+                                                         //นับจำนวนกลุ่มโดยไม่โหลดทั้งหมด
+                                                        return (clone  $page_query)->paginate(1)->total();
+
+                                                    });
+
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -2798,36 +3215,45 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
                                                             ->where('customers.sale_area', $filters_customer['salearea_seller'])
                                                             ->where('customers.admin_area', $filters_customer['adminarea_seller'])
                                                             ->where('customers.geography', $filters_customer['region'])
                                                             ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            // ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            // ->havingBetween('total_sales', [$range_min, $range_max])
-                                                            ->get();
-                                                        });
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
                                         
+                                    $count_customer_range = $count_unique_customers;
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                           /*                                  foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -2839,119 +3265,126 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                    ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                    ->where('customers.geography', $filters_po['region'])
-                                                    ->where('customers.delivery_by', $filters_po['delivery'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    // ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    // ->havingBetween('total_sales', [$range_min, $range_max])
-                                                    ->get();
-                                                });
-
-                                    $count_purchase_range = count($count_po_range);
-                                    // dd($count_purchase_range);
-
-                                    $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
-                                        ];
-
-                                    $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
-
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
-
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
                                                         ->join('customers', function (JoinClause $join) {
                                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                         })
                                                         ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_selling['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_selling['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_selling['region'])
-                                                        ->where('customers.delivery_by', $filters_selling['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        // ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        // ->havingBetween('total_sales', [$range_min, $range_max])
-                                                        ->get();
+                                                        ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                        ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                        ->where('customers.geography', $filters_po['region'])
+                                                        ->where('customers.delivery_by', $filters_po['delivery'])
+                                                        ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                        //นับจำนวนกลุ่มโดยไม่โหลดทั้งหมด
+                                                        return (clone $po_query)->paginate(1)->total();
                                                     });
+
+                                    $count_purchase_range = (int)$count_po_range;
+                                    // dd($count_purchase_range);
+
+                                    $filters_selling = [
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'adminarea_seller' => $adminarea_seller,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
+                                        ];
+
+                                    $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
+
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_selling['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_selling['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_selling['region'])
+                                                            ->where('customers.delivery_by', $filters_selling['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            // ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                            // ->havingBetween('total_sales', [$range_min, $range_max])
+                                                            ->cursor();
+                                                        // });
 
                                     // dd($total_report_selling);
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.sale_area', $filters['salearea_seller'])
-                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                    ->where('customers.geography', $filters['region'])
-                                                    ->where('customers.delivery_by', $filters['delivery'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    // ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    // ->havingBetween('total_sales', [$range_min, $range_max])
-                                                   /*  ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                    return  ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name', 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.sale_area', $filters['salearea_seller'])
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    // ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                                    // ->havingBetween('total_sales', [$range_min, $range_max])
+                                                                /*  ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                         
                                 } else if(!empty($salearea_seller)) {
 
+                                    // dd('test');
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'region'          => $region,
+                                        'delivery'        => $delivery,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
                                                                 ->join('customers', function (JoinClause $join) {
                                                                     $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                                 })
@@ -2959,11 +3392,12 @@ class ReportSellerController extends Controller
                                                                 ->where('customers.sale_area', $filters_page['salearea_seller'])
                                                                 ->where('customers.geography', $filters_page['region'])
                                                                 ->where('customers.delivery_by', $filters_page['delivery'])
-                                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                                ->get();
+                                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                                
+                                                                return (clone $page_query)->paginate(1)->total();
                                                             });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -2971,32 +3405,44 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
+                
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
                                                             ->where('customers.sale_area', $filters_customer['salearea_seller'])
                                                             ->where('customers.geography', $filters_customer['region'])
                                                             ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            ->get();
-                                                        });
-                
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                 /*    foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -3009,50 +3455,51 @@ class ReportSellerController extends Controller
                                     } else {
                                         $count_customer_range = 0;
                                     }
-                
+                 */
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                    ->where('customers.geography', $filters_po['region'])
-                                                    ->where('customers.delivery_by', $filters_po['delivery'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                            ->where('customers.geography', $filters_po['region'])
+                                                            ->where('customers.delivery_by', $filters_po['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                            
+                                                            return (clone $po_query)->paginate(1)->total();
+                                                        });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
                                         ];
 
-                                    $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
+                                  /*   $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) { */
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -3061,17 +3508,17 @@ class ReportSellerController extends Controller
                                                             ->where('customers.geography', $filters_selling['region'])
                                                             ->where('customers.delivery_by', $filters_selling['delivery'])
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
-                                        'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
@@ -3079,48 +3526,58 @@ class ReportSellerController extends Controller
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.sale_area', $filters['salearea_seller'])
-                                                    ->where('customers.geography', $filters['region'])
-                                                    ->where('customers.delivery_by', $filters['delivery'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    /* ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.sale_area', $filters['salearea_seller'])
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    /* ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
 
                                 } else if(!empty($adminarea_seller)) {
 
                                     // dd('dd');
                                     $filters_page = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'from'              => $request->from,
+                                        'to'                => $request->to,
+                                        'adminarea_seller'  => $adminarea_seller,
+                                        'region'            => $region,
+                                        'delivery'          => $delivery,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->where('customers.admin_area', $filters_page['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_page['region'])
-                                                        ->where('customers.delivery_by', $filters_page['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        ->get();
-                                                    });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                                ->join('customers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->groupBy(
+                                                                    'report_sellers.purchase_order', 
+                                                                    'report_sellers.customer_id'
+                                                                    )
+                                                                ->where('customers.admin_area', $filters_page['adminarea_seller'])
+                                                                ->where('customers.geography', $filters_page['region'])
+                                                                ->where('customers.delivery_by', $filters_page['delivery'])
+                                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                                
+                                                                return (clone $page_query)->paginate(1)->total();
+                                                            });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -3128,32 +3585,43 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'from'              => $request->from,
+                                        'to'                => $request->to,
+                                        'adminarea_seller'  => $adminarea_seller,
+                                        'region'            => $region,
+                                        'delivery'          => $delivery,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
-
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_customer['region'])
-                                                        ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        ->get();
-                                                    });
                 
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.admin_area', $filters_customer['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_customer['region'])
+                                                            ->where('customers.delivery_by', $filters_customer['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                 /*    foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -3165,116 +3633,119 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                            'from'              => $request->from,
+                                            'to'                => $request->to,
+                                            'adminarea_seller'  => $adminarea_seller,
+                                            'region'            => $region,
+                                            'delivery'          => $delivery,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                    ->where('customers.geography', $filters_po['region'])
-                                                    ->where('customers.delivery_by', $filters_po['delivery'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_po['region'])
+                                                            ->where('customers.delivery_by', $filters_po['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                            
+                                                            return (clone $po_query)->paginate(1)->total();
+                                                        });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'from'              => $request->from,
+                                        'to'                => $request->to,
+                                        'adminarea_seller'  => $adminarea_seller,
+                                        'region'            => $region,
+                                        'delivery'          => $delivery,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.admin_area', $filters_selling['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_selling['region'])
-                                                        ->where('customers.delivery_by', $filters_selling['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.admin_area', $filters_selling['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_selling['region'])
+                                                            ->where('customers.delivery_by', $filters_selling['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from' => $request->from,
-                                        'to' => $request->to,
-                                        'page' => $page,
-                                        'perpage' => $perpage,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
-                                        'delivery' => $delivery,
+                                        'region'           => $region,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                        ->where('customers.geography', $filters['region'])
-                                                        ->where('customers.delivery_by', $filters['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                        /* ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    /* ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                                 
                                 } else {
 
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'     => $request->from,
+                                        'to'       => $request->to,
                                         'delivery' => $delivery,
-                                        'region' => $region,
+                                        'region'   => $region,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->join('customers', function (JoinClause $join) {
-                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                })
-                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->where('customers.geography', $filters_page['region'])
-                                                ->where('customers.delivery_by', $filters_page['delivery'])
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                ->get();
-                                            });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->where('customers.geography', $filters_page['region'])
+                                                    ->where('customers.delivery_by', $filters_page['delivery'])
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                    
+                                                    return (clone $page_query)->paginate(1)->total();
+                                                });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -3282,30 +3753,41 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'     => $request->from,
+                                        'to'       => $request->to,
                                         'delivery' => $delivery,
-                                        'region' => $region,
+                                        'region'   => $region,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
                                                             ->where('customers.geography', $filters_customer['region'])
                                                             ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            ->get();
-                                                        });
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
                                         
+                                    $count_customer_range = $count_unique_customers;
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                                                         /*    foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -3317,65 +3799,67 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'     => $request->from,
+                                        'to'       => $request->to,
                                         'delivery' => $delivery,
-                                        'region' => $region,
+                                        'region'   => $region,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.geography', $filters_po['region'])
-                                                        ->where('customers.delivery_by', $filters_po['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                        ->get();
-                                                    });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.geography', $filters_po['region'])
+                                                            ->where('customers.delivery_by', $filters_po['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                            
+                                                            return (clone $po_query)->paginate(1)->total();
+                                                        });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'     => $request->from,
+                                        'to'       => $request->to,
                                         'delivery' => $delivery,
-                                        'region' => $region,
+                                        'region'   => $region,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
+                                    // dd($key_selling);
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.geography', $filters_selling['region'])
-                                                        ->where('customers.delivery_by', $filters_selling['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.geography', $filters_selling['region'])
+                                                            ->where('customers.delivery_by', $filters_selling['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
+                                        'from'     =>  $request->from,
+                                        'to'       =>  $request->to,
+                                        'page'     => $page,
+                                        'perpage'  =>$perpage,
                                         'delivery' => $delivery,
-                                        'region' => $region,
+                                        'region'   => $region,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
@@ -3383,18 +3867,18 @@ class ReportSellerController extends Controller
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.geography', $filters['region'])
-                                                    ->where('customers.delivery_by', $filters['delivery'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                   /*  ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                /*  ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                                 }
 
                             } else if (!empty($region)) {
@@ -3404,32 +3888,35 @@ class ReportSellerController extends Controller
                                 if(!empty($salearea_seller && !empty($adminarea_seller))) {
 
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
+                                        'region'           => $region,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
                                                 ->join('customers', function (JoinClause $join) {
                                                     $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                 })
-                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                ->groupBy(
+                                                    'report_sellers.purchase_order', 
+                                                    'report_sellers.customer_id'
+                                                    )
                                                 ->where('customers.sale_area', $filters_page['salearea_seller'])
                                                 ->where('customers.admin_area', $filters_page['adminarea_seller'])
                                                 ->where('customers.geography', $filters_page['region'])
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
                                                /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                 ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                ->get();
+                                                return (clone $page_query)->paginate(1)->total();
                                             });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -3437,34 +3924,44 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
+                                        'region'           => $region,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
                                                             ->where('customers.sale_area', $filters_customer['salearea_seller'])
                                                             ->where('customers.admin_area', $filters_customer['adminarea_seller'])
                                                             ->where('customers.geography', $filters_customer['region'])
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                           /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                         
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                                                       /*      foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -3476,74 +3973,74 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             =>$request->from,
+                                        'to'               =>$request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
+                                        'region'           => $region,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                    ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                    ->where('customers.geography', $filters_po['region'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                   /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                ->join('customers', function (JoinClause $join) {
+                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                })
+                                                ->groupBy('report_sellers.purchase_order')
+                                                ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                ->where('customers.geography', $filters_po['region'])
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                            /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                return (clone $po_query)->paginate(1)->total();
+                                            });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
+                                        'region'           => $region,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_selling['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_selling['adminarea_seller'])
-                                                        ->where('customers.geography', $filters_selling['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.sale_area', $filters_selling['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_selling['adminarea_seller'])
+                                                            ->where('customers.geography', $filters_selling['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
+                                        'region'           => $region,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
@@ -3551,49 +4048,49 @@ class ReportSellerController extends Controller
                                     $report_seller =  Cache::remember($key, 1800, function () use ($filters) {
                                 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.sale_area', $filters['salearea_seller'])
-                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                    ->where('customers.geography', $filters['region'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                   /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    /* ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                    ->where('customers.sale_area', $filters['salearea_seller'])
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                                    /* ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                         
                                 } else if(!empty($salearea_seller)) {
 
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
+                                        'region'          => $region,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->where('customers.sale_area', $filters_page['salearea_seller'])
-                                                        ->where('customers.geography', $filters_page['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                    /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->where('customers.sale_area', $filters_page['salearea_seller'])
+                                                    ->where('customers.geography', $filters_page['region'])
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                    return (clone $page_query)->paginate(1)->total();
+                                                });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -3601,32 +4098,41 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
+                                        'region'          => $region,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
                                                             ->where('customers.sale_area', $filters_customer['salearea_seller'])
                                                             ->where('customers.geography', $filters_customer['region'])
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                           /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
 
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                               /*      foreach($count_report_customer as $row_id) {
 
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -3638,50 +4144,50 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'            =>  $request->from,
+                                        'to'              =>  $request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
+                                        'region'          => $region,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                    ->where('customers.geography', $filters_po['region'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                   /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                ->join('customers', function (JoinClause $join) {
+                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                })
+                                                ->groupBy('report_sellers.purchase_order')
+                                                ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                ->where('customers.geography', $filters_po['region'])
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                return (clone $po_query)->paginate(1)->total();
+                                            });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
+                                        'region'          => $region,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -3691,66 +4197,68 @@ class ReportSellerController extends Controller
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
                                                             /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                             ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'page'            => $page,
+                                        'perpage'         => $perpage,
                                         'salearea_seller' => $salearea_seller,
-                                        'region' => $region,
+                                        'region'          => $region,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd($key);
 
                                     $report_seller =  Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.sale_area', $filters['salearea_seller'])
-                                                        ->where('customers.geography', $filters['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        /* ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                    ->where('customers.sale_area', $filters['salearea_seller'])
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                                    /* ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
 
-                                                    });
+                                                                });
 
                                 } else if(!empty($adminarea_seller)) {
 
+                                    // dd('test');
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
+                                        'region'           => $region,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->join('customers', function (JoinClause $join) {
-                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                })
-                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->where('customers.admin_area', $filters_page['adminarea_seller'])
-                                                ->where('customers.geography', $filters_page['region'])
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                ->get();
-                                            });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->where('customers.admin_area', $filters_page['adminarea_seller'])
+                                                    ->where('customers.geography', $filters_page['region'])
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                    return (clone $page_query)->paginate(1)->total();
+                                                });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -3758,32 +4266,41 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'             =>$request->from,
+                                        'to'               =>$request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
+                                        'region'           => $region,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
                                                             ->where('customers.admin_area', $filters_customer['adminarea_seller'])
                                                             ->where('customers.geography', $filters_customer['region'])
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
 
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                /*     foreach($count_report_customer as $row_id) {
 
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -3795,49 +4312,49 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
+                                        'region'           => $region,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                    ->where('customers.geography', $filters_po['region'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                   /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                ->join('customers', function (JoinClause $join) {
+                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                })
+                                                ->groupBy('report_sellers.purchase_order')
+                                                ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                ->where('customers.geography', $filters_po['region'])
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                return (clone $po_query)->paginate(1)->total();
+                                            });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'             =>$request->from,
+                                        'to'               =>$request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
+                                        'region'           => $region,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -3847,16 +4364,16 @@ class ReportSellerController extends Controller
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
                                                             /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                             ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'region' => $region,
+                                        'region'           => $region,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
@@ -3864,47 +4381,56 @@ class ReportSellerController extends Controller
                                     $report_seller =  Cache::remember($key, 1800, function () use ($filters) {
                         
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                        ->where('customers.geography', $filters['region'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        /* ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                    });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                                    /* ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                                 
                                 } else {
 
                                     // dd('region');
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'region' => $region,
+                                        'from'     => $request->from,
+                                        'to'       => $request->to,
+                                        'region'   => $region,
                                         ];
 
                                     $key_customer = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_customer, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->join('customers', function (JoinClause $join) {
-                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                })
-                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->where('customers.geography', $filters_page['region'])
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                ->get();
-                                            });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy(
+                                                        'report_sellers.purchase_order', 
+                                                        'report_sellers.customer_id'
+                                                        )
+                                                    ->where('customers.geography', $filters_page['region'])
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                    return (clone $page_query)->paginate(1)->total();
+                                                });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -3912,30 +4438,37 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'   => $request->from,
+                                        'to'     => $request->to,
                                         'region' => $region,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
                                                             ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
                                                             ->where('customers.geography', $filters_customer['region'])
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
 
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+                                                        
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                  /*   foreach($count_report_customer as $row_id) {
 
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -3947,14 +4480,14 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'   => $request->from,
+                                        'to'     => $request->to,
                                         'region' => $region,
                                         ];
 
@@ -3962,32 +4495,32 @@ class ReportSellerController extends Controller
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.geography', $filters_po['region'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy('report_sellers.purchase_order')
+                                                            ->where('customers.geography', $filters_po['region'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                            /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                            return (clone $po_query)->paginate(1)->total();
+                                                        });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'   => $request->from,
+                                        'to'     => $request->to,
                                         'region' => $region,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -3996,15 +4529,15 @@ class ReportSellerController extends Controller
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
                                                            /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                             ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
-                                        'region' => $region,
+                                        'from'    => $request->from,
+                                        'to'      => $request->to,
+                                        'page'    => $page,
+                                        'perpage' => $perpage,
+                                        'region'  => $region,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
@@ -4012,19 +4545,25 @@ class ReportSellerController extends Controller
                                     $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.geography', $filters['region'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    /* ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name' , 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.geography', $filters['region'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                                    /* ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                                 }
 
                             } else if (!empty($delivery)) {
@@ -4032,32 +4571,32 @@ class ReportSellerController extends Controller
                                 if(!empty($salearea_seller && !empty($adminarea_seller))) {
 
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->where('customers.sale_area', $filters_page['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_page['adminarea_seller'])
-                                                        ->where('customers.delivery_by', $filters_page['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                    /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->where('customers.sale_area', $filters_page['salearea_seller'])
+                                                    ->where('customers.admin_area', $filters_page['adminarea_seller'])
+                                                    ->where('customers.delivery_by', $filters_page['delivery'])
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                    return (clone $page_query)->paginate(1)->total();
+                                                });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -4065,34 +4604,44 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             =>$request->from,
+                                        'to'               =>$request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_customer['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                                        ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.sale_area', $filters_customer['salearea_seller'])
+                                                            ->where('customers.admin_area', $filters_customer['adminarea_seller'])
+                                                            ->where('customers.delivery_by', $filters_customer['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                         
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                                                       /*      foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -4104,53 +4653,53 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             =>$request->from,
+                                        'to'               =>$request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order')
-                                                        ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                        ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                        ->where('customers.delivery_by', $filters_po['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                ->join('customers', function (JoinClause $join) {
+                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                })
+                                                ->groupBy('report_sellers.purchase_order')
+                                                ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                ->where('customers.delivery_by', $filters_po['delivery'])
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                            /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                return (clone $po_query)->paginate(1)->total();
+                                            });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller' => $salearea_seller,
+                                        'from'             =>$request->from,
+                                        'to'               =>$request->to,
+                                        'salearea_seller'  => $salearea_seller,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -4161,21 +4710,22 @@ class ReportSellerController extends Controller
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
                                                            /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                             ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        // 'start'=>$start,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
-                                        'salearea_seller' => $salearea_seller,
-                                        'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
+                                            'from'             =>$request->from,
+                                            'to'               =>$request->to,
+                                            // 'start'=>$start,
+                                            'page'             => $page,
+                                            'perpage'          =>$perpage,
+                                            'salearea_seller'  => $salearea_seller,
+                                            'adminarea_seller' => $adminarea_seller,
+                                            'delivery'         => $delivery,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
+                                    // dd('dd');
 
                                     $report_seller =  Cache::remember($key, 1800, function () use ($filters) {
 
@@ -4199,30 +4749,33 @@ class ReportSellerController extends Controller
                                 } else if(!empty($salearea_seller)) {
 
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'        => $delivery,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
                 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->where('customers.sale_area', $filters_page['salearea_seller'])
-                                                        ->where('customers.delivery_by', $filters_page['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                ->join('customers', function (JoinClause $join) {
+                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                })
+                                                ->groupBy(
+                                                    'report_sellers.purchase_order', 
+                                                    'report_sellers.customer_id'
+                                                    )
+                                                ->where('customers.sale_area', $filters_page['salearea_seller'])
+                                                ->where('customers.delivery_by', $filters_page['delivery'])
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                return (clone $page_query)->paginate(1)->total();
+                                            });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -4238,24 +4791,31 @@ class ReportSellerController extends Controller
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
                 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
                                                             ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
                                                             ->where('customers.sale_area', $filters_customer['salearea_seller'])
                                                             ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                           /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
-                
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                  /*   foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -4267,50 +4827,50 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'            =>$request->from,
+                                        'to'              =>$request->to,
                                         'salearea_seller' => $salearea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'        => $delivery,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
                 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                    ->where('customers.delivery_by', $filters_po['delivery'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                ->join('customers', function (JoinClause $join) {
+                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                })
+                                                ->groupBy('report_sellers.purchase_order')
+                                                ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                ->where('customers.delivery_by', $filters_po['delivery'])
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                return (clone $po_query)->paginate(1)->total();
+                                            });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'delivery' => $delivery,
+                                            'from'            => $request->from,
+                                            'to'              => $request->to,
+                                            'salearea_seller' => $salearea_seller,
+                                            'delivery'        => $delivery,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
                 
-                                    $total_report_selling  =  Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling  =  Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -4320,18 +4880,18 @@ class ReportSellerController extends Controller
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
                                                             /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                             ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
+                                                            ->cursor();
 
-                                                        });
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
                                         // 'start'=>$start,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
+                                        'page'            => $page,
+                                        'perpage'         => $perpage,
                                         'salearea_seller' => $salearea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'        => $delivery,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
@@ -4340,28 +4900,35 @@ class ReportSellerController extends Controller
                                     $report_seller =  Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                        ->where('customers.sale_area', $filters['salearea_seller'])
-                                                        ->where('customers.delivery_by', $filters['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    /*   ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get(); */
-                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name', 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.sale_area', $filters['salearea_seller'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                                /*   ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                            });
 
                                 } else if(!empty($adminarea_seller)) {
 
+                                    // dd('test');
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
@@ -4369,20 +4936,23 @@ class ReportSellerController extends Controller
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                        ->where('customers.admin_area', $filters_page['adminarea_seller'])
-                                                        ->where('customers.delivery_by', $filters_page['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy(
+                                                        'report_sellers.purchase_order', 
+                                                        'report_sellers.customer_id'
+                                                        )
+                                                    ->where('customers.admin_area', $filters_page['adminarea_seller'])
+                                                    ->where('customers.delivery_by', $filters_page['delivery'])
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                    return (clone $page_query)->paginate(1)->total();
+                                                });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -4390,33 +4960,43 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
                                     // dd($key);
-
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                        ->join('customers', function (JoinClause $join) {
-                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                        })
-                                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                        ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                                        ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                        ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                        ->get();
-                                                    });
                 
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                                            ->join('customers', function (JoinClause $join) {
+                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                            })
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->where('customers.admin_area', $filters_customer['adminarea_seller'])
+                                                            ->where('customers.delivery_by', $filters_customer['delivery'])
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                 /*    foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -4428,52 +5008,52 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
-                                    // dd($key);
+                                    // dd($key_po);
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                    ->where('customers.delivery_by', $filters_po['delivery'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                ->join('customers', function (JoinClause $join) {
+                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                })
+                                                ->groupBy('report_sellers.purchase_order')
+                                                ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                ->where('customers.delivery_by', $filters_po['delivery'])
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                return (clone $po_query)->paginate(1)->total();
+                                            });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
                                     // dd($key);
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -4483,47 +5063,47 @@ class ReportSellerController extends Controller
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
                                                            /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                             ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         // 'start'=>$start,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
                                         'adminarea_seller' => $adminarea_seller,
-                                        'delivery' => $delivery,
+                                        'delivery'         => $delivery,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
                                     // dd($key);
 
-                                    $report_seller  = Cache::remember($key, 1800, function () use ($filters) {
+                                    $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                    ->where('customers.delivery_by', $filters['delivery'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                  /*   ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                            });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                                /*   ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                            });
                                             
                                 
                                 } else {
 
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'delivery'=> $delivery,
+                                        'from'     => $request->from,
+                                        'to'       => $request->to,
+                                        'delivery' => $delivery,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
@@ -4531,19 +5111,19 @@ class ReportSellerController extends Controller
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->join('customers', function (JoinClause $join) {
-                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                })
-                                                ->groupBy('purchase_order', 'customer_id')
-                                                ->where('customers.delivery_by', $filters_page['delivery'])
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                ->get();
-                                            });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy('purchase_order', 'customer_id')
+                                                    ->where('customers.delivery_by', $filters_page['delivery'])
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                    return (clone $page_query)->paginate(1)->total();
+                                                });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -4551,31 +5131,41 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'delivery'=> $delivery,
+                                        'from'     => $request->from,
+                                        'to'       => $request->to,
+                                        'delivery' => $delivery,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
-                                    // dd($key);
+                                    // dd('test');
+                
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
                                                             ->where('customers.delivery_by', $filters_customer['delivery'])
-                                                            ->whereBetween('date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            /* ->whereBetween('date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
-                
+                                                            ->whereBetween('date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+                    
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                 /*    foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -4587,15 +5177,15 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'delivery'=> $delivery,
+                                        'from'     => $request->from,
+                                        'to'       => $request->to,
+                                        'delivery' => $delivery,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
@@ -4603,33 +5193,33 @@ class ReportSellerController extends Controller
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
                                                     ->join('customers', function (JoinClause $join) {
                                                         $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                     })
                                                     ->groupBy('report_sellers.purchase_order')
                                                     ->where('customers.delivery_by', $filters_po['delivery'])
-                                                    ->whereBetween('date_purchase', [$filters_po['from'], $filters_po['to']])
+                                                    ->whereBetween('date_purchase', [$filters_po['from'], $filters_po['to']]);
                                                     /* ->whereBetween('date_purchase', [$request->from, $request->to])
                                                     ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
+                                                    return (clone $po_query)->paginate(1)->total();
                                                 });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'delivery'=> $delivery,
+                                        'from'     => $request->from,
+                                        'to'       => $request->to,
+                                        'delivery' => $delivery,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
                                     // dd($key);
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                        // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -4638,16 +5228,16 @@ class ReportSellerController extends Controller
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
                                                             /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                             ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'start'=>$start,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
-                                        'delivery'=> $delivery,
+                                        'from'     => $request->from,
+                                        'to'       => $request->to,
+                                        'start'    => $start,
+                                        'page'     => $page,
+                                        'perpage'  => $perpage,
+                                        'delivery' => $delivery,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
@@ -4656,19 +5246,19 @@ class ReportSellerController extends Controller
                                     $report_seller  = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.delivery_by', $filters['delivery'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    /* ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                    ->where('customers.delivery_by', $filters['delivery'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                                    /* ->offset($start)
+                                                                    ->limit($perpage)
+                                                                    ->get(); */
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
                                                 // dd($key);
                                 }
 
@@ -4679,31 +5269,31 @@ class ReportSellerController extends Controller
                                 if(!empty($salearea_seller && !empty($adminarea_seller))) {
 
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'adminarea_seller'=>$adminarea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'adminarea_seller' => $adminarea_seller,
                                     ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->join('customers', function (JoinClause $join) {
-                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                })
-                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->where('customers.sale_area', $filters_page['salearea_seller'])
-                                                ->where('customers.admin_area', $filters_page['adminarea_seller'])
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                // ->where('customers.delivery_by', $delivery)
-                                               /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                ->get();
-                                            });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->where('customers.sale_area', $filters_page['salearea_seller'])
+                                                    ->where('customers.admin_area', $filters_page['adminarea_seller'])
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                    // ->where('customers.delivery_by', $delivery)
+                                                /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                    return (clone $page_query)->paginate(1)->total();
+                                                });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -4719,25 +5309,31 @@ class ReportSellerController extends Controller
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
                                                             ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
                                                             ->where('customers.sale_area', $filters_customer['salearea_seller'])
                                                             ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            // ->where('customers.delivery_by', $delivery)
-                                                            /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+                                                
+                                            });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                         
                                                             //dd($count_report_customer);
                                                             //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                                            foreach($count_report_customer as $row_id) {
+                                                           /*  foreach($count_report_customer as $row_id) {
                                                 
                                                                 $arr_id[] = $row_id->customer_id;
                                                             } 
@@ -4749,37 +5345,38 @@ class ReportSellerController extends Controller
 
                                                             } else {
                                                                 $count_customer_range = 0;
-                                                            }
+                                                            } */
                                         
                                         // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller' => $salearea_seller,
-                                        'adminarea_seller'=>$adminarea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'adminarea_seller' => $adminarea_seller,
                                     ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
+                                    // dd($key_po);
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                    ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                   /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                ->join('customers', function (JoinClause $join) {
+                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                })
+                                                ->groupBy('report_sellers.purchase_order')
+                                                ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                // ->where('customers.delivery_by', $delivery)
+                                                /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                return (clone $po_query)->paginate(1)->total();
+                                            });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
@@ -4791,9 +5388,9 @@ class ReportSellerController extends Controller
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -4804,17 +5401,17 @@ class ReportSellerController extends Controller
                                                             // ->where('customers.delivery_by', $delivery)
                                                            /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                             ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
                                         // 'start'=>$start,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
-                                        'salearea_seller' => $salearea_seller,
-                                        'adminarea_seller'=>$adminarea_seller,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
+                                        'salearea_seller'  => $salearea_seller,
+                                        'adminarea_seller' => $adminarea_seller,
                                     ];
 
                                     $startDate = $request->from;
@@ -4844,29 +5441,29 @@ class ReportSellerController extends Controller
                                 } else if(!empty($salearea_seller)) {
 
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller'=> $salearea_seller,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'salearea_seller' => $salearea_seller,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->join('customers', function (JoinClause $join) {
-                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                })
-                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->where('customers.sale_area', $filters_page['salearea_seller'])
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                // ->where('customers.delivery_by', $delivery)
-                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                ->get();
-                                            });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->where('customers.sale_area', $filters_page['salearea_seller'])
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                    // ->where('customers.delivery_by', $delivery)
+                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                    return (clone $page_query)->paginate(1)->total();
+                                                });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -4874,31 +5471,36 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller'=> $salearea_seller,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'salearea_seller' => $salearea_seller,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
+                
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
-
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
                                                             ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
                                                             ->where('customers.sale_area', $filters_customer['salearea_seller'])
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            // ->where('customers.delivery_by', $delivery)
-                                                           /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
-                
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+
+                                                    });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                /*     foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -4910,48 +5512,48 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller'=> $salearea_seller,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'salearea_seller' => $salearea_seller,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.sale_area', $filters_po['salearea_seller'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                ->join('customers', function (JoinClause $join) {
+                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                })
+                                                ->groupBy('report_sellers.purchase_order')
+                                                ->where('customers.sale_area', $filters_po['salearea_seller'])
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                // ->where('customers.delivery_by', $delivery)
+                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                return (clone $po_query)->paginate(1)->total();
+                                            });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'salearea_seller'=> $salearea_seller,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'salearea_seller' => $salearea_seller,
                                         ];
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
@@ -4961,16 +5563,16 @@ class ReportSellerController extends Controller
                                                             // ->where('customers.delivery_by', $delivery)
                                                             /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                                             ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'start'=>$start,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
-                                        'salearea_seller'=> $salearea_seller,
+                                        'from'            => $request->from,
+                                        'to'              => $request->to,
+                                        'start'           => $start,
+                                        'page'            => $page,
+                                        'perpage'         => $perpage,
+                                        'salearea_seller' => $salearea_seller,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
@@ -4978,47 +5580,49 @@ class ReportSellerController extends Controller
                                     $report_seller  = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.sale_area', $filters['salearea_seller'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                   /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                  /*   ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                                        ->join('customers', function (JoinClause $join) {
+                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                        })
+                                                        ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                        ->where('customers.sale_area', $filters['salearea_seller'])
+                                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                        // ->where('customers.delivery_by', $delivery)
+                                                    /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                    /*   ->offset($start)
+                                                        ->limit($perpage)
+                                                        ->get(); */
+                                                        ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                    });
 
                                 } else if(!empty($adminarea_seller)) {
 
+                                    // dd('test');
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'adminarea_seller'=> $adminarea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'adminarea_seller' => $adminarea_seller,
                                         ];
 
                                     $key_page = 'sales_page_' . md5(json_encode($filters_page));
                                     // dd('test');
                                     $pagination  = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->join('customers', function (JoinClause $join) {
-                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                })
-                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->where('customers.admin_area', $filters_page['adminarea_seller'])
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                // ->where('customers.delivery_by', $delivery)
-                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                ->get();
-                                            });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->where('customers.admin_area', $filters_page['adminarea_seller'])
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                    // ->where('customers.delivery_by', $delivery)
+                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                    return (clone $page_query)->paginate(1)->total();
+
+                                                });
                                             // dd('test');
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -5026,31 +5630,36 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'adminarea_seller'=> $adminarea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'adminarea_seller' => $adminarea_seller,
                                         ];
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
-                                    // dd('test');
-                                    $count_report_customer  = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
                                                             ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
                                                             ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            // ->where('customers.delivery_by', $delivery)
-                                                            /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
-                
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+
+                                                    });
+                                        
+                                    $count_customer_range = $count_unique_customers;
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                  /*                   foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -5062,67 +5671,64 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
                                     //dashboard;
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'adminarea_seller'=> $adminarea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'adminarea_seller' => $adminarea_seller,
                                         ];
 
                                     $key_po = 'sales_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->where('customers.admin_area', $filters_po['adminarea_seller'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                ->join('customers', function (JoinClause $join) {
+                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                })
+                                                ->groupBy('report_sellers.purchase_order')
+                                                ->where('customers.admin_area', $filters_po['adminarea_seller'])
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                // ->where('customers.delivery_by', $delivery)
+                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                return (clone $po_query)->paginate(1)->total();
+                                            });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'adminarea_seller'=> $adminarea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'adminarea_seller' => $adminarea_seller,
                                         ];
 
-                                    $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
+                                    // $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
                                                             ->groupBy('report_sellers.purchase_order')
                                                             ->where('customers.admin_area', $filters_selling['adminarea_seller'])
                                                             ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                            // ->where('customers.delivery_by', $delivery)
-                                                           /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                                            ->cursor();
+                                                        // });
 
                                     $filters = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
-                                        'start'=>$start,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
-                                        'adminarea_seller'=> $adminarea_seller,
+                                        'from'             => $request->from,
+                                        'to'               => $request->to,
+                                        'start'            => $start,
+                                        'page'             => $page,
+                                        'perpage'          => $perpage,
+                                        'adminarea_seller' => $adminarea_seller,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
@@ -5130,49 +5736,51 @@ class ReportSellerController extends Controller
                                     $report_seller  = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    /* ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy(
+                                                                        'report_sellers.customer_id', 
+                                                                        'customers.customer_name', 
+                                                                        'report_sellers.purchase_order', 
+                                                                        'customers.admin_area', 
+                                                                        'customers.sale_area'
+                                                                        )
+                                                                    ->where('customers.admin_area', $filters['adminarea_seller'])
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
 
-                                                });
+                                                                });
                                 
                                 } else {
 
                                     // dd('dd');
 
                                     $filters_page = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from' => $request->from,
+                                        'to'   => $request->to,
                                         ];
+
+                                        // dd($filters_page['to']);
 
                                     $key_page = 'search_report_' . md5(json_encode($filters_page));
 
+                                    // dd($key_page);
+
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->join('customers', function (JoinClause $join) {
-                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                })
-                                                ->groupBy('purchase_order', 'customer_id')
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                // ->where('customers.delivery_by', $delivery)
-                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                ->get();
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy('purchase_order', 'customer_id')
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                    
+                                                    return (clone $page_query)->paginate(1)->total();
 
-                                            });
+                                                });
                                             
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -5180,29 +5788,32 @@ class ReportSellerController extends Controller
                                     $start = ($perpage * $page) - $perpage;
 
                                     $filters_customer = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from' => $request->from,
+                                        'to'   => $request->to,
                                         ];
 
                                     $key_customer = 'count_customer_' . md5(json_encode($filters_customer));
+                                    // dd($key_customer);
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                                            ->join('customers', function (JoinClause $join) {
-                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                            })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                            ->whereBetween('date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            // ->where('customers.delivery_by', $delivery)
-                                                            /* ->whereBetween('date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
-                
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('customer_id')
+                                                            ->whereBetween('date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+                                                           
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+
+                                                    });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                                  /*   foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -5214,103 +5825,94 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
                                     //dashboard;
 
                                     $filters_po = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from' => $request->from,
+                                        'to'   => $request->to,
                                         ];
 
                                     $key_po = 'count_po_' . md5(json_encode($filters_po));
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->whereBetween('date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                    /* ->whereBetween('date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order')
+                                                    ->groupBy('purchase_order')
+                                                    ->whereBetween('date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                   /*  ->distinct()
+                                                    ->pluck('purchase_order'); */
 
-                                    $count_purchase_range = count($count_po_range);
+                                                    return (clone $po_query)->paginate(1)->total();
+                                                });
+                                   /*  $count_po_range = ReportSeller::select('purchase_order')
+                                                                    ->whereBetween('date_purchase', [$filters_po['from'], $filters_po['to']])
+                                                                    ->distinct()
+                                                                    ->cursor(); */
+                                                    
+                                    $count_purchase_range = (int)$count_po_range;
+                                    // dd($count_purchase_range);
+                                    // $count_purchase_range = $count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
-                                        'from'=>$request->from,
-                                        'to'=>$request->to,
+                                        'from' => $request->from,
+                                        'to'   => $request->to,
                                         ];
 
                                     $key_selling = 'count_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                            ->join('customers', function (JoinClause $join) {
-                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                            })
-                                                            ->groupBy('report_sellers.purchase_order')
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                            // ->where('customers.delivery_by', $delivery)
-                                                            /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->whereBetween('date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->cursor();
+                                                        // });
 
-                                    //แบบเดิม;
-                                /*     $report_seller = ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to]) */
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])*/
-                                                    // ->havingBetween('total_sales', [$range_min, $range_max])
-                                                  /*   ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
+                                 /*    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'))
+                                                                        ->whereBetween('date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                                        ->first(); */
 
                                                     $filters = [
-                                                        'from' => $request->from,
-                                                        'to' => $request->to,
-                                                        'page' => $page,
+                                                        'from'    => $request->from,
+                                                        'to'      => $request->to,
+                                                        'page'    => $page,
                                                         'perpage' => $perpage,
                                                         ];
                 
                                                     $key = 'sale_report_' . md5(json_encode($filters));
+                                                    // dd($key);
 
-                                                    $report_seller  = Cache::remember($key, 1800, function () use ($filters) {
+                                                    $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
-                                                    return $report_seller  = ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                                            ->join('customers', function (JoinClause $join) {
-                                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                                            })
-                                                                            ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                                            ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                                            /* ->offset($filters['start'])
-                                                                            ->limit($filters['perpage'])
-                                                                            ->get(); */
-                                                                            ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                                    ->join('customers', function (JoinClause $join) {
+                                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                                    })
+                                                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                                    // ->cursor();
+                                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
 
-                                                                        });
-// dd($start);
-/*                                                     // filter ย่อยเฉพาะช่วงวันที่ที่ต้องการ
-                                 
-                                                    $filtered = $report_seller->filter(function ($item) use ($startDate, $endDate) {
+                                                                                });
 
-                                                        return $item->from >= $startDate && $item->to <= $endDate;
-                                                        })->values();
- */
-                                                        // return response()->json($filtered);          
+                                              /*       $report_sellers = $report_sellers ?? collect();
+
+                                                    $report_seller = new LengthAwarePaginator(
+                                                        
+                                                                        $report_sellers->forPage($filters['page'], $filters['perpage'])->values(),
+                                                                        $report_sellers->count(),
+                                                                        $filters['perpage'],
+                                                                        $filters['page'],
+                                                                        [
+                                                                            'path' => url()->current(),
+                                                                            'query' => $request->query()
+                                                                        ]
+                                                                    );
+         */
        
                                 }
                              
@@ -5321,59 +5923,31 @@ class ReportSellerController extends Controller
                                 $customers_data = Customer::select('customer_id', 'sale_area', 'admin_area')->get();
                                 $customers_customer_name = Customer::select('customer_id', 'customer_name')->get();
 
-                                return view('report/seller', compact('check_from','check_to', 'admin_area', 'report_seller', 'start', 'total_page', 'page', 'status_alert', 'status_waiting','status_registration', 'status_updated', 'user_id_admin',
-                                'count_customer_range', 'count_purchase_range', 'customers_customer_name', 'total_report_selling', 'customers_data','sale_area'));
+                                return view('report/seller', compact(
+                                                                    'check_from',
+                                                                    'check_to',
+                                                                    'admin_area',
+                                                                    'report_seller',
+                                                                    'start',
+                                                                    'total_page',
+                                                                    'page',
+                                                                    'status_alert',
+                                                                    'status_waiting',
+                                                                    'status_registration',
+                                                                    'status_updated',
+                                                                    'user_id_admin',
+                                                                    'count_customer_range',
+                                                                    'count_purchase_range',
+                                                                    'customers_customer_name',
+                                                                    'total_report_selling',
+                                                                    'customers_data',
+                                                                    'sale_area'
+                                                                ));
                     }
             
         } else {
       
-            // dd('hello');
-
-           /*  date_default_timezone_set("Asia/Bangkok");
-            // $keyword_date =  date('Y-m-d');
-            $keyword_date_from = date('Y-m-d');
-            $keyword_date_to =  date('Y-m-d');
-            // dd($keyword_date);
-            //แสดงข้อมูลลูกค้า;
-            $pagination = ReportSeller::select(DB::raw('DISTINCT(customer_id)'))
-                                        ->whereBetween('date_purchase', [$keyword_date_from, $keyword_date_to])
-                                        ->get();
-            $count_page = count($pagination);
-
-            $perpage = 10;
-            $total_page = ceil($count_page / $perpage);
-            $start = ($perpage * $page) - $perpage;
-
-            $customers_data = Customer::select('customer_id', 'sale_area', 'admin_area')->get();
-            $customers_customer_name = Customer::select('customer_id', 'customer_name')->get();
-            // dd($customers_customer_name);
-
-           $filters_last = [
-            'from' => $request->from ?? date('Y-m-d'),
-            'to'   => $request->to   ?? date('Y-m-d'),
-           ];
-
-            $report_seller = ReportSeller::select('customer_id', 'customer_name', DB::raw('SUM(price * quantity) as total_sales', 'purchase_order'))
-                                            ->groupBy('customer_id', 'customer_name', 'purchase_order')
-                                            ->offset($start)
-                                            ->limit($perpage)
-                                            ->orderBy('customer_id', 'asc')
-                                            ->get();
-
-            $count_customer = ReportSeller::select('customer_id')->whereBetween('date_purchase', [$request->from, $request->to])
-                                            ->distinct()
-                                            ->get();
-            
-            $count_customer_all = count($count_customer);
-
-            $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'purchase_order')
-                                    ->groupBy('purchase_order')
-                                    ->whereBetween('date_purchase', [$request->from, $request->to])
-                                    ->get(); */
-                                 /*    $filters_page = [
-                                        'from' => $request->from ?? date('Y-m-d'),
-                                        'to'   => $request->to   ?? date('Y-m-d'),
-                                       ]; */
+                                    // dd('hello');
 
                                     $filters_page = [
                                     'from' => $request->from ?? date('Y-m-d'),
@@ -5386,19 +5960,22 @@ class ReportSellerController extends Controller
 
                                     $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->join('customers', function (JoinClause $join) {
-                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                })
-                                                ->groupBy('report_sellers.purchase_order', 'report_sellers.customer_id')
-                                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                                // ->where('customers.delivery_by', $delivery)
-                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                ->get();
-                                            });
+                                    $page_query = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', 'report_sellers.customer_id')
+                                                    ->join('customers', function (JoinClause $join) {
+                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                    })
+                                                    ->groupBy(
+                                                        'report_sellers.purchase_order', 
+                                                        'report_sellers.customer_id'
+                                                        )
+                                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']]);
+                                                    // ->where('customers.delivery_by', $delivery)
+                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                    return (clone $page_query)->paginate(1)->total();
+                                                });
 
-                                    $count_page = count($pagination);
+                                    $count_page = (int)$pagination;
                                     // dd($count_page);
 
                                     $perpage = 10;
@@ -5412,23 +5989,32 @@ class ReportSellerController extends Controller
 
                                     $key_customer = 'sales_customer_' . md5(json_encode($filters_customer));
 
-                                    $count_report_customer = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
+                                    $count_unique_customers = Cache::remember($key_customer, 1800, function () use ($filters_customer) {
 
-                                    return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+                                        return DB::table(function ($query) use ($filters_customer) {
+                                                            $query->from('report_sellers')
+                                                            ->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
                                                             ->join('customers', function (JoinClause $join) {
                                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                                             })
-                                                            ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']])
-                                                            // ->where('customers.delivery_by', $delivery)
-                                                           /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
-                
+                                                            ->groupBy(
+                                                                'report_sellers.customer_id', 
+                                                                'report_sellers.purchase_order'
+                                                                )
+                                                            ->whereBetween('report_sellers.date_purchase', [$filters_customer['from'], $filters_customer['to']]);
+                                                            
+                                                        }, 'subquery')
+
+                                                        ->distinct('customer_id')
+                                                        ->count('customer_id');
+
+                                                    });
+                                        
+                                    $count_customer_range = $count_unique_customers;
+
                                     //dd($count_report_customer);
                                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                                    foreach($count_report_customer as $row_id) {
+                               /*      foreach($count_report_customer as $row_id) {
                         
                                         $arr_id[] = $row_id->customer_id;
                                     } 
@@ -5440,7 +6026,7 @@ class ReportSellerController extends Controller
 
                                     } else {
                                         $count_customer_range = 0;
-                                    }
+                                    } */
                 
                                     // dd($count_customer_range);
 
@@ -5455,19 +6041,19 @@ class ReportSellerController extends Controller
 
                                     $count_po_range = Cache::remember($key_po, 1800, function () use ($filters_po) {
 
-                                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.purchase_order')
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                    /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                    ->get();
-                                                });
+                                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                                ->join('customers', function (JoinClause $join) {
+                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                })
+                                                ->groupBy('report_sellers.purchase_order')
+                                                ->whereBetween('report_sellers.date_purchase', [$filters_po['from'], $filters_po['to']]);
+                                                // ->where('customers.delivery_by', $delivery)
+                                                /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                                ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                                return (clone $po_query)->paginate(1)->total();
+                                            });
 
-                                    $count_purchase_range = count($count_po_range);
+                                    $count_purchase_range = (int)$count_po_range;
                                     // dd($count_purchase_range);
 
                                     $filters_selling = [
@@ -5478,116 +6064,73 @@ class ReportSellerController extends Controller
 
                                     $key_selling = 'sales_selling_' . md5(json_encode($filters_selling));
 
-                                    $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
+                                    // $total_report_selling = Cache::remember($key_selling, 1800, function () use ($filters_selling) {
 
-                                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                                            ->join('customers', function (JoinClause $join) {
-                                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                            })
-                                                            ->groupBy('report_sellers.purchase_order')
-                                                            ->whereBetween('report_sellers.date_purchase', [$filters_selling['from'], $filters_selling['to']])
-                                                            // ->where('customers.delivery_by', $delivery)
-                                                            /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                            ->get();
-                                                        });
+                                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'))
+                                                            ->whereBetween('date_purchase', [$filters_selling['from'], $filters_selling['to']])
+                                                            ->cursor();
+
+                                                    // });
 
                                     $filters = [
-                                        'from' => $request->from ?? date('Y-m-d'),
-                                        'to'   => $request->to   ?? date('Y-m-d'),
-                                        'start'=>$start,
-                                        'page' => $page,
-                                        'perpage'=>$perpage,
+                                        'from'    => $request->from ?? date('Y-m-d'),
+                                        'to'      => $request->to   ?? date('Y-m-d'),
+                                        'start'   => $start,
+                                        'page'    => $page,
+                                        'perpage' => $perpage,
                                         ];
 
                                     $key = 'sales_report_' . md5(json_encode($filters));
 
-                                    $report_seller  = Cache::remember($key, 1800, function () use ($filters) {
+                                    $report_seller = Cache::remember($key, 1800, function () use ($filters) {
 
                                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->join('customers', function (JoinClause $join) {
-                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                                    })
-                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
-                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
-                                                    // ->where('customers.delivery_by', $delivery)
-                                                   /*  ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                                    ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                                  /*   ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get(); */
-                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
-                                                });
+                                                                    ->join('customers', function (JoinClause $join) {
+                                                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                    })
+                                                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
+                                                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                                                                    ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
+                                                                });
 
                                                 $customers_data = Customer::select('customer_id', 'sale_area', 'admin_area')->get();
                                                 $customers_customer_name = Customer::select('customer_id', 'customer_name')->get();
          
-                                                return view('report/seller', compact('check_from','check_to', 'admin_area', 'report_seller', 'start', 'total_page', 'page', 'status_alert', 'status_waiting','status_registration', 'status_updated', 'user_id_admin',
-                                                'count_customer_range', 'count_purchase_range', 'customers_customer_name', 'total_report_selling', 'customers_data','sale_area'));
+                                                return view('report/seller', compact(
+                                                                                    'check_from',
+                                                                                    'check_to',
+                                                                                    'admin_area',
+                                                                                    'report_seller',
+                                                                                    'start',
+                                                                                    'total_page',
+                                                                                    'page',
+                                                                                    'status_alert',
+                                                                                    'status_waiting',
+                                                                                    'status_registration',
+                                                                                    'status_updated',
+                                                                                    'user_id_admin',
+                                                                                    'count_customer_range',
+                                                                                    'count_purchase_range',
+                                                                                    'customers_customer_name',
+                                                                                    'total_report_selling',
+                                                                                    'customers_data',
+                                                                                    'sale_area'
+                                                                                ));
         }
 
-        //Dashborad;
-        /* $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count(); */
-
-        //เพิ่มลูกค้า;
-        // $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
-
-        ////////////////////////////////////////////////////////
-
-        $keyword_search = $request->keyword;
-        // dd($keyword);
-
-        if($keyword_search != '') {
-
-            $count_page = Customer::where('customer_id', 'Like', "%{$keyword_search}%")->count();
-            // dd($count_page);
-
-            $perpage = 10;
-            $total_page = ceil($count_page / $perpage);
-            $start = ($perpage * $page) - $perpage;
-
-            $customer = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                    ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                    ->offset($start)
-                                    ->limit($perpage)
-                                    ->get();
-
-            $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                        ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                        ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                        ->get();
-
-            // dd($check_customer_code);
-
-            // dd($check_search->admin_area);
-         /*    if(!empty($check_keyword)) {
-                return view('report/seller', compact('check_from','check_to', 'check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                            'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert','status_registration', 'status_waiting', 'status_updated','user_id_admin',
-                            'count_customer_all'));
-        
-            } */
-            
-
-                // return back();
-        }
-
-       /*  return view('report/seller', compact('check_from','check_to', 'admin_area', 'report_seller', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting','status_registration', 'status_updated', 'user_id_admin',
-                'count_customer_range')); */
+       
 
     }
 
     public function search(Request $request) 
     {
 
-            $check_from = $request->from;
-            $check_to = $request->to;
+        // dd('dd');
+
+           /*  $check_from = $request->from;
+            $check_to = $request->to; */
+           /*  $from = $request->from ?? date('Y-m-d');
+            $to = $request->to   ?? date('Y-m-d'); */
 
             $page = $request->page;
             if ($page) {
@@ -5626,28 +6169,31 @@ class ReportSellerController extends Controller
 
             $filters = [
                 'keyword_search' => $keyword_search,
+                'from'           => $request->from ?? date('Y-m-d'),
+                'to'             => $request->to   ?? date('Y-m-d'),
                 ];
 
             $key = 'search_report_' . md5(json_encode($filters));
 
             $pagination = Cache::remember($key, 1800, function () use ($filters) {
 
-            return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
-                                ->join('customers', function (JoinClause $join) {
-                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                })
-                                ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
-                                ->whereNotIn('report_sellers.customer_id', ['0000', '4494', '7787', '9000'])
-                                ->where('report_sellers.customer_id', 'Like', "%{$filters['keyword_search']}%")
-                                ->orWhere('report_sellers.customer_name', 'Like', "%{$filters['keyword_search']}%")
-                                // ->whereBetween('date_purchase', [$request->from, $request->to])
-                                // ->where('customers.delivery_by', $delivery)
-                                /* ->whereBetween('date_purchase', [$request->from, $request->to])
-                                ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                ->get();
-                            });
+            $page_query = ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                            ->join('customers', function (JoinClause $join) {
+                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                            })
+                            ->groupBy(
+                                'report_sellers.customer_id', 
+                                'report_sellers.purchase_order'
+                                )
+                            ->whereNotIn('report_sellers.customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
+                            ->where('report_sellers.customer_id', 'Like', "%{$filters['keyword_search']}%")
+                            ->orWhere('report_sellers.customer_name', 'Like', "%{$filters['keyword_search']}%");
+                            
+                            return (clone $page_query)->paginate(1)->total();
+                        });
 
-            $count_page = count($pagination);
+            $count_page = (int)$pagination;
 
             $perpage = 10;
             $total_page = ceil($count_page / $perpage);
@@ -5655,23 +6201,31 @@ class ReportSellerController extends Controller
 
             if(isset($keyword_search)) {
 
-                $count_report_customer = ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order', DB::raw('COUNT(report_sellers.customer_id) as count_id'))
+          /*       $filters_key = [
+                    'keyword_search' => $keyword_search,
+                    'from'           => $request->keyfrom ?? date('Y-m-d'),
+                    'to'             => $request->keyto   ?? date('Y-m-d'),
+                    ]; */
+
+                $count_report_customer = ReportSeller::select('report_sellers.customer_id')
                                         ->join('customers', function (JoinClause $join) {
                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                         })
-                                        ->groupBy('report_sellers.customer_id', 'report_sellers.purchase_order')
+                                        ->groupBy(
+                                            'report_sellers.customer_id', 
+                                            // 'report_sellers.purchase_order'
+                                            )
                                         ->whereNotIn('report_sellers.customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
                                         ->where('report_sellers.customer_id', 'Like', "%{$keyword_search}%")
                                         ->orWhere('report_sellers.customer_name', 'Like', "%{$keyword_search}%")
-                                        // ->whereBetween('date_purchase', [$request->from, $request->to])
-                                        // ->where('customers.delivery_by', $delivery)
-                                        /* ->whereBetween('date_purchase', [$request->from, $request->to])
-                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                        ->get();
-
-                    //dd($count_report_customer);
+                                        ->distinct()
+                                        ->cursor();
+                    
+                $count_customer_range = count($count_report_customer);
+                    // dd(count($count_report_customer));
                     //นับจำนวนร้านค้าแบบไม่ซ้ำ;
-                    foreach($count_report_customer as $row_id) {
+                  /*   foreach($count_report_customer as $row_id) {
         
                         $arr_id[] = $row_id->customer_id;
                     } 
@@ -5683,69 +6237,74 @@ class ReportSellerController extends Controller
 
                     } else {
                         $count_customer_range = 0;
-                    }
+                    } */
 
                     // dd($count_customer_range);
 
                     //dashboard;
                     $filters_search_po = [
                         'keyword_search' => $keyword_search,
+                        'from'           => $request->from ?? date('Y-m-d'),
+                        'to'             => $request->to   ?? date('Y-m-d'),
                         ];
         
                     $key_search_po = 'search_po_' . md5(json_encode($filters_search_po));
         
                     $count_po_range = Cache::remember($key_search_po, 1800, function () use ($filters_search_po) {
 
-                    return ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
-                                        ->join('customers', function (JoinClause $join) {
-                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                        })
-                                        ->groupBy('report_sellers.purchase_order')
-                                        ->whereNotIn('report_sellers.customer_id', ['0000', '4494', '7787', '9000'])
-                                        ->where('report_sellers.customer_id', 'Like', "%{$filters_search_po['keyword_search']}%")
-                                        ->orWhere('customers.customer_name', 'Like', "%{$filters_search_po['keyword_search']}%")
-                                        // ->whereBetween('date_purchase', [$request->from, $request->to])
-                                        // ->where('customers.delivery_by', $delivery)
-                                        /* ->whereBetween('date_purchase', [$request->from, $request->to])
-                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                        ->get();
-                                    });
+                    $po_query = ReportSeller::select('purchase_order', DB::raw('SUM(price*quantity) as total_sales'))
+                                ->join('customers', function (JoinClause $join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->groupBy('report_sellers.purchase_order')
+                                ->whereNotIn('report_sellers.customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereBetween('report_sellers.date_purchase', [$filters_search_po['from'], $filters_search_po['to']])
+                                ->where('report_sellers.customer_id', 'Like', "%{$filters_search_po['keyword_search']}%")
+                                ->orWhere('customers.customer_name', 'Like', "%{$filters_search_po['keyword_search']}%");
+                                
+                                return (clone $po_query)->paginate(1)->total();
+                            });
 
-                    $count_purchase_range = count($count_po_range);
+                    $count_purchase_range = (int)$count_po_range;
                     // dd($count_purchase_range);
 
                     $filters_search_selling = [
-                        'keyword_search' => $keyword_search,
+                        'keyword_search'  => $keyword_search,
+                        'from'            => $request->from ?? date('Y-m-d'),
+                        'to'              => $request->to   ?? date('Y-m-d'),
                         ];
-        
+        /* 
                     $key_search_selling = 'search_selling_' . md5(json_encode($filters_search_selling));
         
-                    $total_report_selling = Cache::remember($key_search_selling, 1800, function () use ($filters_search_selling) {
+                    $total_report_selling = Cache::remember($key_search_selling, 1800, function () use ($filters_search_selling) { */
                         
-                    return ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
-                                        ->join('customers', function (JoinClause $join) {
-                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                        })
-                                        ->groupBy('report_sellers.purchase_order')
-                                        ->whereNotIn('report_sellers.customer_id', ['0000', '4494', '7787', '9000'])
-                                        ->where('report_sellers.customer_id', 'Like', "%{$filters_search_selling['keyword_search']}%")
-                                        ->orWhere('customers.customer_name', 'Like', "%{$filters_search_selling['keyword_search']}%")
-                                        // ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                        // ->where('customers.delivery_by', $delivery)
-                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                                        ->get();
-                                    });
+                    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'), 'report_sellers.purchase_order')
+                                            ->join('customers', function (JoinClause $join) {
+                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                            })
+                                            ->groupBy('report_sellers.purchase_order')
+                                            ->whereNotIn('report_sellers.customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->whereBetween('report_sellers.date_purchase', [$filters_search_selling['from'], $filters_search_selling['to']])
+                                            ->where('report_sellers.customer_id', 'Like', "%{$filters_search_selling['keyword_search']}%")
+                                            ->orWhere('customers.customer_name', 'Like', "%{$filters_search_selling['keyword_search']}%")
+                                            // ->where('customers.delivery_by', $delivery)
+                                            /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
+                                            ->havingBetween('total_sales', [$range_min, $range_max]) */
+                                            ->cursor();
+                                        // });
 
                     $filters_search_report = [
                         'keyword_search' => $keyword_search,
-                        'page' => $page,
-                        'perpage' => $perpage,
+                        'page'           => $page,
+                        'perpage'        => $perpage,
+                        'from'           => $request->from ?? date('Y-m-d'),
+                        'to'             => $request->to   ?? date('Y-m-d'),
                         ];
         
+                        // dd($request->from);
                     $key_search_report = 'search_report_' . md5(json_encode( $filters_search_report));
         
-                    $report_seller = Cache::remember($key_search_report, 1800, function () use ( $filters_search_report) {
+                    $report_seller = Cache::remember($key_search_report, 1800, function () use ($filters_search_report) {
 
                     return ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name', 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
                                         ->join('customers', function (JoinClause $join) {
@@ -5753,19 +6312,13 @@ class ReportSellerController extends Controller
                                         })
                                         ->groupBy('report_sellers.customer_id', 'customers.customer_name' , 'report_sellers.purchase_order', 'customers.admin_area', 'customers.sale_area')
                                         ->whereNotIn('report_sellers.customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereBetween('report_sellers.date_purchase', [$filters_search_report['from'], $filters_search_report['to']])
                                         ->where('report_sellers.customer_id', 'Like', "%{$filters_search_report['keyword_search']}%")
                                         ->orWhere('customers.customer_name', 'Like', "%{$filters_search_report['keyword_search']}%")
-                                    /*  ->offset($start)
-                                        ->limit($perpage) */
-                                        // ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                        // ->where('customers.delivery_by', $delivery)
-                                        /* ->whereBetween('report_sellers.date_purchase', [$request->from, $request->to])
-                                        ->havingBetween('total_sales', [$range_min, $range_max]) */
-                        
-                                    /*   ->get(); */
-                                    ->paginate($filters_search_report['perpage'], ['*'], 'page', $filters_search_report['page']);
+
+                                        ->paginate($filters_search_report['perpage'], ['*'], 'page', $filters_search_report['page']);
                                     });
-                
+          
                     $count_customer = ReportSeller::select('customer_id')->whereBetween('date_purchase', [$request->from, $request->to])
                                     ->distinct()
                                     ->get();
@@ -5775,6 +6328,7 @@ class ReportSellerController extends Controller
                     $customers_data = Customer::select('customer_id', 'sale_area', 'admin_area')->get();
                     $customers_customer_name = Customer::select('customer_id', 'customer_name')->get();
 
+                    // dd($total_page);
                     return view('report/seller', compact('admin_area', 'report_seller', 'status_alert', 'total_page', 'page', 'start', 'status_waiting','status_registration', 'status_updated', 'user_id_admin',
                                 'count_customer_range', 'count_purchase_range', 'customers_customer_name', 'total_report_selling', 'customers_data','sale_area'));
             } else {
@@ -5808,7 +6362,11 @@ class ReportSellerController extends Controller
 
         $user_id_admin = $request->user()->user_id;
 
-        return view('/report/importseller', compact('status_alert', 'status_waiting', 'status_updated', 'status_registration', 'user_id_admin'));
+        $imports = ImportStatus::orderBy('created_at', 'desc')->take(10)->get();
+
+        $importStatus = ImportStatus::latest()->first();
+
+        return view('/report/importseller', compact('importStatus', 'imports', 'status_alert', 'status_waiting', 'status_updated', 'status_registration', 'user_id_admin'));
     }
 
     //เก็บไว้ดู
@@ -5866,7 +6424,12 @@ class ReportSellerController extends Controller
                                         $cost = empty($row[6]) ? 0 : $row[6];
                                     }
                                     
-                                    
+                                if (preg_match('/\bดีลพิเศษ\b/u', $row[4])) {
+                                    $qty = 1;
+
+                                } else {
+                                    $qty = $row[7];
+                                }
                             
                                     ReportSeller::create([
 
@@ -5878,7 +6441,7 @@ class ReportSellerController extends Controller
                                         'product_name' => $row[4],
                                         'price' => $price,
                                         'cost' => $cost,
-                                        'quantity' => $row[7],
+                                        'quantity' => $qty,
                                         'unit' => $row[8],
                                         'date_purchase' => $row[9],
                 
@@ -5941,7 +6504,9 @@ class ReportSellerController extends Controller
     public function show(Request $request)
     {
 
+        // dd('sales');
         $customer_id = $request->id;
+        // dd($customer_id);
         $customer_name = Customer::where('customer_id',$customer_id)->first();
 
         $from_purchase = $request->from;
@@ -5951,13 +6516,13 @@ class ReportSellerController extends Controller
         // dd($to_purchase);
 
         if(!empty($from_purchase) && !empty($to_purchase)) {
-            
+            // dd('dd');
             $order_selling = ReportSeller::where('customer_id',$customer_id)
                             ->where('purchase_order', $purchase_check)
                             ->whereBetween('date_purchase', [$from_purchase, $to_purchase])
                             // ->distinct()
                             ->get();
-
+                            
             $purchase_order = ReportSeller::select('purchase_order','date_purchase')->where('customer_id',$customer_id)
                             ->where('purchase_order', $purchase_check)
                             ->whereBetween('date_purchase', [$from_purchase, $to_purchase])
@@ -6041,9 +6606,9 @@ class ReportSellerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ReportSeller $reportSeller)
+    public function importheading(ReportSeller $reportSeller)
     {
-        //
+      
     }
 
     public function rangeSeller(Request $request): View

@@ -11,6 +11,10 @@
     use App\Exports\ProductCsvExport;
     use App\Exports\ProductExcelExport;
     use App\Exports\SellerExcelExport;
+    use App\Exports\RegionSalesCsvExport;
+    use App\Exports\RegionSalesExcelExport;
+    use App\Exports\RegionProductCsvExport;
+    use App\Exports\RegionProductExcelExport;
     use App\Http\Controllers\ProvinceController;
     use App\Http\Controllers\Webpanel\WebpanelCustomerController;
     use App\Http\Controllers\Portal\PortalCustomerController;
@@ -28,9 +32,12 @@
     use App\Imports\SellersImport;
     use App\Models\Customer;
     use App\Models\Salearea;
+    use App\Http\Controllers\ImportController;
+    use App\Http\Controllers\ImportCsvController;
     use App\Http\Controllers\RecaptchaV2;
     use Illuminate\Support\Facades\DB;
     use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+
 
     // Route::get('/', function() { return view('auth.login-tailwind');})->name('login');
 
@@ -130,6 +137,9 @@ Route::middleware('statusOnline')->group(function (){
         });
 
         Route::get('/webpanel/customer/importcustomer', [WebpanelCustomerController::class, 'import']);
+
+        Route::get('/webpanel/customer/updatecsv', [WebpanelCustomerController::class, 'updateView']);
+        Route::post('/webpanel/customer/updatecsv/updated', [WebpanelCustomerController::class, 'updateCsv']);
 /*
         Route::get('/webpanel/customer/customer-completed', function () {
             return view('webpanel/customer-completed');
@@ -301,7 +311,26 @@ Route::middleware('statusOnline')->group(function (){
     Route::middleware('auth', 'role','status', 'verified')->group(function () {
         Route::get('/webpanel/report/seller', [ReportSellerController::class, 'index']);
         Route::get('webpanel/report/seller/importseller', [ReportSellerController::class, 'import']);
-        Route::post('/webpanel/report/seller/importcsv', [ReportSellerController::class, 'importFile']);
+        // Route::post('/webpanel/report/seller/importcsv', [ReportSellerController::class, 'importFile']);
+
+        //queue;
+        //ใช้จริง no jobs;
+        // Route::post('/webpanel/report/seller/importcsv', [ImportController::class, 'import']);
+
+        //jobs;
+        Route::post('/webpanel/report/seller/importcsv', [ImportCsvController::class, 'importCsv']);
+
+        // Route::post('/webpanel/report/seller/importcsv', [ImportCsvController::class, 'import']);
+
+ /*        Route::post('/webpanel/report/seller/importseller', [ImportController::class, 'import']);
+        Route::get('import/status/{id}', [ImportController::class, 'importStatus'])->name('import.status'); */
+
+        Route::get('/imports/partial', [ImportController::class, 'partial'])->name('imports.partial');
+
+        // web.php
+        Route::get('/import-status/{id}', [ImportController::class, 'checkStatus'])->name('import-status');
+
+
         // Route::get('/webpanel/report/seller/search_date', [ReportSellerController::class, 'index']);
         // Route::get('/webpanel/report/seller', [ReportSellerController::class, 'index']);
         // Route::get('/webpanel/report/seller/range', [ReportSellerController::class, 'index']);
@@ -312,7 +341,14 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/report/product', [ProductController::class, 'index']);
         // Route::get('/webpanel/report/product', [ProductController::class, 'preload']);
         Route::get('webpanel/report/product/importproduct', [ProductController::class, 'import']);
+        Route::get('webpanel/report/product/importproduct/{id}', [ProductController::class, 'productInfo']);
+        Route::post('webpanel/report/product/importproduct/updated/{id}', [ProductController::class, 'updateInfo']);
         Route::post('/webpanel/report/product/importcsv', [ProductController::class, 'importFile']);
+        Route::get('/webpanel/report/product/new-product', [ProductController::class, 'newInfo']);
+        Route::post('/webpanel/report/product/new-product/created', [ProductController::class, 'createInfo']);
+        Route::get('/webpanel/report/product/update-cost', [ProductController::class, 'updateCost']);
+        Route::post('/webpanel/report/product/update-cost/importcsv', [ProductController::class, 'importCostProduct']);
+        Route::get('/webpanel/report/product/importproduct/deleted/{id}', [ProductController::class, 'deleteProduct']);
         Route::get('webpanel/report/product/importcategory', [CategoryController::class, 'import']);
         Route::post('/webpanel/report/product/importcsv/category', [CategoryController::class, 'importFile']);
         Route::get('webpanel/report/product/importsubcategory', [SubcategoryController::class, 'import']);
@@ -320,7 +356,20 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/product/product-detail/{id}', [ProductController::class, 'show']);
         Route::get('/webpanel/report/product/exportcsv/check', [ProductCsvExport::class, 'exportProductCsv']);
         Route::get('/webpanel/report/product/exportexcel/check', [ProductExcelExport::class, 'exportSellerExcel']);
+
+        //export item;
+        Route::get('/webpanel/report/seller/exportcsv/check/item/{id}', [ProductCsvExport::class, 'exportItemCsv']);
+        Route::get('/webpanel/report/seller/exportexcel/check/item/{id}', [ProductExcelExport::class, 'exportItemExcel']);
+
+
         Route::get('/webpanel/report/product/sales/category', [ProductController::class, 'salesCategory']);
+        Route::get('/webpanel/report/product/sales/region', [ProductController::class, 'salesRegion']);
+        Route::get('/webpanel/report/product/sales/region/view', [ProductController::class, 'viewRegion']);
+        Route::get('/webpanel/report/product/sales/region/view/item', [ProductController::class, 'productRegion']);
+        Route::get('/webpanel/report/product/sales/region/exportcsv/view', [RegionSalesCsvExport::class, 'exportViewRegionCsv']);
+        Route::get('/webpanel/report/product/sales/region/exportexcel/view', [RegionSalesExcelExport::class, 'exportViewRegionExcel']);
+        Route::get('/webpanel/report/product/sales/region/exportcsv', [RegionProductCsvExport::class, 'exportProductRegionCsv']);
+        Route::get('/webpanel/report/product/sales/region/exportexcel', [RegionProductExcelExport::class, 'exportProductRegionExcel']);
 
     });
    

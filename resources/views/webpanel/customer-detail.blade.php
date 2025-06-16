@@ -196,7 +196,6 @@
         {{-- {{dd($customer_view->customer_id)}} --}}
 
  
-
                 <div class="row ms-6 mr-6 mt-8">
                     <div class="col-sm-6">
                         <ul class="text-title" style="text-align: start;">
@@ -597,6 +596,12 @@
                             </div>
                             <div class="col-sm-12">
                                 <ul style="width: 100%;">
+
+                                <li class="mt-4">
+                                    <span>สะสมคะแนน</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" id="points" name="points" value="{{$customer_view->points}}" >
+
+                                </li>
                                 
                                 <li class="mt-4">
                                     <span>แบบอนุญาตขายยา</span>

@@ -73,6 +73,13 @@ return [
             'throw' => false,
         ],
 
+        'importseller' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/importsellercsv'), // หรือที่คุณกำหนดไว้
+            'url' => env('APP_URL').'/storage/importsellercsv',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*

@@ -356,7 +356,7 @@
         <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
         </div>
-        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/report/product" id="backLink">ย้อนกลับ</a> / ขายตามหมวดหมู่สินค้า</span>
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/report/product" id="backLink">ย้อนกลับ</a> / ขายตามภูมิศาสตร์</span>
         {{-- <span class="ms-6" style="color: #8E8E8E;">ขายตามหมวดหมู่สินค้า</span> --}}
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
@@ -367,17 +367,17 @@
 
             <div class="row ms-2">
                 {{-- <form method="get" action="/webpanel/report/product/search"> --}}
-                <form method="get" action="/webpanel/report/product/sales/category">
+                <form method="get" action="/webpanel/report/product/sales/region">
                     @csrf
                     <div class="row">
                         <div class="row mt-2">
                             <div class="col-sm-5">
                                 <label class="py-2" for="from">วันที่เริ่ม : </label>
-                                <input type="text" class="block w-full" id="from" style="border:solid 1px rgb(208, 208, 208); padding: 10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="from" value="{{(isset($_GET['from'])) == '' ? date('Y-m-d') : $_GET['from'] ;}}">
+                                <input type="text" class="block w-full" id="from" style="border:solid 1px rgb(208, 208, 208); padding: 10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="from" value="{{ request('from') == '' ? date('Y-m-d') : request('from') }}">
                             </div>
                             <div class="col-sm-5">
                                 <label class="py-2" for="to">ถึงวันที่ : </label>
-                                <input type="text" class="block w-full" id="to" style="border:solid 1px rgb(208, 208, 208); padding:10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="to" value="{{(isset($_GET['to'])) == '' ? date('Y-m-d') : $_GET['to'] ;}}">
+                                <input type="text" class="block w-full" id="to" style="border:solid 1px rgb(208, 208, 208); padding:10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="to" value="{{ request('to') == '' ? date('Y-m-d') : request('to') }}">
                             </div>
                             <div class="col-sm-2 mt-10">
                                 <button type="submit" class="btn btn-primary" style="width:80px; font-size:15px; font-weight:500; padding:8px;">ค้นหา</button>
@@ -389,87 +389,182 @@
 
         </div>
 
+        @php
+             $grouped = $sales->groupBy(function ($item) {
+                return $item->categories_name . '|' . $item->categories_id;
+            });
+            $regions = ['ภาคเหนือ', 'ภาคกลาง','ภาคตะวันออก', 'ภาคตะวันตก', 'ภาคอีสาน', 'ภาคใต้']; // เพิ่มภาคตามจริง
+        @endphp
             <div class="ms-3 mr-4 mb-2 mt-10">
 
-                <span class="ms-2" style="font-size:18px; color:#202020;">หมวดหมู่ :</span>
+                <span class="ms-2" style="font-size:18px; color:#202020;">ภูมิศาสตร์ :</span>
                 <hr class="my-3" style="color: #8E8E8E; width: 100%;">
                 <table class="table table-striped">
                     <thead>
-                        
-                    <tr>
-                        <td scope="col" style="color:#838383; text-align: center; font-weight: 500; width:5px;">#</td>
-                        <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">หมวดหมู่</td>
-                        <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">ชื่อหมวดหมู่</td>
-                        <td scope="col" style="color:#838383; text-align: right; font-weight: 500;">ยอดขาย (บาท)</td>
-                        <td scope="col" style="color:#838383; text-align: right; font-weight: 500;">ยอดขาย (%)</td>
-                        <td scope="col" style="color:#838383; text-align: right; font-weight: 500;">กำไร (%)</td>
-                    </tr>
+                        <tr>
+                            <td scope="col" style="color:#838383; text-align: left; font-weight: 500; width:5px;">#</td>
+                            <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">หมวดหมู่</td>
+                            <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">ชื่อหมวดหมู่</td>
+                            @foreach ($regions as $region)
+                            <td scope="col" style="color:#838383; text-align: right; font-weight: 500;"> {{ $region }}</td>
+                            @endforeach
+                            <td scope="col" style="color:#838383; text-align: right; font-weight: 500;"> รวม </td>
+                        </tr>
                     </thead>
                     <tbody>
-
-                @if(!empty($sales_category))
-
                         @php 
-                            $start = ($start ?? 0) + 1;
-                            $total_percent = 0;
-                            $total_margin = 0;
+                        
+                            // $start = ($start ?? 0) + 1; 
+                            $start = 0;
+
+                         /*    $category_col = $sales->groupBy(function ($item) {
+                            return $item->categories_name . '|' . $item->categories_id;
+                            }); */
+
+                            $category_cols = $sales->unique('categories_id');
+                            
+                            $summary = 0;
+                            
                         @endphp
+                    
+               {{--      @foreach ($category_cols as $cols)
 
-                        @foreach ($sales_category as $row)
-                    <tr>
-                            <?php
-                                
-                                $id = $row->id;
-                                // $user_name = $row->customer_name;
-                                $category_code = $row->categories_id;
-                                $category_name = $row->categories_name;
-                                $sales = $row->total_sales;
-                                $total_sales_cost = $row->total_sales_cost;
-                                $average_cost = $row->average_cost;
-                                $average_price = $row->average_price;
-                                $percent_sales = ($sales/$total_sales)*100;
-                                $total_percent += $percent_sales;
+                    @php 
+                       $cate_id = $cols->categories_id;
+                       $cate_name = $cols->categories_name;
+                    @endphp
 
-                                if($total_sales_cost > 0) {
-                                    // $margin = (($sales - $total_sales_cost)/$total_sales_cost ) * 100;
-                                    $margin = (($average_price - $average_cost)/$average_cost) * 100;
+                    @php 
 
-                                } else {
-                                    $margin = 0;
-                                }
-                        
-                                $total_margin += $margin;
-                                
-                            ?>
-                        
-    
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding: 20px 8px 20px; width:10%;">{{$start++}}</td>
-                        <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:10%;">{{$category_code}}</td>
-                        <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">{{$category_name ??= 'ไม่พบข้อมูล'}}</td>
-                        <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px;">{{ number_format($sales,2) }}</td>
-                        <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px;">{{ number_format($percent_sales,2) }}</td>
-                        <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px;">{{ number_format($margin,2) }}</td>
-            
-                        </tr>
+                        // [$name, $id] = explode('|', $key); 
+
+                        $row_north = $sales->where('geography', 'ภาคเหนือ')->where('categories_id', $cate_id);
+                        $row_central = $sales->where('geography', 'ภาคกลาง')->where('categories_id', $cate_id);
+                        $row_east = $sales->where('geography', 'ภาคตะวันออก')->where('categories_id', $cate_id);
+                        $row_west = $sales->where('geography', 'ภาคตะวันตก')->where('categories_id', $cate_id);
+                        $row_northeast = $sales->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->where('categories_id', $cate_id);
+                        $row_south = $sales->where('geography', 'ภาคใต้')->where('categories_id', $cate_id);
+                    
+                        $north = $row_north->first()?->total_sales ?? '0.00';
+                        $central = $row_central->first()?->total_sales ?? '0.00';
+                        $east = $row_east->first()?->total_sales ?? '0.00';
+                        $west =  $row_west->first()?->total_sales ?? '0.00';
+                        $northeast = $row_northeast->first()?->total_sales ?? '0.00';
+                        $south = $row_south->first()?->total_sales ?? '0.00';
+
+                        $total = $north + $central + $east + $west + $northeast + $south;
+
+                        $summary += $total;
+
+
+                    @endphp
+
+                       <tr>
+                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:5%;">{{ $start++ }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:10%;">{{ $cate_id }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:20%;">{{ $cate_name }}</td>
+
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;"><a href="/webpanel/report/product/sales/region/view?category={{ $cate_id }}&region={{ 'ภาคเหนือ' }}&from={{ request('from') }}&to={{ request('to') }}">{{ number_format($north,2) }}</a></td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;"><a href="/webpanel/report/product/sales/region/view?category={{ $cate_id }}&region={{ 'ภาคกลาง' }}&from={{ request('from') }}&to={{ request('to') }}">{{ number_format($central,2) }}</a></td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;"><a href="/webpanel/report/product/sales/region/view?category={{ $cate_id }}&region={{ 'ภาคตะวันออก' }}&from={{ request('from') }}&to={{ request('to') }}">{{ number_format($east,2) }}</a></td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;"><a href="/webpanel/report/product/sales/region/view?category={{ $cate_id }}&region={{ 'ภาคตะวันตก' }}&from={{ request('from') }}&to={{ request('to') }}">{{ number_format($west,2) }}</a></td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;"><a href="/webpanel/report/product/sales/region/view?category={{ $cate_id }}&region={{ 'ภาคตะวันออกเฉียงเหนือ' }}&from={{ request('from') }}&to={{ request('to') }}">{{ number_format($northeast,2) }}</a></td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;"><a href="/webpanel/report/product/sales/region/view?category={{ $cate_id }}&region={{ 'ภาคใต้' }}&from={{ request('from') }}&to={{ request('to') }}">{{ number_format($south,2) }}</a></td>
+
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;">{{ number_format($total,2) }}</td>
+                           
+                       </tr>
 
                     @endforeach
 
+                     <tr>
+                           
+                        <td colspan="9" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">ยอดรวม (บาท)</td>
+                        <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ number_format($summary,2) }}</td>
+
+                      </tr> --}}
+                
+                      @php 
+                      $start = ($start ?? 0) + 1; 
+                      $total = 0;
+                      $count = 0;
+                      $counts = 0;
+                     @endphp
+                        @foreach ($grouped as $category => $rows)
+
+                        @php 
+                            [$name, $id] = explode('|', $category);
+                       /*      $region_totals = [];
+                            $grand_total = 0; */
+
+                        @endphp
+
+     
+                    @php
+                   /*      $row_north = $sales->where('geography', 'ภาคเหนือ')->where('categories_id', $id);
+                        $row_central = $sales->where('geography', 'ภาคกลาง')->where('categories_id', $id);
+                        $row_east = $sales->where('geography', 'ภาคตะวันออก')->where('categories_id', $id);
+                        $row_west = $sales->where('geography', 'ภาคตะวันตก')->where('categories_id', $id);
+                        $row_northeast = $sales->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->where('categories_id', $id);
+                        $row_south = $sales->where('geography', 'ภาคใต้')->where('categories_id', $id);
+                    
+                        $north = $row_north->first()?->total_sales ?? '0.00';
+                        $central = $row_central->first()?->total_sales ?? '0.00';
+                        $east = $row_east->first()?->total_sales ?? '0.00';
+                        $west =  $row_west->first()?->total_sales ?? '0.00';
+                        $northeast = $row_northeast->first()?->total_sales ?? '0.00';
+                        $south = $row_south->first()?->total_sales ?? '0.00';
+
+                        $count = $north + $central + $east + $west + $northeast + $south; */
+
+                        $regions = ['ภาคเหนือ', 'ภาคกลาง', 'ภาคตะวันออก', 'ภาคตะวันตก', 'ภาคตะวันออกเฉียงเหนือ', 'ภาคใต้'];
+
+                        $total_by_region = [];
+
+                        foreach ($regions as $region) {
+                            $total_by_region[] = $sales
+                                                ->where('geography', $region)
+                                                ->where('categories_id', $id)
+                                                ->first()?->total_sales ?? 0;
+                        }
+
+                        // รวมทั้งหมด
+                        $count = array_sum($total_by_region);
+
+                        // dd($count);
+
+                    @endphp
+
+                        
+                            <tr>
+                                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:5%;">{{ $start++ }}</td>
+                                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:10%;">{{ $id }}</td>
+                                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:30%;">{{ $name }}</td>
+                                @foreach ($regions as $region)
+                                    @php
+                                        $match = $rows->firstWhere('geography', $region);
+                                        $amount = $match ? $match->total_sales : 0;
+                                        $total += $amount;
+     
+                                    @endphp
+
+                                    <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;"><a href="/webpanel/report/product/sales/region/view?category={{ $id }}&region={{ $region }}&from={{ request('from') }}&to={{ request('to') }}">{{ number_format($amount,2) }}</a></td>
+
+                                @endforeach
+                                    <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;">{{ number_format($count,2) }}</td>
+                            </tr>
+                        @endforeach
                         <tr>
-                            <td colspan="1" style="background-color:rgb(225, 225, 225); color:#161616; text-align: center; font-weight:400; padding: 20px 8px 20px;"></td>
-                            <td colspan="2" style="background-color:rgb(225, 225, 225); color:#161616; text-align: center; font-weight:400; padding: 20px 8px 20px;"></td>
-                            <td colspan="1" style="background-color:rgb(225, 225, 225); color:#161616; text-align: right; font-weight:400; padding: 20px 8px 20px;">{{ number_format($total_sales,2) }}</td>
-                            <td colspan="1" style="background-color:rgb(225, 225, 225); color:#161616; text-align: right; font-weight:400; padding: 20px 8px 20px;">{{ number_format($total_percent,2) }}</td>
-                            <td colspan="2" style="background-color:rgb(225, 225, 225); color:#161616; text-align: right; font-weight:400; padding: 20px 8px 20px;">{{ number_format($total_margin/21, 2) }}</td>
-
-                        </tr>
-                    @endif
-
+                           
+                            <td colspan="9" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">ยอดรวม (บาท)</td>
+                            <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ number_format($total,2) }}</td>
+    
+                          </tr> 
                     </tbody>
 
                 </table>
             </div>
-    
-       
+
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
 
     </div>

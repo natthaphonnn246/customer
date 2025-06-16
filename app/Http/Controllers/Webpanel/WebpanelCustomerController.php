@@ -1008,6 +1008,8 @@ class WebpanelCustomerController
 
                 $delivery_by = $request->delivery_by;
 
+                $points = $request->points ?? 0;
+
      /*    } */
             Customer::where('id', $id)
                     ->update ([
@@ -1038,12 +1040,13 @@ class WebpanelCustomerController
                         'type' => $type,
                         'status_user' => $status_user,
                         'delivery_by' => $delivery_by,
+                        'points' => $points,
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
                     
                     ]);
 
-                usleep(100000);
+                // usleep(100000);
                 // check user id;
                 $check_customer_id = Customer::select('id')->where('id', $id)->first();
                 $customer_id =  $check_customer_id->id;
@@ -1483,6 +1486,7 @@ class WebpanelCustomerController
                                     'password' => $password,
                                     'status_update' => $status_update,
                                     'type' => $type,
+                                    'points' => $row[9],
                                     'register_by' => $register_by,
                                     'customer_status' => $customer_status,
                                     'status_user' => $status_user,
@@ -1597,6 +1601,114 @@ class WebpanelCustomerController
         // Close the file pointer with PHP with the updated output.
         fclose( $output );
         exit;
+   }
+
+    public function updateView(Request $request)
+    {
+
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        //menu alert;
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        $user_id_admin = $request->user()->user_id;
+
+        return view('/webpanel/updatecsv', compact('status_alert', 'status_waiting', 'status_updated', 'status_registration', 'user_id_admin'));
+    }
+
+    public function updateCsv(Request $request)
+    {
+
+        date_default_timezone_set("Asia/Bangkok");
+
+        if($request->has('submit_csv') == true) 
+        {
+            
+                $path = $request->file('import_csv');
+                if($path == null) {
+                    $path == '';
+    
+                } else {
+
+                    $count = 0;
+                    $rename = 'Customer_update'.'_'.date("l jS \of F Y h:i:s A").'.csv';
+                    $directory = $request->file('import_csv')->storeAs('importcsv',$rename,'importfiles'); //importfiles filesystem.php->disk;
+                    $fileStream = fopen(storage_path('app/public/importcsv/'.$rename),'r');
+
+                        while (!feof($fileStream)) 
+                            {
+
+                                $row = fgetcsv($fileStream , 1000 , "|");
+                                // dd($row[0]);
+                                // if($row[0] ??= '') {
+                                if(!empty($row[0])) {
+                                
+                                    $customer_name_new = str_replace("'", "''", $row[2]);
+
+                                    $sale_area_new = $row[1];
+                                    if ($sale_area_new == '') {
+                                        $sale_area_new = 'ไม่ระบุ';
+                                    }
+
+                                    $status_user = str_replace("'", "''", $row[10]); 
+
+                                    //delivery;
+                                    $delivery_row = $row[18];
+                                    if($delivery_row == 1) {
+                                        $delivery_by ='owner';
+                                    } else {
+                                        $delivery_by ='standard';
+                                    }
+
+                                    $customer_name = $customer_name_new;
+                                    $price_level = $row[7];
+  
+                                    $sale_area = $sale_area_new;
+
+                            
+                $update = Customer::where('customer_id', $row[0])->update([
+
+                                    'customer_id'   => $row[0],
+                                    'customer_code' => $row[0],
+                                    'customer_name' => $customer_name,
+                                    'price_level'   => $price_level,
+                                    'sale_area'     => $sale_area,
+                                    'status_user'   => $status_user,
+                                    'points'        => $row[9],
+                                    'type'          => $row[8],
+                                    'delivery_by'   => $delivery_by,
+        
+                                ]);
+                                $count += $update;
+                            }
+
+                        }
+
+                        fclose($fileStream);
+
+                }
+
+        }
+        // $count = Customer::all()->count();
+        
+        return redirect('/webpanel/customer/updatecsv')->with('success_updated', 'นำเข้าข้อมูลสำเร็จ :'.' '.$count);
+            
    }
 
    //delete customer;

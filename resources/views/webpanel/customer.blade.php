@@ -44,7 +44,7 @@
             background-color: #0b59f6;
         }
         #importMaster {
-            background-color: #ce9af4;
+            background-color: #4e5dff;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -54,11 +54,11 @@
             text-align: center;
         }
         #importMaster:hover {
-            background-color:  #ae66e0;
+            background-color: #3848fb;
             color: #ffffff;
         }
-        #groupsCustomer {
-            background-color: #ff5cc1;
+        #updateMaster {
+            background-color: #f86060;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -67,9 +67,23 @@
             border-radius: 4px;
             text-align: center;
         }
-        #groupsCustomer:hover {
-            background-color: #ed1199;
+        #updateMaster:hover {
+            background-color: #ff4242;
             color: #ffffff;
+        }
+        #groupsCustomer {
+            background-color: #ffd500;
+            color: #272727;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #groupsCustomer:hover {
+            background-color: #ffc800;
+            color: #272727;
         }
         #edit {
             background-color: #007bff;
@@ -316,12 +330,13 @@
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         <div class="ms-6" style="text-align: left;">
-            <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a>
-            <a href="/webpanel/customer/importcustomer"  id="importMaster" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">import master CSV</a>
-            <a href="/webpanel/customer/groups-customer"  id="groupsCustomer" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดกลุ่มลูกค้า</a>
+            <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">เพิ่มลูกค้าใหม่</a>
+            <a href="/webpanel/customer/importcustomer"  id="importMaster" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">import CSV</a>
+            <a href="/webpanel/customer/updatecsv"  id="updateMaster" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Update</a>
+            <a href="/webpanel/customer/groups-customer"  id="groupsCustomer" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">จัดกลุ่มลูกค้า</a>
 
-            <a href="/webpanel/customer/export/getcsv/getcsv_customerall"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
-            <a href="/webpanel/customer/export/getexcel/getexcel_customerall"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
+            <a href="/webpanel/customer/export/getcsv/getcsv_customerall"  id="exportcsv" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export CSV</a>
+            <a href="/webpanel/customer/export/getexcel/getexcel_customerall"  id="exportexcel" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export Excel</a>
     
         </div>
 

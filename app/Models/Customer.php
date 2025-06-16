@@ -43,6 +43,7 @@ class Customer extends Model
         'customer_status',
         'status_user',
         'delivery_by',
+        'points',
         // 'maintenance_status',
         // 'allowed_maintenance',
 

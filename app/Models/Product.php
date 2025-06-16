@@ -16,6 +16,7 @@ class Product extends Model
         'sub_category',
         'type',
         'unit',
+        'cost',
         'price_1',
         'price_2',
         'price_3',

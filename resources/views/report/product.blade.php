@@ -44,7 +44,7 @@
             background-color: #0b59f6;
         }
         #importProduct {
-            background-color: #767dff;
+            background-color: #555eff;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -54,11 +54,11 @@
             text-align: center;
         }
         #importProduct:hover {
-            background-color: #5b63fa;
+            background-color: #434cf9;
             color: #ffffff;
         }
         #byCategory {
-            background-color: #fe95d6;
+            background-color: #ff68c5;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -68,11 +68,11 @@
             text-align: center;
         }
         #byCategory:hover {
-            background-color: #fa5bcd;
+            background-color: #fa46c7;
             color: #ffffff;
         }
         #byRegion {
-            background-color: #989df9;
+            background-color: #727aff;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -86,7 +86,7 @@
             color: #ffffff;
         }
         #importCate {
-            background-color: #eeb272;
+            background-color: #e0923e;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -96,11 +96,11 @@
             text-align: center;
         }
         #importCate:hover {
-            background-color: #f0a658;
+            background-color: #dd790e;
             color: #ffffff;
         }
         #importsubCate {
-            background-color: #a4db3e;
+            background-color: #1c79d1;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -110,7 +110,7 @@
             text-align: center;
         }
         #importsubCate:hover {
-            background-color: #94d122;
+            background-color: #075fb2;
             color: #ffffff;
         }
         #groupsCustomer {
@@ -208,7 +208,7 @@
         }
         #exportcsv {
             background-color: #dddddd;
-            color: #3d3d3d;
+            color: #656565;
             border: none;
             cursor: pointer;
             padding: 8px 16px;
@@ -222,7 +222,7 @@
         }
         #exportexcel {
             background-color: #dddddd;
-            color: #3d3d3d;
+            color: #656565;
             border: none;
             cursor: pointer;
             padding: 8px 16px;
@@ -352,14 +352,14 @@
 
         <div class="ms-6" style="text-align: left;">
             {{-- <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a> --}}
-            <a href="/webpanel/report/product/importproduct"  id="importProduct" class="btn" type="submit"  name="" style="width: 200px; padding: 8px;">Product master</a>
-            <a href="/webpanel/report/product/importcategory"  id="importCate" class="btn" type="submit"  name="" style="width: 200px; padding: 8px;">Category</a>
-            <a href="/webpanel/report/product/importsubcategory"  id="importsubCate" class="btn" type="submit"  name="" style="width: 200px; padding: 8px;">Sub-category</a>
+            <a href="/webpanel/report/product/importproduct"  id="importProduct" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Product</a>
+            <a href="/webpanel/report/product/importcategory"  id="importCate" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Category</a>
+            <a href="/webpanel/report/product/importsubcategory"  id="importsubCate" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Sub-category</a>
             {{-- @php
                 if($_GET['min_seller'])
             @endphp --}}
-            <a href="/webpanel/report/product/exportcsv/check?from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}&category={{ request('category') ?? ''}}&region={{ request('region') ?? ''}}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export ALL CSV</a>
-            <a href="/webpanel/report/product/exportexcel/check?from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}&category={{ request('category') ?? ''}}&region={{ request('region') ?? ''}}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export ALL Excel</a>
+            <a href="/webpanel/report/product/exportcsv/check?from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}&category={{ request('category') ?? ''}}&region={{ request('region') ?? ''}}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export CSV</a>
+            <a href="/webpanel/report/product/exportexcel/check?from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}&category={{ request('category') ?? ''}}&region={{ request('region') ?? ''}}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export Excel</a>
     
         </div>
 
@@ -514,7 +514,6 @@
                                 
                             ?>
                         
-    
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding: 20px 8px 20px;">{{$start++}}</td>
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding: 20px 8px 20px;">{{$product_code}}</td>
                         <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">{{$product_name ??= 'ไม่พบข้อมูล'}}</td>

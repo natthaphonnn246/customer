@@ -883,7 +883,7 @@ class PortalCustomerController
                     
                     ]);
 
-                usleep(100000);
+                // usleep(100000);
                 // check user id;
                 $check_customer_id = Customer::select('id')->where('id', $id)->first();
                 $customer_id =  $check_customer_id->id;

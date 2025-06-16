@@ -27,7 +27,7 @@
             /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
-            /* text-align: left; */
+            /* min-width: 1200px; */
         }
         #admin {
             background-color: #007bff;
@@ -220,6 +220,34 @@
             color: #3b25ff;
             text-decoration: underline;
         }
+        #createProduct {
+            background-color: #6ccf5b;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #createProduct:hover {
+            background-color:  #3ec027;
+            color: #ffffff;
+        }
+        #updateProduct {
+            background-color: #9f9f9f;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #updateProduct:hover {
+            background-color:  #878787;
+            color: #ffffff;
+        }
     </style>
 
         @if($user_id_admin == '0000')
@@ -257,12 +285,12 @@
 
             <div class="py-2">
             </div>
-            <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/report/seller" id="backLink">ย้อนกลับ</a> / นำเข้าไฟล์การขายสินค้า</span>
+            <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/report/product/importproduct" id="backLink">ย้อนกลับ</a> / อัปเดตต้นทุนสินค้า</span>
             {{-- <span class="ms-6" style="color: #8E8E8E;">รายงานการขายสินค้า</span> --}}
             <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
             <div class="ms-6" style="text-align: left; margin-top: 10px;">
-                <span style="color: #e84545;">**นำเข้าไฟล์ขายสินค้า (Seller from db:vmdrug) tb: Sellers</span>
+                <span style="color: #e84545;">**นำเข้าไฟล์สินค้า (Product from db:vmdrug) tb: Products</span>
             </div>
 
             @error('import_csv')
@@ -284,123 +312,27 @@
             {{-- {{$check_provinces}} --}}
             <div class="ms-6 mr-6" style="text-align: left;">
 
-        
-                <form method="post" id="import" action="/webpanel/report/seller/importcsv" enctype="multipart/form-data" style="margin-top: 10px;">
+                <form method="post" id="import" action="/webpanel/report/product/update-cost/importcsv" enctype="multipart/form-data" style="margin-top: 10px;">
                     @csrf
-                    <input type="file"  id="import_csv" name="import_csv" class="form-control text-muted"><br/>
+                    <input type="file"  id="import_csv" name="import_cost" class="form-control text-muted"><br/>
                     <input type="submit" id="importCustomer" name="submit_csv" class="btn btn-primary mb-4" value="นำเข้าไฟล์">
                 
                 </form>
-                <hr style="color: #8E8E8E;">
+                
+                {{-- <hr class="my-3" style="color: #8E8E8E; width: 100%;"> --}}
 
- {{--                @if(Session::get('success_import'))
+                @if(Session::get('success_import'))
                 <div class="py-4">
                     <ul class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success_import') }}</ul>
                 </div>
                 @endif
-
-                @if(Session::get('import'))
-                <div class="py-4">
-                    <ul class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('import') }}</ul>
-                </div>
-                @endif --}}
-
             
             </div>
+               
+            <hr class="my-3" style="color: #8E8E8E; width: 100%;">
 
-            <div class="ms-6 mt-2">
-                <h2 style="color: rgb(26, 26, 26); font-weight: 400; padding:10px; font-size:18px;">สถานะการนำเข้าข้อมูล</h2>
-            </div>
-          
-        <div class="container" style="width:95%;">
-            
-           {{--      @if(session('import'))
-                    <div class="alert alert-success">{{ session('import') }}</div>
-                @endif
- --}}
-   
-                @if($importStatus?->id)
-                <div id="import-status">
-                    <div class="alert alert-secondary" id="import-status">
-                        {{ 'กำลังประมวลผล' }}
-                    </div> 
-                </div>  
-                @endif
-
-            
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px; width: 20%;">วันที่</td>
-                            <td scope="row" style="color:#9C9C9C; text-align: center;  padding:20px; width: 20%;">สถานะ</td>
-                            <td scope="row" style="color:#9C9C9C; text-align: center;  padding:20px; width: 20%;">จำนวนแถวที่นำเข้า</td>
-
-                        </tr>
-                    </thead>
-                    <tbody id="import-table-body">
-                        @foreach($imports as $import)
-                            <tr style="">
-                                <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px; width: 20%;">{{ $import->created_at->format('Y-m-d H:i') }}</td>
-                                <td scope="row" style="color:#9C9C9C; text-align: center;  padding:20px; width: 20%;">
-                                    @if($import->status === 'completed')
-                                        <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(58, 174, 19);">ดำเนินการแล้ว</span>
-                                    @elseif($import->status === 'processing')
-                                    <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(251, 169, 46);">กำลังดำเนินการ</span>
-                                    @else
-                                    <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(113, 113, 113);">รอดำเนินการ</span>
-                                    @endif
-                                </td>
-                                <td scope="row" style="color:#9C9C9C; text-align: center;  padding:20px; width: 20%;">{{ $import->success_count }}</td>
-            
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-        </div>
-            
-    @endsection
-            
     </div>
 
-    <script>
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const importId = "{{ $importStatus?->id }}";
-            setInterval(() => {
-                fetch(`/import-status/${importId}`)
-                    .then(res => res.text())
-                    .then(html => {
-                        const tbody = document.getElementById('import-status');
-                        if (tbody) {
-                            tbody.innerHTML = html;
-                            console.log('import');
-                        } else {
-                            console.error('ไม่เจอ element #import-status');
-                        }
-                    });
-            }, 5000);
-        });
-    </script>
-    
-    <script>
-
-        document.addEventListener('DOMContentLoaded', () => {
-            setInterval(() => {
-                fetch('{{ route("imports.partial") }}')
-                    .then(res => res.text())
-                    .then(html => {
-                        const tbody = document.getElementById('import-table-body');
-                        if (tbody) {
-                            tbody.innerHTML = html;
-                            console.log('pass');
-                        } else {
-                            console.error('ไม่เจอ element #import-table-body');
-                        }
-                    });
-            }, 5000);
-        });
-    </script>
-
-
+@endsection
 </body>
 </html>

@@ -63,7 +63,7 @@ class SellerCsvExport
                                 ->havingBetween('total_sales', [$min_selling, $max_selling])
                                 ->whereNotIn('report_sellers.customer_id', $code_notin)
                                 ->orderBy('customer_id', 'asc')
-                                ->get();
+                                ->cursor(); 
 
                 $data = $report_seller->toArray();
                 // dd('dd');
@@ -73,7 +73,7 @@ class SellerCsvExport
 
                  //แสดงข้อมูลลูกค้า;
 
-                //  dd('export');
+                // dd('export');
                         $date = $to_date.'_'.'to'.'_'.$from_date;
                         $filename = 'Seller_'. $date.'.csv';
                             // Start the output buffer.
@@ -91,7 +91,7 @@ class SellerCsvExport
                                         ->whereBetween('report_sellers.date_purchase', [$from_date, $to_date])
                                         ->whereNotIn('report_sellers.customer_id', $code_notin)
                                         ->orderBy('customer_id', 'asc')
-                                        ->get(); 
+                                        ->cursor(); 
 
                         $data = $report_seller->toArray();
 
@@ -137,7 +137,7 @@ class SellerCsvExport
                                             ->groupBy('report_sellers.customer_id','report_sellers.customer_name', 'report_sellers.purchase_order', 'customers.sale_area', 'customers.admin_area', 'customers.geography', 'customers.delivery_by')
                                             ->whereNotIn('report_sellers.customer_id', $code_notin)
                                             ->orderBy('customer_id', 'asc')
-                                            ->get();
+                                            ->cursor(); 
          
             $data = $report_seller->toArray();
 

@@ -312,7 +312,19 @@
         <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
         </div>
-        <button class="ms-6" id="backTo" onclick="goBack()">ย้อนกลับ</button>
+
+        <div class="container row">
+            <div class="col-sm-6">
+                <button class="ms-6" id="backTo" onclick="goBack()">ย้อนกลับ</button>
+            </div>
+            <div class="col-sm-6 text-right">
+                <a href="/webpanel/report/seller/exportcsv/check/item/{{ request('id') }}?from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}&category={{ request('category') }}&region={{ request('region') }}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export CSV</a>
+                <a href="/webpanel/report/seller/exportexcel/check/item/{{ request('id') }}?from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}&category={{ request('category') }}&region={{ request('region') }}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export Excel</a>
+        
+                </div>
+        </div>
+
+        
         {{-- <span  class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/report/seller" id="backLink">การขายสินค้า (Selling merchandise)</a> / รายละเอียด</span> --}}
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
@@ -331,9 +343,6 @@
 
                 @if(empty($purchase_order))
 
-                <?php 
-                $sum_order = 0;
-                ?>
                     <table class="table table-striped ms-2">
                       <thead>
                             <tr>
@@ -351,7 +360,6 @@
                            {{--  @foreach($order_selling as $row)
                                 {{$row->date_purchase}}
                             @endforeach --}}
-                                
                             
                           <ul class="py-2 mb-2">
                             <span style="font-weight:500; color:#0fc57f; border:solid; padding: 5px 15px 5px; border-radius:5px;">ร้านค้า : {{$count_customer ?? 'ไม่ระบุ'}}</span>
@@ -360,21 +368,27 @@
                          
                             <hr class="my-2" style="color: #8E8E8E; width: 100%;">
        
-                        @php    $total_product = 0; @endphp
+                        @php $total_product = 0; @endphp
                         @foreach($product_list as $row_order)
                         
+                        @php
+                            $name = $customer_name->where('customer_id', $row_order->customer_id)->first();
+
+                        @endphp
+                        
+                        @php $qty = $row_order->quantity_by; @endphp
                           <tr>
                             <td scope="col" style="color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:10px;">{{ $start++ }}</td>
-                            <td scope="col" style="color:#7d7d7d; text-align: left; padding: 20px 8px 20px; width:65%;">{{$row_order->customer_id}} {{$row_order->customer_name}}</td>
-                            <td scope="col" style="color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:10px;">{{  $row_order->quantity_by }}</td>
+                            <td scope="col" style="color:#7d7d7d; text-align: left; padding: 20px 8px 20px; width:65%;">{{$row_order->customer_id}} {{ $name['customer_name'] ?? 'ไม่ระบุชื่อ' }}</td>
+                            <td scope="col" style="color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:10px;">{{  $qty }}</td>
                             <td scope="col" style="color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:10px;">{{$row_order->unit}}</td>
                           </tr>
                           
-                          @php
-                           $total_product +=  $row_order->quantity_by;
-                          @endphp
+                        @php
+                        $total_product +=  $qty;
+                        @endphp
        
-                      @endforeach
+                        @endforeach
 
                       <tr>
                         <td colspan="2" style="background-color:rgb(204, 204, 204); color:#161616; text-align: right; font-weight:400; padding: 20px 8px 20px; width:200px;">ทั้งหมด</td>

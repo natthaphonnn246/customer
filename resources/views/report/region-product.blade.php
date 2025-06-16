@@ -43,8 +43,8 @@
         #admin:hover {
             background-color: #0b59f6;
         }
-        #importSeller {
-            background-color: #ff7692;
+        #importProduct {
+            background-color: #767dff;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -53,8 +53,64 @@
             border-radius: 4px;
             text-align: center;
         }
-        #importSeller:hover {
-            background-color:  #dd3e5e;
+        #importProduct:hover {
+            background-color: #5b63fa;
+            color: #ffffff;
+        }
+        #byCategory {
+            background-color: #fe95d6;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #byCategory:hover {
+            background-color: #fa5bcd;
+            color: #ffffff;
+        }
+        #byRegion {
+            background-color: #989df9;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #byRegion:hover {
+            background-color: #5b63fa;
+            color: #ffffff;
+        }
+        #importCate {
+            background-color: #eeb272;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #importCate:hover {
+            background-color: #f0a658;
+            color: #ffffff;
+        }
+        #importsubCate {
+            background-color: #a4db3e;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #importsubCate:hover {
+            background-color: #94d122;
             color: #ffffff;
         }
         #groupsCustomer {
@@ -72,7 +128,7 @@
             color: #ffffff;
         }
         #edit {
-            background-color: #04a752;
+            background-color: #ffa602;
             color: #FFFFFF;
             border: none;
             cursor: pointer;
@@ -152,7 +208,7 @@
         }
         #exportcsv {
             background-color: #dddddd;
-            color: #3d3d3d;
+            color: #787878;
             border: none;
             cursor: pointer;
             padding: 8px 16px;
@@ -166,7 +222,7 @@
         }
         #exportexcel {
             background-color: #dddddd;
-            color: #3d3d3d;
+            color: #787878;
             border: none;
             cursor: pointer;
             padding: 8px 16px;
@@ -260,21 +316,8 @@
             cursor: pointer;
         }
         #backLink:hover {
-            color: #4330f3;
+            color: #3b25ff;
             text-decoration: underline;
-        }
-        #backTo {
-            background-color: #4355ff;
-            color:white;
-            padding:10px;
-            width: 100px;
-            border-radius: 8px;
-        }
-        #backTo:hover {
-            padding:10px;
-            width: 100px;
-            background-color: #2a3de4;
-            border-radius: 8px;
         }
     </style>
     
@@ -309,111 +352,102 @@
         @endsection
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
+
         <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
         </div>
-        <button class="ms-6" id="backTo" onclick="goBack()">ย้อนกลับ</button>
-        {{-- <span  class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/report/seller" id="backLink">การขายสินค้า (Selling merchandise)</a> / รายละเอียด</span> --}}
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/report/product/sales/region/view?category={{ request('category') }}&region={{ request('region') }}&from={{ request('from') }}&to={{ request('to') }}" id="backLink">ย้อนกลับ</a> / ขายตามภูมิศาสตร์</span>
+        {{-- <span class="ms-6" style="color: #8E8E8E;">ขายตามหมวดหมู่สินค้า</span> --}}
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
-        <script>
-        function goBack() {
-            window.history.back();
-        }
-        </script>
+        <div class="mr-6" style="text-align: right;">
 
-        <span class="ms-6" style="color: #747474; font-weight:400;"> รหัสลูกค้า : {{$customer_id ?? 'ไม่ระบุ'}} | {{$customer_name->customer_name ?? 'ไม่พบข้อมูล'}}
-             | ขายโดย : {{$customer_name->sale_area ?? 'ไม่มี'}} | แอดมิน : {{$customer_name->admin_area ?? 'ไม่มี'}} | ภูมิศาสตร์ : {{$customer_name->geography ?? 'ไม่มี'}}</span>
-        <div class="row ms-6 mr-10 py-2">
-
-
-                <hr class="my-2" style="color: #8E8E8E; width: 100%;">
-
-                @if(!empty($purchase_order))
-
-                @foreach($purchase_order as $row_po)
-
-                <?php 
-                $sum_order = 0;
-                ?>
-                    <table class="table table-striped ms-2">
-                      <thead>
-                            <tr>
-                                <td scope="col" style="font-weight:500; font-size:16px; color:#7d7d7d; text-align: left; padding: 20px 8px 20px; width:65%;">รายการ</td>
-                                <td scope="col" style="font-weight:500; font-size:16px; color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:100px;">หน่วย</td>
-                                <td scope="col" style="font-weight:500; font-size:16px; color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:100px;">จำนวน</td>
-                                <td scope="col" style="font-weight:500; font-size:16px; color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:100px;">ราคา</td>
-                                <td scope="col" style="font-weight:500; font-size:16px; color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:100px;">ต้นทุน</td>
-                                <td scope="col" style="font-weight:500; font-size:16px; color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:100px;">รวมเป็นเงิน</td>
-                              </tr>
-                        </thead>
-                        <tbody>
-
-                          {{--   @if($row_po->purchase_order == $order_selling_date->purchase_order)
-                            {{$order_selling_date->date_purchase}}
-                            @endif --}}
-                           {{--  @foreach($order_selling as $row)
-                                {{$row->date_purchase}}
-                            @endforeach --}}
-                                
-                            
-                          <ul class="py-2 mb-2">
-                            <span style="font-weight:500; color:#f33e3e; border:solid; padding:5px; border-radius:5px;">{{$row_po->purchase_order ?? 'ไม่ระบุ'}}</span>
-                            <span style="color:#666666;">สั่งซื้อวันที่ : {{$row_po->date_purchase ?? 'ไม่ระบุ'}}</span>
-                          </ul>
-                         
-                            <hr class="my-2" style="color: #8E8E8E; width: 100%;">
-       
-                            @foreach($order_selling as $row_order)
-                            @if($row_po->purchase_order == $row_order->purchase_order)
-                            <?php 
-                                // $sum_price = $row_order->quantity * number_format($row_order->price,2);
-                                $sum_price = $row_order->quantity * $row_order->price;
-
-                                // echo gettype((int)number_format($row_order->price,2));
-                            ?>
-                    
-                          <tr>
-                            <td scope="col" style="color:#7d7d7d; text-align: left; padding: 20px 8px 20px; width:65%;">{{$row_order->product_id}} {{$row_order->product_name}}</td>
-                            <td scope="col" style="color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:100px;">{{$row_order->unit}}</td>
-                            <td scope="col" style="color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:100px;">{{$row_order->quantity}}</td>
-                            <td scope="col" style="color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:100px;">{{$row_order->price}}</td>
-                            <td scope="col" style="color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:100px;">{{$row_order->cost}}</td>
-                            <td scope="col" style="color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:100px;">{{ number_format($sum_price,2) }}</td>
-                          </tr>
-                     
-                            <?php 
-                            // $sum_order = 0;
-                            $sum_order += $sum_price;
-                            
-                            ?>
-                            @endif
-                            @endforeach
-                          <tr>
-                           
-                            <td colspan="5" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">ยอดรวม (บาท)</td>
-                            <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: center; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ number_format($sum_order,2) }}</td>
-                            {{-- <td colspan="1" style="color:#7d7d7d; text-align: center; padding: 20px 8px 20px; width:200px;">บาท</td> --}}
+            <a href="/webpanel/report/product/sales/region/exportcsv?product={{ request('product') }}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}&category={{ request('category') ?? ''}}&region={{ request('region') ?? ''}}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export CSV</a>
+            <a href="/webpanel/report/product/sales/region/exportexcel?product={{ request('product') }}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}&category={{ request('category') ?? ''}}&region={{ request('region') ?? ''}}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export Excel</a>
     
-                          </tr>
-                      {{-- @endforeach --}}
-             
-                      @if ($row_order->unit == 'โค้ด')
-                      <tr>
-                           
-                        <td colspan="6" style="background-color:rgb(253, 253, 253); color:#ff4444; text-align: left; font-weight:400; padding: 20px 8px 20px; width:200px;">*ถ้ามีโค้ดส่วนลด ต้องนำส่วนลดมาลบยอดรวมทุกครั้ง ({{$row_order->product_name}})</td>
+        </div>
+        <hr class="my-4" style="color: #8E8E8E; width: 100%;">
+  
+        <div class="container"  style="width: 95%;">
 
-                      </tr>
-                      @endif
-                      @endforeach
-                        </tbody>
-                      </table>
-               
-                @endif
-           
+            <div class="row ms-2">
+
+            </div>
+
+        </div>
+
+            <div class="ms-3 mr-4 mb-2 mt-2">
+
+                <span class="ms-2" style="font-size:16px; padding:5px 10px; border-radius:8px; color:#8a8a8a;"><span style="color:rgb(30, 146, 255);">({{ request('product') }}) {{ $product?->product_name ?? '' }} </span>| {{ $category_name?->categories_name ?? '' }} ({{ request('category') }}) | <span style="color:rgb(255, 30, 30);">{{ request('region') }} </span>| {{ request('from') }} ถึง {{ request('to') }}</span>
+                <hr class="my-4" style="color: #8E8E8E; width: 100%;">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <td scope="col" style="color:#838383; text-align: center; font-weight: 500; width:5px;">#</td>
+                            <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">CODE</td>
+                            <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">ร้านค้า</td>
+                            <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">รหัสสินค้า</td>
+                            <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">ชื่อสินค้า</td>
+                            <td scope="col" style="color:#838383; text-align: right; font-weight: 500;">หน่วย</td>
+                            <td scope="col" style="color:#838383; text-align: right; font-weight: 500;">จำนวน</td>
+                            <td scope="col" style="color:#838383; text-align: right; font-weight: 500;">ราคา</td>
+                            <td scope="col" style="color:#838383; text-align: right; font-weight: 500;">รวมเป็นเงิน</td>
+                        </tr>
+                        </tr>
+                        </tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        @if(!@empty($sales))
+                        @php 
+                        
+                            $start = 1; 
+                            $total = 0;
+                            $total_qty = 0;
+                        
+                        @endphp
+
+                        @foreach ($sales as $row_product)
+                        <tr>
+                           
+                            <td scope="row" style="color:#9C9C9C; text-align: center; padding: 20px 8px 20px; width:5%;">{{ $start++ }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:10%;">{{ $row_product->customer_id }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:10%;">{{ $row_product->customer_name }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:5%;">{{ $row_product->product_id }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:25%;">{{ $row_product->product_name }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;">{{ $row_product->unit }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;">{{ $row_product->quantity_by }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;">{{ number_format($row_product->average_price,2) }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;">{{ number_format($row_product->total_sales,2) }}</td>
+
+                        </tr>
+
+                        @php 
+                            $total += $row_product->total_sales;
+                            $total_qty += $row_product->quantity_by;
+                        @endphp
+                        @endforeach
+
+                        <tr>
+                           
+                            <td colspan="6" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">รวมทั้งหมด</td>
+                            <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ $total_qty }} ({{ $row_product->unit }})</td>
+                            <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;"></td>
+                            <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ number_format($total,2) }}</td>
+    
+                        </tr>
+                        @endif
+                    </tbody>
+
+                </table>
+            </div>
+    
+       
+            <hr class="my-3" style="color: #8E8E8E; width: 100%;">
 
     </div>
-</div>
 @endsection
+
 </body>
 </html>
