@@ -209,7 +209,7 @@
                                 </li>
                                 <li class="mt-4">
                                     <span>ที่อยู่จัดส่ง</span>
-                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address">    
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address" required>    
                                 </li>                          
                             </ul>
                         </div>
@@ -232,7 +232,7 @@
                         <div class="col-sm-6">
                             <ul class="mt-2" style="width: 100%;">
                                 <span>อำเภอ/แขวง</span>
-                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="amphur" id="amphures">
+                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="amphur" id="amphures" required>
                                     
                                     @if(isset($ampures))
                                         @foreach($ampures as $row)
@@ -246,7 +246,7 @@
                         <div class="col-sm-6 py-3">
                             <ul class="mb-8" style="width: 100%;">
                                 <span>ตำบล/เขต</span>
-                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts">
+                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts" required>
 
                                     @if(isset($district))
                                         @foreach($district as $row)
@@ -260,7 +260,7 @@
                         <div class="col-sm-6 py-3">
                             <ul class="mb-8" style="width: 100%;">
                                 <span>รหัสไปรษณีย์</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="zip_code" id="zipcode">
+                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="zip_code" id="zipcode" required>
                             </ul>
                         </div>
                     </div>

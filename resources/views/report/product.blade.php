@@ -395,7 +395,7 @@
         <hr class="my-3" style="color: #8E8E8E; width: 100%;">
         <!--- search --->
   
-        <div class="container"  style="width: 95%;">
+        <div class="ms-4"  style="width: 95%;">
 
             <div class="row ms-2">
                 {{-- <form method="get" action="/webpanel/report/product/search"> --}}

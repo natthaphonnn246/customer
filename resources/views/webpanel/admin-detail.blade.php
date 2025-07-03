@@ -160,6 +160,21 @@
                                 </li>
                                 <li class="my-4" style="width: 100%;">
                                     <ul style="width: 100%;">
+                                        <span>สิทธิ์แสดงสถานะการสั่งซื้อ</span> <span style="font-size: 12px; color:red;">*มี = เห็นสถานะการสั่งซื้อ</span>
+                                        <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="purchase_status" id="rolemain">
+                                
+                                            {{-- @if(($admin_master->user_code) == 0000)
+                                            <option value="2" selected>มี</option>
+                                            @else --}}
+                                            <option {{$admin_master->purchase_status == 0 ? 'selected': '' }} value="0">ไม่มี</option>
+                                            <option {{$admin_master->purchase_status == 1 ? 'selected': '' }} value="1">มี</option>
+                                          {{--   @endif --}}
+        
+                                        </select>
+                                    </ul>
+                                </li>
+                                <li class="my-4" style="width: 100%;">
+                                    <ul style="width: 100%;">
                                         <span>สิทธิ์แอดมิน</span> <span style="font-size: 12px; color:red;">*มีสิทธิ์ = ทดสอบได้ทุกประเภทแอดมิน</span>
                                         <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="admin_role" id="rolemain">
                                 

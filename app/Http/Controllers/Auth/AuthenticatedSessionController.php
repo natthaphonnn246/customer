@@ -283,7 +283,7 @@ class AuthenticatedSessionController extends Controller
                                                                             'ip_address' => $request->ip(),
                                                                             'last_activity' => $date,
                                                                         ]);
-
+// dd('dd');
                                                                 // $check_login = User::where('email',$request->email)->update(['check_login' => 'login']);
                                                                 // return redirect()->route('portal');
                                                                 return redirect()->action(
@@ -292,7 +292,7 @@ class AuthenticatedSessionController extends Controller
                                                                 );
 
                                                                 } else {
-                                                                    
+                                                                   
                                                                     return back();
                                                                 }
 
@@ -351,6 +351,7 @@ class AuthenticatedSessionController extends Controller
                                                                 return back();
 
                                                             } */
+                                              
                                                             return redirect()->route('portal');
                                                         }
                                                 //admin;
@@ -453,6 +454,9 @@ class AuthenticatedSessionController extends Controller
 
                                                 }
                                             } else {
+
+                                                // dd('dd');
+                                                // return redirect()->route('portal');
                                                 // not admin_area at table customes;
                                                 Auth::guard('web')->logout();
                                                 $request->session()->invalidate();
@@ -854,6 +858,7 @@ class AuthenticatedSessionController extends Controller
                                                             'ip_address' => $request->ip(),
                                                             'last_activity' => $date,
                                                         ]);
+                                                        
                                                 return redirect()->route('portal');
 
                                             }

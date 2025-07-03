@@ -17,6 +17,7 @@ use App\Exports\CustomerAllExport;
 use App\Exports\CustomerInactiveExport;
 use App\Exports\UpdateLatestExport;
 use App\Exports\CustomerAreaExport;
+use App\Models\ReportSeller;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +26,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
+use Illuminate\Database\Query\JoinClause;
+
 
 class WebpanelCustomerController
 {
@@ -32,7 +36,8 @@ class WebpanelCustomerController
     public function index(Request $request): View
     {
 
-        @$page = $request->page;
+        // dd(strtotime('2025-04-21'));
+        $page = $request->page;
         if ($page) {
             $page = $request->page;
         } else {
@@ -48,6 +53,18 @@ class WebpanelCustomerController
 
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                    ->select('customer_id')
+                                    ->distinct()
+                                    ->get(); 
+
+        $check_purchase = ReportSeller::select('customer_id')
+                                        ->selectRaw('MAX(date_purchase) as date_purchase')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->groupBy('customer_id')
+                                        ->orderByDesc('date_purchase')
+                                        ->get();
 
         //Dashborad;
        /*  $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
@@ -119,26 +136,225 @@ class WebpanelCustomerController
             $check_keyword = Customer::whereNotIn('customer_id', $code_notin)
                                         ->where('customer_id', 'Like', "%{$keyword_search}%")
                                         ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                        ->get();
+                                        ->first();
 
-            // dd($check_customer_code);
+          /*   $report_seller = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                        ->where(function ($query) use ($keyword_search) {
+                                            $query->where('customer_id', 'like', "%{$keyword_search}%")
+                                                ->orWhere('customer_name', 'like', "%{$keyword_search}%");
+                                            })
+                                        ->select('date_purchase', 'purchase_order', 'customer_id', 'product_id', 'product_name', 'unit', 'quantity')
+                                        ->groupBy('customer_id', 'purchase_order', 'date_purchase', 'product_id', 'product_name', 'unit', 'quantity')
+                                        ->orderByDesc('date_purchase')
+                                        ->get(); */
+
+                // 1. หา date_purchase ล่าสุดของแต่ละ customer
+                $latest_po = ReportSeller::select('customer_id', DB::raw('MAX(date_purchase) as latest_date'))
+                                            ->whereNotIn('customer_id', $code_notin)
+                                            ->when($keyword_search, function ($query) use ($keyword_search) {
+                                                $query->where(function ($q) use ($keyword_search) {
+                                                    $q->where('customer_id', 'like', "%{$keyword_search}%")
+                                                    ->orWhere('customer_name', 'like', "%{$keyword_search}%");
+                                                });
+                                            })
+                                            ->groupBy('customer_id');
+
+                // 2. Join กับข้อมูลสินค้าใน PO ล่าสุด
+   /*              $report_seller = ReportSeller::joinSub($latest_po, 'latest', function ($join) {
+                                                $join->on('report_sellers.customer_id', '=', 'latest.customer_id')
+                                                    ->on('report_sellers.date_purchase', '=', 'latest.latest_date');
+                                                })
+                                                ->select(
+                                                    'report_sellers.date_purchase',
+                                                    'report_sellers.customer_id',
+                                                    'report_sellers.purchase_order',
+                                                    'report_sellers.product_id',
+                                                    'report_sellers.product_name',
+                                                    'report_sellers.unit',
+                                                    'report_sellers.quantity',
+                                                    DB::raw('(report_sellers.price*report_sellers.quantity) as total_sale')
+                                                )
+                                                ->orderBy('report_sellers.customer_id')
+                                                ->get();
+
+                $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                ->where(function ($query) use ($keyword_search) {
+                                                    $query->where('customer_id', 'like', "%{$keyword_search}%")
+                                                        ->orWhere('customer_name', 'like', "%{$keyword_search}%");
+                                                    })
+                                                ->select('date_purchase', 'purchase_order', 'customer_id')
+                                                ->groupBy('customer_id', 'purchase_order', 'date_purchase')
+                                                ->orderByDesc('date_purchase')
+                                                ->first(); */
+
+            //เช็คว่า วันที่สั่ง + 7 วัน เปรียบเทียบกับเวลาปัจจุบันว่า เกิน 7 วันไหม เช่น สั่งวันที่ 21-04-68 แต่วันนี้ 26-06-68 เกิน 7 วัน == true;
+         /*    $check_over_5 = Carbon::parse($check_purchase?->date_purchase)->addDays(5)->lessThan(now());
+            $check_over_7 = Carbon::parse($check_purchase?->date_purchase)->addDays(7)->lessThan(now()); */
+            // dd($check_over_7);
+
+            // dd($check_purchase->date_purchase);
 
             // dd($check_search->admin_area);
             if (!empty($check_keyword)) {
-                return view('webpanel/customer', compact('check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting', 'total_status_registration',
-                            'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_registration', 'status_updated', 'user_id_admin'));
+                return view('webpanel/customer', compact(
+                                                        'check_keyword', 
+                                                        'admin_area', 
+                                                        'customer', 
+                                                        'start', 
+                                                        'total_page', 
+                                                        'page', 
+                                                        'total_customer', 
+                                                        'total_status_waiting', 
+                                                        'total_status_registration',
+                                                        'total_status_action', 
+                                                        'total_status_completed', 
+                                                        'total_status_updated', 
+                                                        'customer_status_inactive', 
+                                                        'status_alert', 
+                                                        'status_waiting', 
+                                                        'status_registration', 
+                                                        'status_updated', 
+                                                        'user_id_admin',
+                                                       /*  'check_over_5',
+                                                        'check_over_7',
+                                                        'report_seller' */
+                                                        'check_id',
+                                                        'check_purchase'
+                                                    ));
         
             }
 
                 // return back();
 
         }
-        
+                                    
+        //เช็คว่า วันที่สั่ง + 7 วัน เปรียบเทียบกับเวลาปัจจุบันว่า เกิน 7 วันไหม เช่น สั่งวันที่ 21-04-68 แต่วันนี้ 26-06-68 เกิน 7 วัน == true;
 
-        return view('webpanel/customer', compact('admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting', 'total_status_registration',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_registration', 'status_updated', 'user_id_admin'));
+
+/*         $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                    ->select('customer_id')
+                                    ->distinct()
+                                    ->get(); 
+
+        $check_purchase = ReportSeller::select('customer_id')
+                                    ->selectRaw('MAX(date_purchase) as date_purchase')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->groupBy('customer_id')
+                                    ->orderByDesc('date_purchase')
+                                    ->get();
+                             */
+    
+/*         $diffDay_five = Carbon::parse($check_purchase?->date_purchase)->addDays(5)->lessThan(now());
+        $diffDay_seven = Carbon::parse($check_purchase?->date_purchase)->addDays(7)->lessThan(now()); */
+        // dd($check_purchase->customer_id);
+
+        return view('webpanel/customer', compact(
+                                                'admin_area', 
+                                                'customer', 
+                                                'start', 
+                                                'total_page', 
+                                                'page', 
+                                                'total_customer', 
+                                                'total_status_waiting', 
+                                                'total_status_registration',
+                                                'total_status_action', 
+                                                'total_status_completed', 
+                                                'total_status_updated', 
+                                                'customer_status_inactive', 
+                                                'status_alert', 
+                                                'status_waiting', 
+                                                'status_registration', 
+                                                'status_updated', 
+                                                'user_id_admin',
+                                                'check_id',
+                                                'check_purchase'
+                                                /* 'diffDay_five',
+                                                'diffDay_seven', */
+                                            ));
         
     }
+
+    public function purchase(Request $request)
+    {
+        
+        $use_id = $request->use_id;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        if ($use_id) {
+
+            /* $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                    ->select('customer_id', 'customer_name')
+                                    ->where('customer_id', $use_id)
+                                    ->distinct()
+                                    ->get(); */
+
+                                          // 1. หา date_purchase ล่าสุดของแต่ละ customer
+                $latest_po = ReportSeller::select('customer_id', DB::raw('MAX(date_purchase) as latest_date'))
+                                            ->whereNotIn('customer_id', $code_notin)
+                                            ->where('customer_id', $use_id)
+                                            ->groupBy('customer_id');
+
+// 2. Join กับข้อมูลสินค้าใน PO ล่าสุด
+                $report_seller = ReportSeller::joinSub($latest_po, 'latest', function ($join) {
+                                                $join->on('report_sellers.customer_id', '=', 'latest.customer_id')
+                                                    ->on('report_sellers.date_purchase', '=', 'latest.latest_date');
+                                                })
+                                                ->select(
+                                                    'report_sellers.date_purchase',
+                                                    'report_sellers.customer_id',
+                                                    'report_sellers.purchase_order',
+                                                    'report_sellers.product_id',
+                                                    'report_sellers.product_name',
+                                                    'report_sellers.unit',
+                                                    'report_sellers.quantity',
+                                                    DB::raw('(report_sellers.price*report_sellers.quantity) as total_sale')
+                                                )
+                                                ->orderBy('report_sellers.customer_id')
+                                                ->get();
+
+            return response()->json([
+                'status'  => 'success',
+                'use_id'  =>  $report_seller->toArray(),
+                'message' => 'รับค่าเรียบร้อย'
+            ]);
+        }
+
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'ไม่พบข้อมูล'
+        ], 400);
+    }
+
+/*     public function purchase(Request $request)
+{
+    $use_id = $request->use_id;
+
+    // ตัวอย่างข้อมูลจาก Database
+    $data = [
+        [
+            'product_id' => 'P001',
+            'product_name' => 'สินค้า A',
+            'unit' => 'ชิ้น',
+            'qty' => 10
+        ],
+        [
+            'product_id' => 'P002',
+            'product_name' => 'สินค้า B',
+            'unit' => 'กล่อง',
+            'qty' => 5
+        ]
+    ];
+
+    return response()->json([
+        'status' => 'success',
+        'use_id' => $use_id,
+        'po_number' => 'PO123456',
+        'items' => $data,
+        'message' => 'ดึงข้อมูลสำเร็จ'
+    ]);
+} */
+
+
 
     public function indexAdminArea(Request $request, $admin_id)
     {
@@ -183,6 +399,20 @@ class WebpanelCustomerController
         $start = $row_customer[1];
         $total_page = $row_customer[2];
         $page = $row_customer[3];
+
+
+        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                    ->select('customer_id')
+                                    ->distinct()
+                                    ->get(); 
+
+        $check_purchase = ReportSeller::select('customer_id')
+                                    ->selectRaw('MAX(date_purchase) as date_purchase')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->groupBy('customer_id')
+                                    ->orderByDesc('date_purchase')
+                                    ->get();
+                            
 
         // name;
         $admin_name = User::select('admin_area', 'name')->where('admin_area', $admin_id)->first();
@@ -254,7 +484,27 @@ class WebpanelCustomerController
                     // dd($check_search->admin_area);
                     if (!empty($check_keyword)) {
 
-                        return view('webpanel/adminarea-waiting',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting','status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
+                        return view('webpanel/adminarea-waiting',compact(
+                                                                        'check_keyword',
+                                                                        'count_page', 
+                                                                        'admin_name', 
+                                                                        'customer', 
+                                                                        'start', 
+                                                                        'total_page', 
+                                                                        'page', 
+                                                                        'total_customer_adminarea',
+                                                                        'total_status_registration', 
+                                                                        'total_status_waiting', 
+                                                                        'total_status_action', 
+                                                                        'total_status_completed',
+                                                                        'status_waiting',
+                                                                        'status_registration', 
+                                                                        'status_updated', 
+                                                                        'status_alert', 
+                                                                        'user_id_admin',
+                                                                        'check_id',
+                                                                        'check_purchase'
+                                                                    ));
                 
                     }
         
@@ -263,7 +513,26 @@ class WebpanelCustomerController
             }
             $count_page = 1;
            
-            return view('webpanel/adminarea-waiting' ,compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting','status_registration', 'status_updated', 'status_alert','user_id_admin'));
+            return view('webpanel/adminarea-waiting' ,compact(
+                                                            'admin_name',
+                                                            'count_page', 
+                                                            'customer', 
+                                                            'start', 
+                                                            'total_page', 
+                                                            'page', 
+                                                            'total_customer_adminarea',
+                                                            'total_status_registration', 
+                                                            'total_status_waiting', 
+                                                            'total_status_action', 
+                                                            'total_status_completed',
+                                                            'status_waiting',
+                                                            'status_registration', 
+                                                            'status_updated', 
+                                                            'status_alert',
+                                                            'user_id_admin',
+                                                            'check_id',
+                                                            'check_purchase'
+                                                        ));
             break;
 
             case 'status-action':
@@ -277,13 +546,12 @@ class WebpanelCustomerController
 
                 // dd($count_page_master);
                 if($keyword_search != '') {
-            
+
                         $count_page = Customer::where('status','ต้องดำเนินการ')
                                                 ->where('admin_area', $admin_id)
                                                 // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                 ->whereNotIn('customer_id', $code_notin)
                                                 ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
-                        // dd(gettype($count_page));
             
                         $perpage = 10;
                         $total_page = ceil($count_page / $perpage);
@@ -312,7 +580,27 @@ class WebpanelCustomerController
                         // dd($check_search->admin_area);
                         if (!empty($check_keyword)) {
 
-                            return view('webpanel/adminarea-action',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration',  'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_registration',  'status_updated', 'status_alert', 'user_id_admin'));
+                            return view('webpanel/adminarea-action',compact(
+                                                                            'check_keyword',
+                                                                            'count_page', 
+                                                                            'admin_name', 
+                                                                            'customer', 
+                                                                            'start', 
+                                                                            'total_page', 
+                                                                            'page', 
+                                                                            'total_customer_adminarea',
+                                                                            'total_status_registration',  
+                                                                            'total_status_waiting', 
+                                                                            'total_status_action', 
+                                                                            'total_status_completed',
+                                                                            'status_waiting', 
+                                                                            'status_registration',  
+                                                                            'status_updated', 
+                                                                            'status_alert', 
+                                                                            'user_id_admin',
+                                                                            'check_id',
+                                                                            'check_purchase'
+                                                                        ));
                     
                         }
             
@@ -320,7 +608,27 @@ class WebpanelCustomerController
             
                 }
                 $count_page = 1;
-                return view('webpanel/adminarea-action' ,compact('count_page_master','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_registration' , 'status_updated', 'status_alert', 'user_id_admin'));
+                return view('webpanel/adminarea-action' ,compact(
+                                                                'count_page_master',
+                                                                'count_page', 
+                                                                'admin_name', 
+                                                                'customer', 
+                                                                'start', 
+                                                                'total_page', 
+                                                                'page', 
+                                                                'total_customer_adminarea', 
+                                                                'total_status_registration', 
+                                                                'total_status_waiting', 
+                                                                'total_status_action', 
+                                                                'total_status_completed',
+                                                                'status_waiting', 
+                                                                'status_registration', 
+                                                                'status_updated', 
+                                                                'status_alert', 
+                                                                'user_id_admin',
+                                                                'check_id',
+                                                                'check_purchase'
+                                                            ));
                 break;
 
                 case 'status-completed':
@@ -366,7 +674,27 @@ class WebpanelCustomerController
                 
                             // dd($check_search->admin_area);
                             if (!empty($check_keyword)) {
-                                return view('webpanel/adminarea-completed',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting','status_registration', 'status_updated', 'status_alert','user_id_admin'));
+                                return view('webpanel/adminarea-completed',compact(
+                                                                                    'check_keyword',
+                                                                                    'count_page', 
+                                                                                    'admin_name', 
+                                                                                    'customer', 
+                                                                                    'start', 
+                                                                                    'total_page', 
+                                                                                    'page', 
+                                                                                    'total_customer_adminarea',
+                                                                                    'total_status_registration', 
+                                                                                    'total_status_waiting', 
+                                                                                    'total_status_action', 
+                                                                                    'total_status_completed',
+                                                                                    'status_waiting',
+                                                                                    'status_registration', 
+                                                                                    'status_updated', 
+                                                                                    'status_alert',
+                                                                                    'user_id_admin',
+                                                                                    'check_id',
+                                                                                    'check_purchase'
+                                                                                ));
                         
                             }
                 
@@ -374,7 +702,26 @@ class WebpanelCustomerController
                 
                     }
                     $count_page = 1;
-                    return view('webpanel/adminarea-completed' ,compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting','status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
+                    return view('webpanel/adminarea-completed' ,compact(
+                                                                        'admin_name',
+                                                                        'count_page', 
+                                                                        'customer', 
+                                                                        'start', 
+                                                                        'total_page', 
+                                                                        'page', 
+                                                                        'total_customer_adminarea',
+                                                                        'total_status_registration', 
+                                                                        'total_status_waiting', 
+                                                                        'total_status_action', 
+                                                                        'total_status_completed',
+                                                                        'status_waiting',
+                                                                        'status_registration', 
+                                                                        'status_updated', 
+                                                                        'status_alert', 
+                                                                        'user_id_admin',
+                                                                        'check_id',
+                                                                        'check_purchase'
+                                                                    ));
                     break;
 
                     case 'new-registration':
@@ -417,14 +764,35 @@ class WebpanelCustomerController
                                                             ->where('customer_id', 'Like', "%{$keyword_search}%")
                                                             // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                                             ->get();
-                    
+
                                 // dd($check_customer_code);
                     
                                 // dd($check_search->admin_area);
                                 if (!empty($check_keyword)) {
 
                                     // dd('check');
-                                    return view('webpanel/adminarea-registration',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea','total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed','total_status_registration' ,'status_waiting','status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
+                                    return view('webpanel/adminarea-registration',compact(
+                                                                                            'check_keyword',
+                                                                                            'count_page',
+                                                                                            'admin_name', 
+                                                                                            'customer', 
+                                                                                            'start', 
+                                                                                            'total_page', 
+                                                                                            'page', 
+                                                                                            'total_customer_adminarea',
+                                                                                            'total_status_registration', 
+                                                                                            'total_status_waiting', 
+                                                                                            'total_status_action', 
+                                                                                            'total_status_completed',
+                                                                                            'total_status_registration',
+                                                                                            'status_waiting',
+                                                                                            'status_registration', 
+                                                                                            'status_updated', 
+                                                                                            'status_alert', 
+                                                                                            'user_id_admin',
+                                                                                            'check_id',
+                                                                                            'check_purchase'
+                                                                                        ));
                             
                                 }
                     
@@ -444,7 +812,27 @@ class WebpanelCustomerController
                         $start = ($perpage * $page) - $perpage;
 
                         // $count_page = 1;
-                        return view('webpanel/adminarea-registration' ,compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_registration', 'total_status_waiting', 'total_status_action', 'total_status_completed', 'total_status_registration', 'status_waiting','status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
+                        return view('webpanel/adminarea-registration' ,compact(
+                                                                                'admin_name',
+                                                                                'count_page', 
+                                                                                'customer', 
+                                                                                'start', 
+                                                                                'total_page', 
+                                                                                'page', 
+                                                                                'total_customer_adminarea', 
+                                                                                'total_status_registration', 
+                                                                                'total_status_waiting', 
+                                                                                'total_status_action', 
+                                                                                'total_status_completed', 
+                                                                                'total_status_registration', 
+                                                                                'status_waiting',
+                                                                                'status_registration', 
+                                                                                'status_updated', 
+                                                                                'status_alert', 
+                                                                                'user_id_admin',
+                                                                                'check_id',
+                                                                                'check_purchase'
+                                                                            ));
                         break;
                     
 
@@ -480,7 +868,27 @@ class WebpanelCustomerController
                         // dd($check_search->admin_area);
                         if (!empty($check_keyword)) {
          
-                            return view('webpanel/adminarea-detail',compact('check_keyword','count_page', 'admin_name', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed','total_status_registration' ,'status_waiting','status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
+                            return view('webpanel/adminarea-detail',compact(
+                                                                            'check_keyword',
+                                                                            'count_page', 
+                                                                            'admin_name', 
+                                                                            'customer', 
+                                                                            'start', 
+                                                                            'total_page', 
+                                                                            'page', 
+                                                                            'total_customer_adminarea', 
+                                                                            'total_status_waiting', 
+                                                                            'total_status_action', 
+                                                                            'total_status_completed',
+                                                                            'total_status_registration' ,
+                                                                            'status_waiting',
+                                                                            'status_registration', 
+                                                                            'status_updated', 
+                                                                            'status_alert', 
+                                                                            'user_id_admin',
+                                                                            'check_id',
+                                                                            'check_purchase'
+                                                                        ));
                     
                         }
             
@@ -489,7 +897,26 @@ class WebpanelCustomerController
                 }
                 $count_page = 1;
 
-                return view('webpanel/adminarea-detail',compact('admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed','total_status_registration' ,'status_waiting','status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
+                return view('webpanel/adminarea-detail',compact(
+                                                                'admin_name',
+                                                                'count_page', 
+                                                                'customer', 
+                                                                'start', 
+                                                                'total_page', 
+                                                                'page', 
+                                                                'total_customer_adminarea', 
+                                                                'total_status_waiting', 
+                                                                'total_status_action', 
+                                                                'total_status_completed',
+                                                                'total_status_registration' ,
+                                                                'status_waiting',
+                                                                'status_registration', 
+                                                                'status_updated', 
+                                                                'status_alert', 
+                                                                'user_id_admin',
+                                                                'check_id',
+                                                                'check_purchase'
+                                                            ));
         }
         
     }
@@ -1808,5 +2235,801 @@ class WebpanelCustomerController
        }
        
    }
+   public function statusPurchase(Request $request) 
+   {
+
+                            $admin_id = $request->admin_id;
+                            $fixed    = $request->fixed_id;
+
+
+                            // dd($fixed);
+                            
+                        /*     $date = Carbon::parse(now());
+                            $datePast_7 = $date->subDays(7);
+                            $datePast_5 = $date->subDays(5); */
+                            $datePast_7 = Carbon::now()->subDays(7);
+                            $datePast_6 = Carbon::now()->subDays(6);
+                            $datePast_5 = Carbon::now()->subDays(5);
+                            $datePast_4 = Carbon::now()->subDays(4);
+                            $datePast_3 = Carbon::now()->subDays(3);
+
+                            //เช็ควันเริ่ม;
+                            $from_7 = ($datePast_7->toDateString()); 
+                            $from_6 = ($datePast_6->toDateString()); 
+                            $from_5 = ($datePast_5->toDateString()); 
+                            $from_4 = ($datePast_4->toDateString()); 
+                            $from_3 = ($datePast_3->toDateString()); 
+
+                            //วันปัจจุบัน;
+                            $to = date('Y-m-d');
+
+                            $page = $request->page;
+                            if ($page) {
+                                $page = $request->page;
+                            } else {
+                                $page = 1;
+                            }
+
+                            $id = $request->user()->admin_area;
+                            $code = $request->user()->user_code;
+
+                            //notin code;
+                        // dd($request->status);
+                            // dd($status);
+                            $admin_area = User::where('admin_area', $admin_id)->first();
+
+                            $page = $request->page;
+                            if ($page) {
+                                $page = $request->page;
+                            } else {
+                                $page = 1;
+                            }
+
+                            //notin code;
+                            $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+                            if (empty($code_notin)) {
+                                $code_notin = [0]; // ใส่ค่า default ที่ไม่มีผล
+                            }
+                            
+                            //menu alert;
+                            $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                        ->whereNotIn('customer_id', $code_notin)
+                                                        ->count();
+
+                            $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                        ->whereNotIn('customer_id', $code_notin)
+                                                        ->count();
+
+                            $status_updated = Customer::where('status_update', 'updated')
+                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                        ->whereNotIn('customer_id', $code_notin)
+                                                        ->count();
+
+                            $status_alert = $status_waiting + $status_updated;
+
+                            $user_id_admin = $request->user()->user_id;
+
+                            //แสดงข้อมูลลูกค้า;
+                            $row_customer = Customer::viewCustomerAdminArea($page, $admin_id);
+                            // $customer = $row_customer[0];
+                            $start = $row_customer[1];
+                            $total_page = $row_customer[2];
+                            $page = $row_customer[3];
+
+
+                            $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                        ->select('customer_id')
+                                                        ->distinct()
+                                                        ->get(); 
+
+                            $check_purchase = ReportSeller::select('customer_id')
+                                                        ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                        ->whereNotIn('customer_id', $code_notin)
+                                                        ->groupBy('customer_id')
+                                                        ->orderByDesc('date_purchase')
+                                                        ->get();
+                                                
+
+                            // name;
+                            $admin_name = User::select('admin_area', 'name')->where('admin_area', $admin_id)->first();
+
+                            $total_customer_adminarea = Customer::whereNotIn('customer_code', $code_notin)->where('admin_area', $admin_id)->count();
+                            $total_status_waiting = Customer::where('admin_area', $admin_id)->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+                            $total_status_action = Customer::where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+                            $total_status_completed = Customer::where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
+                            $total_status_registration = Customer::where('admin_area', $admin_id)->where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
+
+                                //dropdown admin_area;
+                            $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
+            
+ 
+                            $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+                            // $pur_report = User::select('purchase_status')->where('user_code', $code)->first();
+
+                            $status_all = Customer::select('status')
+                                                    ->where('admin_area', $id)
+                                                    ->whereNotIn('customer_status', ['inactive'])
+                                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    ->whereNotIn('customer_id', $code_notin)
+                                                    ->count();
+
+                            $status_waiting = Customer::where('admin_area', $id)
+                                                        ->where('status', 'รอดำเนินการ')
+                                                        ->whereNotIn('customer_status', ['inactive'])
+                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                        ->whereNotIn('customer_id', $code_notin)
+                                                        ->count();
+                                                        // dd($count_waiting);
+                            $status_action = Customer::where('admin_area', $id)
+                                                        ->where('status', 'ต้องดำเนินการ')
+                                                        ->whereNotIn('customer_status', ['inactive'])
+                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                        ->whereNotIn('customer_id', $code_notin)
+                                                        ->count();
+
+                            $status_completed = Customer::where('admin_area', $id)
+                                                        ->where('status', 'ดำเนินการแล้ว')
+                                                        ->whereNotIn('customer_status', ['inactive'])
+                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                        ->whereNotIn('customer_id', $code_notin)
+                                                        ->count();
+
+                            $status_alert = $status_waiting + $status_action;
+
+
+                            if($fixed == 'morethan')
+                            {
+                                $count_page = Customer::select(
+                                                                'customers.customer_id',
+                                                                'customers.customer_name',
+                                                                DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                            )
+                                                            ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                            ->where('customers.admin_area', $admin_id)
+                                                            ->groupBy('customers.customer_id', 'customers.customer_name')
+                                                            ->having('last_purchase_date', '<=', $from_7)
+                                                            ->count(); 
+
+                                $perpage = 10;
+                                $total_page = ceil($count_page / $perpage);
+                                // dd($total_page);
+                                $start = ($perpage * $page) - $perpage;
+
+                                $customer_list = Customer::select(
+                                                                'customers.id',
+                                                                'customers.customer_id',
+                                                                'customers.customer_name',
+                                                                'customers.status',
+                                                                'customers.admin_area',
+                                                                'customers.sale_area',
+                                                                'customers.email',
+                                                                'customers.customer_status',
+                                                                'customers.created_at',
+                                                                DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                            )
+                                                            ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                            ->where('customers.admin_area', $admin_id)
+                                                            ->groupBy(
+                                                                'customers.id',
+                                                                'customers.customer_id',
+                                                                'customers.customer_name',
+                                                                'customers.status',
+                                                                'customers.admin_area',
+                                                                'customers.sale_area',
+                                                                'customers.email',
+                                                                'customers.customer_status',
+                                                            )
+                                                            ->having('last_purchase_date', '<=', $from_7)
+                                                            ->orderBydesc('last_purchase_date')
+                                                            ->offset($start)
+                                                            ->limit($perpage)
+                                                            ->get();
+
+                                                                // dd($customer_list);
+                                                            
+                                        /*         
+                                            SELECT 
+                                            customers.customer_id,
+                                            MAX(report_sellers.date_purchase) as last_purchase
+                                            FROM report_sellers
+                                            INNER JOIN customers ON customers.customer_id = report_sellers.customer_id
+                                            WHERE customers.admin_area = 'A10'
+                                            GROUP BY customers.customer_id
+                                            HAVING last_purchase <= '2025-06-15'; */
+
+                                                            
+                                        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                                ->select('customer_id')
+                                                                ->distinct()
+                                                                ->get(); 
+                            
+                                        $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                                        ->select('customer_id')
+                                                                        ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                                        ->groupBy('customer_id')
+                                                                        ->orderByDesc('date_purchase')
+                                                                        ->get(); 
+                            
+
+                                        return view('webpanel/customerpur-morethan', compact(
+                                                                                            'count_page', 
+                                                                                            'admin_name', 
+                                                                                            'customer_list', 
+                                                                                            'start', 
+                                                                                            'total_page', 
+                                                                                            'page', 
+                                                                                            'total_customer_adminarea', 
+                                                                                            'total_status_waiting', 
+                                                                                            'total_status_action', 
+                                                                                            'total_status_completed',
+                                                                                            'total_status_registration' ,
+                                                                                            'status_waiting',
+                                                                                            'status_registration', 
+                                                                                            'status_updated', 
+                                                                                            'status_alert', 
+                                                                                            'user_id_admin',
+                                                                                            'check_id',
+                                                                                            'check_purchase'
+                                                                                    ));
+                            } elseif($fixed == 'coming') {
+
+                                        $count_page = Customer::select(
+                                                                        'customers.customer_id',
+                                                                        'customers.customer_name',
+                                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                                    )
+                                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                                    ->where('customers.admin_area', $id)
+                                                                    ->groupBy('customers.customer_id', 'customers.customer_name')
+                                                                    // ->havingBetween('last_purchase_date', $from_5)
+                                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_6, $from_5])
+                                                                    ->count(); 
+                                                                    // dd($count_page);
+
+                                        $perpage = 10;
+                                        $total_page = ceil($count_page / $perpage);
+                                        // dd($total_page);
+                                        $start = ($perpage * $page) - $perpage;
+
+                                        $customer_list = Customer::select(
+                                                                        'customers.id',
+                                                                        'customers.customer_id',
+                                                                        'customers.customer_name',
+                                                                        'customers.status',
+                                                                        'customers.admin_area',
+                                                                        'customers.sale_area',
+                                                                        'customers.email',
+                                                                        'customers.customer_status',
+                                                                        'customers.created_at',
+                                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                                    )
+                                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                                    ->where('customers.admin_area', $id)
+                                                                    ->groupBy(
+                                                                        'customers.id',
+                                                                        'customers.customer_id',
+                                                                        'customers.customer_name',
+                                                                        'customers.status',
+                                                                        'customers.admin_area',
+                                                                        'customers.sale_area',
+                                                                        'customers.email',
+                                                                        'customers.customer_status',
+                                                                        'customers.created_at'
+                                                                    )
+                                                                    // ->having('last_purchase_date', '<=', $from_5)
+                                                                    // ->havingBetween('last_purchase_date', [$from_7, $from_5]) 
+                                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_6, $from_5])
+
+                                                                    ->orderBydesc('last_purchase_date')
+                                                                    ->offset($start)
+                                                                    ->limit($perpage) 
+                                                                    // ->get();
+                                                                    ->get();
+                                                                    // dd($customer_list);
+
+
+                                                            // dd($customer_list);
+                                                        
+                                                    /*       SELECT 
+                                                            customers.customer_id,
+                                                            MAX(report_sellers.date_purchase) as last_purchase
+                                                        FROM report_sellers
+                                                        INNER JOIN customers 
+                                                            ON customers.customer_id = report_sellers.customer_id
+                                                        WHERE customers.admin_area = 'A10'
+                                                        GROUP BY customers.customer_id
+                                                        HAVING last_purchase BETWEEN '2025-06-20' AND '2025-06-22'; */
+
+                                                        
+                                        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                            ->select('customer_id')
+                                                            ->distinct()
+                                                            ->get(); 
+
+                                        $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                                    ->select('customer_id')
+                                                                    ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                                    ->groupBy('customer_id')
+                                                                    ->orderByDesc('date_purchase')
+                                                                    ->get(); 
+
+
+                                        return view('webpanel/customerpur-coming', compact(
+                                                                                            'count_page', 
+                                                                                            'admin_name', 
+                                                                                            'customer_list', 
+                                                                                            'start', 
+                                                                                            'total_page', 
+                                                                                            'page', 
+                                                                                            'total_customer_adminarea', 
+                                                                                            'total_status_waiting', 
+                                                                                            'total_status_action', 
+                                                                                            'total_status_completed',
+                                                                                            'total_status_registration' ,
+                                                                                            'status_waiting',
+                                                                                            'status_registration', 
+                                                                                            'status_updated', 
+                                                                                            'status_alert', 
+                                                                                            'user_id_admin',
+                                                                                            'check_id',
+                                                                                            'check_purchase'
+                                                                                        ));
+                            
+                            } elseif ($fixed == 'normal') {
+
+                                        $count_page = Customer::select(
+                                                                        'customers.customer_id',
+                                                                        'customers.customer_name',
+                                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                                    )
+                                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                                    ->where('customers.admin_area', $admin_id)
+                                                                    ->groupBy('customers.customer_id', 'customers.customer_name')
+                                                                    // ->havingBetween('last_purchase_date', $from_5)
+                                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_4, $from_3])
+                                                                    ->count(); 
+                                                                    // dd($count_page);
+
+                                        $perpage = 10;
+                                        $total_page = ceil($count_page / $perpage);
+                                        // dd($total_page);
+                                        $start = ($perpage * $page) - $perpage;
+
+                                        $customer_list = Customer::select(
+                                                                        'customers.id',
+                                                                        'customers.customer_id',
+                                                                        'customers.customer_name',
+                                                                        'customers.status',
+                                                                        'customers.admin_area',
+                                                                        'customers.sale_area',
+                                                                        'customers.email',
+                                                                        'customers.customer_status',
+                                                                        'customers.created_at',
+                                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                                    )
+                                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                                    ->where('customers.admin_area', $admin_id)
+                                                                    ->groupBy(
+                                                                        'customers.id',
+                                                                        'customers.customer_id',
+                                                                        'customers.customer_name',
+                                                                        'customers.status',
+                                                                        'customers.admin_area',
+                                                                        'customers.sale_area',
+                                                                        'customers.email',
+                                                                        'customers.customer_status',
+                                                                        'customers.created_at'
+                                                                    )
+                                                                    // ->having('last_purchase_date', '<=', $from_5)
+                                                                    // ->havingBetween('last_purchase_date', [$from_7, $from_5]) 
+                                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_4, $from_3])
+
+                                                                    ->orderBydesc('last_purchase_date')
+                                                                    ->offset($start)
+                                                                    ->limit($perpage) 
+                                                                    // ->get();
+                                                                    ->get();
+                                                                    // dd($customer_list);
+
+
+                                                                // dd($customer_list);
+                                                            
+                                                        /*       SELECT 
+                                                                customers.customer_id,
+                                                                MAX(report_sellers.date_purchase) as last_purchase
+                                                            FROM report_sellers
+                                                            INNER JOIN customers 
+                                                                ON customers.customer_id = report_sellers.customer_id
+                                                            WHERE customers.admin_area = 'A10'
+                                                            GROUP BY customers.customer_id
+                                                            HAVING last_purchase BETWEEN '2025-06-20' AND '2025-06-22'; */
+
+                                                            
+                                        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                                    ->select('customer_id')
+                                                                    ->distinct()
+                                                                    ->get(); 
+
+                                        $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                                        ->select('customer_id')
+                                                                        ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                                        ->groupBy('customer_id')
+                                                                        ->orderByDesc('date_purchase')
+                                                                        ->get(); 
+
+
+                                        return view('webpanel/customerpur-normal', compact(
+                                                                                            'count_page', 
+                                                                                            'admin_name', 
+                                                                                            'customer_list', 
+                                                                                            'start', 
+                                                                                            'total_page', 
+                                                                                            'page', 
+                                                                                            'total_customer_adminarea', 
+                                                                                            'total_status_waiting', 
+                                                                                            'total_status_action', 
+                                                                                            'total_status_completed',
+                                                                                            'total_status_registration' ,
+                                                                                            'status_waiting',
+                                                                                            'status_registration', 
+                                                                                            'status_updated', 
+                                                                                            'status_alert', 
+                                                                                            'user_id_admin',
+                                                                                            'check_id',
+                                                                                            'check_purchase'
+                                                                                        ));
+                            } else {
+
+                                        $count_page = Customer::leftJoin('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                                ->select('customers.customer_id', DB::raw('COUNT(report_sellers.purchase_order) as count_po'))
+                                                                ->where('customers.admin_area', $id)
+                                                                ->groupBy('customers.customer_id')
+                                                                ->havingRaw('count_po < 1')
+                                                                ->get()
+                                                                ->count();
+
+                                        $perpage = 10;
+                                        $total_page = ceil($count_page / $perpage);
+                                        // dd($total_page);
+                                        $start = ($perpage * $page) - $perpage;
+
+                                        $customer_list = Customer::select(
+                                                                            'customers.id',
+                                                                            'customers.customer_id',
+                                                                            'customers.customer_name',
+                                                                            'customers.status',
+                                                                            'customers.admin_area',
+                                                                            'customers.sale_area',
+                                                                            'customers.email',
+                                                                            'customers.customer_status',
+                                                                            'customers.created_at',
+                                                                            DB::raw('COUNT(report_sellers.purchase_order) as count_po')
+                                                                        )
+                                                                        ->leftjoin('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                                        ->where('customers.admin_area', $id)
+                                                                        ->groupBy(
+                                                                            'customers.id',
+                                                                            'customers.customer_id',
+                                                                            'customers.customer_name',
+                                                                            'customers.status',
+                                                                            'customers.admin_area',
+                                                                            'customers.sale_area',
+                                                                            'customers.email',
+                                                                            'customers.customer_status',
+                                                                            'customers.created_at'
+                                                                        )
+                                                                        ->havingRaw('count_po < 1')
+                                                                        ->orderBydesc('customers.customer_id')
+                                                                        ->offset($start)
+                                                                        ->limit($perpage) 
+                                                                        // ->get();
+                                                                        ->get();
+                                                                        // dd($customer_list);
+
+
+                                                    // dd($customer_list);
+                                                
+                                            /*       SELECT 
+                                                    customers.customer_id,
+                                                    MAX(report_sellers.date_purchase) as last_purchase
+                                                FROM report_sellers
+                                                INNER JOIN customers 
+                                                    ON customers.customer_id = report_sellers.customer_id
+                                                WHERE customers.admin_area = 'A10'
+                                                GROUP BY customers.customer_id
+                                                HAVING last_purchase BETWEEN '2025-06-20' AND '2025-06-22'; */
+
+                                                
+                                            $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                                    ->select('customer_id')
+                                                                    ->distinct()
+                                                                    ->get(); 
+
+                                            $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                            ->select('customer_id')
+                                                            ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                            ->groupBy('customer_id')
+                                                            ->orderByDesc('date_purchase')
+                                                            ->get(); 
+
+
+                                            return view('webpanel/customerpur-nopurchase', compact(
+                                                                                                    'count_page', 
+                                                                                                    'admin_name', 
+                                                                                                    'customer_list', 
+                                                                                                    'start', 
+                                                                                                    'total_page', 
+                                                                                                    'page', 
+                                                                                                    'total_customer_adminarea', 
+                                                                                                    'total_status_waiting', 
+                                                                                                    'total_status_action', 
+                                                                                                    'total_status_completed',
+                                                                                                    'total_status_registration' ,
+                                                                                                    'status_waiting',
+                                                                                                    'status_registration', 
+                                                                                                    'status_updated', 
+                                                                                                    'status_alert', 
+                                                                                                    'user_id_admin',
+                                                                                                    'check_id',
+                                                                                                    'check_purchase'
+                                                                                                ));
+                            }
+                
+
+    }
 
 }
+
+
+/* @else
+                            <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
+                                @if ($check_over_7)
+                                    <span data-bs-toggle="modal" data-bs-target="#staticBackdrop_seven" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(255, 70, 70);">
+                                        เกิน 7 วัน
+                                    </span>
+
+                                    @php
+                                        $po_last = $report_seller->firstWhere('customer_id', $user_code)?->purchase_order;
+                                        $date_pur = $report_seller->firstWhere('customer_id', $user_code)?->date_purchase;
+                                    @endphp
+                                    <div class="modal fade" id="staticBackdrop_seven" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                            <div class="modal-header">
+                                                <span class="modal-title" style="font-size:16px;" id="staticBackdropLabel">ร้านค้า : {{ $user_code.' '.'|'.' '.$user_name.'' }}</span>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="py-2 mt-2" style="text-align: left;">
+                                                <span class="ms-3 py-2" style="text-align: start;">เลขที่ : {{ $po_last }}</span> |
+                                                <span style="background-color: #e04b30; color:white; border-radius:5px; padding:3px;">{{ $date_pur }}</span>
+                                            </div>
+                                            {{-- <hr style="color:#a5a5a5;"> --}}
+                                                <div class="modal-body">
+
+                                                    <div class="relative overflow-x-auto">
+                                                        <table class="w-full text-left">
+                                                            <thead class="" style="background-color:#222222; color:rgb(255, 255, 255);">
+                                                                <tr>
+                                                                    <td scope="col" class="px-6 py-3 text-center">
+                                                                        รหัสสินค้า
+                                                                    </td>
+                                                                    <td scope="col" class="px-6 py-3">
+                                                                        ชื่อสินค้า
+                                                                    </td>
+                                                                    <td scope="col" class="px-6 py-3 text-center">
+                                                                        หน่วย
+                                                                    </td>
+                                                                    <td scope="col" class="px-6 py-3 text-center">
+                                                                        จำนวน
+                                                                    </td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @php
+                                                                    $total = 0;
+                                                                @endphp
+                                                                @foreach ($report_seller as $row_seller )
+                                                                @php
+                                                                    $product_id   =  $row_seller?->product_id;
+                                                                    $product_name =  $row_seller?->product_name;
+                                                                    $unit         =  $row_seller?->unit;
+                                                                    $qty          =  $row_seller?->quantity;
+                                                                    $total        += $row_seller?->total_sale;
+                                                                @endphp
+                                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"">
+                                                
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
+                                                                        {{ $product_id }}
+                                                                    </td>
+                                                                    <td class="border border-gray-300 px-4 py-2">
+                                                                        {{ $product_name}}
+                                                                    </td>
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
+                                                                        {{ $unit }}
+                                                                    </td>
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
+                                                                        {{ $qty}}
+                                                                    </td>
+                                                                </tr>
+                                                                @endforeach
+
+                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">รวมเป็นเงิน</td>
+                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">฿{{ number_format($total,2) }}</td>
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                        
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif ($check_over_5)
+                                    <span data-bs-toggle="modal" data-bs-target="#staticBackdrop_five" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:#ffa51d;">
+                                        ใกล้ครบกำหนด
+                                    </span>
+
+                                    @php
+                                        $po_last = $report_seller->firstWhere('customer_id', $user_code)?->purchase_order;
+                                        $date_pur = $report_seller->firstWhere('customer_id', $user_code)?->date_purchase;
+                                    @endphp
+                                    <div class="modal fade" id="staticBackdrop_five" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                            <div class="modal-header">
+                                                <span class="modal-title" style="font-size:16px;" id="staticBackdropLabel">ร้านค้า : {{ $user_code.' '.'|'.' '.$user_name.'' }}</span>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="py-2 mt-2" style="text-align: left;">
+                                                <span class="ms-3 py-2" style="text-align: start;">เลขที่ : {{ $po_last }}</span> |
+                                                <span style="background-color: #ffa51d; color:white; border-radius:5px; padding:3px;">{{ $date_pur }}</span>
+                                            </div>
+                                            {{-- <hr style="color:#a5a5a5;"> --}}
+                                                <div class="modal-body">
+
+                                                    <div class="relative overflow-x-auto">
+                                                        <table class="w-full text-left">
+                                                            <thead class="" style="background-color:#222222; color:rgb(255, 255, 255);">
+                                                                <tr>
+                                                                    <td scope="col" class="px-6 py-3 text-center">
+                                                                        รหัสสินค้า
+                                                                    </td>
+                                                                    <td scope="col" class="px-6 py-3">
+                                                                        ชื่อสินค้า
+                                                                    </td>
+                                                                    <td scope="col" class="px-6 py-3 text-center">
+                                                                        หน่วย
+                                                                    </td>
+                                                                    <td scope="col" class="px-6 py-3 text-center">
+                                                                        จำนวน
+                                                                    </td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @php
+                                                                    $total = 0;
+                                                                @endphp
+                                                                @foreach ($report_seller as $row_seller )
+                                                                @php
+                                                                    $product_id   = $row_seller?->product_id;
+                                                                    $product_name = $row_seller?->product_name;
+                                                                    $unit         = $row_seller?->unit;
+                                                                    $qty          = $row_seller?->quantity;
+                                                                    $total        += $row_seller?->total_sale;
+                                                                @endphp
+                                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                                
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
+                                                                        {{ $product_id }}
+                                                                    </td>
+                                                                    <td class="border border-gray-300 px-4 py-2">
+                                                                        {{ $product_name}}
+                                                                    </td>
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
+                                                                        {{ $unit }}
+                                                                    </td>
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
+                                                                        {{ $qty}}
+                                                                    </td>
+                                                                </tr>
+                                                                @endforeach
+
+                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">รวมเป็นเงิน</td>
+                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">฿{{ number_format($total,2) }}</td>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                        
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                
+                                    <span data-bs-toggle="modal" data-bs-target="#staticBackdrop_normal" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(51, 197, 14);">
+                                        ปกติ
+                                    </span>
+
+                                    @php
+                                        $po_last = $report_seller->firstWhere('customer_id', $user_code)?->purchase_order;
+                                        $date_pur = $report_seller->firstWhere('customer_id', $user_code)?->date_purchase;
+                                    @endphp
+                                    <div class="modal fade" id="staticBackdrop_normal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                            <div class="modal-header">
+                                                <span class="modal-title" style="font-size:16px;" id="staticBackdropLabel">ร้านค้า : {{ $user_code.' '.'|'.' '.$user_name.'' }}</span>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="py-2 mt-2" style="text-align: left;">
+                                                <span class="ms-3 py-2" style="text-align: start;">เลขที่ : {{ $po_last }}</span> |
+                                                <span style="background-color: #09be0f; color:white; border-radius:5px; padding:3px;">{{ $date_pur }}</span>
+                                            </div>
+                                            {{-- <hr style="color:#a5a5a5;"> --}}
+                                                <div class="modal-body">
+
+                                                    <div class="relative overflow-x-auto">
+                                                        <table class="w-full text-left">
+                                                            <thead class="" style="background-color:#222222; color:rgb(255, 255, 255);">
+                                                                <tr>
+                                                                    <td scope="col" class="px-6 py-3 text-center">
+                                                                        รหัสสินค้า
+                                                                    </td>
+                                                                    <td scope="col" class="px-6 py-3">
+                                                                        ชื่อสินค้า
+                                                                    </td>
+                                                                    <td scope="col" class="px-6 py-3 text-center">
+                                                                        หน่วย
+                                                                    </td>
+                                                                    <td scope="col" class="px-6 py-3 text-center">
+                                                                        จำนวน
+                                                                    </td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @php
+                                                                    $total = 0;
+                                                                @endphp
+                                                                @foreach ($report_seller as $row_seller )
+                                                                @php
+                                                                    $product_id   = $row_seller?->product_id;
+                                                                    $product_name = $row_seller?->product_name;
+                                                                    $unit         = $row_seller?->unit;
+                                                                    $qty          = $row_seller?->quantity;
+                                                                    $total        += $row_seller?->total_sale;
+                                                                @endphp
+                                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                                
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
+                                                                        {{ $product_id }}
+                                                                    </td>
+                                                                    <td class="border border-gray-300 px-4 py-2">
+                                                                        {{ $product_name}}
+                                                                    </td>
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
+                                                                        {{ $unit }}
+                                                                    </td>
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
+                                                                        {{ $qty}}
+                                                                    </td>
+                                                                </tr>
+                                                                @endforeach
+
+                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">รวมเป็นเงิน</td>
+                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">฿{{ number_format($total,2) }}</td>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                        
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </td> */

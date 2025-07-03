@@ -405,6 +405,31 @@
 
                         @endif
 
+                        @if (session('error_purchase') == 'คุณไม่มีสิทธิ์เข้าถึง')
+                        <script> 
+                                Swal.fire({
+                                    title: "⚠️ คุณไม่มีสิทธิ์เข้าถึง",
+                                    // text: "กรุณารอสักครู่",
+                                    icon: "warning",
+                                    confirmButtonText: "ตกลง",
+                                    width: '400px', 
+                                    height: '200px',
+                                    customClass: {
+                                        popup: 'rounded-popup',
+                                        title: 'text-xl',
+                                        icon: 'custom-icon-color',
+                                        confirmButton: 'custom-confirm-button'
+                                    }
+                                    }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.reload();
+                                    }
+                                    
+                                });
+                        </script>
+
+                        @endif
+
                         
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
                             &copy; 2025 cms.vmdrug.co.th All rights reserved

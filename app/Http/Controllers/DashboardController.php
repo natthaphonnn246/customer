@@ -10,6 +10,8 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+
+        // dd('dashboard');
         $customer_north = Customer::where('geography', 'ภาคเหนือ')->count();
         $customer_central = Customer::where('geography', 'ภาคกลาง')->count();
         $customer_eastern = Customer::where('geography', 'ภาคตะวันออก')->count();

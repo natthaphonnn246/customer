@@ -363,7 +363,7 @@
         {{-- <hr class="my-4" style="color: #8E8E8E; width: 100%;"> --}}
         <!--- search --->
   
-        <div class="container"  style="width: 95%;">
+        <div class="ms-4"  style="width: 95%;">
 
             <div class="row ms-2">
                 {{-- <form method="get" action="/webpanel/report/product/search"> --}}
@@ -484,12 +484,18 @@
 
                       </tr> --}}
                 
-                      @php 
-                      $start = ($start ?? 0) + 1; 
-                      $total = 0;
-                      $count = 0;
-                      $counts = 0;
-                     @endphp
+                    @php 
+                        $start = ($start ?? 0) + 1; 
+                        $total = 0;
+                        $count = 0;
+                        $counts = 0;
+                   /*      $sum_north     = 0;
+                        $sum_central   = 0;
+                        $sum_east      = 0;
+                        $sum_west      = 0;
+                        $sum_northeast = 0;
+                        $sum_south     = 0;  */
+                    @endphp
                         @foreach ($grouped as $category => $rows)
 
                         @php 
@@ -501,7 +507,7 @@
 
      
                     @php
-                   /*      $row_north = $sales->where('geography', 'ภาคเหนือ')->where('categories_id', $id);
+                        $row_north = $sales->where('geography', 'ภาคเหนือ')->where('categories_id', $id);
                         $row_central = $sales->where('geography', 'ภาคกลาง')->where('categories_id', $id);
                         $row_east = $sales->where('geography', 'ภาคตะวันออก')->where('categories_id', $id);
                         $row_west = $sales->where('geography', 'ภาคตะวันตก')->where('categories_id', $id);
@@ -515,7 +521,17 @@
                         $northeast = $row_northeast->first()?->total_sales ?? '0.00';
                         $south = $row_south->first()?->total_sales ?? '0.00';
 
-                        $count = $north + $central + $east + $west + $northeast + $south; */
+                        $sum_north = ($sum_north ?? 0) + $north;
+                        $sum_central = ($sum_central ?? 0) + $central;
+                        $sum_east = ($sum_east ?? 0) + $east;
+                        $sum_west = ($sum_west ?? 0) + $west;
+                        $sum_northeast = ($sum_northeast ?? 0) + $northeast;
+                        $sum_south = ($sum_south ?? 0) + $south;
+                       /*  $sum_central    += $central;
+                        $sum_east       += $east;
+                        $sum_west       += $west;
+                        $sum_northeast  += $northeast;
+                        $sum_south      += $south; */
 
                         $regions = ['ภาคเหนือ', 'ภาคกลาง', 'ภาคตะวันออก', 'ภาคตะวันตก', 'ภาคตะวันออกเฉียงเหนือ', 'ภาคใต้'];
 
@@ -554,9 +570,16 @@
                                     <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;">{{ number_format($count,2) }}</td>
                             </tr>
                         @endforeach
+
                         <tr>
                            
-                            <td colspan="9" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">ยอดรวม (บาท)</td>
+                            <td colspan="3" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: center; font-weight:500; padding: 20px 8px 20px; width:200px;">ยอดรวม (บาท)</td>
+                            <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ number_format($sum_north ?? 0,2) }}</td>
+                            <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ number_format($sum_central ?? 0,2) }}</td>
+                            <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ number_format($sum_east ?? 0,2) }}</td>
+                            <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ number_format($sum_west ?? 0,2) }}</td>
+                            <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ number_format($sum_northeast ?? 0,2) }}</td>
+                            <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ number_format($sum_south ?? 0,2) }}</td>
                             <td colspan="1" style="background-color:rgb(227, 227, 227); color:#7d7d7d; text-align: right; font-weight:500; padding: 20px 8px 20px; width:200px;">{{ number_format($total,2) }}</td>
     
                           </tr> 

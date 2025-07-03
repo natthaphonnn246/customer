@@ -265,25 +265,27 @@
     
             <div class="py-2">
             </div>
-            <span class="ms-6" style="color: #8E8E8E;">ข้อมูลลูกค้า /Status : <span style="color:rgb(20, 20, 20);  padding: 6px; background-color: rgb(255, 182, 11); border-radius:100px;">ต้องดำเนินการ</span></span>
+            <span class="ms-6" style="color: #8E8E8E;">ข้อมูลลูกค้า /Status : <span style="color:rgb(255, 255, 255);  padding: 5px 10px 5px 10px; background-color: rgb(255, 182, 11); border-radius:8px;">ต้องดำเนินการ</span></span>
             <hr class="my-4" style="color: #8E8E8E; width: 100%; border:solid 2px;">
             
             <div class="ms-6 mr-6">
             <div class="row">
                 <!--- search --->
-                <form class="max-w-md mx-auto py-3" method="get" action="/portal/customer/status/action">
-                    {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                           <!---icon -->
+                <div style="display: flex; justify-content: center;">
+                    <form class="py-3" style="width:80%;" method="get" action="/portal/customer/status/action">
+                        {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <!---icon -->
+                            </div>
+                            <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE" />
+                            <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
+                        
                         </div>
-                        <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE" />
-                        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
-                    
-                    </div>
-                    <p class="py-2" id="keyword_search"></p>
-                    @csrf   
-                </form>
+                        <p class="py-2" id="keyword_search"></p>
+                        @csrf   
+                    </form>
+                </div>
 
                 {{-- <script>
                     $(document).ready(function() {

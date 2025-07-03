@@ -236,6 +236,18 @@
             color: #3b25ff;
             text-decoration: underline;
         }
+        #dropdownDivider {
+            background-color: rgb(67, 68, 68);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #dropdownlist:hover {
+            background-color: rgba(8, 123, 110, 0.544);
+            color: white;
+            border-radius: 5px;
+            
+        }
     </style>
 
         @if($user_id_admin == '0000')
@@ -257,9 +269,9 @@
         @endsection
 
         @section('status_registration')
-        <h6 class="justifiy-content:center;" style="">{{$status_registration}}</h6>
+        <h6 class="justifiy-content:center;" style="">{{number_format($status_registration)}}</h6>
         @endsection
-
+        
         @section('status_updated')
         <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
         @endsection
@@ -270,14 +282,15 @@
 
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
     <div class="contentArea">
+
         <div class="py-2">
         </div>
         <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ย้อนกลับ/</a> รับผิดชอบโดย : {{$admin_name->name}} ({{$admin_name->admin_area}})</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         <div class="mr-6" style="text-align: right;">
-            <a href="/webpanel/customer/export/getcsv/getcsv_action/{{$admin_name->admin_area}}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
-            <a class="ms-1" href="/webpanel/customer/export/getexcel/getexcel_action/{{$admin_name->admin_area}}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
+            <a href="/webpanel/customer/export/getcsv/getcsv_customer/{{$admin_name->admin_area}}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export CSV</a>
+            <a class="ms-1" href="/webpanel/customer/export/getexcel/getexcel_customer/{{$admin_name->admin_area}}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">Export Excel</a>
     
         </div>
 
@@ -360,24 +373,59 @@
 
          <!--- search --->
          <div class="row ms-6 mr-6">
-            <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action">
-                <ul class="ms-2 my-2">
-                    <span>ค้นหาร้านค้า : </span>
-                </ul>
-                {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
-                <div class="relative">
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <!---icon -->
-                    </div>
-                    <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" />
-                    <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
-                
-                </div>
-                <p class="py-2" id="keyword_search"></p>
-                @csrf   
-            </form>
-        </div>
 
+
+        <div class="row">
+            <div class="col-sm-2 py-3">
+
+                {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
+
+                <button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="" style="background-color: rgb(22, 175, 98); width: 100%; border-radius:8px; color:#ffffff; height:70px;" type="button">
+                    
+                    เลือกวันสั่งซื้อ
+                    
+                </button> 
+
+                <!-- Dropdown menu -->
+                    <div id="dropdownDivider" class="z-10 hidden divide-y divide-gray-100 shadow-sm w-44" style="text-align: left;">
+
+                        <div class="py-2">
+                            <a href="/webpanel/customer/adminarea/{{ $admin_name->admin_area }}/purchase/morethan" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">ไม่สั่งเกิน 7 วัน</a>
+                        </div>
+                        <div class="py-2">
+                            <a href="/webpanel/customer/adminarea/{{ $admin_name->admin_area }}/purchase/coming" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">ใกล้ครบกำหนด</a>
+                        </div>
+                        <div class="py-2">
+                            <a href="/webpanel/customer/adminarea/{{ $admin_name->admin_area }}/purchase/normal" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">สั่งซื้อตามปกติ</a>
+                        </div>
+                        <div class="py-2">
+                            <a href="/webpanel/customer/adminarea/{{ $admin_name->admin_area }}/purchase/no-purchase" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">ไม่มีการสั่งซื้อ</a>
+                        </div>
+                    
+                    </div>
+
+            </div>
+
+            <div class="col-sm-10 py-3">
+                <form class="max-w-100 mx-auto" method="get" action="/webpanel/customer/adminarea/{{$admin_name->admin_area}}">
+                   {{--  <ul class="ms-2 my-2">
+                        <span>ค้นหาร้านค้า : </span>
+                    </ul> --}}
+                    {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <!---icon -->
+                        </div>
+                        <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" />
+                        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
+                    
+                    </div>
+                    <p class="py-2" id="keyword_search"></p>
+                    @csrf   
+                </form>
+            </div>
+        </div>
+        </div>
         <script>
             $(document).ready(function() {
                 $('#default-search').keyup(function(e) {
@@ -422,17 +470,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @if(!empty($customer))
+                    @if(!empty($customer_list))
                     <?php 
-                        @$start += 1;
+                        $start += 1;
                     ?>
-                    @foreach ($customer as $row)
+                    @foreach ($customer_list as $row)
                 <tr>
                         <?php
                             
                             $id = $row->id;
                             $user_name = $row->customer_name;
-                            $user_code = $row->customer_code;
+                            $user_code = $row->customer_id;
                             $status = $row->status;
                             $status_update = $row->status_update;
                             $email = $row->email;
@@ -445,7 +493,9 @@
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$email}}</td>
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px; width: 20%;">{{$user_name}}</td>
 
-                        @if ($status == 'รอดำเนินการ')
+                        @if ($status == 'ลงทะเบียนใหม่')
+                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(59, 195, 237);">ลงทะเบียนใหม่</span></td>
+                        @elseif ($status == 'รอดำเนินการ')
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(237, 59, 59);">รอดำเนินการ</span></td>
                         {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(255, 70, 70);"></i> รอดำเนินการ</td> --}}
                         @elseif ($status == 'ต้องดำเนินการ')
@@ -463,7 +513,6 @@
                         @else
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px;"><span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(184, 184, 184);">NULL</span></td>
                         @endif
-
 
                         @if(!empty($check_id))
                             @php 
@@ -880,18 +929,18 @@
             </table>
         </div>
 
-
         @if(!isset($check_keyword) && $total_page > 1)
         <div class="ms-6">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                 <li class="page-item">
+
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?page={{ 1 }}" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/purchase/no-purchase?page={{ 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?page={{ $page - 1 }}" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/purchase/no-purchase?page={{ $page-1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -900,16 +949,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?page={{ $i }}">{{ $i }}</a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/purchase/no-purchase?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?page={{ $i }}">{{ $i }}</a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/purchase/no-purchase?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?page={{ $i }}">{{ $i }}</a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/purchase/no-purchase?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                 
                 @endif
@@ -917,11 +966,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?page={{ $page }}" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/purchase/no-purchase?page={{ $page }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?page={{ $page+1 }}" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/purchase/no-purchase?page={{ $page + 1 }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif
@@ -937,11 +986,11 @@
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ 1 }}" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $page-1 }}" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $page - 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -950,16 +999,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                 
                 @endif
@@ -967,11 +1016,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $page }}" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $page }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}/status-action?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $page + 1 }}" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/adminarea/{{$admin_name->admin_area}}?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $page + 1 }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif

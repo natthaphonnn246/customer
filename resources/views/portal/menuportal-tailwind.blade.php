@@ -104,6 +104,11 @@
       background-color: rgb(181, 30, 43);
       color: white;
     }
+    #content_area {
+      background-color: #FFFFFF;
+      border-radius: 2px;
+      min-width: 1500px;
+    }
 
   </style>
   <body>
@@ -273,7 +278,7 @@
    </div>
 </aside>
 
-<div class="p-4 sm:ml-64" style="background-color:rgb(229, 229, 229); margin-top:65px;">
+<div class="p-4 sm:ml-64" id="content_area" style="background-color:rgb(229, 229, 229); margin-top:65px;">
   <p>@yield('content')</p>
 </div>
 

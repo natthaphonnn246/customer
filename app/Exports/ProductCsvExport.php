@@ -297,7 +297,7 @@ class ProductCsvExport
 
         public function exportItemCsv(Request $request)
         {
-            
+            // dd('item');
             date_default_timezone_set("Asia/Bangkok");
 
             $from = $request->from;
@@ -354,8 +354,9 @@ class ProductCsvExport
                 
                 } else {
 
+                    // dd('dd');
                     $date = $from.'_'.'to'.'_'.$to;
-                    $filename = 'Product_item_'. $date.'.csv';
+                    $filename = 'Product_item_'.$date.'.csv';
                         // Start the output buffer.
                     ob_start();
 
@@ -406,7 +407,7 @@ class ProductCsvExport
                 header('Content-Disposition: attachment; filename= '.$filename);
 
                 $report_product = ReportSeller::select(
-                                    'report_sellers.customer_id',
+                                        'report_sellers.customer_id',
                                         'customers.customer_name',
                                         'products.unit',
                                         DB::raw('SUM(report_sellers.quantity) as quantity_by'),

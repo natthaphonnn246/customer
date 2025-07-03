@@ -5872,6 +5872,7 @@ class ReportSellerController extends Controller
                                                             ->cursor();
                                                         // });
 
+
                                  /*    $total_report_selling = ReportSeller::select(DB::raw('SUM(price*quantity) as total_sales'))
                                                                         ->whereBetween('date_purchase', [$filters_selling['from'], $filters_selling['to']])
                                                                         ->first(); */

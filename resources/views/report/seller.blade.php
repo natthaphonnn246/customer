@@ -386,9 +386,9 @@
         <hr class="my-3" style="color: #8E8E8E; width: 100%;">
         <!--- search --->
   
-        <div class="container"  style="width: 95%;">
+        <div class="ms-4" style="width: 95%;">
 
-            <div class="row mb-2 ms-2">
+            <div class="ms-6">
                 <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/report/seller/search/keyword">
                     <ul class="ms-2 my-2">
                         {{-- <span>ค้นหาร้านค้า : </span> --}}
@@ -448,10 +448,12 @@
                 });
             });
         </script>
-        <div class="row ms-6 mr-10">
+
+    <div class="ms-4" style="width: 95%;">
+        <div class="row mr-10 ms-2">
 
 
-            <div class="row ms-2">
+            <div class="row">
                 <form method="get" action="/webpanel/report/seller">
                     @csrf
                     <div class="row">
@@ -539,6 +541,7 @@
                 </form>
             </div>
         </div>
+    </div>
         <script>
             $( function() {
                 var dateFormat = 'dd/mm/yy',

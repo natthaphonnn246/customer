@@ -13,6 +13,8 @@ use Illuminate\Process\Exceptions\ProcessFailedException;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Sleep;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 
 Class UserController
 {
@@ -54,72 +56,87 @@ Class UserController
                 $province_master = DB::table('provinces')->select('id', 'name_th')->where('id', $province)->first();
                 $province_row = $province_master->name_th;
 
-                User::create([
+                $user_email = User::select('email')->where('email', $email)->first();
+                $check_email = $user_email?->email;
 
-                                'user_code' => $code,
-                                'user_id' => $code,
-                                'admin_area' => '',
-                                'name' => $name,
-                                'role' => $role,
-                                // 'admin_role' => $admin_role,
-                                'status_checked' => '',
-                                'email' => $email,
-                                'password' => $password,
-                                'telephone' => $telephone,
-                                'address' => $address,
-                                'province' => $province_row,
-                                'amphur' => $amphur,
-                                'district' => $district,
-                                'zipcode' => $zipcode,
-                                'email_login' => $email_login,
-                                'text_add' => $text_add,
-                               /*  'maintenance_status' => '0',
-                                'allowed_maintenance_status' => '0', */
-                                'allowed_user_status' => '0',
-                                'check_login' => '',
-                                'login_date' => '',
-                                'last_activity' => '',
 
-                            ]);
+                $check_tb = User::select('user_code')->where('user_code', $code)->first();
+                $check_code = $check_tb?->user_code;
 
-                Admin::create([
+                if($email != $check_email && $code != $check_code)
+                {
+                            User::create([
 
-                                'admin_name' => $name,
-                                'admin_id' => $code,
-                                'code' => $code,
-                                'admin_area' => '',
-                                'role' => $role,
-                                // 'admin_role' => $admin_role,
-                                'status_checked' => '',
-                                'email' => $email,
-                                'telephone' => $telephone,
-                                'address' => $address,
-                                'province' => $province_row,
-                                'amphur' => $amphur,
-                                'district' => $district,
-                                'zipcode' => $zipcode,
-                                'email_login' => $email_login,
-                                'password' => $password,
-                                'text_add' => $text_add,
-                               /*  'maintenance_status' => '0',
-                                'allowed_maintenance_status' => '0', */
-                                'allowed_user_status' => '0',
-                                'check_login' => '',
-                                'login_date' => '',
-                                'last_activity' => '',
+                                            'user_code' => $code,
+                                            'user_id' => $code,
+                                            'admin_area' => '',
+                                            'name' => $name,
+                                            'role' => $role,
+                                            // 'admin_role' => $admin_role,
+                                            'status_checked' => '',
+                                            'email' => $email,
+                                            // 'password' => $password,
+                                            'password' => Hash::make($password),
+                                            'telephone' => $telephone,
+                                            'address' => $address ?? '',
+                                            'province' => $province_row,
+                                            'amphur' => $amphur,
+                                            'district' => $district,
+                                            'zipcode' => $zipcode,
+                                            'email_login' => $email_login,
+                                            'text_add' => $text_add,
+                                        /*  'maintenance_status' => '0',
+                                            'allowed_maintenance_status' => '0', */
+                                            'allowed_user_status' => '0',
+                                            'check_login' => '',
+                                            'login_date'      => '',
+                                            'last_activity'   => '',
+                                            'purchase_status' => '0',
+
+                                        ]);
+
+                            Admin::create([
+
+                                            'admin_name' => $name,
+                                            'admin_id' => $code,
+                                            'code' => $code,
+                                            'admin_area' => '',
+                                            'role' => $role,
+                                            // 'admin_role' => $admin_role,
+                                            'status_checked' => '',
+                                            'email' => $email,
+                                            'telephone' => $telephone,
+                                            'address' => $address ?? '',
+                                            'province' => $province_row,
+                                            'amphur' => $amphur,
+                                            'district' => $district,
+                                            'zipcode' => $zipcode,
+                                            'email_login' => $email_login,
+                                            'password' => $password,
+                                            'text_add' => $text_add,
+                                        /*  'maintenance_status' => '0',
+                                            'allowed_maintenance_status' => '0', */
+                                            'allowed_user_status' => '0',
+                                            'check_login' => '',
+                                            'login_date' => '',
+                                            'last_activity' => '',
+                                    
+                                        ]);
+
+                return redirect('/webpanel/admin');
+
+                } else {
+
+                    return redirect('/webpanel/admin-create')->with('error_admin', 'email');
+                }
+
+               /*  if($code == $check_code) {
+
+                    return redirect('/webpanel/admin');
+                } else {
                         
-                            ]);
-
-                    $check_tb = User::select('user_code')->where('user_code', $code)->first();
-                    $check_code = $check_tb->user_code;
-
-                    if($code == $check_code) {
-
-                        return redirect('/webpanel/admin');
-                    } else {
-                            
-                        return view('/webpanel/admin-create');
-                    } 
+                    return view('/webpanel/admin-create');
+                }  */
     }
     public function admin()
     {
@@ -325,6 +342,8 @@ Class UserController
                     $text_add = '';
                 }
 
+                $purchase_status = $request->purchase_status;
+
                 $update_time = date('Y-m-d H:i:s');
 
                 $province_master = DB::table('provinces')->select('id', 'name_th')->where('id', $province)->first();
@@ -352,6 +371,7 @@ Class UserController
                     'text_add' => $text_add,
                     'updated_at' => $update_time,
                     'allowed_user_status' => $allowed_mtnance,
+                    'purchase_status' => $purchase_status,
                 
                 ]);
 

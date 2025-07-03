@@ -259,12 +259,18 @@ Route::middleware('statusOnline')->group(function (){
         //export customer -> getexcel;
         Route::get('/webpanel/customer/export/getexcel/{status}', [CustomerExcelExport::class, 'exportCustomerExcel']);
 
+        //export customer check-purchase csv;
+        Route::get('/webpanel/customer/export/purchase/getexcel/{status_pur}', [CustomerExcelExport::class, 'PurchaseCustomerExcel']);
+
         //export customer -> getexcel;
         // Route::get('/webpanel/customer/export/getexcel/{status}/{admin_id}', [WebpanelCustomerController::class, 'exportCustomerAreaExcel']);
         Route::get('/webpanel/customer/export/getexcel/{status}/{admin_id}', [CustomerAreaExport::class, 'exportCustomerAreaExcel']);
 
         //export customer -> getcsv;
         Route::get('/webpanel/customer/export/getcsv/{status}', [CustomerCsvExport::class, 'exportCustomerCsv']);
+
+        //export customer check-purchase excel;
+        Route::get('/webpanel/customer/export/purchase/getcsv/{status_pur}', [CustomerCsvExport::class, 'PurchaseExoportCsv']);
 
         //export adminarea-detail->getcsv;
         // Route::get('/webpanel/customer/export/getcsv/{status}/{admin_id}', [WebpanelCustomerController::class, 'exportCustomerAreaCsv']);
@@ -390,6 +396,12 @@ Route::middleware('statusOnline')->group(function (){
     //customer view table;
     Route::get('/webpanel/customer', [WebpanelCustomerController::class, 'index'])->middleware('auth', 'role','status', 'verified');
     //webpanel/customer/status/{status_check};
+    
+    //fecth use id;
+    Route::post('/webpanel/customer/purchase', [WebpanelCustomerController::class, 'purchase']);
+    //review purchase_status;
+    Route::get('/webpanel/customer/adminarea/{admin_id}/purchase/{fixed_id}', [WebpanelCustomerController::class, 'statusPurchase'])->middleware('auth', 'role','status', 'verified');
+
     Route::get('/webpanel/customer/status/{status_check}', [WebpanelCustomerController::class, 'indexStatus'])->middleware('auth', 'role','status', 'verified');
 
 
@@ -463,10 +475,17 @@ Route::middleware('statusOnline')->group(function (){
     Route::get('/webpanel/sale/delete/{id}', [SaleareaController::class, 'deleteSalearea']);
 
     //portal customer;
-    Route::get('/portal/customer', [PortalCustomerController::class, 'customerView'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area')->name('portal.customer');
+    Route::get('/portal/customer', [PortalCustomerController::class, 'customerView'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'purReport')->name('portal.customer');
     Route::get('/portal/customer/status/{status_customer}', [PortalCustomerController::class, 'customerViewEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
 
-    Route::get('/portal/customer/{id}', [PortalCustomerController::class, 'customerEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'rights_area');
+    //fetch;
+    Route::post('/portal/customer/purchase', [PortalCustomerController::class, 'purchaseOrder'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'purReport');
+
+    //purchase;
+    Route::get('/portal/customer/purchase/{fixed_id}', [PortalCustomerController::class, 'fixedDate'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport');
+    // Route::get('/portal/customer/purchase/{fixed_id}', [PortalCustomerController::class, 'fixedDate'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport');
+
+    Route::get('/portal/customer/{id}', [PortalCustomerController::class, 'customerEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'maintenance', 'rights_area');
 
     ///search customer;
     Route::get('/portal/customer/search/code', [PortalCustomerController::class, 'customerSearch'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');

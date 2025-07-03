@@ -264,7 +264,7 @@
                         <div class="col-sm-6">
                             <ul class="mt-4" style="width: 100%;">
                                 <span>อำเภอ/แขวง</span>
-                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="amphur" id="amphures">
+                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="amphur" id="amphures" required>
                                     
                                     @if(isset($ampures) != '')
                                         @foreach($ampures as $row)
@@ -277,7 +277,7 @@
                         <div class="col-sm-6">
                             <ul class="mt-3 mb-8" style="width: 100%;">
                                 <span>ตำบล/เขต</span>
-                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts">
+                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts" required>
                                     @if(isset($district) != '')
                                         @foreach($district as $row)
                                             <option value="{{$row->amphure_id}}">{{$row->name_th}}</option>
@@ -289,7 +289,7 @@
                         <div class="col-sm-6">
                             <ul class="mt-3 mb-8" style="width: 100%;">
                                 <span>รหัสไปรษณีย์</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบ</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" id="zipcode" name="zip_code">
+                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" id="zipcode" name="zip_code" required>
                             </ul>
                         </div>
                     </div>

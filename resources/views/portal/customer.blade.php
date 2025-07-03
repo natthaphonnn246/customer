@@ -27,7 +27,7 @@
             /* padding: 12px; */
             background-color: #FFFFFF;
             border-radius: 2px;
-            min-width: 1500px;
+            min-width: 1400px;
             /* text-align: left; */
         }
         #admin {
@@ -211,6 +211,18 @@
         .sliders.round:before {
             border-radius: 50%;
         }
+        #dropdownDivider {
+            background-color: rgb(67, 68, 68);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #dropdownlist:hover {
+            background-color: rgba(8, 123, 110, 0.544);
+            color: white;
+            border-radius: 5px;
+            
+        }
      /*    span:hover {
             color: #f7ff1b;
             text-decoration: none;
@@ -262,7 +274,7 @@
             @endif
         @endsection
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
-    
+
             <div class="py-2">
                 {{-- <span style="color: #8E8E8E;">ข้อมูลลูกค้า (Customer)</span> --}}
             </div>
@@ -271,80 +283,129 @@
             <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 2px;">
             
             <div class="ms-6 mr-6">
-            <div class="row">
-                <!--- search --->
-                <form class="max-w-md mx-auto py-3" method="get" action="/portal/customer">
-                    {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                           <!---icon -->
-                        </div>
-                        <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" />
-                        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
+                @if(!empty($pur_report) && $pur_report->purchase_status === 1)
+                <div class="row">
+                  
+                  
+                    <div class="col-sm-2 py-3">
+
+                                {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
                     
-                    </div>
-                    <p class="py-2" id="keyword_search"></p>
-                    @csrf   
-                </form>
-
-                <script>
-                    $(document).ready(function() {
-                        $('#default-search').keyup(function(e) {
-                            e.preventDefault();  // Prevent form from submitting
-
-                            $.ajax({
-                                url: '/portal/customer/search/code',
-                                method: 'GET',
-                                data: {
-                                    keyword: $(this).val(),
-
-                                },
-                                catch:false,
-                                success: function(data) {
-                                    
-                                    $('#keyword_search').html(data);
-
-                                }
-                            });
-                           /*  let keyword = $(this).val();
-                            console.log(keyword ); */
-                        });
-                    });
-                </script>
-               {{--  <div class="col-3" style="text-align: right; padding:5px 30px;; margin-top:10px;">
-
-                            <div id="reports"> --}}
-                                {{-- <li class="sub-menu"><a href="#" style="cursor: pointer; margin-right: 15px;" id="submenu"  class="sub-btn">รายงาน (Report) <i class="fas fa-angle-left dropdown" style="font-size: 12px;"></i></a></li> --}}
-                            {{--     <div style="cursor: pointer; text-align: right; font-weight:500;" id="submenu">  
-                                    <i class="fa-regular fa-bell" style="font-size: 25px;"></i>
-                                    @if ($count_waiting > 0)
-                                    <sup style="background-color: #e12e49; border-radius: 20px; padding: 10px; color: white;">{{$count_waiting + $count_action}}<span style="font-size:20px;">+</span></sup>
-                                    @endif
-                                </div>
-                            </div>
-            
-                            <div class="sub-menus" style=" display: none; margin-top: 15px;"> --}}
-                               
-                              {{--   <div style="padding: 10px; background-color:rgb(38, 38, 38); border-radius: 10px; text-align:left;">
-                                    <ul><a href="/portal/customer" style="text-decoration: none;">ทั้งหมด : {{$count_waiting + $count_action + $count_completed}} ร้านค้า</a></ul>
-                                    <hr style="color:#ffffff;">
-                                    <ul><a href="/portal/customer/status/waiting" style="text-decoration: none;">รอดำเนินการ : {{$count_waiting}} ร้านค้า</a></ul>
-                                    <hr style="color:#ffffff;">
-                                    <ul><a href="/portal/customer/status/action" style="text-decoration: none;">ต้องดำเนินการ : {{$count_action}} ร้านค้า</a></ul>
-                                    <hr style="color:#ffffff;">
-                                    <ul><a href="/portal/customer/status/completed" style="text-decoration: none;">ดำเนินการแล้ว : {{$count_completed}} ร้านค้า</a></ul>
-                                </div> --}}
+                            <button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="" style="background-color: rgb(1, 183, 52); width: 100%; border-radius:8px; color:#ffffff; height:70px;" type="button">
                                 
-             {{--                    <select class="form-control" name="" id="noti_status" >
-                                    <option selected value="1">ทั้งหมด : {{$count_waiting + $count_action + $count_completed}} ร้านค้า</option>
-                                    <option value="2">รอดำเนินการ : {{$count_waiting}} ร้านค้า</option>
-                                    <option value="3">ต้องดำเนินการ : {{$count_action}} ร้านค้า</option>
-                                    <option value="4">ดำเนินการแล้ว : {{$count_completed}} ร้านค้า</option>
-                                </select> 
-
+                                เลือกวันสั่งซื้อ
+                                  
+                            </button> 
+            
+                            <!-- Dropdown menu -->
+                            <div id="dropdownDivider" class="z-10 hidden divide-y divide-gray-100 shadow-sm w-44" style="text-align: left;">
+            
+                                <div class="py-2">
+                                    <a href="/portal/customer/purchase/morethan" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">ไม่สั่งเกิน 7 วัน</a>
+                                </div>
+                                <div class="py-2">
+                                    <a href="/portal/customer/purchase/coming" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">ใกล้ครบกำหนด</a>
+                                </div>
+                                <div class="py-2">
+                                    <a href="/portal/customer/purchase/normal" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">สั่งซื้อตามปกติ</a>
+                                </div>
+                                <div class="py-2">
+                                    <a href="/portal/customer/purchase/no-purchase" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">ไม่มีการสั่งซื้อ</a>
+                                </div>
+                              
                             </div>
-                </div> --}}
-            </div>
+
+                    </div>
+
+                    <div class="col-sm-10">
+                          <!--- search --->
+                          <form class="py-3" style="width:80%;" method="get" action="/portal/customer">
+                            {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <!---icon -->
+                                </div>
+                                <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" />
+                                <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
+                            
+                            </div>
+                            <p class="py-2" id="keyword_search"></p>
+                            @csrf   
+                        </form>
+
+                        <script>
+                            $(document).ready(function() {
+                                $('#default-search').keyup(function(e) {
+                                    e.preventDefault();  // Prevent form from submitting
+
+                                    $.ajax({
+                                        url: '/portal/customer/search/code',
+                                        method: 'GET',
+                                        data: {
+                                            keyword: $(this).val(),
+
+                                        },
+                                        catch:false,
+                                        success: function(data) {
+                                            
+                                            $('#keyword_search').html(data);
+
+                                        }
+                                    });
+                                /*  let keyword = $(this).val();
+                                    console.log(keyword ); */
+                                });
+                            });
+                        </script>
+                    </div>
+                
+                 
+                
+                </div>
+                @else
+
+                <div style="display: flex; justify-content: center;">
+                    <!--- search --->
+                    <form class="py-3" style="width:80%;" method="get" action="/portal/customer">
+                      {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
+                      <div class="relative">
+                          <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                          <!---icon -->
+                          </div>
+                          <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" />
+                          <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
+                      
+                      </div>
+                      <p class="py-2" id="keyword_search"></p>
+                      @csrf   
+                  </form>
+
+                  <script>
+                        $(document).ready(function() {
+                            $('#default-search').keyup(function(e) {
+                                e.preventDefault();  // Prevent form from submitting
+
+                                $.ajax({
+                                    url: '/portal/customer/search/code',
+                                    method: 'GET',
+                                    data: {
+                                        keyword: $(this).val(),
+
+                                    },
+                                    catch:false,
+                                    success: function(data) {
+                                        
+                                        $('#keyword_search').html(data);
+
+                                    }
+                                });
+                            /*  let keyword = $(this).val();
+                                console.log(keyword ); */
+                            });
+                        });
+                    </script>
+                </div>
+                @endif
 
      {{--    <script>
                 $(document).ready(function () {
@@ -401,6 +462,9 @@
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">Sale area</td>
                 <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">ชื่อร้านค้า</td>
                 <td scope="col" style="color:#838383; text-align: center; font-weight:500; padding:20px;">สถานะ</td>
+                @if(!empty($pur_report) && $pur_report->purchase_status === 1)
+                    <td scope="col" style="color:#838383; text-align: center; font-weight:500; padding:20px;">การสั่งซื้อ</td>
+                @endif
                 <td scope="col" style="color:#838383; text-align: center; font-weight:500; padding:20px;">วันที่ลงทะเบียน</td>
                 <td scope="col" style="color:#838383; text-align: center; font-weight:500; padding:20px;">จัดการ</td>
               </tr>
@@ -445,6 +509,242 @@
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> </td>
                         @endif
 
+                    @if(!empty($pur_report) && $pur_report->purchase_status === 1)
+
+                            @if(!empty($check_id))
+                            @php 
+                            $id_purchase = $check_id->firstWhere('customer_id', $customer_code)?->customer_id;
+                            @endphp
+
+                            @if ($id_purchase == $customer_code)
+
+                            @php 
+                            $item = $check_purchase->firstWhere('customer_id', $customer_code);
+                            @endphp
+                            
+                                @if ($item)
+                                    @php
+                                        $check_over_5 = \Carbon\Carbon::parse($item->date_purchase)->addDays(5)->lessThan(now());
+                                        $check_over_7 = \Carbon\Carbon::parse($item->date_purchase)->addDays(7)->lessThan(now());
+                                    @endphp
+                                
+                                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px; width:20%;">
+                                        @if ($check_over_7)
+                                        <span id="less{{ $customer_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(255, 70, 70);">
+                                            ไม่สั่งเกิน 7 วัน
+                                        </span>
+                                        
+                                        <div class="modal fade" id="staticBackdrop_normal{{ $customer_code }}" style="margin-top:40px;" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <span class="modal-title" id="staticBackdropLabel">ร้านค้า : {{ $customer_code }} | {{ $customer_name }}</span>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    
+                                                    <div class="modal-body">
+                                                        <div class="mb-2" style="text-align: left;">
+                                                            เลขที่: <span id="order-number{{ $customer_code }}"></span> |
+                                                            <span style="background-color: #e04b30; color:white; border-radius:5px; padding:3px;" id="date-number{{ $customer_code }}"></span>
+                                                        </div>
+                                                        <div class="relative overflow-x-auto">
+                                                            <table class="w-full text-left">
+                                                                <thead style="background-color:#222222; color:rgb(255, 255, 255);">
+                                                                    <tr>
+                                                                        <td class="px-6 py-3 text-center">รหัสสินค้า</td>
+                                                                        <td class="px-6 py-3">ชื่อสินค้า</td>
+                                                                        <td class="px-6 py-3 text-center">หน่วย</td>
+                                                                        <td class="px-6 py-3 text-center">จำนวน</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="result-area{{ $customer_code }}">
+                                                                    <tr>
+                                                                        <td colspan="4" class="text-center py-4">กำลังโหลดข้อมูล...</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                            
+                                        @elseif ($check_over_5)
+                                            <span id="less{{ $customer_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:#ffa51d;">
+                                                ใกล้ครบกำหนด
+                                            </span>
+
+                                            <div class="modal fade" style="margin-top:40px;" id="staticBackdrop_normal{{ $customer_code }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <span class="modal-title" id="staticBackdropLabel">ร้านค้า : {{ $customer_code }} | {{ $customer_name }}</span>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        
+                                                        <div class="modal-body">
+                                                            <div class="mb-2" style="text-align: left;">
+                                                                เลขที่: <span id="order-number{{ $customer_code }}"></span> |
+                                                                <span style="background-color: #ffa51d; color:white; border-radius:5px; padding:3px;" id="date-number{{ $customer_code }}"></span>
+                                                            </div>
+                                                            <div class="relative overflow-x-auto">
+                                                                <table class="w-full text-left">
+                                                                    <thead style="background-color:#222222; color:rgb(255, 255, 255);">
+                                                                        <tr>
+                                                                            <td class="px-6 py-3 text-center">รหัสสินค้า</td>
+                                                                            <td class="px-6 py-3">ชื่อสินค้า</td>
+                                                                            <td class="px-6 py-3 text-center">หน่วย</td>
+                                                                            <td class="px-6 py-3 text-center">จำนวน</td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="result-area{{ $customer_code }}">
+                                                                        <tr>
+                                                                            <td colspan="4" class="text-center py-4">กำลังโหลดข้อมูล...</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @else
+
+                                            <span id="less{{ $customer_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(51, 197, 14);">
+                                                สั่งซื้อตามปกติ
+                                            </span>
+
+                                            <div class="modal fade" style="margin-top:40px;" id="staticBackdrop_normal{{ $customer_code }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <span class="modal-title" id="staticBackdropLabel">ร้านค้า : {{ $customer_code }} | {{ $customer_name }}</span>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        
+                                                        <div class="modal-body">
+                                                            <div class="mb-2" style="text-align: left;">
+                                                                เลขที่: <span id="order-number{{ $customer_code }}"></span> |
+                                                                <span style="background-color: #09be0f; color:white; border-radius:5px; padding:3px;" id="date-number{{ $customer_code }}"></span>
+                                                            </div>
+                                                            <div class="relative overflow-x-auto">
+                                                                <table class="w-full text-left">
+                                                                    <thead style="background-color:#222222; color:rgb(255, 255, 255);">
+                                                                        <tr>
+                                                                            <td class="px-6 py-3 text-center">รหัสสินค้า</td>
+                                                                            <td class="px-6 py-3">ชื่อสินค้า</td>
+                                                                            <td class="px-6 py-3 text-center">หน่วย</td>
+                                                                            <td class="px-6 py-3 text-center">จำนวน</td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="result-area{{ $customer_code }}">
+                                                                        <tr>
+                                                                            <td colspan="4" class="text-center py-4">กำลังโหลดข้อมูล...</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </td>
+                                @endif
+                          
+
+                            <!-- แสดงรายการสินค้าสุดท้าย -->
+                            <script>
+                                $(document).ready(function() {
+                                    const use_id = "{{ $customer_code }}";
+                                    const modalId = '#staticBackdrop_normal{{ $customer_code }}';
+                            
+                                    $('#less{{ $customer_code }}').click(function(e) {
+                                        e.preventDefault();
+                            
+                                        fetch('/portal/customer/purchase', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            },
+                                            body: JSON.stringify({ use_id: use_id })
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            const resultArea  = document.getElementById('result-area{{ $customer_code }}');
+                                            const orderNumber = document.getElementById('order-number{{ $customer_code }}');
+                                            const datePur     = document.getElementById('date-number{{ $customer_code }}');
+                            
+                                            if (Array.isArray(data.use_id) && data.use_id.length > 0) {
+                                                let rows  = '' ;
+                                                let total = 0 ;
+                                                data.use_id.forEach(item => {
+                                                    rows += `
+                                                        <tr>
+                                                            <td class="border border-gray-300 px-4 py-2 text-center">${item.product_id}</td>
+                                                            <td class="border border-gray-300 px-4 py-2">${item.product_name}</td>
+                                                            <td class="border border-gray-300 px-4 py-2 text-center">${item.unit}</td>
+                                                            <td class="border border-gray-300 px-4 py-2 text-center">${item.quantity}</td>
+                                
+                                                        </tr>
+                                                    `;
+                                                    po_number     = `${item.purchase_order}`;
+                                                    date_purchase = `${item.date_purchase}`;
+
+                                                    total += Number(item.total_sale ?? 0);
+                                                    
+                                                });
+
+                                                    
+                                                rows += `
+                                                    <tr>
+                                                        <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">รวมเป็นเงิน</td>
+                                                        <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">฿${total.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
+                                                    </tr>
+                                                `;
+                                                                                    
+                                                resultArea.innerHTML  = rows;
+                                                orderNumber.innerHTML = po_number ?? '';
+                                                datePur.innerHTML     = date_purchase ?? '';
+                                            } else {
+                                                resultArea.innerHTML = `
+                                                    <tr>
+                                                        <td colspan="4" class="text-center text-red-500 py-4">ไม่พบข้อมูล</td>
+                                                    </tr>
+                                                `;
+                                                orderNumber.innerHTML = '';
+                                            }
+                            
+                                            // เปิด Modal
+                                            const myModal = new bootstrap.Modal(document.querySelector(modalId));
+                                            myModal.show();
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                            const resultArea = document.getElementById('result-area{{ $customer_code }}');
+                                            resultArea.innerHTML = `
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-red-500 py-4">เกิดข้อผิดพลาดในการโหลดข้อมูล</td>
+                                                </tr>
+                                            `;
+                                        });
+                                    });
+                                });
+                            </script>
+                        @else
+                            <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
+                                <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(144, 209, 245);">
+                                    ไม่มีการสั่งซื้อ
+                                </span>
+                            </td>
+                        @endif
+                        @endif
+                    @endif
                     <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px; ">{{$created_at}}</td>
 
                     <td scope="row" style="color:#9C9C9C; text-align: center; padding:15px;"><a href="/portal/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>

@@ -139,7 +139,7 @@
                                 </li>
                                 <li class="my-3">
                                     <span>ที่อยู่</span>
-                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address">   
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address" required>   
                                 </li>                           
                             </ul>
                         </div>
@@ -162,7 +162,7 @@
                         <div class="col-sm-6">
                             <ul class="my-2" style="width: 100%;">
                                 <span>อำเภอ/เขต</span>
-                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" id="amphures" name="amphur">
+                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" id="amphures" name="amphur" required>
                                     
                                     @if(isset($ampures))
                                         @foreach($ampures as $row)
@@ -176,7 +176,7 @@
                         <div class="col-sm-6 mb-8">
                             <ul class="mt-3" style="width: 100%;">
                                 <span>ตำบล/แขวง</span>
-                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts">
+                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts" required>
                                     @if(isset($district))
                                         @foreach($district as $row)
                                             <option value="{{$row->amphure_id}}">{{$row->name_th}}</option>
@@ -188,7 +188,7 @@
                         <div class="col-sm-6 mb-8">
                             <ul class="mt-3" style="width: 100%;">
                                 <span>รหัสไปรษณีย์</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบ</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="zipcode" id="zipcode">
+                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="zipcode" id="zipcode" required>
                             </ul>
                         </div>
                     </div>
@@ -226,7 +226,31 @@
     </div>
 
     {{-- <input id="logins" value=""> --}}
-    
+    @if (session('error_admin') == 'email')
+    <script> 
+            Swal.fire({
+                title: "กรุณาตรวจสอบ Code และ Email",
+                // text: "กรุณารอสักครู่",
+                icon: "warning",
+                confirmButtonText: "ตกลง",
+                width: '400px', 
+                height: '200px',
+                customClass: {
+                    popup: 'rounded-popup',
+                    title: 'text-xl',
+                    icon: 'custom-icon-color',
+                    confirmButton: 'custom-confirm-button'
+                }
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.reload();
+                }
+                
+            });
+    </script>
+
+    @endif
+
     <script>
              
         $('#province').change(function(e) {

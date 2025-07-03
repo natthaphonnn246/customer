@@ -312,7 +312,7 @@
                 <h2 style="color: rgb(26, 26, 26); font-weight: 400; padding:10px; font-size:18px;">สถานะการนำเข้าข้อมูล</h2>
             </div>
           
-        <div class="container" style="width:95%;">
+        <div class="ms-4" style="width:95%;">
             
            {{--      @if(session('import'))
                     <div class="alert alert-success">{{ session('import') }}</div>

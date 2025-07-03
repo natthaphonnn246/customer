@@ -16,12 +16,15 @@ use App\Exports\CustomerActionExport;
 use App\Exports\CustomerAllExport;
 use App\Exports\CustomerInactiveExport;
 use App\Exports\UpdateLatestExport;
+use App\Models\ReportSeller;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
+use Carbon\Carbon;
+use Illuminate\Database\Query\JoinClause;
 
 class PortalCustomerController
 {
@@ -352,6 +355,9 @@ class PortalCustomerController
         $start = ($perpage * $page) - $perpage;
         
         $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+        $pur_report = User::select('purchase_status')->where('user_code', $code)->first();
+        // dd($pur_report->admin_role);
+
         $customer_list = Customer::select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
                                     ->whereNotIn('customer_status', ['inactive'])
@@ -391,6 +397,18 @@ class PortalCustomerController
 
         $status_alert = $status_waiting + $status_action;
 
+        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                ->select('customer_id')
+                                ->distinct()
+                                ->get(); 
+
+        $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                        ->select('customer_id')
+                                        ->selectRaw('MAX(date_purchase) as date_purchase')
+                                        ->groupBy('customer_id')
+                                        ->orderByDesc('date_purchase')
+                                        ->get(); 
+
         //keyword;
         if($keyword_code != '') {
             $customer_list = Customer::where('admin_area',$id)
@@ -422,7 +440,7 @@ class PortalCustomerController
 
             // dd($check_search->admin_area);
             if (!empty($check_customer_code)) {
-                return view('portal/customer', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'status_waiting', 'status_action', 'status_completed', 'status_all', 'status_alert'));
+                return view('portal/customer', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'status_waiting', 'status_action', 'status_completed', 'status_all', 'status_alert', 'pur_report', 'check_id', 'check_purchase'));
             //  dd('check');
             }
 
@@ -431,7 +449,7 @@ class PortalCustomerController
  
         }
         // dd($customer_list);
-        return view('portal/customer', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'status_waiting', 'status_action', 'status_completed', 'status_all', 'status_alert'));
+        return view('portal/customer', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'status_waiting', 'status_action', 'status_completed', 'status_all', 'status_alert', 'pur_report', 'check_id', 'check_purchase'));
     }
     
     //portal/customer/status/{status_custoemr};
@@ -1132,6 +1150,519 @@ class PortalCustomerController
             
         }
         
+    }
+
+    public function fixedDate(Request $request) {
+
+            $fixed = $request->fixed_id;
+
+            // dd($fixed);
+            
+        /*     $date = Carbon::parse(now());
+            $datePast_7 = $date->subDays(7);
+            $datePast_5 = $date->subDays(5); */
+            $datePast_7 = Carbon::now()->subDays(7);
+            $datePast_6 = Carbon::now()->subDays(6);
+            $datePast_5 = Carbon::now()->subDays(5);
+            $datePast_4 = Carbon::now()->subDays(4);
+            $datePast_3 = Carbon::now()->subDays(3);
+
+            //เช็ควันเริ่ม;
+            $from_7 = ($datePast_7->toDateString()); 
+            $from_6 = ($datePast_6->toDateString()); 
+            $from_5 = ($datePast_5->toDateString()); 
+            $from_4 = ($datePast_4->toDateString()); 
+            $from_3 = ($datePast_3->toDateString()); 
+
+            //วันปัจจุบัน;
+            $to = date('Y-m-d');
+
+            $page = $request->page;
+            if ($page) {
+                $page = $request->page;
+            } else {
+                $page = 1;
+            }
+
+            $id = $request->user()->admin_area;
+            $code = $request->user()->user_code;
+
+            //notin code;
+            $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+            if (empty($code_notin)) {
+                $code_notin = [0]; // ใส่ค่า default ที่ไม่มีผล
+            }
+            
+            // $count_page = Customer::where('admin_area', $id)
+            //                         ->whereNotIn('customer_id', $code_notin)
+            //                         ->count();
+
+                        
+            $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+            $pur_report = User::select('purchase_status')->where('user_code', $code)->first();
+
+            $status_all = Customer::select('status')
+                                    ->where('admin_area', $id)
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+            $status_waiting = Customer::where('admin_area', $id)
+                                        ->where('status', 'รอดำเนินการ')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+                                        // dd($count_waiting);
+            $status_action = Customer::where('admin_area', $id)
+                                        ->where('status', 'ต้องดำเนินการ')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_completed = Customer::where('admin_area', $id)
+                                        ->where('status', 'ดำเนินการแล้ว')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_alert = $status_waiting + $status_action;
+
+
+            if($fixed == 'morethan')
+            {
+                $count_page = Customer::select(
+                                                'customers.customer_id',
+                                                'customers.customer_name',
+                                                DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                            )
+                                            ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                            ->where('customers.admin_area', $id)
+                                            ->groupBy('customers.customer_id', 'customers.customer_name')
+                                            ->having('last_purchase_date', '<=', $from_7)
+                                            ->count(); 
+
+                $perpage = 10;
+                $total_page = ceil($count_page / $perpage);
+                // dd($total_page);
+                $start = ($perpage * $page) - $perpage;
+    
+                $customer_list = Customer::select(
+                                                'customers.id',
+                                                'customers.customer_id',
+                                                'customers.customer_name',
+                                                'customers.status',
+                                                'customers.admin_area',
+                                                'customers.sale_area',
+                                                'customers.email',
+                                                'customers.customer_status',
+                                                'customers.created_at',
+                                                DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                            )
+                                            ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                            ->where('customers.admin_area', $id)
+                                            ->groupBy(
+                                                'customers.id',
+                                                'customers.customer_id',
+                                                'customers.customer_name',
+                                                'customers.status',
+                                                'customers.admin_area',
+                                                'customers.sale_area',
+                                                'customers.email',
+                                                'customers.customer_status',
+                                            )
+                                            ->having('last_purchase_date', '<=', $from_7)
+                                            ->orderBydesc('last_purchase_date')
+                                            ->offset($start)
+                                            ->limit($perpage)
+                                            ->get();
+
+                                                // dd($customer_list);
+                                            
+                        /*         
+                            SELECT 
+                            customers.customer_id,
+                            MAX(report_sellers.date_purchase) as last_purchase
+                            FROM report_sellers
+                            INNER JOIN customers ON customers.customer_id = report_sellers.customer_id
+                            WHERE customers.admin_area = 'A10'
+                            GROUP BY customers.customer_id
+                            HAVING last_purchase <= '2025-06-15'; */
+
+                                            
+                        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                ->select('customer_id')
+                                                ->distinct()
+                                                ->get(); 
+            
+                        $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                        ->select('customer_id')
+                                                        ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                        ->groupBy('customer_id')
+                                                        ->orderByDesc('date_purchase')
+                                                        ->get(); 
+            
+
+                        return view('portal/customer-checkpur', compact(
+                                                                        'user_name', 
+                                                                        'status_alert', 
+                                                                        'status_all', 
+                                                                        'status_waiting', 
+                                                                        'status_action', 
+                                                                        'status_completed', 
+                                                                        'total_page', 
+                                                                        'page',
+                                                                        'start',
+                                                                        'customer_list',
+                                                                        'check_id',
+                                                                        'check_purchase',
+                                                                        'pur_report'
+                                                                    ));
+            } elseif($fixed == 'coming') {
+
+                        $count_page = Customer::select(
+                                                        'customers.customer_id',
+                                                        'customers.customer_name',
+                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                    )
+                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                    ->where('customers.admin_area', $id)
+                                                    ->groupBy('customers.customer_id', 'customers.customer_name')
+                                                    // ->havingBetween('last_purchase_date', $from_5)
+                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_6, $from_5])
+                                                    ->count(); 
+                                                    // dd($count_page);
+
+                        $perpage = 10;
+                        $total_page = ceil($count_page / $perpage);
+                        // dd($total_page);
+                        $start = ($perpage * $page) - $perpage;
+
+                        $customer_list = Customer::select(
+                                                        'customers.id',
+                                                        'customers.customer_id',
+                                                        'customers.customer_name',
+                                                        'customers.status',
+                                                        'customers.admin_area',
+                                                        'customers.sale_area',
+                                                        'customers.email',
+                                                        'customers.customer_status',
+                                                        'customers.created_at',
+                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                    )
+                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                    ->where('customers.admin_area', $id)
+                                                    ->groupBy(
+                                                        'customers.id',
+                                                        'customers.customer_id',
+                                                        'customers.customer_name',
+                                                        'customers.status',
+                                                        'customers.admin_area',
+                                                        'customers.sale_area',
+                                                        'customers.email',
+                                                        'customers.customer_status',
+                                                        'customers.created_at'
+                                                    )
+                                                    // ->having('last_purchase_date', '<=', $from_5)
+                                                    // ->havingBetween('last_purchase_date', [$from_7, $from_5]) 
+                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_6, $from_5])
+
+                                                    ->orderBydesc('last_purchase_date')
+                                                    ->offset($start)
+                                                    ->limit($perpage) 
+                                                    // ->get();
+                                                    ->get();
+                                                    // dd($customer_list);
+
+
+                                            // dd($customer_list);
+                                        
+                                      /*       SELECT 
+                                            customers.customer_id,
+                                            MAX(report_sellers.date_purchase) as last_purchase
+                                        FROM report_sellers
+                                        INNER JOIN customers 
+                                            ON customers.customer_id = report_sellers.customer_id
+                                        WHERE customers.admin_area = 'A10'
+                                        GROUP BY customers.customer_id
+                                        HAVING last_purchase BETWEEN '2025-06-20' AND '2025-06-22'; */
+
+                                        
+                        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                            ->select('customer_id')
+                                            ->distinct()
+                                            ->get(); 
+
+                        $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                    ->select('customer_id')
+                                                    ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                    ->groupBy('customer_id')
+                                                    ->orderByDesc('date_purchase')
+                                                    ->get(); 
+
+
+                        return view('portal/customer-checkpur-coming', compact(
+                                                                    'user_name', 
+                                                                    'status_alert', 
+                                                                    'status_all', 
+                                                                    'status_waiting', 
+                                                                    'status_action', 
+                                                                    'status_completed', 
+                                                                    'total_page', 
+                                                                    'page',
+                                                                    'start',
+                                                                    'customer_list',
+                                                                    'check_id',
+                                                                    'check_purchase',
+                                                                    'pur_report'
+                                                                ));
+            
+            } elseif ($fixed == 'normal') {
+
+                        $count_page = Customer::select(
+                                                        'customers.customer_id',
+                                                        'customers.customer_name',
+                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                    )
+                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                    ->where('customers.admin_area', $id)
+                                                    ->groupBy('customers.customer_id', 'customers.customer_name')
+                                                    // ->havingBetween('last_purchase_date', $from_5)
+                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_4, $from_3])
+                                                    ->count(); 
+                                                    // dd($count_page);
+
+                        $perpage = 10;
+                        $total_page = ceil($count_page / $perpage);
+                        // dd($total_page);
+                        $start = ($perpage * $page) - $perpage;
+
+                        $customer_list = Customer::select(
+                                                        'customers.id',
+                                                        'customers.customer_id',
+                                                        'customers.customer_name',
+                                                        'customers.status',
+                                                        'customers.admin_area',
+                                                        'customers.sale_area',
+                                                        'customers.email',
+                                                        'customers.customer_status',
+                                                        'customers.created_at',
+                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                    )
+                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                    ->where('customers.admin_area', $id)
+                                                    ->groupBy(
+                                                        'customers.id',
+                                                        'customers.customer_id',
+                                                        'customers.customer_name',
+                                                        'customers.status',
+                                                        'customers.admin_area',
+                                                        'customers.sale_area',
+                                                        'customers.email',
+                                                        'customers.customer_status',
+                                                        'customers.created_at'
+                                                    )
+                                                    // ->having('last_purchase_date', '<=', $from_5)
+                                                    // ->havingBetween('last_purchase_date', [$from_7, $from_5]) 
+                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_4, $from_3])
+
+                                                    ->orderBydesc('last_purchase_date')
+                                                    ->offset($start)
+                                                    ->limit($perpage) 
+                                                    // ->get();
+                                                    ->get();
+                                                    // dd($customer_list);
+
+
+                                                // dd($customer_list);
+                                            
+                                        /*       SELECT 
+                                                customers.customer_id,
+                                                MAX(report_sellers.date_purchase) as last_purchase
+                                            FROM report_sellers
+                                            INNER JOIN customers 
+                                                ON customers.customer_id = report_sellers.customer_id
+                                            WHERE customers.admin_area = 'A10'
+                                            GROUP BY customers.customer_id
+                                            HAVING last_purchase BETWEEN '2025-06-20' AND '2025-06-22'; */
+
+                                            
+                        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                    ->select('customer_id')
+                                                    ->distinct()
+                                                    ->get(); 
+
+                        $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                        ->select('customer_id')
+                                                        ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                        ->groupBy('customer_id')
+                                                        ->orderByDesc('date_purchase')
+                                                        ->get(); 
+
+
+                        return view('portal/customer-checkpur-normal', compact(
+                                                        'user_name', 
+                                                        'status_alert', 
+                                                        'status_all', 
+                                                        'status_waiting', 
+                                                        'status_action', 
+                                                        'status_completed', 
+                                                        'total_page', 
+                                                        'page',
+                                                        'start',
+                                                        'customer_list',
+                                                        'check_id',
+                                                        'check_purchase',
+                                                        'pur_report'
+                                                    ));
+            } else {
+
+                        $count_page = Customer::leftJoin('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                ->select('customers.customer_id', DB::raw('COUNT(report_sellers.purchase_order) as count_po'))
+                                                ->where('customers.admin_area', $id)
+                                                ->groupBy('customers.customer_id')
+                                                ->havingRaw('count_po < 1')
+                                                ->get()
+                                                ->count();
+
+                        $perpage = 10;
+                        $total_page = ceil($count_page / $perpage);
+                        // dd($total_page);
+                        $start = ($perpage * $page) - $perpage;
+
+                        $customer_list = Customer::select(
+                                                            'customers.id',
+                                                            'customers.customer_id',
+                                                            'customers.customer_name',
+                                                            'customers.status',
+                                                            'customers.admin_area',
+                                                            'customers.sale_area',
+                                                            'customers.email',
+                                                            'customers.customer_status',
+                                                            'customers.created_at',
+                                                            DB::raw('COUNT(report_sellers.purchase_order) as count_po')
+                                                        )
+                                                        ->leftjoin('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                        ->where('customers.admin_area', $id)
+                                                        ->groupBy(
+                                                            'customers.id',
+                                                            'customers.customer_id',
+                                                            'customers.customer_name',
+                                                            'customers.status',
+                                                            'customers.admin_area',
+                                                            'customers.sale_area',
+                                                            'customers.email',
+                                                            'customers.customer_status',
+                                                            'customers.created_at'
+                                                        )
+                                                        ->havingRaw('count_po < 1')
+                                                        ->orderBydesc('customers.customer_id')
+                                                        ->offset($start)
+                                                        ->limit($perpage) 
+                                                        // ->get();
+                                                        ->get();
+                                                        // dd($customer_list);
+
+
+                                    // dd($customer_list);
+                                
+                            /*       SELECT 
+                                    customers.customer_id,
+                                    MAX(report_sellers.date_purchase) as last_purchase
+                                FROM report_sellers
+                                INNER JOIN customers 
+                                    ON customers.customer_id = report_sellers.customer_id
+                                WHERE customers.admin_area = 'A10'
+                                GROUP BY customers.customer_id
+                                HAVING last_purchase BETWEEN '2025-06-20' AND '2025-06-22'; */
+
+                                
+                            $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                                    ->select('customer_id')
+                                                    ->distinct()
+                                                    ->get(); 
+
+                            $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                            ->select('customer_id')
+                                            ->selectRaw('MAX(date_purchase) as date_purchase')
+                                            ->groupBy('customer_id')
+                                            ->orderByDesc('date_purchase')
+                                            ->get(); 
+
+
+                            return view('portal/customer-checkpur-nopurchase', compact(
+                                                            'user_name', 
+                                                            'status_alert', 
+                                                            'status_all', 
+                                                            'status_waiting', 
+                                                            'status_action', 
+                                                            'status_completed', 
+                                                            'total_page', 
+                                                            'page',
+                                                            'start',
+                                                            'customer_list',
+                                                            'check_id',
+                                                            'check_purchase',
+                                                            'pur_report'
+                                                        ));
+            }
+
+        
+
+    }
+
+    public function purchaseOrder(Request $request)
+    {
+        
+        $use_id = $request->use_id;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        if ($use_id) {
+
+            /* $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                    ->select('customer_id', 'customer_name')
+                                    ->where('customer_id', $use_id)
+                                    ->distinct()
+                                    ->get(); */
+
+                                          // 1. หา date_purchase ล่าสุดของแต่ละ customer
+                $latest_po = ReportSeller::select('customer_id', DB::raw('MAX(date_purchase) as latest_date'))
+                                            ->whereNotIn('customer_id', $code_notin)
+                                            ->where('customer_id', $use_id)
+                                            ->groupBy('customer_id');
+
+                // 2. Join กับข้อมูลสินค้าใน PO ล่าสุด
+                $report_seller = ReportSeller::joinSub($latest_po, 'latest', function ($join) {
+                                                $join->on('report_sellers.customer_id', '=', 'latest.customer_id')
+                                                    ->on('report_sellers.date_purchase', '=', 'latest.latest_date');
+                                                })
+                                                ->select(
+                                                    'report_sellers.date_purchase',
+                                                    'report_sellers.customer_id',
+                                                    'report_sellers.purchase_order',
+                                                    'report_sellers.product_id',
+                                                    'report_sellers.product_name',
+                                                    'report_sellers.unit',
+                                                    'report_sellers.quantity',
+                                                    DB::raw('(report_sellers.price*report_sellers.quantity) as total_sale')
+                                                )
+                                                ->orderBy('report_sellers.customer_id')
+                                                ->get();
+
+            return response()->json([
+                'status'  => 'success',
+                'use_id'  =>  $report_seller->toArray(),
+                'message' => 'รับค่าเรียบร้อย'
+            ]);
+        }
+
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'ไม่พบข้อมูล'
+        ], 400);
     }
 
 }
