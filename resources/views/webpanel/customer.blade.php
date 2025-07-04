@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {{-- <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script> --}}
 
     <title>CMS VMDRUG System</title>
 </head>
@@ -286,20 +287,26 @@
             border-radius: 5px;
             
         }
-        #dropdownlistExport:hover {
-            background-color: rgba(8, 123, 110, 0.544);
-            color: white;
-            border-radius: 5px;
-            
-        }
-        #dropdownDividerExcel {
+        #listCsv {
             background-color: rgb(67, 68, 68);
             color: white;
             border-radius: 5px;
             
         }
-        #dropdownlistExcel:hover {
-            background-color: rgba(8, 123, 110, 0.544);
+        #listCsv:hover {
+            background-color: rgb(8, 123, 110);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #listExcel {
+            background-color: rgb(67, 68, 68);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #listExcel:hover {
+            background-color: rgb(8, 123, 110);
             color: white;
             border-radius: 5px;
             
@@ -372,62 +379,39 @@
         </div>
 
         <div class="ms-6">
-                <ul class="ms-2 my-2">
-                    <span>ส่งออกไฟล์ : </span>
-                </ul>
-                {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
-    
-
-  
-                    <button id="dropdownDividerButton" data-dropdown-toggle="dropdownDividerExport" class="" style="background-color: rgb(22, 175, 98); width: 220px; border-radius:5px; color:#ffffff; height:40px;" type="button">
-                    
-                        Export CSV
-                        
-                    </button> 
+            <ul class="ms-2 my-2">
+                <span>ส่งออกไฟล์ : </span>
+            </ul>
         
-                    <!-- Dropdown menu -->
-                    <div id="dropdownDividerExport" class="z-10 hidden divide-y divide-gray-100 shadow-sm w-44" style="text-align: left;">
+            {{-- Export CSV --}}
+            <div class="relative inline-block mr-4">
+                <button id="dropdownCsvBtn" data-dropdown-toggle="dropdownCsv" style="background-color: rgb(22, 175, 98); width: 220px; border-radius:5px; color:#ffffff; height:40px;">
+                    Export CSV
+                </button>
         
-                        <div class="">
-                            <a href="/webpanel/customer/export/purchase/getcsv/morethan" class="block px-4 py-2 text-sm" id="dropdownlist"> ไม่สั่งสินค้าเกิน 7 วัน</a>
-                        </div>
-                        <div class="">
-                            <a href="/webpanel/customer/export/purchase/getcsv/coming" class="block px-4 py-2 text-sm" id="dropdownlist"> ใกล้ครบกำหนด</a>
-                        </div>
-                        <div class="">
-                            <a href="/webpanel/customer/export/purchase/getcsv/normal" class="block px-4 py-2 text-sm" id="dropdownlist"> สั่งสินค้าปกติ</a>
-                        </div>
-                        <div class="">
-                            <a href="/webpanel/customer/export/purchase/getcsv/no-purchase" class="block px-4 py-2 text-sm" id="dropdownlist"> ไม่มีการสั่งสินค้า</a>
-                        </div>
-                    </div>
-               
-
-                    <button id="dropdownDividerButtonExcel" data-dropdown-toggle="dropdownDividerExcel" class="" style="background-color: rgb(22, 175, 98); width: 220px; border-radius:5px; color:#ffffff; height:40px;" type="button">
-                    
-                        Export Excel
-                        
-                    </button> 
+                <div id="dropdownCsv" class="z-10 hidden divide-y divide-gray-100 rounded-lg shadow w-44 absolute">
+                    <a href="/webpanel/customer/export/purchase/getcsv/morethan" class="block px-4 py-2 text-sm" id="listCsv"">ไม่สั่งสินค้าเกิน 7 วัน</a>
+                    <a href="/webpanel/customer/export/purchase/getcsv/coming" class="block px-4 py-2 text-sm" id="listCsv">ใกล้ครบกำหนด</a>
+                    <a href="/webpanel/customer/export/purchase/getcsv/normal" class="block px-4 py-2 text-sm" id="listCsv">สั่งสินค้าปกติ</a>
+                    <a href="/webpanel/customer/export/purchase/getcsv/no-purchase" class="block px-4 py-2 text-sm" id="listCsv">ไม่มีการสั่งสินค้า</a>
+                </div>
+            </div>
         
-                    <!-- Dropdown menu -->
-                    <div id="dropdownDividerExcel" class="z-10 hidden divide-y divide-gray-100 shadow-sm w-44" style="text-align: left;">
+            {{-- Export Excel --}}
+            <div class="relative inline-block">
+                <button id="dropdownExcelBtn" data-dropdown-toggle="dropdownExcel" style="background-color: rgb(22, 175, 98); width: 220px; border-radius:5px; color:#ffffff; height:40px;">
+                    Export Excel
+                </button>
         
-                        <div class="">
-                            <a href="/webpanel/customer/export/purchase/getexcel/morethan" class="block px-4 py-2 text-sm" id="dropdownlist"> ไม่สั่งสินค้าเกิน 7 วัน</a>
-                        </div>
-                        <div class="">
-                            <a href="/webpanel/customer/export/purchase/getexcel/coming" class="block px-4 py-2 text-sm" id="dropdownlist"> ใกล้ครบกำหนด</a>
-                        </div>
-                        <div class="">
-                            <a href="/webpanel/customer/export/purchase/getexcel/normal" class="block px-4 py-2 text-sm" id="dropdownlist"> สั่งสินค้าปกติ</a>
-                        </div>
-                        <div class="">
-                            <a href="/webpanel/customer/export/purchase/getexcel/no-purchase" class="block px-4 py-2 text-sm" id="dropdownlist"> ไม่มีการสั่งสินค้า</a>
-                        </div>
-                    </div>
-                
-
+                <div id="dropdownExcel" class="z-10 hidden divide-y divide-gray-100 rounded-lg shadow w-44 absolute">
+                    <a href="/webpanel/customer/export/purchase/getexcel/morethan" class="block px-4 py-2 text-sm" id="listExcel">ไม่สั่งสินค้าเกิน 7 วัน</a>
+                    <a href="/webpanel/customer/export/purchase/getexcel/coming" class="block px-4 py-2 text-sm" id="listExcel">ใกล้ครบกำหนด</a>
+                    <a href="/webpanel/customer/export/purchase/getexcel/normal" class="block px-4 py-2 text-sm" id="listExcel">สั่งสินค้าปกติ</a>
+                    <a href="/webpanel/customer/export/purchase/getexcel/no-purchase" class="block px-4 py-2 text-sm" id="listExcel">ไม่มีการสั่งสินค้า</a>
+                </div>
+            </div>
         </div>
+        
         <hr class="my-4" style="color: #8E8E8E; width: 100%;">
 
         <div class="row ms-6" style="justify-content: left;">
