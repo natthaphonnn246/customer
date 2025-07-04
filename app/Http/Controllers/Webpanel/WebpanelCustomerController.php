@@ -1292,6 +1292,7 @@ class WebpanelCustomerController
                     'customer_status' => 'inactive',
                     'status_user' => '',
                     'delivery_by' => $delivery_by,
+                    'points' => '0'
                     // 'maintenance_status' => '',
                     // 'allowed_maintenance' => '',
 
@@ -2384,6 +2385,7 @@ class WebpanelCustomerController
                                 $count_page = Customer::select(
                                                                 'customers.customer_id',
                                                                 'customers.customer_name',
+                                                                // DB::raw('MAX(DATE(report_sellers.created_at)) as last_purchase_date')
                                                                 DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
                                                             )
                                                             ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
@@ -2391,6 +2393,8 @@ class WebpanelCustomerController
                                                             ->groupBy('customers.customer_id', 'customers.customer_name')
                                                             ->having('last_purchase_date', '<=', $from_7)
                                                             ->count(); 
+
+                                                            // dd($count_page);
 
                                 $perpage = 10;
                                 $total_page = ceil($count_page / $perpage);
@@ -2407,6 +2411,8 @@ class WebpanelCustomerController
                                                                 'customers.email',
                                                                 'customers.customer_status',
                                                                 'customers.created_at',
+                                                                // DB::raw('MAX(DATE(report_sellers.created_at)) as last_purchase_date')
+
                                                                 DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
                                                             )
                                                             ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
@@ -2448,6 +2454,7 @@ class WebpanelCustomerController
                                         $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
                                                                         ->select('customer_id')
                                                                         ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                                        //  ->selectRaw('MAX(DATE(date_purchase)) as date_purchase')
                                                                         ->groupBy('customer_id')
                                                                         ->orderByDesc('date_purchase')
                                                                         ->get(); 
@@ -2551,6 +2558,7 @@ class WebpanelCustomerController
                                         $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
                                                                     ->select('customer_id')
                                                                     ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                                    // ->selectRaw('MAX(DATE(date_purchase)) as date_purchase')
                                                                     ->groupBy('customer_id')
                                                                     ->orderByDesc('date_purchase')
                                                                     ->get(); 
