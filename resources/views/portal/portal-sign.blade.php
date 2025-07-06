@@ -208,6 +208,7 @@
                                 </select>
                             </ul>
                         </div>
+
                         <div class="col-sm-6">
                             <ul class="mt-4" style="width: 100%; margin-top:15px;">
                                 <span>อำเภอ/แขวง</span>

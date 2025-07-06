@@ -1,4 +1,4 @@
-<div class="container" style="width:95%;">
+<div class="container w-full max-w-full break-words" style="width:95%;">
             
  {{--    @if(session('import'))
         <div class="alert alert-success">{{ session('import') }}</div>

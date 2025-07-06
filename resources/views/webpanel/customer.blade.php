@@ -28,7 +28,7 @@
             /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
-            min-width: 1500px;
+            /* min-width: 1500px; */
             /* text-align: left; */
         }
         #admin {
@@ -350,7 +350,7 @@
     
 
 
-    <div class="contentArea">
+    <div class="contentArea w-full max-w-full break-words">
 
 
         <div class="py-2">
@@ -660,8 +660,9 @@
                                     @php
                                         $check_over_5 = \Carbon\Carbon::parse($item->date_purchase)->addDays(5)->lessThan(now());
                                         $check_over_7 = \Carbon\Carbon::parse($item->date_purchase)->addDays(7)->lessThan(now());
+
                                     @endphp
-                                
+                                  {{-- {{ $check_over_7 }} --}}
                                     <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
                                         @if ($check_over_7)
                                         <span id="less{{ $user_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(236, 59, 59);">

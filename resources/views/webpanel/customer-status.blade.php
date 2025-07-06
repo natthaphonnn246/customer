@@ -283,7 +283,7 @@
     
 
 
-    <div class="contentArea">
+    <div class="contentArea w-full max-w-full break-words">
    {{--  --}}
     
    

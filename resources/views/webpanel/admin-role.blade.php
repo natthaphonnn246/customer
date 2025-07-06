@@ -198,7 +198,7 @@
         }
     </style>
 
-    <div class="contentArea">
+    <div class="contentArea w-full max-w-full break-words">
         <div style="text-align: left; margin-top: 10px;">
             <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / หน้าที่รับผิดชอบ</span>
         </div>

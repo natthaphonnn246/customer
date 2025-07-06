@@ -282,7 +282,7 @@
         @endsection
 
         {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
-    <div class="contentArea">
+    <div class="contentArea w-full max-w-full break-words">
         <div class="py-2">
         </div>
         <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / จัดกลุ่มลูกค้า</span>

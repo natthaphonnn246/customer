@@ -184,7 +184,7 @@
         <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
         @endsection
 
-    <div class="contentArea">
+    <div class="contentArea w-full max-w-full break-words">
 
         <div class="py-2">
         </div>

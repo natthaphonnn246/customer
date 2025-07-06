@@ -213,6 +213,7 @@
                                 </li>                          
                             </ul>
                         </div>
+
                         <div class="col-sm-6">
                             <ul class="mt-2" style="width: 100%;">
                                 <span>จังหวัด</span>
@@ -325,6 +326,56 @@
                     </div>
         </form>
     </div>
+
+        @if (session('error_code') == 'ลงทะเบียนไม่สำเร็จ กรุณาตรวจสอบอีกรอบครับ')
+        <script> 
+                Swal.fire({
+                    title: "ล้มเหลว",
+                    text: "ลงทะเบียนไม่สำเร็จ",
+                    icon: "error",
+                    confirmButtonText: "ตกลง",
+                    width: '400px', 
+                    height: '200px',
+                    customClass: {
+                        popup: 'rounded-popup',
+                        title: 'text-xl',
+                        icon: 'custom-icon-color',
+                        confirmButton: 'custom-confirm-button'
+                    }
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                    
+                });
+        </script>
+
+        @endif
+
+        @if (session('success') == 'ลงทะเบียนสำเร็จ กรุณาติดต่อผู้ดูแลด้วยครับ')
+        <script> 
+                Swal.fire({
+                    title: "สำเร็จ",
+                    text: "กรุณาติดต่อผู้ดูแล",
+                    icon: "success",
+                    confirmButtonText: "ตกลง",
+                    width: '400px', 
+                    height: '200px',
+                    customClass: {
+                        popup: 'rounded-popup',
+                        title: 'text-xl',
+                        icon: 'custom-icon-color',
+                        confirmButton: 'custom-confirm-button'
+                    }
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                    
+                });
+        </script>
+
+        @endif
 
         <script type="text/javascript">
    

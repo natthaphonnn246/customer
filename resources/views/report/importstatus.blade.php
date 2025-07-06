@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container w-full max-w-full break-words">
     <h3>Import Status</h3>
 
     <p>ไฟล์: {{ $importStatus->file_name }}</p>

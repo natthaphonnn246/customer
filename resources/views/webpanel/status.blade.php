@@ -296,7 +296,7 @@
 
         {{-- {{$_SERVER['REMOTE_ADDR'];}} --}}
 
-    <div class="contentArea">
+    <div class="contentArea w-full max-w-full break-words">
           
   
     {{-- <div id="user"></div> --}}

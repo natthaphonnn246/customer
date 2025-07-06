@@ -92,7 +92,7 @@
             @endsection
 
 
-    <div class="contentArea">
+    <div class="contentArea w-full max-w-full break-words">
         <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/sale" id="backLink">ข้อมูลพนักงานขาย (Sale area)</a> / แบบฟอร์ม</span> --}}
         </div>

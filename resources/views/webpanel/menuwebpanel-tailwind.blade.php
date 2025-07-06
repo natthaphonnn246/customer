@@ -159,8 +159,12 @@
     #content_area {
       background-color: #FFFFFF;
       border-radius: 2px;
-      min-width: 1550px;
+      min-width: 1500px;
     }
+    .flex-container {
+    display: flex;
+    flex-wrap: wrap; /* อนุญาตให้ content ขึ้นบรรทัดใหม่ได้ */
+  }
 
   </style>
   <body>
@@ -253,6 +257,9 @@
                           <li style="margin-left: 35px;">
                              <a href="/webpanel/report/product" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_salearea" style="font-size:14px;">สินค้าขายดี</a>
                           </li>
+                          <li style="margin-left: 35px;">
+                            <a href="/webpanel/report/delete-sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_salearea" style="font-size:14px;">ลบข้อมูลการขาย</a>
+                         </li>
                        {{--   <li>
                              <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
                           </li> --}}
@@ -362,9 +369,11 @@
             </div>
         </aside>
  
-<div id="content_area" class="p-4 sm:ml-64" style="background-color:rgb(229, 229, 229);">
+<div id="content_area" class="flex-container p-4 sm:ml-64" style="background-color:rgb(229, 229, 229);">
   <p>@yield('content')</p>
 </div>
+
+
 
 
   </body>
