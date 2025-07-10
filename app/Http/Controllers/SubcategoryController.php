@@ -112,7 +112,7 @@ class SubcategoryController extends Controller
                     
                     while (!feof($fileStream)) 
                     {
-                        $row = fgetcsv($fileStream , 1000 , "|");
+                        $row = fgetcsv($fileStream , 1000 , ",");
 
                         // ตรวจสอบว่า $row เป็น array และมี index 0 และ 1
                         if (is_array($row) && isset($row[0], $row[1])) {
