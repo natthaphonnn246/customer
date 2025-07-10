@@ -111,22 +111,17 @@ class CategoryController extends Controller
                     $fileStream = fopen(storage_path('app/public/importcsv/'.$rename),'r');
                     // fgetcsv($fileStream); // skip header
                     
-                    while (!feof($fileStream)) 
-                            {
+                    while (($row = fgetcsv($fileStream , 1000 , "|")) !== false) 
+                    {
+                        // ตรวจสอบว่ามีข้อมูลครบทั้งคอลัมน์ 0 และ 1
+                        if (isset($row[0], $row[1]) && !empty($row[0])) {
+                            Category::create([
+                                'categories_id' => $row[0],
+                                'categories_name' => $row[1],
+                            ]);
+                        }
+                    }
 
-                                $row = fgetcsv($fileStream , 1000 , "|");
-                                // dd($row[0]);
-                                if(!empty($row[0])) {
-                            
-                                    Category::create([
-
-                                        'categories_id' => $row[0],
-                                        'categories_name' => $row[1],
-                
-                                        ]);
-                                }
-
-                            }
 
                             fclose($fileStream);
 

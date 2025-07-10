@@ -111,21 +111,18 @@ class SubcategoryController extends Controller
                     // fgetcsv($fileStream); // skip header
                     
                     while (!feof($fileStream)) 
-                            {
+                    {
+                        $row = fgetcsv($fileStream , 1000 , "|");
 
-                                $row = fgetcsv($fileStream , 1000 , "|");
-                                // dd($row[0]);
-                                if(!empty($row[0])) {
-                            
-                                    Subcategory::create([
+                        // ตรวจสอบว่า $row เป็น array และมี index 0 และ 1
+                        if (is_array($row) && isset($row[0], $row[1])) {
+                            Subcategory::create([
+                                'subcategories_id' => $row[0],
+                                'subcategories_name' => $row[1],
+                            ]);
+                        }
+                    }
 
-                                        'subcategories_id' => $row[0],
-                                        'subcategories_name' => $row[1],
-                
-                                        ]);
-                                }
-
-                            }
 
                             fclose($fileStream);
 
