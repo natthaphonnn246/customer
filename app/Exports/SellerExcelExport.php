@@ -19,7 +19,9 @@ class SellerExcelExport
     use Exportable;
     public function exportSellerExcel(Request $request)
     {
-        
+
+        // dd('export');
+        set_time_limit(300); 
         date_default_timezone_set("Asia/Bangkok");
 
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
@@ -48,11 +50,30 @@ class SellerExcelExport
 
                 $customers_customer_name = Customer::select('customer_id', 'customer_name')->get();
                 
-                return ReportSeller::select('report_sellers.customer_id','customers.sale_area', 'customers.admin_area', 'report_sellers.customer_name', 'report_sellers.purchase_order', DB::raw('SUM(price*quantity) as total_sales'), 'customers.geography', 'customers.delivery_by')
+                return ReportSeller::select(
+                                            'report_sellers.customer_id',
+                                            'customers.sale_area', 
+                                            'customers.admin_area', 
+                                            'report_sellers.customer_name', 
+                                            'report_sellers.purchase_order', 
+                                            DB::raw('SUM(price*quantity) as total_sales'), 
+                                            'customers.province', 
+                                            'customers.geography', 
+                                            'customers.delivery_by'
+                                            )
                                     ->join('customers', function (JoinClause $join) {
                                         $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                     })
-                                    ->groupBy('report_sellers.customer_id', 'report_sellers.customer_name', 'report_sellers.purchase_order', 'customers.sale_area', 'customers.admin_area', 'customers.geography', 'customers.delivery_by')
+                                    ->groupBy(
+                                                'report_sellers.customer_id', 
+                                                'report_sellers.customer_name', 
+                                                'report_sellers.purchase_order', 
+                                                'customers.sale_area', 
+                                                'customers.admin_area', 
+                                                'customers.province', 
+                                                'customers.geography', 
+                                                'customers.delivery_by'
+                                            )
                                     ->whereBetween('report_sellers.date_purchase', [$from_date, $to_date])
                                     ->havingBetween('total_sales', [$min_selling, $max_selling])
                                     ->whereNotIn('report_sellers.customer_id', $code_notin)
@@ -70,11 +91,30 @@ class SellerExcelExport
         
     
 
-                        return ReportSeller::select('report_sellers.customer_id','customers.sale_area', 'customers.admin_area', 'report_sellers.customer_name', 'report_sellers.purchase_order', DB::raw('SUM(price*quantity) as total_sales'), 'customers.geography', 'customers.delivery_by')
+                        return ReportSeller::select(
+                                                    'report_sellers.customer_id',
+                                                    'customers.sale_area', 
+                                                    'customers.admin_area', 
+                                                    'report_sellers.customer_name', 
+                                                    'report_sellers.purchase_order', 
+                                                    DB::raw('SUM(price*quantity) as total_sales'), 
+                                                    'customers.province', 
+                                                    'customers.geography', 
+                                                    'customers.delivery_by'
+                                                    )
                                         ->join('customers', function (JoinClause $join) {
                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                         })
-                                        ->groupBy('report_sellers.customer_id', 'report_sellers.customer_name', 'report_sellers.purchase_order', 'customers.sale_area', 'customers.admin_area', 'customers.geography', 'customers.delivery_by')
+                                        ->groupBy(
+                                                    'report_sellers.customer_id', 
+                                                    'report_sellers.customer_name', 
+                                                    'report_sellers.purchase_order', 
+                                                    'customers.sale_area', 
+                                                    'customers.admin_area', 
+                                                    'customers.province', 
+                                                    'customers.geography', 
+                                                    'customers.delivery_by'
+                                                )
                                         ->whereBetween('report_sellers.date_purchase', [$from_date, $to_date])
                                         ->whereNotIn('report_sellers.customer_id', $code_notin)
                                         ->orderBy('customer_id', 'asc')
@@ -108,11 +148,29 @@ class SellerExcelExport
                                             ->limit($perpage)
                                             ->get(); */
 
-                        return ReportSeller::select('report_sellers.customer_id','customers.sale_area', 'customers.admin_area', 'report_sellers.customer_name', 'report_sellers.purchase_order', DB::raw('SUM(price * quantity) as total_sales'), 'customers.geography', 'customers.delivery_by')
+                        return ReportSeller::select(
+                                                    'report_sellers.customer_id',
+                                                    'customers.sale_area', 
+                                                    'customers.admin_area', 
+                                                    'report_sellers.customer_name', 
+                                                    'report_sellers.purchase_order', 
+                                                    DB::raw('SUM(price * quantity) as total_sales'), 
+                                                    'customers.province', 
+                                                    'customers.geography', 
+                                                    'customers.delivery_by')
                                             ->join('customers', function (JoinClause $join) {
                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                             })
-                                            ->groupBy('report_sellers.customer_id','report_sellers.customer_name', 'report_sellers.purchase_order', 'customers.sale_area', 'customers.admin_area', 'customers.geography', 'customers.delivery_by')
+                                            ->groupBy(
+                                                        'report_sellers.customer_id',
+                                                        'report_sellers.customer_name', 
+                                                        'report_sellers.purchase_order', 
+                                                        'customers.sale_area', 
+                                                        'customers.admin_area', 
+                                                        'customers.province', 
+                                                        'customers.geography', 
+                                                        'customers.delivery_by'
+                                                    )
                                             ->whereNotIn('report_sellers.customer_id', $code_notin)
                                             ->orderBy('customer_id', 'asc')
                                             ->downloadExcel('Seller_all'.'_'.$filename.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
