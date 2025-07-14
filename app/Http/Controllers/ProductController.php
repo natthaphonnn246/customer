@@ -1029,7 +1029,7 @@ class ProductController extends Controller
                 // dd('submit_form');
 
                     $create = Product::create([
-                                        'product_id' => $product_id,
+                                        'product_id'   => $product_id,
                                         'product_name' => $product_name,
                                         'generic_name' => $generic_name,
                                         'category' => $category,
@@ -1276,7 +1276,7 @@ class ProductController extends Controller
                     $fileStream = fopen(storage_path('app/public/importcsv/'.$rename),'r');
                     // fgetcsv($fileStream); // skip header
                     
-                    while (!feof($fileStream)) 
+            /*         while (!feof($fileStream)) 
                             {
 
                                 $row = fgetcsv($fileStream , 1000 , "|");
@@ -1303,28 +1303,53 @@ class ProductController extends Controller
                 
                                         ]);
 
-/*                                         Product::create([
-
-                                            'product_id' => $row[0],
-                                            'product_name' => $row[1],
-                                            'generic_name' => $row[2],
-                                            'category' => $row[3],
-                                            'sub_category' => $row[4],
-                                            'type' => $row[5],
-                                            'unit' => $row[6],
-                                            'cost' => '0.00',
-                                            'price_1' => $row[7],
-                                            'price_2' => $row[8],
-                                            'price_3' => $row[9],
-                                            'price_4' => $row[10],
-                                            'price_5' => $row[11],
-                                            'quantity' => $row[12],
-                                            'status' => $row[13],
-                    
-                                            ]); */
                                 }
 
 
+                            } */
+
+                            $batchSize = 500;
+                            $dataBatch = [];
+
+                            $header = fgetcsv($fileStream, 1000, "|");
+
+                            while (!feof($fileStream)) {
+                                $row = fgetcsv($fileStream, 1000, "|");
+
+                                // ตรวจสอบว่า row ว่างหรือมีจำนวน column ไม่เพียงพอ //ข้ามแถวนี้ไปเลย ไม่ทำอะไรกับมัน
+                                if ($row === false || count($row) < 15 || empty($row[0])) {
+                                    continue;
+                                }
+
+                                    $dataBatch[] = [
+                                                        'product_id'    => $row[0],
+                                                        'product_name'  => $row[1],
+                                                        'generic_name'  => $row[2],
+                                                        'category'      => $row[3],
+                                                        'sub_category'  => $row[4],
+                                                        'type'          => $row[5],
+                                                        'unit'          => $row[6],
+                                                        'cost'          => $row[7],
+                                                        'price_1'       => $row[8],
+                                                        'price_2'       => $row[9],
+                                                        'price_3'       => $row[10],
+                                                        'price_4'       => $row[11],
+                                                        'price_5'       => $row[12],
+                                                        'quantity'      => $row[13],
+                                                        'status'        => $row[14],
+                                                    ];
+
+                                // ทำ bulk insert ทีละชุด
+                                if (count($dataBatch) >= $batchSize) {
+                                    Product::insert($dataBatch); // ใส่ข้อมูลทั้งหมดใน $dataBatch ลง DB ทีเดียว
+                                    $dataBatch = [];             // เคลียร์ $dataBatch เพื่อเก็บข้อมูลชุดใหม่
+                                }
+
+                            }
+
+                            // insert ข้อมูลที่เหลือ
+                            if (!empty($dataBatch)) {
+                                Product::insert($dataBatch);
                             }
 
                             fclose($fileStream);
