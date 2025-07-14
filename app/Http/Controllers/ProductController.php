@@ -1316,7 +1316,7 @@ class ProductController extends Controller
                             while (!feof($fileStream)) {
                                 $row = fgetcsv($fileStream, 1000, "|");
 
-                                // ตรวจสอบว่า row ว่างหรือมีจำนวน column ไม่เพียงพอ //ข้ามแถวนี้ไปเลย ไม่ทำอะไรกับมัน
+                                // ตรวจสอบว่า row ว่างหรือมีจำนวน column ไม่เพียงพอ //ข้ามแถวนี้ไปเลย ไม่ทำอะไรกับมัน;
                                 if ($row === false || count($row) < 15 || empty($row[0])) {
                                     continue;
                                 }
