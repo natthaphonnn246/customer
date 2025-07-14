@@ -28,7 +28,7 @@
             /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
-            /* min-width: 1500px; */
+            /* min-width: 1400px; */
             /* text-align: left; */
         }
         #admin {
@@ -311,6 +311,23 @@
             border-radius: 5px;
             
         }
+/*         #protected {
+                    position: relative;
+                    }
+
+                    #protected::after {
+                    content: "© ห้ามบันทึกภาพหน้าจอ";
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    font-size: 120px;
+                    color: rgba(234, 43, 43, 0.111);
+                    pointer-events: none;
+                    transform: translate(-50%, -50%) rotate(-45deg);
+                    white-space: nowrap;
+                }
+ */
+
 
     </style>
     
@@ -351,7 +368,6 @@
 
 
     <div class="contentArea w-full max-w-full break-words">
-
 
         <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
@@ -578,7 +594,7 @@
             });
         </script>
 
-        <div class="ms-6 mr-6 mb-2">
+        <div class="ms-6 mr-6 mb-2" id="protected">
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
             <table class="table table-striped">
                 <thead>
