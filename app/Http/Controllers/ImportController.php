@@ -47,6 +47,7 @@ class ImportController extends Controller
     {
         $imports = ImportStatus::latest()->take(10)->get();
         $user_id_admin = '1';
+
         // คืนเฉพาะ tr เท่านั้น
         return view('report/import-rows', compact('imports', 'user_id_admin'));
     }

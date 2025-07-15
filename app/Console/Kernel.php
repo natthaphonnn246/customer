@@ -8,20 +8,21 @@ use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
-
-  /*   protected $commands = [
-        \App\Console\Commands\ReportPreload::class,
-    ]; */ //ลงทะเบียนไม่จำเป็น
+    protected $commands = [
+        \App\Console\Commands\DeleteReportsellers::class,
+        \App\Console\Commands\Mycommands::class
+    ];
     
+
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('report:preload')
-            ->everyfiveMinutes() 
-            ->appendOutputTo(storage_path('logs/preload.log'));
+        //ลบก่อนเที่ยงคืน;
+        $schedule->command('app:delete-reportsellers')->dailyAt('23:59');
 
-        $schedule->call(function () {
-            file_put_contents(storage_path('logs/test-cron.txt'), now() . " => Cron ran\n", FILE_APPEND);
-        })->everyfiveMinutes();
+        // $schedule->command('app:delete-reportsellers')->daily(); ลบตอนเวลา 00.00 น.
+        // $schedule->command('app:delete-reportsellers')->everyMinute();
+        // $schedule->command('app:mycommands')->everyMinute();
+
     }
 
     protected function commands()
@@ -30,3 +31,8 @@ class Kernel extends ConsoleKernel
         require base_path('routes/console.php');
     }
 }
+
+
+
+/* crontab -e
+// * * * * * cd /Users/natthaphon/Herd/customer && php artisan schedule:run >> /dev/null 2>&1 */

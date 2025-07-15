@@ -29,6 +29,22 @@
             min-width: 1200px;
             /* text-align: left; */
         }
+            .protected {
+            position: relative;
+            }
+
+            .protected::after {
+            content: "© ห้ามจับภาพ";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 50px;
+            color: rgba(247, 108, 108, 0.3);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            }
+
+    
     </style>
 
         @if($user_id_admin == '0000')
@@ -61,7 +77,9 @@
         <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
         @endsection
 
+ 
     <div class="contentArea w-full max-w-full break-words">
+        
         
         <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
@@ -166,7 +184,9 @@
                 <div class="row bg-white rounded-sm dark:bg-gray-800 mr-10 ms-10">
 
                     <div class="col-sm-6">
-                        <canvas id="myNorth" style="width:100%;"></canvas>
+                        {{-- <div class="protected" style="position: relative;"> --}}
+                            <canvas id="myNorth" style="width:100%;"></canvas>
+                        {{-- </div> --}}
                         <canvas id="myEastern" style="width:100%;"></canvas>
                         <canvas id="myWestern" style="width:100%;"></canvas>
                     </div>
@@ -833,7 +853,6 @@
 
 
         </script>
-        
 
 
 @endsection

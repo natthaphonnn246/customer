@@ -276,7 +276,7 @@ class WebpanelCustomerController
 
     public function purchase(Request $request)
     {
-        
+
         $use_id = $request->use_id;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
@@ -294,7 +294,7 @@ class WebpanelCustomerController
                                             ->where('customer_id', $use_id)
                                             ->groupBy('customer_id');
 
-// 2. Join กับข้อมูลสินค้าใน PO ล่าสุด
+                // 2. Join กับข้อมูลสินค้าใน PO ล่าสุด
                 $report_seller = ReportSeller::joinSub($latest_po, 'latest', function ($join) {
                                                 $join->on('report_sellers.customer_id', '=', 'latest.customer_id')
                                                     ->on('report_sellers.date_purchase', '=', 'latest.latest_date');
@@ -1355,6 +1355,10 @@ class WebpanelCustomerController
      */
     public function update(Request $request, $id)
     {
+
+        if ($request->method() === 'HEAD') {
+            return response()->noContent(); // หรือ 200 OK โดยไม่ทำอะไร
+        }
 
         date_default_timezone_set("Asia/Bangkok");
 /* 

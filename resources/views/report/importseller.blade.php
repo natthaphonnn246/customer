@@ -293,6 +293,16 @@
                 </form>
                 <hr style="color: #8E8E8E;">
 
+                <div class="py-2">
+                    <h2 style="color:rgb(61, 210, 108); font-weight: 400; padding:10px; font-size:18px;"><span style="color:#f21e1e;">** สั่งซื้อล่าสุดที่นำเข้าแล้ว :</span> <span style="border: solid 2px; padding: 5px 10px; border-radius:5px; color:red;">{{ $check_po_updated?->last_purchase_date }}</span>
+                        <i class="fa-solid fa-arrow-right"></i> วันที่นำเข้าไฟล์ : <span style="color:rgb(61, 210, 108);">{{ $check_po_updated?->created_date }}</span>
+                    </h2>
+
+                </div>
+
+                <hr style="color: #8E8E8E;">
+
+
  {{--                @if(Session::get('success_import'))
                 <div class="py-4">
                     <ul class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success_import') }}</ul>
@@ -400,6 +410,19 @@
             }, 5000);
         });
     </script>
+{{-- 
+    <script>
+        async function fetchStatus() {
+
+            const response = await fetch('/webpanel/report/seller/importseller');
+            
+            console.log('importseller:', response.ok);
+            
+        }
+
+        setInterval(fetchStatus, 5000);
+    </script> --}}
+
 
 
 </body>

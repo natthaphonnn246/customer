@@ -46,6 +46,23 @@
             /* overflow: auto; */
             }
 
+        #protected {
+                position: relative;
+                }
+
+                #protected::after {
+                content: "© cms.vmdrug";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                font-size: 145px;
+                /* color: rgba(234, 43, 43, 0.111); */
+                color: rgba(170, 170, 170, 0.111);
+                pointer-events: none;
+                transform: translate(-50%, -50%); /* เอียงซ้าย 45 องศา */
+                white-space: nowrap; /* ป้องกันตัดบรรทัด */
+        }
+
      /*    #dashPortal {
             position:fixed;
             height: 100%;
@@ -58,7 +75,7 @@
     </style>
 
 
-    <div class="contentArea">
+    <div class="contentArea" id="protected">
        
         @section('col-2')
 

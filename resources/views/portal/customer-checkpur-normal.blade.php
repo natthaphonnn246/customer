@@ -223,6 +223,24 @@
             border-radius: 5px;
             
         }
+        #protected {
+        position: relative;
+        }
+
+        #protected::after {
+                    content: "© cms.vmdrug";
+                    position: fixed; /* เปลี่ยนจาก absolute → fixed */
+                    top: 50%;
+                    left: 50%;
+                    font-size: 120px;
+                    /* color: rgba(234, 43, 43, 0.111); */
+                    color: rgba(170, 170, 170, 0.111);
+                    pointer-events: none;
+                    padding-top: 30px;
+                    transform: translate(-50%, -50%);
+                    white-space: nowrap;
+                    z-index: 9999; /* กันโดนซ่อนโดย content อื่น */
+        }
      /*    span:hover {
             color: #f7ff1b;
             text-decoration: none;
@@ -282,7 +300,7 @@
                     <span class="ms-6" style="color: #8E8E8E;">ข้อมูลลูกค้า : <span style="background-color: #09be0f; color:white; border-radius:5px; padding:3px 10px;">สั่งซื้อตามปกติ</span></span>
                     <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 2px;">
                     
-                    <div class="ms-6 mr-6">
+                    <div class="ms-6 mr-6" id=protected>
                         <div class="row">
                         
                             @if(!empty($pur_report) && $pur_report->purchase_status === 1)

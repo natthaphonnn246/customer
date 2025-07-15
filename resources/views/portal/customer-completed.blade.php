@@ -211,6 +211,24 @@
         .sliders.round:before {
             border-radius: 50%;
         }
+        #protected {
+        position: relative;
+        }
+
+        #protected::after {
+                    content: "© cms.vmdrug";
+                    position: fixed; /* เปลี่ยนจาก absolute → fixed */
+                    top: 50%;
+                    left: 50%;
+                    font-size: 120px;
+                    /* color: rgba(234, 43, 43, 0.111); */
+                    color: rgba(170, 170, 170, 0.111);
+                    pointer-events: none;
+                    padding-top: 30px;
+                    transform: translate(-50%, -50%);
+                    white-space: nowrap;
+                    z-index: 9999; /* กันโดนซ่อนโดย content อื่น */
+        }
       /*   #listStatus:hover {
             color: #f7ff1b;
             text-decoration: none;
@@ -268,7 +286,7 @@
             <span class="ms-6" style="color: #8E8E8E;">ข้อมูลลูกค้า /Status : <span style="color:rgb(255, 255, 255);  padding: 5px 10px 5px 10px; background-color: rgb(58, 174, 19); border-radius:8px;">ดำเนินการแล้ว</span></span>
             <hr class="my-4" style="color: #8E8E8E; width: 100%; border:solid 2px;">
 
-            <div class="ms-6 mr-6">
+            <div class="ms-6 mr-6" id="protected">
             <div class="row">
                     <!--- search --->
                     <div style="display: flex; justify-content: center;">

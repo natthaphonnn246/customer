@@ -377,6 +377,9 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/report/product/sales/region/exportcsv', [RegionProductCsvExport::class, 'exportProductRegionCsv']);
         Route::get('/webpanel/report/product/sales/region/exportexcel', [RegionProductExcelExport::class, 'exportProductRegionExcel']);
 
+        //delete-seller;
+        Route::get('webpanel/report/delete-sale', [ReportSellerController::class, 'deleteSeller']);
+
     });
    
     Route::get('/webpanel/datepicker', function (){
@@ -406,8 +409,8 @@ Route::middleware('statusOnline')->group(function (){
 
 
     //webpanel customer update;
-    Route::post('/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware('auth', 'role','status', 'verified');
-
+    Route::match(['POST', 'HEAD'],'/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware('auth', 'role','status', 'verified');
+    // Route::post('/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware('auth', 'role','status', 'verified');
     Route::get('/portal/signin/update-amphure', [ProvinceController::class, 'amphure']);
     Route::get('/portal/signin/update-district', [ProvinceController::class, 'district']);
     Route::get('/portal/signin/update-zipcode', [ProvinceController::class, 'zipcode']);
@@ -478,8 +481,8 @@ Route::middleware('statusOnline')->group(function (){
     Route::get('/portal/customer', [PortalCustomerController::class, 'customerView'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'purReport')->name('portal.customer');
     Route::get('/portal/customer/status/{status_customer}', [PortalCustomerController::class, 'customerViewEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
 
-    //fetch;
-    Route::post('/portal/customer/purchase', [PortalCustomerController::class, 'purchaseOrder'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'purReport');
+    //fetch; 'purReport'
+    Route::post('/portal/customer/purchase', [PortalCustomerController::class, 'purchaseOrder'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport');
 
     //purchase;
     Route::get('/portal/customer/purchase/{fixed_id}', [PortalCustomerController::class, 'fixedDate'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport');

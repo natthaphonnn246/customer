@@ -168,6 +168,42 @@
             color: #3b25ff;
             text-decoration: underline;
         }
+        #protected {
+        position: relative;
+        }
+
+        #protected::after {
+                    content: "© cms.vmdrug";
+                    position: fixed; /* เปลี่ยนจาก absolute → fixed */
+                    top: 50%;
+                    left: 50%;
+                    font-size: 120px;
+                    /* color: rgba(234, 43, 43, 0.111); */
+                    color: rgba(170, 170, 170, 0.111);
+                    pointer-events: none;
+                    padding-top: 30px;
+                    /* transform: translate(-50%, -50%) rotate(-35deg); */
+                    transform: translate(-50%, -50%);
+                    white-space: nowrap;
+                    z-index: 9999; /* กันโดนซ่อนโดย content อื่น */
+        }
+   /*      #protected_image {
+        position: relative;
+        }
+
+        #protected_image::after {
+                    content: "© ห้ามบันทึกภาพหน้าจอ";
+                    position: fixed; 
+                    top: 50%;
+                    left: 50%;
+                    font-size: 40px;
+                    color: rgba(213, 10, 10, 0.428);
+                    pointer-events: none;
+                    padding-top: 30px;
+                    transform: translate(-50%, -50%);
+                    white-space: nowrap;
+                    z-index: 9999; 
+        } */
     </style>
     <div class="contentArea">
 
@@ -214,7 +250,7 @@
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 2px;">
     @if (isset($customer_edit) != '')
 
-    <div class="ms-6 mr-6">
+    <div class="ms-6 mr-6" id="protected">
             {{-- action="/webpanel/admin-detail/update/{{$row_edit->user_code}}" enctype="multipart/form-data" --}}
             {{-- @csrf --}}
             <div class="row">
@@ -251,11 +287,14 @@
                                         <form action="/portal/customer-detail/upload-store/{{$customer_edit->customer_code}}" method="post" enctype="multipart/form-data">
                                         @csrf
                                         @if ((($customer_edit->cert_store)) != '')
-                                        
+                                        <div id="protected_image" style="position: relative;">
                                             <img src={{asset("storage/".$customer_edit->cert_store)}}?v=<?php echo time(); ?>" id="previewStore" style="width: 100%";/>
-                                        {{-- {{time()}} --}}
+                                        </div>
+                                            {{-- {{time()}} --}}
                                         @else
+                                        <div id="protected_image" style="position: relative;">
                                         <img src="/profile/image.jpg" width="100%" id="previewStore">
+                                        </div>
                                         @endif
                                     
                                         <input type="file" id="imageStore" class="form-control" name="cert_store" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>

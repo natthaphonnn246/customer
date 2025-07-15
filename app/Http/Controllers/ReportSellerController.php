@@ -6367,7 +6367,24 @@ class ReportSellerController extends Controller
 
         $importStatus = ImportStatus::latest()->first();
 
-        return view('/report/importseller', compact('importStatus', 'imports', 'status_alert', 'status_waiting', 'status_updated', 'status_registration', 'user_id_admin'));
+        $today = now()->toDateString();
+        $yesterday = now()->subDay()->toDateString();
+
+        $check_po_updated = ReportSeller::selectRaw('MAX(date_purchase) as last_purchase_date, MAX(DATE(created_at)) as created_date')
+                                        ->whereDate('created_at', $today)
+                                        ->first();
+
+        if(!$check_po_updated || $check_po_updated?->created_date !== $today) {
+
+            $check_po_updated = ReportSeller::selectRaw('MAX(date_purchase) as last_purchase_date, MAX(DATE(created_at)) as created_date')
+                                            ->whereDate('created_at', $yesterday)
+                                            ->first();
+
+        } 
+                                        // dd($check_po_updated?->created_date);
+
+
+        return view('/report/importseller', compact('importStatus', 'imports', 'status_alert', 'status_waiting', 'status_updated', 'status_registration', 'user_id_admin', 'check_po_updated'));
     }
 
     //เก็บไว้ดู
@@ -6409,20 +6426,21 @@ class ReportSellerController extends Controller
                     $fileStream = fopen(storage_path('app/public/importcsv/'.$rename),'r');
                     // fgetcsv($fileStream); // skip header
                     
-                    while (!feof($fileStream)) 
+                    /* while (!feof($fileStream)) 
                             {
 
                                 $row = fgetcsv($fileStream , 1000 , "|");
                                 // dd($row[0]);
                                 if(!empty($row[0])) {
-                            
-                                    if (isset($row[8]) && $row[8] === 'โค้ด') {
+                                    
+                                    if (!empty($row[8]) && $row[8] === 'โค้ด') {
                                         $price = 0;
                                         $cost = 0;
 
                                     } else {
-                                        $price = $row[5];
-                                        $cost = empty($row[6]) ? 0 : $row[6];
+                                        $price = isset($row[5]) && is_numeric($row[5]) ? (float)$row[5] : 0;
+                                        $cost  = isset($row[6]) && is_numeric($row[6]) ? (float)$row[6] : 0;
+
                                     }
                                     
                                 if (preg_match('/\bดีลพิเศษ\b/u', $row[4])) {
@@ -6449,29 +6467,64 @@ class ReportSellerController extends Controller
                                         ]);
                                 }
 
-                        }
-
-                       /*  while (($row = fgetcsv($fileStream , 1000 , "|")) !== false) {
-
-                            // dd($row[0]);
-                            ReportSeller::create([
-
-                                'purchase_order' => $row[0],
-                                'report_sellers_id' => $row[1],
-                                'customer_id' => $row[1],
-                                'customer_name' => $row[2],
-                                'product_id' => $row[3],
-                                'product_name' => $row[4],
-                                'price' => $row[5],
-                                'quantity' => $row[6],
-                                'unit' => $row[7],
-                                'date_purchase' => $row[8],
-        
-                                ]);
-
                         } */
 
+                        $batchSize = 500;
+                        $dataBatch = [];
+                        
+                        $header = fgetcsv($fileStream, 1000, "|");
+                        
+                        while (!feof($fileStream)) {
+                            $row = fgetcsv($fileStream, 1000, "|");
+                            if ($row === false || count($row) < 10 || empty($row[0])) {
+                                continue;
+                            }
+                        
+                            // ป้องกัน unit = null
+                            $unit = isset($row[8]) && trim($row[8]) !== '' ? trim($row[8]) : 'none';
+                        
+                            if (!empty($unit) && $unit === 'โค้ด') {
+                                $price = 0;
+                                $cost = 0;
+                            } else {
+                                $price = isset($row[5]) && is_numeric($row[5]) ? (float)$row[5] : 0;
+                                $cost = isset($row[6]) && is_numeric($row[6]) ? (float)$row[6] : 0;
+                            }
+                        
+                            $productName = isset($row[4]) ? trim($row[4]) : '';
+                        
+                            if (preg_match('/\bดีลพิเศษ\b/u', $productName)) {
+                                $qty = 1;
+                            } else {
+                                $qty = isset($row[7]) && is_numeric($row[7]) ? (int)$row[7] : 0;
+                            }
+                        
+                            $dataBatch[] = [
+                                                'purchase_order'    => $row[0] ?? '',
+                                                'report_sellers_id' => $row[1] ?? null,
+                                                'customer_id'       => $row[1] ?? null,
+                                                'customer_name'     => $row[2] ?? '',
+                                                'product_id'        => $row[3] ?? '',
+                                                'product_name'      => $productName,
+                                                'price'             => $price,
+                                                'cost'              => $cost,
+                                                'quantity'          => $qty,
+                                                'unit'              => $unit,
+                                                'date_purchase'     => $row[9] ?? null,
+                                            ];
+                                        
+                            if (count($dataBatch) >= $batchSize) {
+                                ReportSeller::insert($dataBatch);
+                                $dataBatch = [];
+                            }
+                        }
+                        
+                        if (!empty($dataBatch)) {
+                            ReportSeller::insert($dataBatch);
+                        }
+                        
                         fclose($fileStream);
+                        
 
                 }
 
@@ -6756,4 +6809,89 @@ class ReportSellerController extends Controller
                 'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated', 'user_id_admin'));
 
     }
+
+    public function deleteSeller(Request $request)
+    {
+                $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+                // สถานะลูกค้า
+                $status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_id', $code_notin)->count();
+                $status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_id', $code_notin)->count();
+                $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_id', $code_notin)->count();
+                $status_alert = $status_waiting + $status_updated;
+
+                // dropdown
+                $user_id_admin = $request->user()->user_id;
+                $admin_area = User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
+                $sale_area = Salearea::select('sale_area', 'sale_name')->get();
+
+                // วันที่ลบ: วันนี้ = ย้อน 3 เดือน, พรุ่งนี้ = ย้อน 3 เดือน + 1 วัน
+                $date_today = Carbon::now()->subMonths(3);
+                $date_tomorrow = Carbon::now()->subMonths(3)->addDay();
+                // dd($date_tomorrow->toDateString());
+
+                // dd($date_tomorrow->toDateString());
+
+                // รายการที่จะลบ "วันนี้"
+                $count_rows = ReportSeller::select('id')
+                                            ->selectRaw('MAX(date_purchase) as last_purchase_date')
+                                            ->groupBy('id')
+                                            ->having('last_purchase_date', '<=', $date_today->toDateString())
+                                            ->count();
+
+                $date_check_begin = ReportSeller::selectRaw('MAX(date_purchase) as last_purchase_date')
+                                                    ->groupBy('id')
+                                                    ->having('last_purchase_date', '<=', $date_today->toDateString())
+                                                    ->orderByDesc('last_purchase_date')
+                                                    ->first();
+
+                $date_check_to = ReportSeller::selectRaw('MAX(date_purchase) as last_purchase_date')
+                                                ->groupBy('id')
+                                                ->having('last_purchase_date', '<=', $date_today->toDateString())
+                                                ->orderBy('last_purchase_date', 'asc')
+                                                ->first();
+
+                $date_range_result = [
+                                        'from' => $date_check_to ? Carbon::parse($date_check_to->last_purchase_date)->format('d/m/Y') : null,
+                                        'to' => $date_check_begin ? Carbon::parse($date_check_begin->last_purchase_date)->format('d/m/Y') : null,
+                                    ];
+
+                // รายการที่จะลบ "พรุ่งนี้"
+                $count_addday = ReportSeller::select('id')
+                                            ->selectRaw('MAX(date_purchase) as last_purchase_date')
+                                            ->groupBy('id')
+                                            ->having('last_purchase_date', '<=', $date_tomorrow->toDateString())
+                                            ->count();
+
+                $addday_check_begin = ReportSeller::selectRaw('MAX(date_purchase) as last_purchase_date')
+                                                    ->groupBy('id')
+                                                    ->having('last_purchase_date', '<=', $date_tomorrow->toDateString())
+                                                    ->orderByDesc('last_purchase_date')->first();
+                // dd($addday_check_begin?->last_purchase_date);
+                                
+                $addday_check_to = ReportSeller::selectRaw('MAX(date_purchase) as last_purchase_date')
+                                                ->groupBy('id')
+                                                ->having('last_purchase_date', '<=', $date_tomorrow->toDateString())
+                                                ->orderBy('last_purchase_date')->first();
+
+                $addday_range_result = [
+                                        'from_sub' => $addday_check_to ? Carbon::parse($addday_check_to->last_purchase_date)->format('d/m/Y') : null,
+                                        'to_sub' => $addday_check_begin ? Carbon::parse($addday_check_begin->last_purchase_date)->format('d/m/Y') : null,
+                                    ];
+
+                return view('webpanel/delete-sale', compact(
+                                                            'status_alert',
+                                                            'status_waiting',
+                                                            'status_updated',
+                                                            'status_registration',
+                                                            'user_id_admin',
+                                                            'admin_area',
+                                                            'sale_area',
+                                                            'count_rows',
+                                                            'date_range_result',
+                                                            'count_addday',
+                                                            'addday_range_result'
+                                                        ));
+    }
+    
 }

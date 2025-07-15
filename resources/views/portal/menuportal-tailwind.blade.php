@@ -110,6 +110,7 @@
       min-width: 1500px;
     }
 
+
   </style>
   <body>
  {{--    <h1 class="text-3xl font-bold underline">
@@ -271,6 +272,8 @@
             <blockquote style="color:white; font-size:16px;">ลงทะเบียนร้านค้าสำเร็จ กรุณาติดต่อผู้ดูแลด้วยครับ</blockquote>
             <br>
             <blockquote style="color:white; font-size:16px;">โปรดตรวจสอบร้านค้าที่รับผิดชอบได้ที่เมนู "แจ้งเตือน"</blockquote>
+            <br>
+            <blockquote style="color:rgb(255, 255, 255); font-size:16px;"><i style="color:rgb(255, 200, 0);" class="fa-solid fa-triangle-exclamation"></i> ตรวจสอบสถานะการสั่งซื้อได้ที่เมนู "ร้านค้า ทั้งหมด"</blockquote>
         </p>
         {{-- <a class="text-sm text-blue-800 underline font-medium hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300" href="#">Turn new navigation off</a> --}}
      </div>
@@ -280,6 +283,7 @@
 
 <div class="p-4 sm:ml-64" id="content_area" style="background-color:rgb(229, 229, 229); margin-top:65px;">
   <p>@yield('content')</p>
+
 </div>
 
 {{-- <footer class="bg-white rounded-lg shadow-sm m-4 dark:bg-gray-800">

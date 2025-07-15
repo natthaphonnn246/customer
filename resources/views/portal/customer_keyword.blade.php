@@ -210,6 +210,25 @@
         .sliders.round:before {
             border-radius: 50%;
         }
+        #protected {
+        position: relative;
+        }
+
+        #protected::after {
+                    content: "© cms.vmdrug";
+                    position: fixed; /* เปลี่ยนจาก absolute → fixed */
+                    top: 50%;
+                    left: 50%;
+                    font-size: 120px;
+                    /* color: rgba(234, 43, 43, 0.111); */
+                    color: rgba(170, 170, 170, 0.111);
+                    pointer-events: none;
+                    padding-top: 30px;
+                    /* transform: translate(-50%, -50%) rotate(-35deg); */
+                     transform: translate(-50%, -50%);
+                    white-space: nowrap;
+                    z-index: 9999; /* กันโดนซ่อนโดย content อื่น */
+        }
      /*    span:hover {
             color: #f7ff1b;
             text-decoration: none;
@@ -262,7 +281,7 @@
         @endsection
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
     
-            <div class="row">
+            <div class="row" id="protected">
                 <div class="col-9 py-2">
                     <div style="text-align: left; padding:5px; margin-top:5px;">
                         <span style="color: #8E8E8E;">ข้อมูลลูกค้า (Customer)</span>
