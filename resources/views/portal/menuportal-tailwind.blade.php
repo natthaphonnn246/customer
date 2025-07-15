@@ -107,7 +107,7 @@
     #content_area {
       background-color: #FFFFFF;
       border-radius: 2px;
-      min-width: 1500px;
+      min-width: 1700px;
     }
 
 
