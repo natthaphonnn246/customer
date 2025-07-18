@@ -81,7 +81,7 @@ class ProductController extends Controller
                 $key_page = 'report_page_' . md5(json_encode($filters_page));
     
                 $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
-    
+                    
                 return ReportSeller::select(
                                     'report_sellers.product_id',
                                     DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
@@ -103,6 +103,9 @@ class ProductController extends Controller
                                     ->join('subcategories', function (JoinClause $join) {
                                         $join->on('subcategories.subcategories_id', '=', 'products.sub_category');
                                     })
+                                    ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
+                                    ->where('products.category', $filters_page['category'])
+                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
                                     ->groupBy(
                                     'report_sellers.product_id',
                                     'products.category',
@@ -112,8 +115,6 @@ class ProductController extends Controller
                                     'subcategories.subcategories_name',
                                     'products.unit'
                                     )
-                                    ->where('products.category', $filters_page['category'])
-                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
                                     ->orderBy('quantity_by', 'desc')
                                     ->get();
                                 });
@@ -164,6 +165,9 @@ class ProductController extends Controller
                                         ->join('subcategories', function (JoinClause $join) {
                                             $join->on('subcategories.subcategories_id', '=', 'products.sub_category');
                                         })
+                                        ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
+                                        ->where('products.category', $filters['category'])
+                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
                                         ->groupBy(
                                         'report_sellers.product_id',
                                         'products.category',
@@ -173,8 +177,6 @@ class ProductController extends Controller
                                         'subcategories.subcategories_name',
                                         'products.unit'
                                         )
-                                        ->where('products.category', $filters['category'])
-                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
                                         ->orderBy('quantity_by', 'desc')
                                         // ->get();
                                         ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
@@ -194,6 +196,7 @@ class ProductController extends Controller
 
                                     return ReportSeller::join('products', 'products.product_id', '=', 'report_sellers.product_id')
                                                         // ->join('customers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                        ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                                         ->where('products.category',  $filters_totalProduct['category'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_totalProduct['from'],  $filters_totalProduct['to']])
                                                         ->select('report_sellers.product_id')
@@ -223,6 +226,7 @@ class ProductController extends Controller
 
                                 return ReportSeller::join('products', 'products.product_id', '=', 'report_sellers.product_id')
                                                     ->join('customers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                    ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                                     ->where('products.category',  $filters_productValue['category'])
                                                     ->whereBetween('report_sellers.date_purchase', [$filters_productValue['from'],  $filters_productValue['to']])
                                                     ->select(
@@ -275,6 +279,9 @@ class ProductController extends Controller
                                     ->join('customers', function (JoinClause $join) {
                                         $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                     })
+                                    ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
+                                    ->where('customers.geography', $filters_page['region'])
+                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
                                     ->groupBy(
                                     'report_sellers.product_id',
                                     'products.category',
@@ -285,8 +292,6 @@ class ProductController extends Controller
                                     'products.unit',
                                     'customers.geography',
                                     )
-                                    ->where('customers.geography', $filters_page['region'])
-                                    ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
                                     ->orderBy('quantity_by', 'desc')
                                     ->get();
                                 });
@@ -342,6 +347,9 @@ class ProductController extends Controller
                                         ->join('customers', function (JoinClause $join) {
                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                         })
+                                        ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
+                                        ->where('customers.geography', $filters['region'])
+                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
                                         ->groupBy(
                                         'report_sellers.product_id',
                                         'products.category',
@@ -352,8 +360,6 @@ class ProductController extends Controller
                                         'products.unit',
                                         'customers.geography',
                                         )
-                                        ->where('customers.geography', $filters['region'])
-                                        ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
                                         ->orderBy('quantity_by', 'desc')
                                         // ->get();
                                         ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
@@ -370,6 +376,7 @@ class ProductController extends Controller
                     $count_products = Cache::remember($key_totalProduct, 1800, function () use ( $filters_totalProduct) {
                                     return ReportSeller::join('products', 'products.product_id', '=', 'report_sellers.product_id')
                                                         ->join('customers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                        ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                                         ->where('customers.geography',  $filters_totalProduct['region'])
                                                         ->whereBetween('report_sellers.date_purchase', [$filters_totalProduct['from'],  $filters_totalProduct['to']])
                                                         ->select('report_sellers.product_id')
@@ -391,6 +398,7 @@ class ProductController extends Controller
 
                                 return ReportSeller::join('products', 'products.product_id', '=', 'report_sellers.product_id')
                                                     ->join('customers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                    ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                                     ->where('customers.geography',  $filters_productValue['region'])
                                                     ->whereBetween('report_sellers.date_purchase', [$filters_productValue['from'],  $filters_productValue['to']])
                                                     ->select(
@@ -423,45 +431,48 @@ class ProductController extends Controller
                  $pagination = Cache::remember($key_page, 1800, function () use ($filters_page) {
      
                  return ReportSeller::select(
-                                     'report_sellers.product_id',
-                                     DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
-                                     DB::raw('SUM(report_sellers.quantity) as quantity_by'),
-                                     DB::raw('AVG(report_sellers.cost) as average_cost'),
-                                     'products.category',
-                                     'products.sub_category',
-                                     'products.product_name',
-                                     'categories.categories_name',
-                                     'subcategories.subcategories_name',
-                                     'products.unit',
-                                     'customers.geography',
-                                     )
-                                     ->join('products', function (JoinClause $join) {
-                                         $join->on('products.product_id', '=', 'report_sellers.product_id');
-                                     })
-                                     ->join('categories', function (JoinClause $join) {
-                                         $join->on('categories.categories_id', '=', 'products.category');
-                                     })
-                                     ->join('subcategories', function (JoinClause $join) {
-                                         $join->on('subcategories.subcategories_id', '=', 'products.sub_category');
-                                     })
-                                     ->join('customers', function (JoinClause $join) {
-                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                    })
-                                     ->groupBy(
-                                     'report_sellers.product_id',
-                                     'products.category',
-                                     'products.product_name',
-                                     'products.sub_category',
-                                     'categories.categories_name',
-                                     'subcategories.subcategories_name',
-                                     'products.unit',
-                                     'customers.geography',
-                                     )
-                                     ->where('products.category', $filters_page['category'])
-                                     ->where('customers.geography', $filters_page['region'])
-                                     ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
-                                     ->orderBy('quantity_by', 'desc')
-                                     ->get();
+                                            'report_sellers.product_id',
+                                            DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
+                                            DB::raw('SUM(report_sellers.quantity) as quantity_by'),
+                                            DB::raw('AVG(report_sellers.cost) as average_cost'),
+                                            'products.category',
+                                            'products.sub_category',
+                                            'products.product_name',
+                                            'categories.categories_name',
+                                            'subcategories.subcategories_name',
+                                            'products.unit',
+                                            'customers.geography',
+                                        )
+                                        ->join('products', function (JoinClause $join) {
+                                            $join->on('products.product_id', '=', 'report_sellers.product_id');
+                                        })
+                                        ->join('categories', function (JoinClause $join) {
+                                            $join->on('categories.categories_id', '=', 'products.category');
+                                        })
+                                        ->join('subcategories', function (JoinClause $join) {
+                                            $join->on('subcategories.subcategories_id', '=', 'products.sub_category');
+                                        })
+                                        ->join('customers', function (JoinClause $join) {
+                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                        })
+                    
+                                        ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
+                                        ->where('products.category', $filters_page['category'])
+                                        ->where('customers.geography', $filters_page['region'])
+                                        ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
+                                        ->groupBy(
+                                            'report_sellers.product_id',
+                                            'products.category',
+                                            'products.product_name',
+                                            'products.sub_category',
+                                            'categories.categories_name',
+                                            'subcategories.subcategories_name',
+                                            'products.unit',
+                                            'customers.geography',
+                                        )
+                                        ->orderBy('quantity_by', 'desc')
+                                        ->get();
+                
                                  });
      
                      $count_page = count($pagination);
@@ -515,6 +526,10 @@ class ProductController extends Controller
                                             ->join('customers', function (JoinClause $join) {
                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                             })
+                                            ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
+                                            ->where('products.category', $filters['category'])
+                                            ->where('customers.geography', $filters['region'])
+                                            ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
                                             ->groupBy(
                                             'report_sellers.product_id',
                                             'products.category',
@@ -525,9 +540,6 @@ class ProductController extends Controller
                                             'products.unit',
                                             'customers.geography',
                                             )
-                                            ->where('products.category', $filters['category'])
-                                            ->where('customers.geography', $filters['region'])
-                                            ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
                                             ->orderBy('quantity_by', 'desc')
                                             // ->get();
                                             ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
@@ -550,6 +562,7 @@ class ProductController extends Controller
 
                                                         return ReportSeller::join('products', 'products.product_id', '=', 'report_sellers.product_id')
                                                                             ->join('customers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                                            ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                                                             ->where('products.category',  $filters_totalProduct['category'])
                                                                             ->where('customers.geography',  $filters_totalProduct['region'])
                                                                             ->whereBetween('report_sellers.date_purchase', [ $filters_totalProduct['from'],  $filters_totalProduct['to']])
@@ -574,6 +587,7 @@ class ProductController extends Controller
 
                                                     return ReportSeller::join('products', 'products.product_id', '=', 'report_sellers.product_id')
                                                                         ->join('customers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                                        ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                                                         ->where('products.category',  $filters_productValue['category'])
                                                                         ->where('customers.geography',  $filters_productValue['region'])
                                                                         ->whereBetween('report_sellers.date_purchase', [$filters_productValue['from'],  $filters_productValue['to']])
@@ -626,6 +640,8 @@ class ProductController extends Controller
                                 ->join('subcategories', function (JoinClause $join) {
                                     $join->on('subcategories.subcategories_id', '=', 'products.sub_category');
                                 })
+                                ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
+                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
                                 ->groupBy(
                                 'report_sellers.product_id',
                                 'products.category',
@@ -636,7 +652,6 @@ class ProductController extends Controller
                                 'products.unit'
                                 )
                                 // ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                ->whereBetween('report_sellers.date_purchase', [$filters_page['from'], $filters_page['to']])
                                 ->orderBy('quantity_by', 'desc')
                                 ->get();
                             });
@@ -687,6 +702,8 @@ class ProductController extends Controller
                                     ->join('subcategories', function (JoinClause $join) {
                                         $join->on('subcategories.subcategories_id', '=', 'products.sub_category');
                                     })
+                                    ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
+                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
                                     ->groupBy(
                                     'report_sellers.product_id',
                                     'products.category',
@@ -697,7 +714,6 @@ class ProductController extends Controller
                                     'products.unit'
                                     )
                                     // ->where('customers.admin_area', $filters_customer['adminarea_seller'])
-                                    ->whereBetween('report_sellers.date_purchase', [$filters['from'], $filters['to']])
                                     ->orderBy('quantity_by', 'desc')
                                     // ->get();
                                     ->paginate($filters['perpage'], ['*'], 'page', $filters['page']);
@@ -717,6 +733,7 @@ class ProductController extends Controller
 
                                 return ReportSeller::join('products', 'products.product_id', '=', 'report_sellers.product_id')
                                                     // ->join('customers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                    ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                                     ->whereBetween('report_sellers.date_purchase', [$filters_totalProduct['from'],  $filters_totalProduct['to']])
                                                     ->select('report_sellers.product_id')
                                                     ->distinct()
@@ -738,6 +755,7 @@ class ProductController extends Controller
 
                             return ReportSeller::join('products', 'products.product_id', '=', 'report_sellers.product_id')
                                                 // ->join('customers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                                 ->whereBetween('report_sellers.date_purchase', [$filters_productValue['from'],  $filters_productValue['to']])
                                                 ->select(
                                                     DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
