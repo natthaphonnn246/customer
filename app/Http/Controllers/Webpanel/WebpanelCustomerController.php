@@ -2275,7 +2275,7 @@ class WebpanelCustomerController
                                 $page = 1;
                             }
 
-                            $id = $request->user()->admin_area;
+                            // $id = $request->user()->admin_area;
                             $code = $request->user()->user_code;
 
                             //notin code;
@@ -2354,27 +2354,27 @@ class WebpanelCustomerController
                             // $pur_report = User::select('purchase_status')->where('user_code', $code)->first();
 
                             $status_all = Customer::select('status')
-                                                    ->where('admin_area', $id)
+                                                    ->where('admin_area', $admin_id)
                                                     ->whereNotIn('customer_status', ['inactive'])
                                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                     ->whereNotIn('customer_id', $code_notin)
                                                     ->count();
 
-                            $status_waiting = Customer::where('admin_area', $id)
+                            $status_waiting = Customer::where('admin_area', $admin_id)
                                                         ->where('status', 'รอดำเนินการ')
                                                         ->whereNotIn('customer_status', ['inactive'])
                                                         // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                         ->whereNotIn('customer_id', $code_notin)
                                                         ->count();
                                                         // dd($count_waiting);
-                            $status_action = Customer::where('admin_area', $id)
+                            $status_action = Customer::where('admin_area', $admin_id)
                                                         ->where('status', 'ต้องดำเนินการ')
                                                         ->whereNotIn('customer_status', ['inactive'])
                                                         // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                         ->whereNotIn('customer_id', $code_notin)
                                                         ->count();
 
-                            $status_completed = Customer::where('admin_area', $id)
+                            $status_completed = Customer::where('admin_area', $admin_id)
                                                         ->where('status', 'ดำเนินการแล้ว')
                                                         ->whereNotIn('customer_status', ['inactive'])
                                                         // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
@@ -2492,7 +2492,7 @@ class WebpanelCustomerController
                                                                         DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
                                                                     )
                                                                     ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
-                                                                    ->where('customers.admin_area', $id)
+                                                                    ->where('customers.admin_area', $admin_id)
                                                                     ->groupBy('customers.customer_id', 'customers.customer_name')
                                                                     // ->havingBetween('last_purchase_date', $from_5)
                                                                     ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_6, $from_5])
@@ -2517,7 +2517,7 @@ class WebpanelCustomerController
                                                                         DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
                                                                     )
                                                                     ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
-                                                                    ->where('customers.admin_area', $id)
+                                                                    ->where('customers.admin_area', $admin_id)
                                                                     ->groupBy(
                                                                         'customers.id',
                                                                         'customers.customer_id',
@@ -2694,9 +2694,10 @@ class WebpanelCustomerController
                                                                                         ));
                             } else {
 
+                                // dd('dd');
                                         $count_page = Customer::leftJoin('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
                                                                 ->select('customers.customer_id', DB::raw('COUNT(report_sellers.purchase_order) as count_po'))
-                                                                ->where('customers.admin_area', $id)
+                                                                ->where('customers.admin_area', $admin_id)
                                                                 ->groupBy('customers.customer_id')
                                                                 ->havingRaw('count_po < 1')
                                                                 ->get()
@@ -2720,7 +2721,7 @@ class WebpanelCustomerController
                                                                             DB::raw('COUNT(report_sellers.purchase_order) as count_po')
                                                                         )
                                                                         ->leftjoin('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
-                                                                        ->where('customers.admin_area', $id)
+                                                                        ->where('customers.admin_area', $admin_id)
                                                                         ->groupBy(
                                                                             'customers.id',
                                                                             'customers.customer_id',
