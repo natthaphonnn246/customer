@@ -30,7 +30,7 @@ class ProductCsvExport
 
         if(!empty($from) && !empty($to))
         {
-           
+        //    dd('test');
             if (!empty($region) && empty($category)) {
 
                         $date = $from.'_'.'to'.'_'.$to;
@@ -47,6 +47,7 @@ class ProductCsvExport
                                             'products.product_name',
                                             'products.unit',
                                             DB::raw('SUM(report_sellers.quantity) as quantity_by'),
+                                            DB::raw('AVG(report_sellers.price) as average_price'),
                                             DB::raw('AVG(report_sellers.cost) as average_cost'),
                                             DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             )
@@ -62,18 +63,19 @@ class ProductCsvExport
                                             ->join('customers', function (JoinClause $join) {
                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                             })
-                                            ->groupBy(
-                                            'report_sellers.product_id',
-                                            'products.category',
-                                            'products.product_name',
-                                            'products.sub_category',
-                                            'categories.categories_name',
-                                            'subcategories.subcategories_name',
-                                            'products.unit',
-                                            'customers.geography',
-                                            )
+                                            ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                             ->where('customers.geography', $region)
                                             ->whereBetween('report_sellers.date_purchase', [$from, $to])
+                                            ->groupBy(
+                                                'report_sellers.product_id',
+                                                'products.category',
+                                                'products.product_name',
+                                                'products.sub_category',
+                                                'categories.categories_name',
+                                                'subcategories.subcategories_name',
+                                                'products.unit',
+                                                'customers.geography',
+                                            )
                                             ->orderBy('quantity_by', 'desc')
                                             ->get();
 
@@ -98,6 +100,7 @@ class ProductCsvExport
                                             'products.product_name',
                                             'products.unit',
                                             DB::raw('SUM(report_sellers.quantity) as quantity_by'),
+                                            DB::raw('AVG(report_sellers.price) as average_price'),
                                             DB::raw('AVG(report_sellers.cost) as average_cost'),
                                             DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             )
@@ -110,17 +113,18 @@ class ProductCsvExport
                                             ->join('subcategories', function (JoinClause $join) {
                                                 $join->on('subcategories.subcategories_id', '=', 'products.sub_category');
                                             })
-                                            ->groupBy(
-                                            'report_sellers.product_id',
-                                            'products.category',
-                                            'products.product_name',
-                                            'products.sub_category',
-                                            'categories.categories_name',
-                                            'subcategories.subcategories_name',
-                                            'products.unit'
-                                            )
+                                            ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                             ->where('products.category', $category)
                                             ->whereBetween('report_sellers.date_purchase', [$from, $to])
+                                            ->groupBy(
+                                                'report_sellers.product_id',
+                                                'products.category',
+                                                'products.product_name',
+                                                'products.sub_category',
+                                                'categories.categories_name',
+                                                'subcategories.subcategories_name',
+                                                'products.unit'
+                                            )
                                             ->orderBy('quantity_by', 'desc')
                                             ->get();
 
@@ -144,6 +148,7 @@ class ProductCsvExport
                                             'products.product_name',
                                             'products.unit',
                                             DB::raw('SUM(report_sellers.quantity) as quantity_by'),
+                                            DB::raw('AVG(report_sellers.price) as average_price'),
                                             DB::raw('AVG(report_sellers.cost) as average_cost'),
                                             DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             )
@@ -159,19 +164,20 @@ class ProductCsvExport
                                             ->join('customers', function (JoinClause $join) {
                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                             })
-                                            ->groupBy(
-                                            'report_sellers.product_id',
-                                            'products.category',
-                                            'products.product_name',
-                                            'products.sub_category',
-                                            'categories.categories_name',
-                                            'subcategories.subcategories_name',
-                                            'products.unit',
-                                            'customers.geography',
-                                            )
+                                            ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                             ->where('products.category', $category)
                                             ->where('customers.geography', $region)
                                             ->whereBetween('report_sellers.date_purchase', [$from, $to])
+                                            ->groupBy(
+                                                'report_sellers.product_id',
+                                                'products.category',
+                                                'products.product_name',
+                                                'products.sub_category',
+                                                'categories.categories_name',
+                                                'subcategories.subcategories_name',
+                                                'products.unit',
+                                                'customers.geography',
+                                            )
                                             ->orderBy('quantity_by', 'desc')
                                             ->get();
                                             
@@ -196,6 +202,7 @@ class ProductCsvExport
                                             'products.product_name',
                                             'products.unit',
                                             DB::raw('SUM(report_sellers.quantity) as quantity_by'),
+                                            DB::raw('AVG(report_sellers.price) as average_price'),
                                             DB::raw('AVG(report_sellers.cost) as average_cost'),
                                             DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                             )
@@ -208,17 +215,17 @@ class ProductCsvExport
                                             ->join('subcategories', function (JoinClause $join) {
                                                 $join->on('subcategories.subcategories_id', '=', 'products.sub_category');
                                             })
-                                            ->groupBy(
-                                            'report_sellers.product_id',
-                                            'products.category',
-                                            'products.product_name',
-                                            'products.sub_category', 
-                                            'categories.categories_name',
-                                            'subcategories.subcategories_name',
-                                            'products.unit'
-                                            )
-                                            // ->where('customers.admin_area', $filters_customer['adminarea_seller'])
+                                            ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                             ->whereBetween('report_sellers.date_purchase', [$from, $to])
+                                            ->groupBy(
+                                                'report_sellers.product_id',
+                                                'products.category',
+                                                'products.product_name',
+                                                'products.sub_category', 
+                                                'categories.categories_name',
+                                                'subcategories.subcategories_name',
+                                                'products.unit'
+                                            )
                                             ->orderBy('quantity_by', 'desc')
                                             ->get();
 
@@ -244,6 +251,7 @@ class ProductCsvExport
                                             'products.product_name',
                                             'products.unit',
                                             DB::raw('SUM(report_sellers.quantity) as quantity_by'),
+                                            DB::raw('AVG(report_sellers.price) as average_price'),
                                             DB::raw('AVG(report_sellers.cost) as average_cost'),
                                             DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
 /*                                             'products.category',
@@ -260,14 +268,15 @@ class ProductCsvExport
                                             ->join('subcategories', function (JoinClause $join) {
                                                 $join->on('subcategories.subcategories_id', '=', 'products.sub_category');
                                             })
+                                            ->whereRaw("report_sellers.product_name NOT LIKE BINARY '%ดีลพิเศษ%'")
                                             ->groupBy(
-                                            'report_sellers.product_id',
-                                            'products.category',
-                                            'products.product_name',
-                                            'products.sub_category',
-                                            'categories.categories_name',
-                                            'subcategories.subcategories_name',
-                                            'products.unit'
+                                                'report_sellers.product_id',
+                                                'products.category',
+                                                'products.product_name',
+                                                'products.sub_category',
+                                                'categories.categories_name',
+                                                'subcategories.subcategories_name',
+                                                'products.unit'
                                             )
                                             ->orderBy('quantity_by', 'desc')
                                             ->get();
