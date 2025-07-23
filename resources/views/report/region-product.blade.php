@@ -410,18 +410,17 @@
 
                         @foreach ($sales as $row_product)
                         <tr>
-                           
-                            <td scope="row" style="color:#9C9C9C; text-align: center; padding: 20px 8px 20px; width:5%;">{{ $start++ }}</td>
-                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:10%;">{{ $row_product->customer_id }}</td>
-                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:10%;">{{ $row_product->customer_name }}</td>
-                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:5%;">{{ $row_product->product_id }}</td>
-                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px; width:25%;">{{ $row_product->product_name }}</td>
-                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;">{{ $row_product->unit }}</td>
-                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;">{{ $row_product->quantity_by }}</td>
-                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;">{{ number_format($row_product->average_price,2) }}</td>
-                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px 20px; width:10%;">{{ number_format($row_product->total_sales,2) }}</td>
-
+                            <td scope="row" style="color:#9C9C9C; text-align: center; padding: 20px 8px; width:5%;">{{ $start++ }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px; width:6%;">{{ $row_product->customer_id }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px; width:15%;">{{ $row_product->customer_name }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px; width:7%;">{{ $row_product->product_id }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px; width:26%;">{{ $row_product->product_name }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px; width:9%;">{{ $row_product->unit }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px; width:9%;">{{ $row_product->quantity_by }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px; width:9%;">{{ number_format($row_product->average_price,2) }}</td>
+                            <td scope="row" style="color:#9C9C9C; text-align: right; padding: 20px 8px; width:14%;">{{ number_format($row_product->total_sales,2) }}</td>
                         </tr>
+                        
 
                         @php 
                             $total += $row_product->total_sales;

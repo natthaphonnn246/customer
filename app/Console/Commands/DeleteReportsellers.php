@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\ReportSeller;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -31,20 +32,37 @@ class DeleteReportsellers extends Command
 
     public function handle()
     {
-        $threeMonthsAgo = Carbon::now()->subMonths(3);
+        $setting = Setting::where('setting_id', 'WS01')->first();
 
-        // ลบข้อมูลที่เก่ากว่า 3 เดือน
-        $deleted = ReportSeller::where('date_purchase', '<=', $threeMonthsAgo)->delete();
+        if (!$setting) {
+            $this->warn('ไม่พบการตั้งค่าการลบ (del_reportseller = 1) ในตาราง settings');
+            return;
+        }
 
-        $this->info("ลบข้อมูล Order เก่ากว่า 3 เดือนจำนวน: {$deleted} รายการ");
+        $status_del = $setting?->del_reportseller;
+        
+        if($status_del === '1') {
 
-        $message = "ลบข้อมูล Order เก่ากว่า 3 เดือนจำนวน: {$deleted} รายการ";
+            $threeMonthsAgo = Carbon::now()->subMonths(3);
 
-         // แสดงใน console
-         $this->info($message);
+            // ลบข้อมูลที่เก่ากว่า 3 เดือน
+            $deleted = ReportSeller::where('date_purchase', '<=', $threeMonthsAgo)->delete();
+    
+            $this->info("ลบข้อมูล Order เก่ากว่า 3 เดือนจำนวน: {$deleted} รายการ");
+    
+            $message = "ลบข้อมูล Order เก่ากว่า 3 เดือนจำนวน: {$deleted} รายการ";
+    
+             // แสดงใน console
+             $this->info($message);
+    
+             // บันทึกลง laravel.log
+             Log::info($message);
 
-         // บันทึกลง laravel.log
-         Log::info($message);
+        } else {
+            
+            $this->info('ปิดการลบอัตโนมัติชั่วคราว');
+        }
+       
     }
 }
 

@@ -140,6 +140,22 @@
                             </select>
                         </ul>
                     </div>
+                    {{-- <hr class="mt-8" style="color: #8E8E8E; width: 100%;"> --}}
+                </div>
+
+                <div class="row ms-6 mr-6 mt-4">
+                    <div class="col-sm-6">
+                        <ul style="width: 100%;">
+                            <span style="color:#8E8E8E;">ลบรายงานขายอัตโนมัติ</span>
+                            <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="del_reportseller">
+
+                                <option {{$setting_view->del_reportseller == '0' ? 'selected': ''}} value="0">ปิด</option>
+                                <option {{$setting_view->del_reportseller == '1' ? 'selected': ''}} value="1">เปิด</option>
+                                
+                            </select>
+                        </ul>
+
+                    </div>
                     <hr class="mt-8" style="color: #8E8E8E; width: 100%;">
                 </div>
             @endif

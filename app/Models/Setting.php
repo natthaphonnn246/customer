@@ -10,6 +10,7 @@ class Setting extends Model
 
         'web_status',
         'allowed_web_status',
+        'del_reportseller',
   
     ];
     protected $table = 'settings';
