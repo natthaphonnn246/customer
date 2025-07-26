@@ -718,7 +718,7 @@
                                 </div>
 
                                     <div class="mb-3 my-4">
-                                        <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 500; color:#303030;">ข้อความถึงแอดมินผู้ดูแล</label></label>
+                                        <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 400; color:#fe505b;">*ข้อความถึงแอดมินผู้ดูแล</label></label>
                                         <textarea class="form-control" style="color: rgb(255, 86, 56);" id="exampleFormControlTextarea1" rows="3" name="text_admin" disabled>{{$customer_edit->text_admin}}</textarea>
                                     </div>
                                

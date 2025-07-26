@@ -43,6 +43,7 @@
             transform: translate(-50%, -50%);
             pointer-events: none;
             }
+  
 
     
     </style>
@@ -197,7 +198,7 @@
                     </div>
 
                 </div> 
-                
+               
       {{--   <div class="p-3 m-0 border-0 bd-example m-0 border-0">
                 <hr style="border: solid 4px; color:#666666">
                 @if(isset($customer_north))
@@ -381,7 +382,9 @@
         <script type="text/javascript">
 
                 //north;
-                Chart.defaults.global.defaultFontFamily = "Prompt";
+                Chart.defaults.global.defaultFontFamily = "'Sarabun', sans-serif";
+                // Chart.defaults.global.defaultFontFamily = "'Helvetica Neue', 'Arial', sans-serif";
+
                     const xValue_n = ["ร้านค้า", "ปกติ", "ระงับบัญชี", "กำลังติดตาม", "ปิดบัญชี"];
                     const yValue_n = [{{$customer_north}}, {{$normal_customer_north}}, {{$suspend_customer_north}}, {{$follow_customer_north}}, {{$closed_customer_north}}];
                     const barColor_n = ["#AED6F1", "#D1F2EB","#FADBD8","#FAE5D3","#D6DBDF"];
@@ -419,7 +422,7 @@
                         text: "ภาคเหนือ",
                         fontSize: 15,
                         padding: 20,
-                        fontFamily: "Prompt",
+                        fontFamily: "'Sarabun', sans-serif",
                         // fontStyle: "",
                         fontColor: "#555759"
                         }
@@ -428,7 +431,8 @@
                 });
 
                 //central;
-                Chart.defaults.global.defaultFontFamily = "Prompt";
+                Chart.defaults.global.defaultFontFamily = "'Sarabun', sans-serif";
+                
                     const xValues = ["ร้านค้า", "ปกติ", "ระงับบัญชี", "กำลังติดตาม", "ปิดบัญชี"];
                     const yValues = [{{$customer_central}}, {{$normal_customer_central}}, {{$suspend_customer_central}}, {{$follow_customer_central}}, {{$closed_customer_central}}];
                     const barColors = ["#AED6F1", "#D1F2EB","#FADBD8","#FAE5D3","#D6DBDF"];
@@ -466,7 +470,7 @@
                         text: "ภาคกลาง",
                         fontSize: 15,
                         padding: 20,
-                        fontFamily: "Prompt",
+                        fontFamily: "'Sarabun', sans-serif",
                         // fontStyle: "",
                         fontColor: "#555759"
                         }
@@ -475,7 +479,7 @@
                 });
 
                 //eastern;
-                Chart.defaults.global.defaultFontFamily = "Prompt";
+                Chart.defaults.global.defaultFontFamily = "'Helvetica Neue', 'Arial', sans-serif";
                     const xValue_e = ["ร้านค้า", "ปกติ", "ระงับบัญชี", "กำลังติดตาม", "ปิดบัญชี"];
                     const yValue_e = [{{$customer_eastern}}, {{$normal_customer_eastern}}, {{$suspend_customer_eastern}}, {{$follow_customer_eastern}}, {{$closed_customer_eastern}}];
                     const barColor_e = ["#AED6F1", "#D1F2EB","#FADBD8","#FAE5D3","#D6DBDF"];
@@ -513,7 +517,7 @@
                         text: "ภาคตะวันออก",
                         fontSize: 15,
                         padding: 20,
-                        fontFamily: "Prompt",
+                        fontFamily: "'Sarabun', sans-serif",
                         // fontStyle: "",
                         fontColor: "#555759"
                         }
@@ -522,7 +526,7 @@
                 });
 
                 //north east;
-                Chart.defaults.global.defaultFontFamily = "Prompt";
+                Chart.defaults.global.defaultFontFamily = "'Sarabun', sans-serif";
                     const xValue_ne = ["ร้านค้า", "ปกติ", "ระงับบัญชี", "กำลังติดตาม", "ปิดบัญชี"];
                     const yValue_ne = [{{$customer_northeast}}, {{$normal_customer_northeast}}, {{$suspend_customer_northeast}}, {{$follow_customer_northeast}}, {{$closed_customer_northeast}}];
                     const barColor_ne = ["#AED6F1", "#D1F2EB","#FADBD8","#FAE5D3","#D6DBDF"];
@@ -560,7 +564,7 @@
                         text: "ภาคตะวันออกเฉียงเหนือ",
                         fontSize: 15,
                         padding: 20,
-                        fontFamily: "Prompt",
+                        fontFamily: "'Sarabun', sans-serif",
                         // fontStyle: "",
                         fontColor: "#555759"
                         }
@@ -569,7 +573,7 @@
                 });
 
                 //western;
-                Chart.defaults.global.defaultFontFamily = "Prompt";
+                Chart.defaults.global.defaultFontFamily = "'Sarabun', sans-serif";
                     const xValue_w = ["ร้านค้า", "ปกติ", "ระงับบัญชี", "กำลังติดตาม", "ปิดบัญชี"];
                     const yValue_w = [{{$customer_western}}, {{$normal_customer_western}}, {{$suspend_customer_western}}, {{$follow_customer_western}}, {{$closed_customer_western}}];
                     const barColor_w = ["#AED6F1", "#D1F2EB","#FADBD8","#FAE5D3","#D6DBDF"];
@@ -607,7 +611,7 @@
                         text: "ภาคตะวันตก",
                         fontSize: 15,
                         padding: 20,
-                        fontFamily: "Prompt",
+                        fontFamily: "'Sarabun', sans-serif",
                         // fontStyle: "",
                         fontColor: "#555759"
                         }
@@ -616,7 +620,7 @@
                 });
 
                 //south;
-                Chart.defaults.global.defaultFontFamily = "Prompt";
+                Chart.defaults.global.defaultFontFamily = "'Sarabun', sans-serif";
                     const xValue_s = ["ร้านค้า", "ปกติ", "ระงับบัญชี", "กำลังติดตาม", "ปิดบัญชี"];
                     const yValue_s = [{{$customer_south}}, {{$normal_customer_south}}, {{$suspend_customer_south}}, {{$follow_customer_south}}, {{$closed_customer_south}}];
                     const barColor_s = ["#AED6F1", "#D1F2EB","#FADBD8","#FAE5D3","#D6DBDF"];
@@ -654,7 +658,7 @@
                         text: "ภาคใต้",
                         fontSize: 15,
                         padding: 20,
-                        fontFamily: "Prompt",
+                        fontFamily: "'Sarabun', sans-serif",
                         // fontStyle: "",
                         fontColor: "#555759"
                         }
@@ -720,7 +724,7 @@
                             text: "Normal status customer",
                             fontSize: 15,
                             padding: 20,
-                            fontFamily: "Prompt",
+                            fontFamily: "'Sarabun', sans-serif",
                             fontColor: "#555759",
                             }
                         }
@@ -737,7 +741,7 @@
                         height: "100%",
                         width: "100%",
                         type: "donut",
-                        fontFamily: "Prompt , sans-serif",
+                        fontFamily: "'Sarabun', sans-serif",
                         },
                         stroke: {
                         colors: ["transparent"],
@@ -750,14 +754,14 @@
                                 show: true,
                                 name: {
                                 show: true,
-                                fontFamily: "Prompt, sans-serif",
+                                fontFamily: "'Sarabun', sans-serif",
                                 offsetY: 20,
                                 },
                                 total: {
                                 showAlways: true,
                                 show: true,
                                 label: "All customers",
-                                fontFamily: "Prompt, sans-serif",
+                                fontFamily: "'Sarabun', sans-serif",
                                 fontSize: 14,
                                 formatter: function (w) {
                                     const sum = w.globals.seriesTotals.reduce((a, b) => {
@@ -768,7 +772,7 @@
                                 },
                                 value: {
                                 show: true,
-                                fontFamily: "Prompt, sans-serif",
+                                fontFamily: "'Sarabun', sans-serif",
                                 offsetY: -20,
                                 formatter: function (value) {
                                     return value + "k"
@@ -790,7 +794,7 @@
                         },
                         legend: {
                         position: "bottom",
-                        fontFamily: "Prompt, sans-serif",
+                        fontFamily: "'Sarabun', sans-serif",
                         },
                         yaxis: {
                         labels: {

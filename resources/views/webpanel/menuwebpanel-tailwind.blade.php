@@ -3,9 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    {{-- <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"> --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.0.0/dist/flowbite.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
     {{-- <link rel="stylesheet" href="/resources/demos/style.css"> --}}
@@ -31,8 +33,13 @@
   <style>
    
     body{
-        font-family: 'Prompt', sans-serif;
+        /* font-family: 'Prompt', sans-serif; */
+        /* font-family: 'Helvetica Neue', 'Arial', sans-serif; Sarabun */
+        /* font-family: "Sarabun", sans-serif;  */
+      /*   font-family: "Bai Jamjuree", sans-serif;
+        font-weight: 400; */
     }
+
     li {
         font-size: 15px;
     }
@@ -166,6 +173,7 @@
     flex-wrap: wrap; /* อนุญาตให้ content ขึ้นบรรทัดใหม่ได้ */
   }
 
+
   </style>
   <body>
 
@@ -188,8 +196,8 @@
                 </div>
             </ul>
             <div class="h-full px-3 py-1 overflow-y-auto bg-black-50" style="background-color: #0f1e2f;">
-  
-            <ul class="space-y-2 font-medium">
+              {{-- font-medium --}}
+            <ul class="space-y-2">
                 <li class="py-1">
                     <a href="/webpanel" class="py-2 flex items-center p-2 text-gray-900 rounded-lg" id="dashboardMenu">
                         <i class="fa-solid fa-tv" style="color:white;"></i>

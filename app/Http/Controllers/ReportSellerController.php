@@ -6558,7 +6558,6 @@ class ReportSellerController extends Controller
     public function show(Request $request)
     {
 
-        // dd('sales');
         $customer_id = $request->id;
         // dd($customer_id);
         $customer_name = Customer::where('customer_id',$customer_id)->first();
@@ -6571,13 +6570,13 @@ class ReportSellerController extends Controller
 
         if(!empty($from_purchase) && !empty($to_purchase)) {
             // dd('dd');
-            $order_selling = ReportSeller::where('customer_id',$customer_id)
+            $order_selling = DB::table('report_sellers')->where('customer_id',$customer_id)
                             ->where('purchase_order', $purchase_check)
                             ->whereBetween('date_purchase', [$from_purchase, $to_purchase])
                             // ->distinct()
                             ->get();
                             
-            $purchase_order = ReportSeller::select('purchase_order','date_purchase')->where('customer_id',$customer_id)
+            $purchase_order = DB::table('report_sellers')->select('purchase_order','date_purchase')->where('customer_id',$customer_id)
                             ->where('purchase_order', $purchase_check)
                             ->whereBetween('date_purchase', [$from_purchase, $to_purchase])
                             ->distinct()
@@ -6585,11 +6584,11 @@ class ReportSellerController extends Controller
 
         } else {
 
-            $order_selling = ReportSeller::where('customer_id',$customer_id)
+            $order_selling = DB::table('report_sellers')->where('customer_id',$customer_id)
                             ->where('purchase_order', $purchase_check)
                             ->get();
 
-            $purchase_order = ReportSeller::select('purchase_order','date_purchase')->where('customer_id',$customer_id)
+            $purchase_order = DB::table('report_sellers')->select('purchase_order','date_purchase')->where('customer_id',$customer_id)
                             ->where('purchase_order', $purchase_check)
                             ->distinct()
                             ->get();
@@ -6606,12 +6605,12 @@ class ReportSellerController extends Controller
 
         // dd($order_selling->product_id);
         //Dashborad;
-        $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_customer             = DB::table('customers')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_status_waiting       = DB::table('customers')->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_status_action        = DB::table('customers')->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_status_completed     = DB::table('customers')->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_status_updated       = DB::table('customers')->where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $customer_status_inactive   = DB::table('customers')->where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
 
         //เพิ่มลูกค้า;
         // $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
@@ -6619,15 +6618,15 @@ class ReportSellerController extends Controller
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+        $status_waiting         = DB::table('customers')->where('status', 'รอดำเนินการ')
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
-        $status_updated = Customer::where('status_update', 'updated')
+        $status_updated         = DB::table('customers')->where('status_update', 'updated')
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
-        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+        $status_registration    = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
@@ -6690,7 +6689,7 @@ class ReportSellerController extends Controller
         {
 
             //แสดงข้อมูลลูกค้า;
-            $pagination = ReportSeller::select(DB::raw('DISTINCT(customer_id)'))
+            $pagination = DB::table('report_sellers')->select(DB::raw('DISTINCT(customer_id)'))
                                         // ->whereBetween('date_purchase', [$request->from, $request->to])
                                         ->get();
             $count_page = count($pagination);
@@ -6699,16 +6698,16 @@ class ReportSellerController extends Controller
             $total_page = ceil($count_page / $perpage);
             $start = ($perpage * $page) - $perpage;
 
-            $report_seller = ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name')
-                                            ->join('customers', function (JoinClause $join) {
-                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                            })
-                                            ->groupBy('report_sellers.customer_id', 'customers.customer_name')
-                                            ->havingBetween('total_sales', [$request->min_seller, $request->max_seller])
-                                            ->offset($start)
-                                            ->limit($perpage)
-                                            ->get();
-        } else {
+            $report_seller = DB::table('report_sellers')->select('report_sellers.customer_id', DB::raw('SUM(price*quantity) as total_sales'), 'customers.customer_name')
+                                ->join('customers', function (JoinClause $join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->groupBy('report_sellers.customer_id', 'customers.customer_name')
+                                ->havingBetween('total_sales', [$request->min_seller, $request->max_seller])
+                                ->offset($start)
+                                ->limit($perpage)
+                                ->get();
+} else {
       
             date_default_timezone_set("Asia/Bangkok");
             // $keyword_date =  date('Y-m-d');
@@ -6716,7 +6715,7 @@ class ReportSellerController extends Controller
             $keyword_date_to =  date('Y-m-d');
             // dd($keyword_date);
             //แสดงข้อมูลลูกค้า;
-            $pagination = ReportSeller::select(DB::raw('DISTINCT(customer_id)'))
+            $pagination = DB::table('report_sellers')->select(DB::raw('DISTINCT(customer_id)'))
                                         // ->whereBetween('date_purchase', [$keyword_date_from, $keyword_date_to])
                                         ->get();
             $count_page = count($pagination);
@@ -6725,15 +6724,15 @@ class ReportSellerController extends Controller
             $total_page = ceil($count_page / $perpage);
             $start = ($perpage * $page) - $perpage;
 
-           $report_seller = ReportSeller::select('report_sellers.customer_id', DB::raw('SUM(price * quantity) as total_sales'), 'customers.customer_name')
-                                            ->join('customers', function (JoinClause $join) {
-                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
-                                            })
-                                            ->groupBy('report_sellers.customer_id', 'customers.customer_name')
-                                            ->havingBetween('total_sales', [$request->min_seller, $request->max_seller])
-                                            ->offset($start)
-                                            ->limit($perpage)
-                                            ->get();
+            $report_seller = DB::table('report_sellers')->select('report_sellers.customer_id', DB::raw('SUM(price * quantity) as total_sales'), 'customers.customer_name')
+                                    ->join('customers', function (JoinClause $join) {
+                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                    })
+                                    ->groupBy('report_sellers.customer_id', 'customers.customer_name')
+                                    ->havingBetween('total_sales', [$request->min_seller, $request->max_seller])
+                                    ->offset($start)
+                                    ->limit($perpage)
+                                    ->get();
 /* 
                     $report_seller = ReportSeller::select('customer_id' , DB::raw('SUM(price * quantity) as total_sales'))
                                                 ->groupBy('customer_id')
@@ -6743,22 +6742,22 @@ class ReportSellerController extends Controller
         }
 
         //Dashborad;
-        $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_customer             = DB::table('customers')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_status_waiting       = DB::table('customers')->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_status_action        = DB::table('customers')->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_status_completed     = DB::table('customers')->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $total_status_updated       = DB::table('customers')->where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
+        $customer_status_inactive   = DB::table('customers')->where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count();
 
         $user_id_admin = $request->user()->user_id;
         //เพิ่มลูกค้า;
         // $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
 
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
 
-        $status_updated = Customer::where('status_update', 'updated')
+        $status_updated = DB::table('customers')->where('status_update', 'updated')
                                     ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->count();
 
@@ -6773,21 +6772,21 @@ class ReportSellerController extends Controller
 
         if($keyword_search != '') {
 
-            $count_page = Customer::where('customer_id', 'Like', "%{$keyword_search}%")->count();
+            $count_page = DB::table('customers')->where('customer_id', 'Like', "%{$keyword_search}%")->count();
             // dd($count_page);
 
             $perpage = 10;
             $total_page = ceil($count_page / $perpage);
             $start = ($perpage * $page) - $perpage;
 
-            $customer = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+            $customer = DB::table('customers')->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->where('customer_id', 'Like', "%{$keyword_search}%")
                                     ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                     ->offset($start)
                                     ->limit($perpage)
                                     ->get();
 
-            $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+            $check_keyword = DB::table('customers')->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                         ->where('customer_id', 'Like', "%{$keyword_search}%")
                                         ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                         ->get();
@@ -6796,8 +6795,26 @@ class ReportSellerController extends Controller
 
             // dd($check_search->admin_area);
             if(!$check_keyword  == null) {
-                return view('report/seller', compact('check_from','check_to', 'check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                            'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated', 'user_id_admin'));
+                return view('report/seller', compact(
+                                                        'check_from',
+                                                        'check_to', 
+                                                        'check_keyword', 
+                                                        'admin_area', 
+                                                        'customer', 
+                                                        'start', 
+                                                        'total_page', 
+                                                        'page', 
+                                                        'total_customer', 
+                                                        'total_status_waiting',
+                                                        'total_status_action', 
+                                                        'total_status_completed', 
+                                                        'total_status_updated', 
+                                                        'customer_status_inactive', 
+                                                        'status_alert', 
+                                                        'status_waiting', 
+                                                        'status_updated', 
+                                                        'user_id_admin'
+                                                    ));
         
             }
             
@@ -6805,8 +6822,25 @@ class ReportSellerController extends Controller
                 // return back();
         }
 
-        return view('report/seller', compact('check_from','check_to', 'admin_area', 'report_seller', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated', 'user_id_admin'));
+        return view('report/seller', compact(
+                                                'check_from',
+                                                'check_to', 
+                                                'admin_area', 
+                                                'report_seller', 
+                                                'start', 
+                                                'total_page', 
+                                                'page', 
+                                                'total_customer', 
+                                                'total_status_waiting',
+                                                'total_status_action', 
+                                                'total_status_completed', 
+                                                'total_status_updated', 
+                                                'customer_status_inactive', 
+                                                'status_alert', 
+                                                'status_waiting', 
+                                                'status_updated', 
+                                                'user_id_admin'
+                                            ));
 
     }
 

@@ -1580,15 +1580,15 @@ class ProductController extends Controller
        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         //menu alert;
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
 
-       $status_updated = Customer::where('status_update', 'updated')
+       $status_updated = DB::table('customers')->where('status_update', 'updated')
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
 
-       $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+       $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
@@ -1603,7 +1603,7 @@ class ProductController extends Controller
                 'to' => $request->to ?? date('Y-m-d'),
 
             ];
-            $sales_category =  ReportSeller::where('report_sellers.product_name', 'NOT LIKE', '%ดีลพิเศษ%')
+            $sales_category =  DB::table('report_sellers')->where('report_sellers.product_name', 'NOT LIKE', '%ดีลพิเศษ%')
                                 ->select(
                                 DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                 DB::raw('SUM(report_sellers.quantity) as quantity_by'),
@@ -1611,7 +1611,8 @@ class ProductController extends Controller
                                 DB::raw('AVG(report_sellers.price) as average_price'),
                                 DB::raw('SUM(report_sellers.cost * report_sellers.quantity) as total_sales_cost'),
                                 'categories.categories_name',
-                                'categories.categories_id',
+                                'categories.categories_id'
+                                // 'categories.id'
                                 )
                                 ->join('products', function (JoinClause $join) {
                                     $join->on('products.product_id', '=', 'report_sellers.product_id');
@@ -1624,7 +1625,8 @@ class ProductController extends Controller
                                 }) */
                                 ->groupBy(
                                 'categories.categories_name',
-                                'categories.categories_id',
+                                'categories.categories_id'
+                                // 'categories.id'
                                 // 'report_sellers.customer_id',
                                 )
                                 // ->where('report_sellers.product_name', 'NOT LIKE', '%ดีลพิเศษ%')
@@ -1659,15 +1661,15 @@ class ProductController extends Controller
        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         //menu alert;
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
 
-       $status_updated = Customer::where('status_update', 'updated')
+       $status_updated = DB::table('customers')->where('status_update', 'updated')
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
 
-       $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+       $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
@@ -1689,7 +1691,7 @@ class ProductController extends Controller
 
             $sales = Cache::remember($key_region, 1800, function () use ($filters_region) {
 
-            return  ReportSeller::where('report_sellers.product_name', 'NOT LIKE', '%ดีลพิเศษ%')
+            return  DB::table('report_sellers')->where('report_sellers.product_name', 'NOT LIKE', '%ดีลพิเศษ%')
                                 ->select(
                                 DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                 // DB::raw('SUM(report_sellers.quantity) as quantity_by'),
@@ -1751,15 +1753,15 @@ class ProductController extends Controller
        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         //menu alert;
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
 
-       $status_updated = Customer::where('status_update', 'updated')
+       $status_updated = DB::table('customers')->where('status_update', 'updated')
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
 
-       $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+       $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
@@ -1784,7 +1786,7 @@ class ProductController extends Controller
                 'to' => $request->to ?? '2025-05-22', */
 
             ];
-            $sales =  ReportSeller::where('report_sellers.product_name', 'NOT LIKE', '%ดีลพิเศษ%')
+            $sales =  DB::table('report_sellers')->where('report_sellers.product_name', 'NOT LIKE', '%ดีลพิเศษ%')
                                 ->select(
                                 DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                 DB::raw('SUM(report_sellers.quantity) as quantity_by'),
@@ -1856,15 +1858,15 @@ class ProductController extends Controller
        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         //menu alert;
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
 
-       $status_updated = Customer::where('status_update', 'updated')
+       $status_updated = DB::table('customers')->where('status_update', 'updated')
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
 
-       $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+       $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                    ->whereNotIn('customer_id', $code_notin)
                                    ->count();
@@ -1891,7 +1893,7 @@ class ProductController extends Controller
                 'to' => $request->to ?? '2025-05-22', */
 
             ];
-            $sales =  ReportSeller::where('report_sellers.product_name', 'NOT LIKE', '%ดีลพิเศษ%')
+            $sales =  DB::table('report_sellers')->where('report_sellers.product_name', 'NOT LIKE', '%ดีลพิเศษ%')
                                 ->select(
                                 DB::raw('SUM(report_sellers.price * report_sellers.quantity) as total_sales'),
                                 DB::raw('SUM(report_sellers.quantity) as quantity_by'),

@@ -35,7 +35,6 @@ class WebpanelCustomerController
     
     public function index(Request $request): View
     {
-
         // dd(strtotime('2025-04-21'));
         $page = $request->page;
         if ($page) {
@@ -66,37 +65,38 @@ class WebpanelCustomerController
                                         ->orderByDesc('date_purchase')
                                         ->get();
 
-        //Dashborad;
-       /*  $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count(); */
+        // $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+        // $total_status_registration = Customer::where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
+        // $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+        // $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+        // $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
+        // $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
+        // $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count();
 
-        $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
-        $total_status_registration = Customer::where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
-        $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
-        $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
-        $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count();
+        //Raw query เพิ่ม performance;
+        $total_customer             = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_registration  = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_waiting       = DB::table('customers')->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_action        = DB::table('customers')->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_completed     = DB::table('customers')->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_updated       = DB::table('customers')->where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
+        $customer_status_inactive   = DB::table('customers')->where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count();
 
         $user_id_admin = $request->user()->user_id;
         //เพิ่มลูกค้า;
         // $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
 
-        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+        $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
-        $status_updated = Customer::where('status_update', 'updated')
+        $status_updated = DB::table('customers')->where('status_update', 'updated')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
@@ -125,18 +125,18 @@ class WebpanelCustomerController
             $start = ($perpage * $page) - $perpage;
 
             // $customer = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-            $customer = Customer::whereNotIn('customer_id', $code_notin)
-                                    ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                    ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                    ->offset($start)
-                                    ->limit($perpage)
-                                    ->get();
+            $customer = DB::table('customers')->whereNotIn('customer_id', $code_notin)
+                            ->where('customer_id', 'Like', "%{$keyword_search}%")
+                            ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                            ->offset($start)
+                            ->limit($perpage)
+                            ->get();
 
             // $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-            $check_keyword = Customer::whereNotIn('customer_id', $code_notin)
-                                        ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                        ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                        ->first();
+            $check_keyword = DB::table('customers')->whereNotIn('customer_id', $code_notin)
+                                ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                ->first();
 
           /*   $report_seller = ReportSeller::whereNotIn('customer_id', $code_notin)
                                         ->where(function ($query) use ($keyword_search) {
@@ -149,15 +149,15 @@ class WebpanelCustomerController
                                         ->get(); */
 
                 // 1. หา date_purchase ล่าสุดของแต่ละ customer
-                $latest_po = ReportSeller::select('customer_id', DB::raw('MAX(date_purchase) as latest_date'))
-                                            ->whereNotIn('customer_id', $code_notin)
-                                            ->when($keyword_search, function ($query) use ($keyword_search) {
-                                                $query->where(function ($q) use ($keyword_search) {
-                                                    $q->where('customer_id', 'like', "%{$keyword_search}%")
-                                                    ->orWhere('customer_name', 'like', "%{$keyword_search}%");
-                                                });
-                                            })
-                                            ->groupBy('customer_id');
+                $latest_po = DB::table('report_sellers')->select('customer_id', DB::raw('MAX(date_purchase) as latest_date'))
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->when($keyword_search, function ($query) use ($keyword_search) {
+                                    $query->where(function ($q) use ($keyword_search) {
+                                        $q->where('customer_id', 'like', "%{$keyword_search}%")
+                                        ->orWhere('customer_name', 'like', "%{$keyword_search}%");
+                                    });
+                                })
+                                ->groupBy('customer_id');
 
                 // 2. Join กับข้อมูลสินค้าใน PO ล่าสุด
    /*              $report_seller = ReportSeller::joinSub($latest_po, 'latest', function ($join) {
@@ -289,28 +289,30 @@ class WebpanelCustomerController
                                     ->get(); */
 
                                           // 1. หา date_purchase ล่าสุดของแต่ละ customer
-                $latest_po = ReportSeller::select('customer_id', DB::raw('MAX(date_purchase) as latest_date'))
-                                            ->whereNotIn('customer_id', $code_notin)
-                                            ->where('customer_id', $use_id)
-                                            ->groupBy('customer_id');
+                $latest_po = DB::table('report_sellers')
+                                ->select('customer_id', DB::raw('MAX(date_purchase) as latest_date'))
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->where('customer_id', $use_id)
+                                ->groupBy('customer_id');
 
                 // 2. Join กับข้อมูลสินค้าใน PO ล่าสุด
-                $report_seller = ReportSeller::joinSub($latest_po, 'latest', function ($join) {
-                                                $join->on('report_sellers.customer_id', '=', 'latest.customer_id')
-                                                    ->on('report_sellers.date_purchase', '=', 'latest.latest_date');
-                                                })
-                                                ->select(
-                                                    'report_sellers.date_purchase',
-                                                    'report_sellers.customer_id',
-                                                    'report_sellers.purchase_order',
-                                                    'report_sellers.product_id',
-                                                    'report_sellers.product_name',
-                                                    'report_sellers.unit',
-                                                    'report_sellers.quantity',
-                                                    DB::raw('(report_sellers.price*report_sellers.quantity) as total_sale')
-                                                )
-                                                ->orderBy('report_sellers.customer_id')
-                                                ->get();
+                $report_seller = DB::table('report_sellers')
+                                    ->joinSub($latest_po, 'latest', function ($join) {
+                                    $join->on('report_sellers.customer_id', '=', 'latest.customer_id')
+                                        ->on('report_sellers.date_purchase', '=', 'latest.latest_date');
+                                    })
+                                    ->select(
+                                        'report_sellers.date_purchase',
+                                        'report_sellers.customer_id',
+                                        'report_sellers.purchase_order',
+                                        'report_sellers.product_id',
+                                        'report_sellers.product_name',
+                                        'report_sellers.unit',
+                                        'report_sellers.quantity',
+                                        DB::raw('(report_sellers.price*report_sellers.quantity) as total_sale')
+                                    )
+                                    ->orderBy('report_sellers.customer_id')
+                                    ->get();
 
             return response()->json([
                 'status'  => 'success',
@@ -360,7 +362,7 @@ class WebpanelCustomerController
     {
 
         // dd($request->status);
-        // dd($status);
+        // dd('index');
         $admin_area = User::where('admin_area', $admin_id)->first();
 
         $page = $request->page;
@@ -374,20 +376,22 @@ class WebpanelCustomerController
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
           //menu alert;
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+        $status_waiting = DB::table('customers')
+                                ->where('status', 'รอดำเนินการ')
+                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
+
+        $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
-        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
-
-        $status_updated = Customer::where('status_update', 'updated')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_updated = DB::table('customers')
+                                ->where('status_update', 'updated')
+                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
 
         $status_alert = $status_waiting + $status_updated;
 
@@ -401,21 +405,23 @@ class WebpanelCustomerController
         $page = $row_customer[3];
 
 
-        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
-                                    ->select('customer_id')
-                                    ->distinct()
-                                    ->get(); 
+        $check_id = DB::table('report_sellers')
+                        ->whereNotIn('customer_id', $code_notin)
+                        ->select('customer_id')
+                        ->distinct()
+                        ->get(); 
 
-        $check_purchase = ReportSeller::select('customer_id')
-                                    ->selectRaw('MAX(date_purchase) as date_purchase')
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->groupBy('customer_id')
-                                    ->orderByDesc('date_purchase')
-                                    ->get();
+        $check_purchase = DB::table('report_sellers')
+                            ->select('customer_id')
+                            ->selectRaw('MAX(date_purchase) as date_purchase')
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->groupBy('customer_id')
+                            ->orderByDesc('date_purchase')
+                            ->get();
                             
 
         // name;
-        $admin_name = User::select('admin_area', 'name')->where('admin_area', $admin_id)->first();
+        $admin_name = DB::table('users')->select('admin_area', 'name')->where('admin_area', $admin_id)->first();
 
         //Dashborad;
        /*  $total_customer_adminarea = Customer::whereNotIn('customer_code', ['0000','4494'])->where('admin_area', $admin_id)->count();
@@ -423,14 +429,14 @@ class WebpanelCustomerController
         $total_status_action = Customer::where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count();
         $total_status_completed = Customer::where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count(); */
 
-        $total_customer_adminarea = Customer::whereNotIn('customer_code', $code_notin)->where('admin_area', $admin_id)->count();
-        $total_status_waiting = Customer::where('admin_area', $admin_id)->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
-        $total_status_action = Customer::where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
-        $total_status_completed = Customer::where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
-        $total_status_registration = Customer::where('admin_area', $admin_id)->where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
+        $total_customer_adminarea   = DB::table('customers')->whereNotIn('customer_code', $code_notin)->where('admin_area', $admin_id)->count();
+        $total_status_waiting       = DB::table('customers')->where('admin_area', $admin_id)->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_action        = DB::table('customers')->where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_completed     = DB::table('customers')->where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_registration  = DB::table('customers')->where('admin_area', $admin_id)->where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
 
             //dropdown admin_area;
-            $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
+            $admin_area =  DB::table('users')->where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
             ////////////////////////////////////////////////////////
     
             $keyword_search = $request->keyword;
@@ -449,34 +455,34 @@ class WebpanelCustomerController
 
             if($keyword_search != '') {
         
-                    $count_page = Customer::where('status','รอดำเนินการ')
-                                            ->where('admin_area', $admin_id)
-                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                            ->whereNotIn('customer_id', $code_notin)
-                                            ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
+                    $count_page = DB::table('customers')->where('status','รอดำเนินการ')
+                                        ->where('admin_area', $admin_id)
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                     // dd(($count_page));
         
                     $perpage = 10;
                     $total_page = ceil($count_page / $perpage);
                     $start = ($perpage * $page) - $perpage;
 
-                    $customer = Customer::where('status','รอดำเนินการ')
-                                            ->where('admin_area', $admin_id)
-                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                            ->whereNotIn('customer_id', $code_notin)
-                                            ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                            // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                            ->offset($start)
-                                            ->limit($perpage)
-                                            ->get();
-        
-                    $check_keyword = Customer::where('status','รอดำเนินการ')
-                                                ->where('admin_area', $admin_id)
-                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                ->whereNotIn('customer_id', $code_notin)
-                                                ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                                ->get();
+                    $customer = DB::table('customers')->where('status','รอดำเนินการ')
+                                    ->where('admin_area', $admin_id)
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                    // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                    ->offset($start)
+                                    ->limit($perpage)
+                                    ->get();
+                    // dd($customer);
+                    $check_keyword = DB::table('customers')->where('status','รอดำเนินการ')
+                                        ->where('admin_area', $admin_id)
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                        // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                        ->get();
         
                                                 // dd($check_keyword );
                     // dd($check_customer_code);
@@ -547,33 +553,34 @@ class WebpanelCustomerController
                 // dd($count_page_master);
                 if($keyword_search != '') {
 
-                        $count_page = Customer::where('status','ต้องดำเนินการ')
-                                                ->where('admin_area', $admin_id)
-                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                ->whereNotIn('customer_id', $code_notin)
-                                                ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
+                        $count_page = DB::table('customers')->where('status','ต้องดำเนินการ')
+                                        ->where('admin_area', $admin_id)
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
             
                         $perpage = 10;
                         $total_page = ceil($count_page / $perpage);
                         $start = ($perpage * $page) - $perpage;
     
-                        $customer = Customer::where('status','ต้องดำเนินการ')
-                                                ->where('admin_area', $admin_id)
-                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                ->whereNotIn('customer_id', $code_notin)
-                                                ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                                ->offset($start)
-                                                ->limit($perpage)
-                                                ->get();
+                        $customer = DB::table('customers')
+                                        ->where('status','ต้องดำเนินการ')
+                                        ->where('admin_area', $admin_id)
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                        // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                        ->offset($start)
+                                        ->limit($perpage)
+                                        ->get();
             
-                        $check_keyword = Customer::where('status','ต้องดำเนินการ')
-                                                    ->where('admin_area', $admin_id)
-                                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                    ->whereNotIn('customer_id', $code_notin)
-                                                    ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                    // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                                    ->get();
+                        $check_keyword = DB::table('customers')->where('status','ต้องดำเนินการ')
+                                            ->where('admin_area', $admin_id)
+                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->whereNotIn('customer_id', $code_notin)
+                                            ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                            // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                            ->get();
             
                         // dd($check_customer_code);
             
@@ -641,34 +648,37 @@ class WebpanelCustomerController
     
                     if($keyword_search != '') {
                 
-                            $count_page = Customer::where('status','ดำเนินการแล้ว')
-                                                    ->where('admin_area', $admin_id)
-                                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                    ->whereNotIn('customer_id', $code_notin)
-                                                    ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
+                            $count_page = DB::table('customers')
+                                            ->where('status','ดำเนินการแล้ว')
+                                            ->where('admin_area', $admin_id)
+                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->whereNotIn('customer_id', $code_notin)
+                                            ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                             // dd(gettype($count_page));
                 
                             $perpage = 10;
                             $total_page = ceil($count_page / $perpage);
                             $start = ($perpage * $page) - $perpage;
         
-                            $customer = Customer::where('status','ดำเนินการแล้ว')
-                                                    ->where('admin_area', $admin_id)
-                                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                    ->whereNotIn('customer_id', $code_notin)
-                                                    ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                    // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                                    ->offset($start)
-                                                    ->limit($perpage)
-                                                    ->get();
+                            $customer = DB::table('customers')
+                                            ->where('status','ดำเนินการแล้ว')
+                                            ->where('admin_area', $admin_id)
+                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->whereNotIn('customer_id', $code_notin)
+                                            ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                            // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                            ->offset($start)
+                                            ->limit($perpage)
+                                            ->get();
                 
-                            $check_keyword = Customer::where('status','ดำเนินการแล้ว')
-                                                        ->where('admin_area', $admin_id)
-                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                        ->whereNotIn('customer_id', $code_notin)
-                                                        ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                        // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                                        ->get();
+                            $check_keyword = DB::table('customers')
+                                                ->where('status','ดำเนินการแล้ว')
+                                                ->where('admin_area', $admin_id)
+                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->whereNotIn('customer_id', $code_notin)
+                                                ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                                // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                ->get();
                 
                             // dd($check_customer_code);
                 
@@ -736,34 +746,37 @@ class WebpanelCustomerController
                         // dd($keyword_search);
                         if($keyword_search != '') {
                     
-                                $count_page = Customer::where('status','ลงทะเบียนใหม่')
-                                                        ->where('admin_area', $admin_id)
-                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                        ->whereNotIn('customer_id', $code_notin)
-                                                        ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
+                                $count_page = DB::table('customers')
+                                                ->where('status','ลงทะเบียนใหม่')
+                                                ->where('admin_area', $admin_id)
+                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->whereNotIn('customer_id', $code_notin)
+                                                ->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                                 // dd(gettype($count_page));
                     
                                 $perpage = 10;
                                 $total_page = ceil($count_page / $perpage);
                                 $start = ($perpage * $page) - $perpage;
             
-                                $customer = Customer::where('status','ลงทะเบียนใหม่')
-                                                        ->where('admin_area', $admin_id)
-                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                        ->whereNotIn('customer_id', $code_notin)
-                                                        ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                        // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                                        ->offset($start)
-                                                        ->limit($perpage)
-                                                        ->get();
+                                $customer = DB::table('customers')
+                                                ->where('status','ลงทะเบียนใหม่')
+                                                ->where('admin_area', $admin_id)
+                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->whereNotIn('customer_id', $code_notin)
+                                                ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                                // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                ->offset($start)
+                                                ->limit($perpage)
+                                                ->get();
                     
-                                $check_keyword = Customer::where('status','ลงทะเบียนใหม่')
-                                                            ->where('admin_area', $admin_id)
-                                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                            ->whereNotIn('customer_id', $code_notin)
-                                                            ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                            // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                                            ->get();
+                                $check_keyword = DB::table('customers')
+                                                    ->where('status','ลงทะเบียนใหม่')
+                                                    ->where('admin_area', $admin_id)
+                                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    ->whereNotIn('customer_id', $code_notin)
+                                                    ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                                    // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                                    ->get();
 
                                 // dd($check_customer_code);
                     
@@ -800,11 +813,11 @@ class WebpanelCustomerController
                     
                         }
                         // dd('check');
-                        $count_page = Customer::where('status','ลงทะเบียนใหม่')
-                                                ->where('admin_area', $admin_id)
-                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                ->whereNotIn('customer_id', $code_notin)
-                                                ->count();
+                        $count_page = DB::table('customers')->where('status','ลงทะเบียนใหม่')
+                                            ->where('admin_area', $admin_id)
+                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->whereNotIn('customer_id', $code_notin)
+                                            ->count();
                         // dd(gettype($count_page));
 
                         $perpage = 10;
@@ -841,27 +854,29 @@ class WebpanelCustomerController
 
                 if($keyword_search != '') {
             
-                        $count_page = Customer::where('admin_area', $admin_id)->where('customer_id', 'Like', "%{$keyword_search}%")->count();
+                        $count_page = DB::table('customers')->where('admin_area', $admin_id)->where('customer_id', 'Like', "%{$keyword_search}%")->count();
                         // dd(gettype($count_page));
             
                         $perpage = 10;
                         $total_page = ceil($count_page / $perpage);
                         $start = ($perpage * $page) - $perpage;
     
-                        $customer = Customer::where('admin_area', $admin_id)
-                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        $customer = DB::table('customers')
+                                        ->where('admin_area', $admin_id)
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->where('customer_id', 'Like', "%{$keyword_search}%")
+                                        // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
+                                        ->offset($start)
+                                        ->limit($perpage)
+                                        ->get();
+            
+                        // $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        $check_keyword = DB::table('customers')
                                             ->whereNotIn('customer_id', $code_notin)
                                             ->where('customer_id', 'Like', "%{$keyword_search}%")
                                             // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                            ->offset($start)
-                                            ->limit($perpage)
                                             ->get();
-            
-                        // $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                        $check_keyword = Customer::whereNotIn('customer_id', $code_notin)
-                                                    ->where('customer_id', 'Like', "%{$keyword_search}%")
-                                                    // ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                                    ->get();
             
                         // dd($check_customer_code);
             
@@ -940,17 +955,20 @@ class WebpanelCustomerController
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         //menu alert;
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_waiting = DB::table('customers')
+                                ->where('status', 'รอดำเนินการ')
+                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
 
-        $status_updated = Customer::where('status_update', 'updated')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_updated = DB::table('customers')
+                                ->where('status_update', 'updated')
+                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
 
-        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+        $status_registration = DB::table('customers')
+                                    ->where('status', 'ลงทะเบียนใหม่')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
@@ -973,8 +991,8 @@ class WebpanelCustomerController
            /*  $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count(); */
 
-            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
-            $total_status_registration = Customer::where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
+            $total_customer = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $total_status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('webpanel/new-registration', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_registration', 'status_waiting','status_registration',  'status_updated', 'status_alert', 'user_id_admin'));
         }
@@ -991,8 +1009,8 @@ class WebpanelCustomerController
            /*  $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count(); */
 
-            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
-            $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+            $total_customer =  DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $total_status_waiting =  DB::table('customers')->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('webpanel/customer-waiting', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting', 'status_waiting', 'status_updated','status_registration', 'status_alert', 'user_id_admin'));
 
@@ -1009,8 +1027,8 @@ class WebpanelCustomerController
            /*  $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', ['0000','4494'])->count(); */
 
-            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
-            $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+            $total_customer = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $total_status_action = DB::table('customers')->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('webpanel/customer-action', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_action', 'status_waiting','status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
        
@@ -1027,8 +1045,8 @@ class WebpanelCustomerController
           /*   $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', ['0000','4494'])->count(); */
 
-            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
-            $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
+            $total_customer             = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $total_status_completed     = DB::table('customers')->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('webpanel/customer-completed', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_completed', 'status_waiting','status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
         
@@ -1045,8 +1063,8 @@ class WebpanelCustomerController
             /* $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', ['0000','4494'])->count(); */
 
-            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
-            $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
+            $total_customer         = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $total_status_updated   = DB::table('customers')->where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('webpanel/update-latest', compact('customer', 'start', 'total_page', 'page', 'total_customer','total_status_updated', 'status_waiting', 'status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
 
@@ -1063,7 +1081,7 @@ class WebpanelCustomerController
             /* $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', ['0000','4494'])->count(); */
 
-            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+            $total_customer = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
             $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('webpanel/customer-inactive', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_inactive', 'status_waiting', 'status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
@@ -1081,8 +1099,8 @@ class WebpanelCustomerController
             /* $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count(); */
 
-            $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
-            $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', $code_notin)->count();
+            $total_customer             = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $customer_status_following  = DB::table('customers')->where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('webpanel/customer-following', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_following', 'status_waiting', 'status_registration',  'status_updated', 'status_alert', 'user_id_admin'));
 
@@ -1102,26 +1120,26 @@ class WebpanelCustomerController
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         $provinces = Province::province();
-        $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
+        $admin_area_list = DB::table('users')->select('admin_area', 'name', 'rights_area', 'user_code')->get();
 
         $sale_area = Salearea::select('sale_area', 'sale_name')
                     ->orderBy('sale_area' ,'asc')
                     ->get();
 
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
 
-        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
+                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
 
-        $status_updated = Customer::where('status_update', 'updated')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_updated = DB::table('customers')->where('status_update', 'updated')
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
 
         $status_alert = $status_waiting + $status_updated;
 
@@ -1315,33 +1333,34 @@ class WebpanelCustomerController
         $customer_view = $customer_edit[0];
 
         // dd($customer_view->admin_area);
-        $admin_area_list  = User::select('admin_area', 'name', 'rights_area')->get();
+        $admin_area_list  = DB::table('users')->select('admin_area', 'name', 'rights_area', 'role')->get();
 
-        $admin_area_check = Customer::select('admin_area', 'customer_id')->where('id', $id)->first();
+        $admin_area_check = DB::table('customers')->select('admin_area', 'customer_id')->where('id', $id)->first();
         // dd($admin_area_check->admin_area);
 
         $sale_area = Salearea::select('sale_area', 'sale_name')
                     ->orderBy('sale_area' ,'asc')
                     ->get();
 
-        $province = DB::table('provinces')->select('id', 'name_th')->orderBy('id', 'asc')->get();
-        $amphur = DB::table('amphures')->select('name_th', 'province_id')->get();
-        $district = DB::table('districts')->select('name_th', 'amphure_id')->get();
+        $province   = DB::table('provinces')->select('id', 'name_th')->orderBy('id', 'asc')->get();
+        $amphur     = DB::table('amphures')->select('name_th', 'province_id')->get();
+        $district   = DB::table('districts')->select('name_th', 'amphure_id')->get();
 
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
+                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        ->whereNotIn('customer_id', $code_notin)
+                        ->count();
 
-        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_registration = DB::table('customers')
+                                ->where('status', 'ลงทะเบียนใหม่')
+                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
 
-        $status_updated = Customer::where('status_update', 'updated')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_updated = DB::table('customers')->where('status_update', 'updated')
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
 
         $status_alert = $status_waiting + $status_updated;
 
@@ -1443,7 +1462,8 @@ class WebpanelCustomerController
                 $points = $request->points ?? 0;
 
      /*    } */
-            Customer::where('id', $id)
+                DB::table('customers')
+                    ->where('id', $id)
                     ->update ([
 
                         'customer_id' => $customer_id,
@@ -1518,7 +1538,8 @@ class WebpanelCustomerController
                     $image_cert_store = '';
                 }
 
-                Customer::where('customer_id', $id)
+                DB::table('customers')
+                        ->where('customer_id', $id)
                         ->update ([
 
                             'cert_store' => $image_cert_store,
@@ -1552,7 +1573,8 @@ class WebpanelCustomerController
                     $image_cert_medical = '';
                 }
 
-                Customer::where('customer_id', $id)
+                DB::table('customers')
+                        ->where('customer_id', $id)
                         ->update ([
                             
                             'cert_medical' =>  $image_cert_medical,
@@ -1584,7 +1606,8 @@ class WebpanelCustomerController
                     $image_cert_commerce = '';
                 }
         
-                Customer::where('customer_id', $id)
+                DB::table('customers')
+                        ->where('customer_id', $id)
                         ->update ([
 
                             'cert_commerce' =>  $image_cert_commerce,
@@ -1615,7 +1638,8 @@ class WebpanelCustomerController
                     $image_cert_vat = '';
                 }
         
-                Customer::where('customer_id', $id)
+                DB::table('customers')
+                        ->where('customer_id', $id)
                         ->update ([
 
                             'cert_vat' =>  $image_cert_vat,
@@ -1646,7 +1670,8 @@ class WebpanelCustomerController
                     $image_cert_id = '';
                 } 
         
-                Customer::where('customer_id', $id)
+                DB::table('customers')
+                        ->where('customer_id', $id)
                         ->update ([
 
                             'cert_id' =>  $image_cert_id,
@@ -1712,20 +1737,20 @@ class WebpanelCustomerController
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         //menu alert;
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
 
-        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
+                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
 
-        $status_updated = Customer::where('status_update', 'updated')
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                    ->whereNotIn('customer_id', $code_notin)
-                                    ->count();
+        $status_updated = DB::table('customers')->where('status_update', 'updated')
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
 
         $status_alert = $status_waiting + $status_updated;
 
@@ -1954,18 +1979,18 @@ class WebpanelCustomerController
         $customer_area_list = Customer::select('admin_area', 'sale_area')->first();
         $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_id')->get();
 
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
 
-        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+        $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
-        $status_updated = Customer::where('status_update', 'updated')
+        $status_updated = DB::table('customers')->where('status_update', 'updated')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
@@ -2042,17 +2067,17 @@ class WebpanelCustomerController
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         //menu alert;
-        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
-        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+        $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
-        $status_updated = Customer::where('status_update', 'updated')
+        $status_updated = DB::table('customers')->where('status_update', 'updated')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
@@ -2194,11 +2219,13 @@ class WebpanelCustomerController
 
        } else {
 
-           $customers = Customer::where('customer_id', 'like', "%{$keyword}%")
-                                   ->where('admin_area', $id)
-                                   ->orWhere('customer_name', 'like', "%{$keyword}%")
-                                   ->whereIn('admin_area', [$id])
-                                   ->where('admin_area', $id)->paginate(2);
+           $customers = DB::table('customers')
+                        ->where('customer_id', 'like', "%{$keyword}%")
+                        ->where('admin_area', $id)
+                        ->orWhere('customer_name', 'like', "%{$keyword}%")
+                        ->whereIn('admin_area', [$id])
+                        ->where('admin_area', $id)
+                        ->paginate(2);
 
 /* 
            $check_search = Customer::where('customer_id', 'like', '%'.$keyword)
@@ -2297,20 +2324,23 @@ class WebpanelCustomerController
                             }
                             
                             //menu alert;
-                            $status_waiting = Customer::where('status', 'รอดำเนินการ')
-                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                        ->whereNotIn('customer_id', $code_notin)
-                                                        ->count();
+                            $status_waiting = DB::table('customers')
+                                                ->where('status', 'รอดำเนินการ')
+                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->whereNotIn('customer_id', $code_notin)
+                                                ->count();
 
-                            $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
-                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                        ->whereNotIn('customer_id', $code_notin)
-                                                        ->count();
+                            $status_registration = DB::table('customers')
+                                                    ->where('status', 'ลงทะเบียนใหม่')
+                                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                    ->whereNotIn('customer_id', $code_notin)
+                                                    ->count();
 
-                            $status_updated = Customer::where('status_update', 'updated')
-                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                        ->whereNotIn('customer_id', $code_notin)
-                                                        ->count();
+                            $status_updated = DB::table('customers')
+                                                ->where('status_update', 'updated')
+                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->whereNotIn('customer_id', $code_notin)
+                                                ->count();
 
                             $status_alert = $status_waiting + $status_updated;
 
@@ -2324,28 +2354,30 @@ class WebpanelCustomerController
                             $page = $row_customer[3];
 
 
-                            $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
-                                                        ->select('customer_id')
-                                                        ->distinct()
-                                                        ->get(); 
+                            $check_id = DB::table('report_sellers')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->select('customer_id')
+                                        ->distinct()
+                                        ->get(); 
 
-                            $check_purchase = ReportSeller::select('customer_id')
-                                                        ->selectRaw('MAX(date_purchase) as date_purchase')
-                                                        ->whereNotIn('customer_id', $code_notin)
-                                                        ->groupBy('customer_id')
-                                                        ->orderByDesc('date_purchase')
-                                                        ->get();
+                            $check_purchase = DB::table('report_sellers')
+                                            ->select('customer_id')
+                                            ->selectRaw('MAX(date_purchase) as date_purchase')
+                                            ->whereNotIn('customer_id', $code_notin)
+                                            ->groupBy('customer_id')
+                                            ->orderByDesc('date_purchase')
+                                            ->get();
                                                 
 
                             // name;
                             $admin_name = User::select('admin_area', 'name')->where('admin_area', $admin_id)->first();
 
-                            $total_customer_adminarea = Customer::whereNotIn('customer_code', $code_notin)->where('admin_area', $admin_id)->count();
-                            $total_status_waiting = Customer::where('admin_area', $admin_id)->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
-                            $total_status_action = Customer::where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
-                            $total_status_completed = Customer::where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
-                            $total_status_registration = Customer::where('admin_area', $admin_id)->where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
-
+                            $total_customer_adminarea   = DB::table('customers')->whereNotIn('customer_code', $code_notin)->where('admin_area', $admin_id)->count();
+                            $total_status_waiting       = DB::table('customers')->where('admin_area', $admin_id)->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+                            $total_status_action        = DB::table('customers')->where('admin_area', $admin_id)->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
+                            $total_status_completed     = DB::table('customers')->where('admin_area', $admin_id)->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
+                            $total_status_registration  = DB::table('customers')->where('admin_area', $admin_id)->where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
+                            
                                 //dropdown admin_area;
                             $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
             
@@ -2353,50 +2385,55 @@ class WebpanelCustomerController
                             $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
                             // $pur_report = User::select('purchase_status')->where('user_code', $code)->first();
 
-                            $status_all = Customer::select('status')
-                                                    ->where('admin_area', $admin_id)
-                                                    ->whereNotIn('customer_status', ['inactive'])
-                                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                    ->whereNotIn('customer_id', $code_notin)
-                                                    ->count();
+                            $status_all = DB::table('customers')
+                                        ->select('status')
+                                        ->where('admin_area', $admin_id)
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
 
-                            $status_waiting = Customer::where('admin_area', $admin_id)
-                                                        ->where('status', 'รอดำเนินการ')
-                                                        ->whereNotIn('customer_status', ['inactive'])
-                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                        ->whereNotIn('customer_id', $code_notin)
-                                                        ->count();
+                            $status_waiting = DB::table('customers')
+                                            ->where('admin_area', $admin_id)
+                                            ->where('status', 'รอดำเนินการ')
+                                            ->whereNotIn('customer_status', ['inactive'])
+                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->whereNotIn('customer_id', $code_notin)
+                                            ->count();
                                                         // dd($count_waiting);
-                            $status_action = Customer::where('admin_area', $admin_id)
-                                                        ->where('status', 'ต้องดำเนินการ')
-                                                        ->whereNotIn('customer_status', ['inactive'])
-                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                        ->whereNotIn('customer_id', $code_notin)
-                                                        ->count();
+                            $status_action = DB::table('customers')
+                                            ->where('admin_area', $admin_id)
+                                            ->where('status', 'ต้องดำเนินการ')
+                                            ->whereNotIn('customer_status', ['inactive'])
+                                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                            ->whereNotIn('customer_id', $code_notin)
+                                            ->count();
 
-                            $status_completed = Customer::where('admin_area', $admin_id)
-                                                        ->where('status', 'ดำเนินการแล้ว')
-                                                        ->whereNotIn('customer_status', ['inactive'])
-                                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-                                                        ->whereNotIn('customer_id', $code_notin)
-                                                        ->count();
+                            $status_completed = DB::table('customers')
+                                                ->where('admin_area', $admin_id)
+                                                ->where('status', 'ดำเนินการแล้ว')
+                                                ->whereNotIn('customer_status', ['inactive'])
+                                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                                ->whereNotIn('customer_id', $code_notin)
+                                                ->count();
 
                             $status_alert = $status_waiting + $status_action;
 
 
                             if($fixed == 'morethan')
                             {
-                                $count_page = Customer::select(
-                                                                'customers.customer_id',
-                                                                'customers.customer_name',
-                                                                // DB::raw('MAX(DATE(report_sellers.created_at)) as last_purchase_date')
-                                                                DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
-                                                            )
-                                                            ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
-                                                            ->where('customers.admin_area', $admin_id)
-                                                            ->groupBy('customers.customer_id', 'customers.customer_name')
-                                                            ->having('last_purchase_date', '<=', $from_7)
-                                                            ->count(); 
+                                $count_page = DB::table('customers')
+                                                ->select(
+                                                'customers.customer_id',
+                                                'customers.customer_name',
+                                                // DB::raw('MAX(DATE(report_sellers.created_at)) as last_purchase_date')
+                                                DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                            )
+                                            ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                            ->where('customers.admin_area', $admin_id)
+                                            ->groupBy('customers.customer_id', 'customers.customer_name')
+                                            ->having('last_purchase_date', '<=', $from_7)
+                                            ->count(); 
 
                                                             // dd($count_page);
 
@@ -2405,37 +2442,39 @@ class WebpanelCustomerController
                                 // dd($total_page);
                                 $start = ($perpage * $page) - $perpage;
 
-                                $customer_list = Customer::select(
-                                                                'customers.id',
-                                                                'customers.customer_id',
-                                                                'customers.customer_name',
-                                                                'customers.status',
-                                                                'customers.admin_area',
-                                                                'customers.sale_area',
-                                                                'customers.email',
-                                                                'customers.customer_status',
-                                                                'customers.created_at',
-                                                                // DB::raw('MAX(DATE(report_sellers.created_at)) as last_purchase_date')
+                                $customer_list = DB::table('customers')->select(
+                                                        'customers.id',
+                                                        'customers.customer_id',
+                                                        'customers.customer_name',
+                                                        'customers.status',
+                                                        'customers.admin_area',
+                                                        'customers.sale_area',
+                                                        'customers.email',
+                                                        'customers.customer_status',
+                                                        'customers.created_at',
+                                                        // DB::raw('MAX(DATE(report_sellers.created_at)) as last_purchase_date')
 
-                                                                DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
-                                                            )
-                                                            ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
-                                                            ->where('customers.admin_area', $admin_id)
-                                                            ->groupBy(
-                                                                'customers.id',
-                                                                'customers.customer_id',
-                                                                'customers.customer_name',
-                                                                'customers.status',
-                                                                'customers.admin_area',
-                                                                'customers.sale_area',
-                                                                'customers.email',
-                                                                'customers.customer_status',
-                                                            )
-                                                            ->having('last_purchase_date', '<=', $from_7)
-                                                            ->orderBydesc('last_purchase_date')
-                                                            ->offset($start)
-                                                            ->limit($perpage)
-                                                            ->get();
+                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date'),
+                                                        'customers.status_update'
+                                                    )
+                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                    ->where('customers.admin_area', $admin_id)
+                                                    ->groupBy(
+                                                        'customers.id',
+                                                        'customers.customer_id',
+                                                        'customers.customer_name',
+                                                        'customers.status',
+                                                        'customers.admin_area',
+                                                        'customers.sale_area',
+                                                        'customers.email',
+                                                        'customers.customer_status',
+                                                        'customers.status_update'
+                                                    )
+                                                    ->having('last_purchase_date', '<=', $from_7)
+                                                    ->orderBydesc('last_purchase_date')
+                                                    ->offset($start)
+                                                    ->limit($perpage)
+                                                    ->get();
 
                                                                 // dd($customer_list);
                                                             
@@ -2450,18 +2489,18 @@ class WebpanelCustomerController
                                             HAVING last_purchase <= '2025-06-15'; */
 
                                                             
-                                        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
-                                                                ->select('customer_id')
-                                                                ->distinct()
-                                                                ->get(); 
+                                        $check_id = DB::table('report_sellers')->whereNotIn('customer_id', $code_notin)
+                                                    ->select('customer_id')
+                                                    ->distinct()
+                                                    ->get(); 
                             
-                                        $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
-                                                                        ->select('customer_id')
-                                                                        ->selectRaw('MAX(date_purchase) as date_purchase')
-                                                                        //  ->selectRaw('MAX(DATE(date_purchase)) as date_purchase')
-                                                                        ->groupBy('customer_id')
-                                                                        ->orderByDesc('date_purchase')
-                                                                        ->get(); 
+                                        $check_purchase = DB::table('report_sellers')->whereNotIn('customer_id', $code_notin)
+                                                        ->select('customer_id')
+                                                        ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                        //  ->selectRaw('MAX(DATE(date_purchase)) as date_purchase')
+                                                        ->groupBy('customer_id')
+                                                        ->orderByDesc('date_purchase')
+                                                        ->get(); 
                             
 
                                         return view('webpanel/customerpur-morethan', compact(
@@ -2486,59 +2525,63 @@ class WebpanelCustomerController
                                                                                     ));
                             } elseif($fixed == 'coming') {
 
-                                        $count_page = Customer::select(
-                                                                        'customers.customer_id',
-                                                                        'customers.customer_name',
-                                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
-                                                                    )
-                                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
-                                                                    ->where('customers.admin_area', $admin_id)
-                                                                    ->groupBy('customers.customer_id', 'customers.customer_name')
-                                                                    // ->havingBetween('last_purchase_date', $from_5)
-                                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_6, $from_5])
-                                                                    ->count(); 
-                                                                    // dd($count_page);
+                                        $count_page = DB::table('customers')
+                                                    ->select(
+                                                        'customers.customer_id',
+                                                        'customers.customer_name',
+                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                    )
+                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                    ->where('customers.admin_area', $admin_id)
+                                                    ->groupBy('customers.customer_id', 'customers.customer_name')
+                                                    // ->havingBetween('last_purchase_date', $from_5)
+                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_6, $from_5])
+                                                    ->count(); 
+                                                    // dd($count_page);
 
                                         $perpage = 10;
                                         $total_page = ceil($count_page / $perpage);
                                         // dd($total_page);
                                         $start = ($perpage * $page) - $perpage;
 
-                                        $customer_list = Customer::select(
-                                                                        'customers.id',
-                                                                        'customers.customer_id',
-                                                                        'customers.customer_name',
-                                                                        'customers.status',
-                                                                        'customers.admin_area',
-                                                                        'customers.sale_area',
-                                                                        'customers.email',
-                                                                        'customers.customer_status',
-                                                                        'customers.created_at',
-                                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
-                                                                    )
-                                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
-                                                                    ->where('customers.admin_area', $admin_id)
-                                                                    ->groupBy(
-                                                                        'customers.id',
-                                                                        'customers.customer_id',
-                                                                        'customers.customer_name',
-                                                                        'customers.status',
-                                                                        'customers.admin_area',
-                                                                        'customers.sale_area',
-                                                                        'customers.email',
-                                                                        'customers.customer_status',
-                                                                        'customers.created_at'
-                                                                    )
-                                                                    // ->having('last_purchase_date', '<=', $from_5)
-                                                                    // ->havingBetween('last_purchase_date', [$from_7, $from_5]) 
-                                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_6, $from_5])
+                                        $customer_list = DB::table('customers')
+                                                        ->select(
+                                                                'customers.id',
+                                                                'customers.customer_id',
+                                                                'customers.customer_name',
+                                                                'customers.status',
+                                                                'customers.admin_area',
+                                                                'customers.sale_area',
+                                                                'customers.email',
+                                                                'customers.customer_status',
+                                                                'customers.created_at',
+                                                                DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date'),
+                                                                'customers.status_update'
+                                                            )
+                                                            ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                            ->where('customers.admin_area', $admin_id)
+                                                            ->groupBy(
+                                                                'customers.id',
+                                                                'customers.customer_id',
+                                                                'customers.customer_name',
+                                                                'customers.status',
+                                                                'customers.admin_area',
+                                                                'customers.sale_area',
+                                                                'customers.email',
+                                                                'customers.customer_status',
+                                                                'customers.created_at',
+                                                                'customers.status_update'
+                                                            )
+                                                            // ->having('last_purchase_date', '<=', $from_5)
+                                                            // ->havingBetween('last_purchase_date', [$from_7, $from_5]) 
+                                                            ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_6, $from_5])
 
-                                                                    ->orderBydesc('last_purchase_date')
-                                                                    ->offset($start)
-                                                                    ->limit($perpage) 
-                                                                    // ->get();
-                                                                    ->get();
-                                                                    // dd($customer_list);
+                                                            ->orderBydesc('last_purchase_date')
+                                                            ->offset($start)
+                                                            ->limit($perpage) 
+                                                            // ->get();
+                                                            ->get();
+                                                            // dd($customer_list);
 
 
                                                             // dd($customer_list);
@@ -2554,18 +2597,18 @@ class WebpanelCustomerController
                                                         HAVING last_purchase BETWEEN '2025-06-20' AND '2025-06-22'; */
 
                                                         
-                                        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
-                                                            ->select('customer_id')
-                                                            ->distinct()
-                                                            ->get(); 
+                                        $check_id = DB::table('report_sellers')->whereNotIn('customer_id', $code_notin)
+                                                    ->select('customer_id')
+                                                    ->distinct()
+                                                    ->get(); 
 
-                                        $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
-                                                                    ->select('customer_id')
-                                                                    ->selectRaw('MAX(date_purchase) as date_purchase')
-                                                                    // ->selectRaw('MAX(DATE(date_purchase)) as date_purchase')
-                                                                    ->groupBy('customer_id')
-                                                                    ->orderByDesc('date_purchase')
-                                                                    ->get(); 
+                                        $check_purchase = DB::table('report_sellers')->whereNotIn('customer_id', $code_notin)
+                                                        ->select('customer_id')
+                                                        ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                        // ->selectRaw('MAX(DATE(date_purchase)) as date_purchase')
+                                                        ->groupBy('customer_id')
+                                                        ->orderByDesc('date_purchase')
+                                                        ->get(); 
 
 
                                         return view('webpanel/customerpur-coming', compact(
@@ -2591,59 +2634,63 @@ class WebpanelCustomerController
                             
                             } elseif ($fixed == 'normal') {
 
-                                        $count_page = Customer::select(
-                                                                        'customers.customer_id',
-                                                                        'customers.customer_name',
-                                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
-                                                                    )
-                                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
-                                                                    ->where('customers.admin_area', $admin_id)
-                                                                    ->groupBy('customers.customer_id', 'customers.customer_name')
-                                                                    // ->havingBetween('last_purchase_date', $from_5)
-                                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_4, $from_3])
-                                                                    ->count(); 
-                                                                    // dd($count_page);
+                                        $count_page = DB::table('customers')
+                                                    ->select(
+                                                            'customers.customer_id',
+                                                            'customers.customer_name',
+                                                            DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
+                                                    )
+                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                    ->where('customers.admin_area', $admin_id)
+                                                    ->groupBy('customers.customer_id', 'customers.customer_name')
+                                                    // ->havingBetween('last_purchase_date', $from_5)
+                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_4, $from_3])
+                                                    ->count(); 
+                                                    // dd($count_page);
 
                                         $perpage = 10;
                                         $total_page = ceil($count_page / $perpage);
                                         // dd($total_page);
                                         $start = ($perpage * $page) - $perpage;
 
-                                        $customer_list = Customer::select(
-                                                                        'customers.id',
-                                                                        'customers.customer_id',
-                                                                        'customers.customer_name',
-                                                                        'customers.status',
-                                                                        'customers.admin_area',
-                                                                        'customers.sale_area',
-                                                                        'customers.email',
-                                                                        'customers.customer_status',
-                                                                        'customers.created_at',
-                                                                        DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date')
-                                                                    )
-                                                                    ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
-                                                                    ->where('customers.admin_area', $admin_id)
-                                                                    ->groupBy(
-                                                                        'customers.id',
-                                                                        'customers.customer_id',
-                                                                        'customers.customer_name',
-                                                                        'customers.status',
-                                                                        'customers.admin_area',
-                                                                        'customers.sale_area',
-                                                                        'customers.email',
-                                                                        'customers.customer_status',
-                                                                        'customers.created_at'
-                                                                    )
-                                                                    // ->having('last_purchase_date', '<=', $from_5)
-                                                                    // ->havingBetween('last_purchase_date', [$from_7, $from_5]) 
-                                                                    ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_4, $from_3])
+                                        $customer_list = DB::table('customers')
+                                                        ->select(
+                                                                    'customers.id',
+                                                                    'customers.customer_id',
+                                                                    'customers.customer_name',
+                                                                    'customers.status',
+                                                                    'customers.admin_area',
+                                                                    'customers.sale_area',
+                                                                    'customers.email',
+                                                                    'customers.customer_status',
+                                                                    'customers.created_at',
+                                                                    DB::raw('MAX(report_sellers.date_purchase) as last_purchase_date'),
+                                                                    'customers.status_update'
+                                                                )
+                                                                ->join('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                                ->where('customers.admin_area', $admin_id)
+                                                                ->groupBy(
+                                                                    'customers.id',
+                                                                    'customers.customer_id',
+                                                                    'customers.customer_name',
+                                                                    'customers.status',
+                                                                    'customers.admin_area',
+                                                                    'customers.sale_area',
+                                                                    'customers.email',
+                                                                    'customers.customer_status',
+                                                                    'customers.created_at',
+                                                                    'customers.status_update'
+                                                                )
+                                                                // ->having('last_purchase_date', '<=', $from_5)
+                                                                // ->havingBetween('last_purchase_date', [$from_7, $from_5]) 
+                                                                ->havingRaw('last_purchase_date BETWEEN ? AND ?', [$from_4, $from_3])
 
-                                                                    ->orderBydesc('last_purchase_date')
-                                                                    ->offset($start)
-                                                                    ->limit($perpage) 
-                                                                    // ->get();
-                                                                    ->get();
-                                                                    // dd($customer_list);
+                                                                ->orderBydesc('last_purchase_date')
+                                                                ->offset($start)
+                                                                ->limit($perpage) 
+                                                                // ->get();
+                                                                ->get();
+                                                                // dd($customer_list);
 
 
                                                                 // dd($customer_list);
@@ -2659,17 +2706,19 @@ class WebpanelCustomerController
                                                             HAVING last_purchase BETWEEN '2025-06-20' AND '2025-06-22'; */
 
                                                             
-                                        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
-                                                                    ->select('customer_id')
-                                                                    ->distinct()
-                                                                    ->get(); 
+                                        $check_id = DB::table('report_sellers')
+                                                    ->whereNotIn('customer_id', $code_notin)
+                                                    ->select('customer_id')
+                                                    ->distinct()
+                                                    ->get(); 
 
-                                        $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
-                                                                        ->select('customer_id')
-                                                                        ->selectRaw('MAX(date_purchase) as date_purchase')
-                                                                        ->groupBy('customer_id')
-                                                                        ->orderByDesc('date_purchase')
-                                                                        ->get(); 
+                                        $check_purchase = DB::table('report_sellers')
+                                                        ->whereNotIn('customer_id', $code_notin)
+                                                        ->select('customer_id')
+                                                        ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                        ->groupBy('customer_id')
+                                                        ->orderByDesc('date_purchase')
+                                                        ->get(); 
 
 
                                         return view('webpanel/customerpur-normal', compact(
@@ -2695,51 +2744,55 @@ class WebpanelCustomerController
                             } else {
 
                                 // dd('dd');
-                                        $count_page = Customer::leftJoin('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
-                                                                ->select('customers.customer_id', DB::raw('COUNT(report_sellers.purchase_order) as count_po'))
-                                                                ->where('customers.admin_area', $admin_id)
-                                                                ->groupBy('customers.customer_id')
-                                                                ->havingRaw('count_po < 1')
-                                                                ->get()
-                                                                ->count();
+                                        $count_page = DB::table('customers')
+                                                        ->leftJoin('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                        ->select('customers.customer_id', DB::raw('COUNT(report_sellers.purchase_order) as count_po'))
+                                                        ->where('customers.admin_area', $admin_id)
+                                                        ->groupBy('customers.customer_id')
+                                                        ->havingRaw('count_po < 1')
+                                                        ->get()
+                                                        ->count();
 
                                         $perpage = 10;
                                         $total_page = ceil($count_page / $perpage);
                                         // dd($total_page);
                                         $start = ($perpage * $page) - $perpage;
 
-                                        $customer_list = Customer::select(
-                                                                            'customers.id',
-                                                                            'customers.customer_id',
-                                                                            'customers.customer_name',
-                                                                            'customers.status',
-                                                                            'customers.admin_area',
-                                                                            'customers.sale_area',
-                                                                            'customers.email',
-                                                                            'customers.customer_status',
-                                                                            'customers.created_at',
-                                                                            DB::raw('COUNT(report_sellers.purchase_order) as count_po')
-                                                                        )
-                                                                        ->leftjoin('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
-                                                                        ->where('customers.admin_area', $admin_id)
-                                                                        ->groupBy(
-                                                                            'customers.id',
-                                                                            'customers.customer_id',
-                                                                            'customers.customer_name',
-                                                                            'customers.status',
-                                                                            'customers.admin_area',
-                                                                            'customers.sale_area',
-                                                                            'customers.email',
-                                                                            'customers.customer_status',
-                                                                            'customers.created_at'
-                                                                        )
-                                                                        ->havingRaw('count_po < 1')
-                                                                        ->orderBydesc('customers.customer_id')
-                                                                        ->offset($start)
-                                                                        ->limit($perpage) 
-                                                                        // ->get();
-                                                                        ->get();
-                                                                        // dd($customer_list);
+                                        $customer_list = DB::table('customers')
+                                                        ->select(
+                                                                'customers.id',
+                                                                'customers.customer_id',
+                                                                'customers.customer_name',
+                                                                'customers.status',
+                                                                'customers.admin_area',
+                                                                'customers.sale_area',
+                                                                'customers.email',
+                                                                'customers.customer_status',
+                                                                'customers.created_at',
+                                                                DB::raw('COUNT(report_sellers.purchase_order) as count_po'),
+                                                                'customers.status_update'
+                                                            )
+                                                            ->leftjoin('report_sellers', 'customers.customer_id', '=', 'report_sellers.customer_id')
+                                                            ->where('customers.admin_area', $admin_id)
+                                                            ->groupBy(
+                                                                'customers.id',
+                                                                'customers.customer_id',
+                                                                'customers.customer_name',
+                                                                'customers.status',
+                                                                'customers.admin_area',
+                                                                'customers.sale_area',
+                                                                'customers.email',
+                                                                'customers.customer_status',
+                                                                'customers.created_at',
+                                                                'customers.status_update'
+                                                            )
+                                                            ->havingRaw('count_po < 1')
+                                                            ->orderBydesc('customers.customer_id')
+                                                            ->offset($start)
+                                                            ->limit($perpage) 
+                                                            // ->get();
+                                                            ->get();
+                                                            // dd($customer_list);
 
 
                                                     // dd($customer_list);
@@ -2755,17 +2808,17 @@ class WebpanelCustomerController
                                                 HAVING last_purchase BETWEEN '2025-06-20' AND '2025-06-22'; */
 
                                                 
-                                            $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
-                                                                    ->select('customer_id')
-                                                                    ->distinct()
-                                                                    ->get(); 
-
-                                            $check_purchase = ReportSeller::whereNotIn('customer_id', $code_notin)
+                                            $check_id = DB::table('report_sellers')->whereNotIn('customer_id', $code_notin)
                                                             ->select('customer_id')
-                                                            ->selectRaw('MAX(date_purchase) as date_purchase')
-                                                            ->groupBy('customer_id')
-                                                            ->orderByDesc('date_purchase')
+                                                            ->distinct()
                                                             ->get(); 
+
+                                            $check_purchase = DB::table('report_sellers')->whereNotIn('customer_id', $code_notin)
+                                                                ->select('customer_id')
+                                                                ->selectRaw('MAX(date_purchase) as date_purchase')
+                                                                ->groupBy('customer_id')
+                                                                ->orderByDesc('date_purchase')
+                                                                ->get(); 
 
 
                                             return view('webpanel/customerpur-nopurchase', compact(

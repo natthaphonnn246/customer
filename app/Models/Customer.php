@@ -58,10 +58,11 @@ class Customer extends Model
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
         // dd($code_notin);
-        $pagination = Customer::select(DB::raw('customer_id'))
-                                // ->whereNotIn('customer_code',['0000', '4494'])
-                                ->whereNotIn('customer_code',$code_notin)
-                                ->get();
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        // ->whereNotIn('customer_code',['0000', '4494'])
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->get();
+
         $count_page = count($pagination);
 
         $perpage = 10;
@@ -84,9 +85,11 @@ class Customer extends Model
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $pagination = Customer::select(DB::raw('customer_id'))
-                                ->whereNotIn('customer_code',$code_notin)
-                                ->where('status','ดำเนินการแล้ว')->get();
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->where('status','ดำเนินการแล้ว')
+                        ->get();
+
         $count_page = count($pagination);
         // dd($count_page);
 
@@ -110,9 +113,11 @@ class Customer extends Model
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $pagination = Customer::select(DB::raw('customer_id'))
-                                ->whereNotIn('customer_code',$code_notin)
-                                ->where('status','ต้องดำเนินการ')->get();
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->where('status','ต้องดำเนินการ')
+                        ->get();
+
         $count_page = count($pagination);
 
         $perpage = 10;
@@ -135,9 +140,9 @@ class Customer extends Model
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $count_page = Customer::where('status','ลงทะเบียนใหม่')
-                                ->whereNotIn('customer_code',$code_notin)
-                                ->count();
+        $count_page = DB::table('customers')->where('status','ลงทะเบียนใหม่')
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->count();
 
         $perpage = 10;
         $total_page = ceil($count_page / $perpage);
@@ -158,9 +163,9 @@ class Customer extends Model
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $count_page = Customer::where('status','รอดำเนินการ')
-                                ->whereNotIn('customer_code',$code_notin)
-                                ->count();
+        $count_page = DB::table('customers')->where('status','รอดำเนินการ')
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->count();
 
         $perpage = 10;
         $total_page = ceil($count_page / $perpage);
@@ -181,9 +186,11 @@ class Customer extends Model
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $pagination = Customer::select(DB::raw('customer_id'))
-                                ->whereNotIn('customer_code',$code_notin)
-                                ->where('status_update','updated')->get();
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->where('status_update','updated')
+                        ->get();
+
         $count_page = count($pagination);
 
         $perpage = 10;
@@ -206,9 +213,11 @@ class Customer extends Model
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $pagination = Customer::select(DB::raw('customer_id'))
-                                ->whereNotIn('customer_code',$code_notin)
-                                ->where('customer_status','inactive')->get();
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->where('customer_status','inactive')
+                        ->get();
+
         $count_page = count($pagination);
 
         $perpage = 10;
@@ -231,9 +240,11 @@ class Customer extends Model
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $pagination = Customer::select(DB::raw('customer_id'))
-                                ->whereNotIn('customer_code',$code_notin)
-                                ->where('status_user','กำลังติดตาม')->get();
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->where('status_user','กำลังติดตาม')
+                        ->get();
+
         $count_page = count($pagination);
 
         $perpage = 10;
@@ -252,7 +263,7 @@ class Customer extends Model
 
     public static function customerEdit($id)
     {
-        $customer_edit = Customer::where('id', $id)->first();
+        $customer_edit = DB::table('customers')->where('id', $id)->first();
 
         return [$customer_edit];
     }
@@ -264,7 +275,7 @@ class Customer extends Model
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         // $count_page = Customer::where('admin_area', $admin_id)->whereNotIn('customer_id', ['0000', '4494'])->count();
-        $count_page = Customer::where('admin_area', $admin_id)->whereNotIn('customer_id', $code_notin)->count();
+        $count_page = DB::table('customers')->where('admin_area', $admin_id)->whereNotIn('customer_id', $code_notin)->count();
 
         $perpage = 10;
         $total_page = ceil($count_page / $perpage);
@@ -289,7 +300,7 @@ class Customer extends Model
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         // $count_page = Customer::where('status', 'รอดำเนินการ')->where('admin_area', $admin_id)->whereNotIn('customer_id', ['0000', '4494'])->count();
-        $count_page = Customer::where('status', 'รอดำเนินการ')->where('admin_area', $admin_id)->whereNotIn('customer_id', $code_notin)->count();
+        $count_page = DB::table('customers')->where('status', 'รอดำเนินการ')->where('admin_area', $admin_id)->whereNotIn('customer_id', $code_notin)->count();
 
         $perpage = 10;
         $total_page = ceil($count_page / $perpage);
@@ -314,7 +325,7 @@ class Customer extends Model
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         // $count_page = Customer::where('status', 'ต้องดำเนินการ')->where('admin_area', $admin_id)->whereNotIn('customer_id', ['0000', '4494'])->count();
-        $count_page = Customer::where('status', 'ต้องดำเนินการ')->where('admin_area', $admin_id)->whereNotIn('customer_id', $code_notin)->count();
+        $count_page = DB::table('customers')->where('status', 'ต้องดำเนินการ')->where('admin_area', $admin_id)->whereNotIn('customer_id', $code_notin)->count();
 
         $perpage = 10;
         $total_page = ceil($count_page / $perpage);
@@ -340,7 +351,7 @@ class Customer extends Model
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         // $count_page = Customer::where('status', 'ดำเนินการแล้ว')->where('admin_area', $admin_id)->whereNotIn('customer_id', ['0000', '4494'])->count();
-        $count_page = Customer::where('status', 'ดำเนินการแล้ว')->where('admin_area', $admin_id)->whereNotIn('customer_id', $code_notin)->count();
+        $count_page = DB::table('customers')->where('status', 'ดำเนินการแล้ว')->where('admin_area', $admin_id)->whereNotIn('customer_id', $code_notin)->count();
 
         $perpage = 10;
         $total_page = ceil($count_page / $perpage);
@@ -365,7 +376,7 @@ class Customer extends Model
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         // $count_page = Customer::where('status', 'ดำเนินการแล้ว')->where('admin_area', $admin_id)->whereNotIn('customer_id', ['0000', '4494'])->count();
-        $count_page = Customer::where('status', 'ดำเนินการแล้ว')->where('admin_area', $admin_id)->whereNotIn('customer_id', $code_notin)->count();
+        $count_page = DB::table('customers')->where('status', 'ดำเนินการแล้ว')->where('admin_area', $admin_id)->whereNotIn('customer_id', $code_notin)->count();
 
         $perpage = 10;
         $total_page = ceil($count_page / $perpage);

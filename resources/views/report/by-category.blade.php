@@ -419,7 +419,7 @@
                     <tr>
                             <?php
                                 
-                                $id = $row->id;
+                                // $id = $row->id;
                                 // $user_name = $row->customer_name;
                                 $category_code = $row->categories_id;
                                 $category_name = $row->categories_name;

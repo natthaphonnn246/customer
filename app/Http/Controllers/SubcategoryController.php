@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use Illuminate\Support\Facades\DB;
 
 class SubcategoryController extends Controller
 {
@@ -66,18 +67,19 @@ class SubcategoryController extends Controller
     public function import(Request $request)
     {
         //notin code;
+        
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
          //menu alert;
-         $status_waiting = Customer::where('status', 'รอดำเนินการ')
+         $status_waiting        = DB::table('customers')->where('status', 'รอดำเนินการ')
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
-        $status_updated = Customer::where('status_update', 'updated')
+        $status_updated         = DB::table('customers')->where('status_update', 'updated')
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();
 
-        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+        $status_registration    = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->count();

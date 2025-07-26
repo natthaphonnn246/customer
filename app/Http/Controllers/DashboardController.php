@@ -12,15 +12,16 @@ class DashboardController extends Controller
     {
 
         // dd('dashboard');
-        $customer_north = Customer::where('geography', 'ภาคเหนือ')->count();
-        $customer_central = Customer::where('geography', 'ภาคกลาง')->count();
-        $customer_eastern = Customer::where('geography', 'ภาคตะวันออก')->count();
-        $customer_northeast = Customer::where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
-        $customer_western = Customer::where('geography', 'ภาคตะวันตก')->count();
-        $customer_south = Customer::where('geography', 'ภาคใต้')->count();
+        $customer_north     = DB::table('customers')->where('geography', 'ภาคเหนือ')->count();
+        $customer_central   = DB::table('customers')->where('geography', 'ภาคกลาง')->count();
+        $customer_eastern   = DB::table('customers')->where('geography', 'ภาคตะวันออก')->count();
+        $customer_northeast = DB::table('customers')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
+        $customer_western   = DB::table('customers')->where('geography', 'ภาคตะวันตก')->count();
+        $customer_south     = DB::table('customers')->where('geography', 'ภาคใต้')->count();
 
         //ร้านค้าทั้งหมด;
-        $customer_all = Customer::all()->count();
+        $customer_all = DB::table('customers')->count();
+        // $customer_all = Customer::all()->count();
         // dd($customer_all);
 
         //percentage;
@@ -35,10 +36,10 @@ class DashboardController extends Controller
         // dd($percentage_north);
 
         //status_user_north;
-        $normal_customer_north = Customer::where('status_user', '')->where('geography', 'ภาคเหนือ')->count();
-        $follow_customer_north = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคเหนือ')->count();
-        $suspend_customer_north = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคเหนือ')->count();
-        $closed_customer_north = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคเหนือ')->count();
+        $normal_customer_north  = DB::table('customers')->where('status_user', '')->where('geography', 'ภาคเหนือ')->count();
+        $follow_customer_north  = DB::table('customers')->where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคเหนือ')->count();
+        $suspend_customer_north = DB::table('customers')->where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคเหนือ')->count();
+        $closed_customer_north  = DB::table('customers')->whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคเหนือ')->count();
         // dd($closed_customer_north);
         // dd($suspend_customer_north);
         
@@ -50,10 +51,10 @@ class DashboardController extends Controller
         // dd($percentage_normal_customer_north);
 
          //status_user_central;
-         $normal_customer_central = Customer::where('status_user', '')->where('geography', 'ภาคกลาง')->count();
-         $follow_customer_central = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคกลาง')->count();
-         $suspend_customer_central = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคกลาง')->count();
-         $closed_customer_central = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคกลาง')->count();
+         $normal_customer_central   = DB::table('customers')->where('status_user', '')->where('geography', 'ภาคกลาง')->count();
+         $follow_customer_central   = DB::table('customers')->where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคกลาง')->count();
+         $suspend_customer_central  = DB::table('customers')->where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคกลาง')->count();
+         $closed_customer_central   = DB::table('customers')->whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคกลาง')->count();
          // dd($suspend_customer_central);
          
          //percentage of status_customer_central;
@@ -64,10 +65,10 @@ class DashboardController extends Controller
          // dd($percentage_normal_customer_central);
 
         //status_user_eastern;
-        $normal_customer_eastern = Customer::where('status_user', '')->where('geography', 'ภาคตะวันออก')->count();
-        $follow_customer_eastern = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันออก')->count();
-        $suspend_customer_eastern = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันออก')->count();
-        $closed_customer_eastern = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันออก')->count();
+        $normal_customer_eastern    = DB::table('customers')->where('status_user', '')->where('geography', 'ภาคตะวันออก')->count();
+        $follow_customer_eastern    = DB::table('customers')->where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันออก')->count();
+        $suspend_customer_eastern   = DB::table('customers')->where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันออก')->count();
+        $closed_customer_eastern    = DB::table('customers')->whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันออก')->count();
         // dd($suspend_customer_central);
         
         //percentage of status_customer_central;
@@ -78,10 +79,10 @@ class DashboardController extends Controller
         // dd($percentage_normal_customer_central);
 
          //status_user_northeast;
-         $normal_customer_northeast = Customer::where('status_user', '')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
-         $follow_customer_northeast = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
-         $suspend_customer_northeast = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
-         $closed_customer_northeast = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
+         $normal_customer_northeast   = DB::table('customers')->where('status_user', '')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
+         $follow_customer_northeast   = DB::table('customers')->where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
+         $suspend_customer_northeast  = DB::table('customers')->where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
+         $closed_customer_northeast   = DB::table('customers')->whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันออกเฉียงเหนือ')->count();
          // dd($suspend_customer_central);
          
          //percentage of status_customer_northeast;
@@ -93,10 +94,10 @@ class DashboardController extends Controller
          // dd($percentage_normal_customer_northeast);
 
           //status_user_western;
-          $normal_customer_western = Customer::where('status_user', '')->where('geography', 'ภาคตะวันตก')->count();
-          $follow_customer_western = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันตก')->count();
-          $suspend_customer_western = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันตก')->count();
-          $closed_customer_western = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันตก')->count();
+          $normal_customer_western  = DB::table('customers')->where('status_user', '')->where('geography', 'ภาคตะวันตก')->count();
+          $follow_customer_western  = DB::table('customers')->where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคตะวันตก')->count();
+          $suspend_customer_western = DB::table('customers')->where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคตะวันตก')->count();
+          $closed_customer_western  = DB::table('customers')->whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคตะวันตก')->count();
           // dd($suspend_customer_central);
           
           //percentage of status_customer_western;
@@ -107,10 +108,10 @@ class DashboardController extends Controller
           // dd($percentage_normal_customer_western);
 
            //status_user_south;
-           $normal_customer_south = Customer::where('status_user', '')->where('geography', 'ภาคใต้')->count();
-           $follow_customer_south = Customer::where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคใต้')->count();
-           $suspend_customer_south = Customer::where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคใต้')->count();
-           $closed_customer_south = Customer::whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคใต้')->count();
+           $normal_customer_south   = DB::table('customers')->where('status_user', '')->where('geography', 'ภาคใต้')->count();
+           $follow_customer_south   = DB::table('customers')->where('status_user', 'กำลังติดตาม')->where('geography', 'ภาคใต้')->count();
+           $suspend_customer_south  = DB::table('customers')->where('status_user', 'ถูกระงับสมาชิก')->where('geography', 'ภาคใต้')->count();
+           $closed_customer_south   = DB::table('customers')->whereNotIn('status_user', ['', 'กำลังติดตาม', 'ถูกระงับสมาชิก'])->where('geography', 'ภาคใต้')->count();
            // dd($suspend_customer_central);
            
            //percentage of status_customer_south;
@@ -122,25 +123,25 @@ class DashboardController extends Controller
 
 
            //status_normal;
-           $count_status_normal = Customer::where('status_user', '')->count();
+           $count_status_normal     = DB::table('customers')->where('status_user', '')->count();
            //status_follow;
-           $count_status_follow = Customer::where('status_user', 'กำลังติดตาม')->count();
+           $count_status_follow     = DB::table('customers')->where('status_user', 'กำลังติดตาม')->count();
            //status_suspend;
-           $count_status_suspend = Customer::where('status_user', 'ถูกระงับสมาชิก')->count();
+           $count_status_suspend    = DB::table('customers')->where('status_user', 'ถูกระงับสมาชิก')->count();
            //status_closed;
-           $count_status_closed = Customer::whereNotIn('status_user', ['','กำลังติดตาม','ถูกระงับสมาชิก'])->count();
+           $count_status_closed     = DB::table('customers')->whereNotIn('status_user', ['','กำลังติดตาม','ถูกระงับสมาชิก'])->count();
     
            //menu alert;
            $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
-           $status_waiting = Customer::where('status', 'รอดำเนินการ')
+           $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
                                         ->whereNotIn('customer_id', $code_notin)
                                         ->count();
 
-            $status_updated = Customer::where('status_update', 'updated')
+            $status_updated = DB::table('customers')->where('status_update', 'updated')
                                         ->whereNotIn('customer_id', $code_notin)
                                         ->count();
 
-            $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+            $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
                                         ->whereNotIn('customer_id', $code_notin)
                                         ->count();
 
