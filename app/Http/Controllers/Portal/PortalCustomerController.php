@@ -941,8 +941,7 @@ class PortalCustomerController
                     $image_cert_store = '';
                 }
 
-                DB::table('customers')
-                        ->where('customer_id', $id)
+                Customer::where('customer_id', $id)
                         ->update ([
 
                             // 'cert_store' => "storage/".$image_cert_store,
@@ -975,8 +974,7 @@ class PortalCustomerController
                     $image_cert_medical = '';
                 }
 
-                DB::table('customers')
-                        ->where('customer_id', $id)
+                Customer::where('customer_id', $id)
                         ->update ([
                             
                             'cert_medical' =>  $image_cert_medical,
@@ -1008,8 +1006,7 @@ class PortalCustomerController
                     $image_cert_commerce = '';
                 }
         
-                DB::table('customers')
-                        ->where('customer_id', $id)
+                Customer::where('customer_id', $id)
                         ->update ([
                             // 'cert_commerce' =>  $image_cert_commerce,
                             'cert_commerce' => $image_cert_commerce,
@@ -1040,8 +1037,7 @@ class PortalCustomerController
                     $image_cert_vat = '';
                 }
         
-                DB::table('customers')
-                        ->where('customer_id', $id)
+                Customer::where('customer_id', $id)
                         ->update ([
 
                             'cert_vat' =>  $image_cert_vat,
@@ -1072,8 +1068,7 @@ class PortalCustomerController
                     $image_cert_id = '';
                 } 
                 
-                DB::table('customers')
-                        ->where('customer_id', $id)
+                Customer::where('customer_id', $id)
                         ->update ([
 
                             'cert_id' => $image_cert_id,
