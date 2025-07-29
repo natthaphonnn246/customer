@@ -1375,10 +1375,10 @@ class WebpanelCustomerController
     public function update(Request $request, $id)
     {
 
-        if ($request->method() === 'HEAD') {
+/*         if ($request->method() === 'HEAD') {
             return response()->noContent(); // หรือ 200 OK โดยไม่ทำอะไร
         }
-
+ */
         date_default_timezone_set("Asia/Bangkok");
 /* 
         if($request->has('submit_update'))

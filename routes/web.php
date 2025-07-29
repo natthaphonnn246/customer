@@ -409,8 +409,9 @@ Route::middleware('statusOnline')->group(function (){
 
 
     //webpanel customer update;
-    Route::match(['POST', 'HEAD'],'/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware('auth', 'role','status', 'verified');
+    // Route::match(['POST', 'HEAD'],'/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware('auth', 'role','status', 'verified');
     // Route::post('/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware('auth', 'role','status', 'verified');
+    Route::match(['GET', 'POST'], '/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware(['auth', 'role', 'status', 'verified']);
     Route::get('/portal/signin/update-amphure', [ProvinceController::class, 'amphure']);
     Route::get('/portal/signin/update-district', [ProvinceController::class, 'district']);
     Route::get('/portal/signin/update-zipcode', [ProvinceController::class, 'zipcode']);
