@@ -883,8 +883,7 @@ class PortalCustomerController
                 $delivery_by = $request->delivery_by;
 
      /*    } */
-            DB::table('customers')
-                    ->where('id', $id)
+            Customer::where('id', $id)
                     ->update ([
                
                         'email' => $email,

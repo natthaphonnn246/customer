@@ -2168,6 +2168,61 @@ class WebpanelCustomerController
             
    }
 
+   public function updateCause(Request $request)
+   {
+
+            // dd('customer-cause');
+            date_default_timezone_set("Asia/Bangkok");
+
+            if($request->has('submit_cause') == true) 
+            {
+                
+                    $path = $request->file('import_csv');
+                    if($path == null) {
+                        $path == '';
+        
+                    } else {
+
+                        $count = 0;
+                        $rename = 'Customer_cause'.'_'.date("l jS \of F Y h:i:s A").'.csv';
+                        $directory = $request->file('import_csv')->storeAs('importcsv',$rename,'importfiles'); //importfiles filesystem.php->disk;
+                        $fileStream = fopen(storage_path('app/public/importcsv/'.$rename),'r');
+
+                            while (!feof($fileStream)) 
+                                {
+
+                                    $row = fgetcsv($fileStream , 1000 , ",");
+                                    // dd($row[0]);
+                                    // if($row[0] ??= '') {
+                                    if(!empty($row[0])) {
+                                    
+                                        $note = strip_tags($row[3]); // กรอง HTML
+                                        $note = htmlspecialchars($note, ENT_QUOTES, 'UTF-8'); // escape
+                                        $note = trim($note); // ตัดช่องว่าง
+                                
+                                    $update = DB::table('customers')->where('customer_id', $row[0])->update([
+
+                                                        'customer_status' => 'inactive',
+                                                        'text_area'       => $note,
+                                                        'status_user'     => 'ไม่อนุมัติ, ถูกระงับสมาชิก',
+                            
+                                                    ]);
+                                                    $count += $update;
+                                                }
+
+                            }
+
+                            fclose($fileStream);
+
+                    }
+
+            }
+            // $count = Customer::all()->count();
+            
+            return redirect('/webpanel/customer/updatecsv')->with('success_cause', 'นำเข้าข้อมูลสำเร็จ :'.' '.$count);
+
+   }
+
    //delete customer;
    public function deleteCustomer(Request $request,  $id)
    {

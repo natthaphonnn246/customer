@@ -291,11 +291,26 @@
                     <input type="submit" id="importCustomer" name="submit_csv" class="btn btn-primary mb-4" value="นำเข้าไฟล์">
                 
                 </form>
-                <hr style="color: #8E8E8E;">
+                {{-- <hr style="color: #8E8E8E;"> --}}
 
                 @if(Session::get('success_updated'))
                 <div class="py-4">
                     <ul class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success_updated') }}</ul>
+                </div>
+                @endif
+
+                <!--update เหตุผล -->
+                <form method="post" id="import" action="/webpanel/customer/updatecsv/customer-cause" enctype="multipart/form-data" style="margin-top: 10px;">
+                    @csrf
+                    <input type="file"  id="import_csv" name="import_csv" class="form-control text-muted"><br/>
+                    <input type="submit" id="importCustomer" name="submit_cause" class="btn btn-primary mb-4" value="นำเข้าไฟล์">
+                
+                </form>
+                <hr style="color: #8E8E8E;">
+
+                @if(Session::get('success_cause'))
+                <div class="py-4">
+                    <ul class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success_cause') }}</ul>
                 </div>
                 @endif
             

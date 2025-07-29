@@ -140,6 +140,9 @@ Route::middleware('statusOnline')->group(function (){
 
         Route::get('/webpanel/customer/updatecsv', [WebpanelCustomerController::class, 'updateView']);
         Route::post('/webpanel/customer/updatecsv/updated', [WebpanelCustomerController::class, 'updateCsv']);
+
+        //update cause;
+        Route::post('/webpanel/customer/updatecsv/customer-cause', [WebpanelCustomerController::class, 'updateCause']);
 /*
         Route::get('/webpanel/customer/customer-completed', function () {
             return view('webpanel/customer-completed');
