@@ -28,7 +28,7 @@
             /* padding: 10px; */
             background-color: #FFFFFF;
             border-radius: 2px;
-            min-width: 1600px;
+            min-width: 1400px;
             /* text-align: left; */
         }
         #admin {
