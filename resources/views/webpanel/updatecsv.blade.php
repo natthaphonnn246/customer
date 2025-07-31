@@ -298,7 +298,9 @@
                     <ul class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success_updated') }}</ul>
                 </div>
                 @endif
-
+                <div class="" style="text-align: left; margin-top: 10px;">
+                    <span style="color: #e84545;">**อัปเดตเหตุผลลูกค้าที่ปิดใช้งาน (customer cause) tb: customers</span>
+                </div>
                 <!--update เหตุผล -->
                 <form method="post" id="import" action="/webpanel/customer/updatecsv/customer-cause" enctype="multipart/form-data" style="margin-top: 10px;">
                     @csrf
