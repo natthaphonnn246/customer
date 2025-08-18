@@ -6927,5 +6927,612 @@ class ReportSellerController extends Controller
                                                             'addday_range_result'
                                                         ));
     }
+
+    public function countPur(Request $request)
+    {
+        // dd('count-purchase');
+
+        $from_check = $request->from ?? date('Y-m-d');
+        $to_check   = $request->to ?? date('Y-m-d');
+
+        $number_orders = $request->number_orders;
+
+        // dd($from_check);
+
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        $user_id_admin = $request->user()->user_id;
+
+        //admin_area;
+        $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
+
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $filters_count = [
+                            'from_check' => $from_check,
+                            'to_check'   => $to_check,
+                            'code_notin' => $code_notin
+
+                        ];
+
+        $key_filters_count_1 = 'filter_count_1_' . md5(json_encode( $filters_count));
+        
+        $count_number_1 = Cache::remember($key_filters_count_1, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                ->select(
+                                    'customer_id',
+                                    DB::raw('COUNT(DISTINCT date_purchase) AS unique_purchase_days'),
+                                    DB::raw("GROUP_CONCAT(DISTINCT date_purchase ORDER BY date_purchase ASC) AS purchase_dates")
+                                )
+                                ->whereBetween('date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                ->whereNotIn('customer_id', $filters_count['code_notin'])
+                                ->groupBy('customer_id')
+                                ->havingRaw('COUNT(DISTINCT date_purchase) = 1')
+                                ->count();
+                            });
+
+        $key_filters_count_2 = 'filter_count_2_' . md5(json_encode( $filters_count));
+
+        $count_number_2 = Cache::remember($key_filters_count_2, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                    ->select(
+                                        'customer_id',
+                                        DB::raw('COUNT(DISTINCT date_purchase) AS unique_purchase_days'),
+                                        DB::raw("GROUP_CONCAT(DISTINCT date_purchase ORDER BY date_purchase ASC) AS purchase_dates")
+                                    )
+                                    ->whereBetween('date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                    ->whereNotIn('customer_id', $filters_count['code_notin'])
+                                    ->groupBy('customer_id')
+                                    ->havingRaw('COUNT(DISTINCT date_purchase) = 2')
+                                    ->count();
+                            });
+
+        $key_filters_count_3 = 'filter_count_3_' . md5(json_encode( $filters_count));
+
+        $count_number_3 = Cache::remember($key_filters_count_3, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                    ->select(
+                                        'customer_id',
+                                        DB::raw('COUNT(DISTINCT date_purchase) AS unique_purchase_days'),
+                                        DB::raw("GROUP_CONCAT(DISTINCT date_purchase ORDER BY date_purchase ASC) AS purchase_dates")
+                                    )
+                                    ->whereBetween('date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                    ->whereNotIn('customer_id', $filters_count['code_notin'])
+                                    ->groupBy('customer_id')
+                                    ->havingRaw('COUNT(DISTINCT date_purchase) = 3')
+                                    ->count();
+                            });
+
+        $key_filters_morethan_4 = 'filter_morethan_4_' . md5(json_encode( $filters_count));
+
+        $count_morethan_4 = Cache::remember($key_filters_morethan_4, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                        ->select(
+                                            'customer_id',
+                                            DB::raw('COUNT(DISTINCT date_purchase) AS unique_purchase_days'),
+                                            DB::raw("GROUP_CONCAT(DISTINCT date_purchase ORDER BY date_purchase ASC) AS purchase_dates")
+                                        )
+                                        ->whereBetween('date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                        ->whereNotIn('customer_id', $filters_count['code_notin'])
+                                        ->groupBy('customer_id')
+                                        ->havingRaw('COUNT(DISTINCT date_purchase) >= 4')
+                                        ->count();
+                            });
+
+        $key_count_all = 'filter_count_all_' . md5(json_encode( $filters_count));
+
+        $count_all = Cache::remember($key_count_all, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                ->select(
+                                    'customer_id',
+                                    DB::raw('COUNT(DISTINCT date_purchase) AS unique_purchase_days'),
+                                    DB::raw("GROUP_CONCAT(DISTINCT date_purchase ORDER BY date_purchase ASC) AS purchase_dates")
+                                )
+                                ->whereBetween('date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                ->whereNotIn('customer_id', $filters_count['code_notin'])
+                                ->groupBy('customer_id')
+                                ->havingRaw('COUNT(DISTINCT date_purchase) > 0')
+                                ->count();
+                            });
+
+        $key_count_number_1_stadard = 'count_number_1_stadard_' . md5(json_encode( $filters_count));
+
+        $count_number_1_standard = Cache::remember($key_count_number_1_stadard, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                ->select(
+                                    'report_sellers.customer_id',
+                                    'customers.delivery_by',
+                                    DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                    DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates")
+
+                                    // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                )
+                                ->join('customers', function (JoinClause $join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                ->whereNotIn('report_sellers.customer_id', $filters_count['code_notin'])
+                                ->where('delivery_by', 'standard')
+                                ->groupBy('report_sellers.customer_id', 'customers.delivery_by')
+                                ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) = 1')
+                                ->count();
+                            });
+
+        $key_count_number_1_owner = 'count_number_1_owner_' . md5(json_encode( $filters_count));
+
+        $count_number_1_owner = Cache::remember($key_count_number_1_owner, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                    ->select(
+                                        'report_sellers.customer_id',
+                                        'customers.delivery_by',
+                                        DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                        DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates")
+
+                                        // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                    )
+                                    ->join('customers', function (JoinClause $join) {
+                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                    })
+                                    ->whereBetween('report_sellers.date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                    ->whereNotIn('report_sellers.customer_id', $filters_count['code_notin'])
+                                    ->where('delivery_by', 'owner')
+                                    ->groupBy('report_sellers.customer_id', 'customers.delivery_by')
+                                    ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) = 1')
+                                    ->count();
+                                });
+
+        $key_number_2_standard = 'count_number_2_standard_' . md5(json_encode( $filters_count));
+
+        $count_number_2_standard = Cache::remember($key_number_2_standard, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                    ->select(
+                                        'report_sellers.customer_id',
+                                        'customers.delivery_by',
+                                        DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                        DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates")
+
+                                        // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                    )
+                                    ->join('customers', function (JoinClause $join) {
+                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                    })
+                                    ->whereBetween('report_sellers.date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                    ->whereNotIn('report_sellers.customer_id', $filters_count['code_notin'])
+                                    ->where('delivery_by', 'standard')
+                                    ->groupBy('report_sellers.customer_id', 'customers.delivery_by')
+                                    ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) = 2')
+                                    ->count();
+                                });
+
+        $key_count_number_2_owner = 'count_number_2_owner_' . md5(json_encode( $filters_count));
+
+        $count_number_2_owner = Cache::remember($key_count_number_2_owner, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                    ->select(
+                                        'report_sellers.customer_id',
+                                        'customers.delivery_by',
+                                        DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                        DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates")
+
+                                        // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                    )
+                                    ->join('customers', function (JoinClause $join) {
+                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                    })
+                                    ->whereBetween('report_sellers.date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                    ->whereNotIn('report_sellers.customer_id', $filters_count['code_notin'])
+                                    ->where('delivery_by', 'owner')
+                                    ->groupBy('report_sellers.customer_id', 'customers.delivery_by')
+                                    ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) = 2')
+                                    ->count();
+                                });
+
+        $key_count_number_3_standard = 'count_number_3_standard_' . md5(json_encode( $filters_count));
+
+        $count_number_3_standard = Cache::remember($key_count_number_3_standard, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                    ->select(
+                                        'report_sellers.customer_id',
+                                        'customers.delivery_by',
+                                        DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                        DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates")
+
+                                        // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                    )
+                                    ->join('customers', function (JoinClause $join) {
+                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                    })
+                                    ->whereBetween('report_sellers.date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                    ->whereNotIn('report_sellers.customer_id', $filters_count['code_notin'])
+                                    ->where('delivery_by', 'standard')
+                                    ->groupBy('report_sellers.customer_id', 'customers.delivery_by')
+                                    ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) = 3')
+                                    ->count();
+                                });
+
+        $key_count_number_3_owner = 'count_number_3_owner_' . md5(json_encode( $filters_count));
+
+        $count_number_3_owner = Cache::remember($key_count_number_3_owner, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                    ->select(
+                                        'report_sellers.customer_id',
+                                        'customers.delivery_by',
+                                        DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                        DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates")
+
+                                        // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                    )
+                                    ->join('customers', function (JoinClause $join) {
+                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                    })
+                                    ->whereBetween('report_sellers.date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                    ->whereNotIn('report_sellers.customer_id', $filters_count['code_notin'])
+                                    ->where('delivery_by', 'owner')
+                                    ->groupBy('report_sellers.customer_id', 'customers.delivery_by')
+                                    ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) = 3')
+                                    ->count();
+                                });
+
+        $key_count_morethan_4_standard = 'count_morethan_4_standard_' . md5(json_encode( $filters_count));
+
+        $count_morethan_4_standard = Cache::remember($key_count_morethan_4_standard, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                    ->select(
+                                        'report_sellers.customer_id',
+                                        'customers.delivery_by',
+                                        DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                        DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates")
+
+                                        // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                    )
+                                    ->join('customers', function (JoinClause $join) {
+                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                    })
+                                    ->whereBetween('report_sellers.date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                    ->whereNotIn('report_sellers.customer_id', $filters_count['code_notin'])
+                                    ->where('delivery_by', 'standard')
+                                    ->groupBy('report_sellers.customer_id', 'customers.delivery_by')
+                                    ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) >= 4')
+                                    ->count();
+                                });
+
+        $key_count_morethan_4_owner = 'count_morethan_4_owner_' . md5(json_encode( $filters_count));
+
+        $count_morethan_4_owner = Cache::remember($key_count_morethan_4_owner, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                    ->select(
+                                        'report_sellers.customer_id',
+                                        'customers.delivery_by',
+                                        DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                        DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates")
+
+                                        // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                    )
+                                    ->join('customers', function (JoinClause $join) {
+                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                    })
+                                    ->whereBetween('report_sellers.date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                    ->whereNotIn('report_sellers.customer_id', $filters_count['code_notin'])
+                                    ->where('delivery_by', 'owner')
+                                    ->groupBy('report_sellers.customer_id', 'customers.delivery_by')
+                                    ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) >= 4')
+                                    ->count();
+                                });
+
+        $key_count_number_all_standard = 'count_number_all_standard_' . md5(json_encode( $filters_count));
+
+        $count_number_all_standard = Cache::remember($key_count_number_all_standard, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                    ->select(
+                                        'report_sellers.customer_id',
+                                        'customers.delivery_by',
+                                        DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                        DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates")
+
+                                        // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                    )
+                                    ->join('customers', function (JoinClause $join) {
+                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                    })
+                                    ->whereBetween('report_sellers.date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                    ->whereNotIn('report_sellers.customer_id', $filters_count['code_notin'])
+                                    ->where('delivery_by', 'standard')
+                                    ->groupBy('report_sellers.customer_id', 'customers.delivery_by')
+                                    ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) > 0')
+                                    ->count();
+                                });
+
+        $key_count_number_all_owner = 'count_number_all_owner_' . md5(json_encode( $filters_count));
+
+        $count_number_all_owner = Cache::remember($key_count_number_all_owner, 1800, function () use ($filters_count) {
+
+        return DB::table('report_sellers')
+                                    ->select(
+                                        'report_sellers.customer_id',
+                                        'customers.delivery_by',
+                                        DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                        DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates")
+
+                                        // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                    )
+                                    ->join('customers', function (JoinClause $join) {
+                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                    })
+                                    ->whereBetween('report_sellers.date_purchase', [$filters_count['from_check'], $filters_count['to_check']])
+                                    ->whereNotIn('report_sellers.customer_id', $filters_count['code_notin'])
+                                    ->where('delivery_by', 'owner')
+                                    ->groupBy('report_sellers.customer_id', 'customers.delivery_by')
+                                    ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) > 0')
+                                    ->count();
+                                });
+
+        if($number_orders == 'number_1') {
+        
+            $result = DB::table('report_sellers')
+                                ->select(
+                                    'customers.id',
+                                    'customers.geography',
+                                    'customers.province',
+                                    'report_sellers.customer_id',
+                                    'customers.customer_name',
+                                    'customers.delivery_by',
+                                    DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                    DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates"),
+                                    DB::raw('SUM(report_sellers.quantity*report_sellers.price) AS total_orders')
+                                    // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                )
+                                ->join('customers', function (JoinClause $join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$from_check, $to_check])
+                                ->whereNotIn('report_sellers.customer_id', $code_notin)
+                                ->groupBy('report_sellers.customer_id', 'customers.customer_name', 'customers.id', 'customers.geography', 'customers.province', 'customers.delivery_by')
+                                ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) = 1')
+                                ->get();
+
+            // $count_number_1 = $result->count();
+
+        } elseif ($number_orders == 'number_2') {
+
+            $result = DB::table('report_sellers')
+                                ->select(
+                                    'customers.id',
+                                    'customers.geography',
+                                    'customers.province',
+                                    'report_sellers.customer_id',
+                                    'customers.customer_name',
+                                    'customers.delivery_by',
+                                    DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                    DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates"),
+                                    DB::raw('SUM(report_sellers.quantity*report_sellers.price) AS total_orders')
+                                    // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                )
+                                ->join('customers', function (JoinClause $join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$from_check, $to_check])
+                                ->whereNotIn('report_sellers.customer_id', $code_notin)
+                                ->groupBy('report_sellers.customer_id', 'customers.customer_name', 'customers.id', 'customers.geography', 'customers.province', 'customers.delivery_by')
+                                ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) = 2')
+                                ->get();
+        
+        } elseif ($number_orders == 'number_3') {
+
+            $result = DB::table('report_sellers')
+                                ->select(
+                                    'customers.id',
+                                    'customers.geography',
+                                    'customers.province',
+                                    'report_sellers.customer_id',
+                                    'customers.customer_name',
+                                    'customers.delivery_by',
+                                    DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                    DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates"),
+                                    DB::raw('SUM(report_sellers.quantity*report_sellers.price) AS total_orders')
+                                    // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                )
+                                ->join('customers', function (JoinClause $join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$from_check, $to_check])
+                                ->whereNotIn('report_sellers.customer_id', $code_notin)
+                                ->groupBy('report_sellers.customer_id', 'customers.customer_name', 'customers.id', 'customers.geography', 'customers.province', 'customers.delivery_by')
+                                ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) = 3')
+                                ->get();
+
+        } elseif ($number_orders == 'morethan_4') {
+
+            $result = DB::table('report_sellers')
+                                ->select(
+                                    'customers.id',
+                                    'customers.geography',
+                                    'customers.province',
+                                    'report_sellers.customer_id',
+                                    'customers.customer_name',
+                                    'customers.delivery_by',
+                                    DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                    // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                    DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates"),
+                                    DB::raw('SUM(report_sellers.quantity*report_sellers.price) AS total_orders')
+                                )
+                                ->join('customers', function (JoinClause $join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$from_check, $to_check])
+                                ->whereNotIn('report_sellers.customer_id', $code_notin)
+                                ->groupBy('report_sellers.customer_id', 'customers.customer_name', 'customers.id', 'customers.geography', 'customers.province', 'customers.delivery_by')
+                                ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) >= 4')
+                                ->get();
+                                
+
+        } else {
+
+            $result = DB::table('report_sellers')
+                                ->select(
+                                    'customers.id',
+                                    'customers.geography',
+                                    'customers.province',
+                                    'report_sellers.customer_id',
+                                    'customers.customer_name',
+                                    'customers.delivery_by',
+                                    DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                    DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates"),
+                                    DB::raw('SUM(report_sellers.quantity*report_sellers.price) AS total_orders')
+                                    )
+                                ->join('customers', function (JoinClause $join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$from_check, $to_check])
+                                ->whereNotIn('report_sellers.customer_id', $code_notin)
+                                ->groupBy('report_sellers.customer_id', 'customers.customer_name', 'customers.id', 'customers.geography', 'customers.province', 'customers.delivery_by')
+                                ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) > 0')
+                                ->get();
+
+        }
+
+        return view('webpanel/count-purchase' , compact(
+                                                        'admin_area', 
+                                                        'status_alert', 
+                                                        'status_waiting', 
+                                                        'status_updated', 
+                                                        'user_id_admin',
+                                                        'status_registration',
+                                                        'result',
+                                                        'number_orders',
+                                                        'count_number_1',
+                                                        'count_number_2',
+                                                        'count_number_3',
+                                                        'count_morethan_4',
+                                                        'count_all',
+                                                        'count_number_1_standard',
+                                                        'count_number_1_owner',
+                                                        'count_number_2_standard',
+                                                        'count_number_2_owner',
+                                                        'count_number_3_standard',
+                                                        'count_number_3_owner',
+                                                        'count_morethan_4_standard',
+                                                        'count_morethan_4_owner',
+                                                        'count_number_all_standard',
+                                                        'count_number_all_owner'
+
+                                                    ));
+
+/*         SELECT 
+        customer_id,
+        COUNT(DISTINCT date_purchase) AS unique_purchase_days,
+        GROUP_CONCAT(DISTINCT date_purchase ORDER BY date_purchase ASC) AS purchase_dates
+        FROM report_sellers
+        WHERE date_purchase BETWEEN '2025-07-01' AND '2025-07-31'
+        GROUP BY customer_id
+        HAVING unique_purchase_days > 4; */
+
+
+    }
+
+    public function PurOrders(Request $request)
+    {
+
+            $from_check = $request->from ?? date('Y-m-d');
+            $to_check   = $request->to ?? date('Y-m-d');
+
+            $id = $request->id;
+            $code_id = Customer::select('customer_id', 'id', 'customer_name', 'province')->where('id', $id)->first();
+            $customer_id = $code_id?->customer_id;
+            $customer_name = $code_id?->customer_name;
+            $province = $code_id?->province;
+
+            $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+            $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_updated = Customer::where('status_update', 'updated')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_alert = $status_waiting + $status_updated;
+
+            $user_id_admin = $request->user()->user_id;
+
+            //admin_area;
+            $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
+
+            $result = DB::table('report_sellers')
+                                ->select(
+                                    'customers.id', 
+                                    'report_sellers.customer_id', 
+                                    'customers.customer_id',
+                                    'customers.customer_name',
+                                    'report_sellers.date_purchase', 
+                                    'report_sellers.purchase_order',
+                                    DB::raw('SUM(report_sellers.quantity*report_sellers.price) AS total_order'),
+
+                                )
+                                ->join('customers', function (JoinClause $join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$from_check, $to_check])
+                                ->whereNotIn('report_sellers.customer_id', $code_notin)
+                                ->where('customers.customer_id', $customer_id)
+                                ->groupBy(
+                                    'customers.id', 
+                                    'report_sellers.customer_id', 
+                                    'customers.customer_id',
+                                    'customers.customer_name',
+                                    'report_sellers.date_purchase', 
+                                    'report_sellers.purchase_order'
+                                )
+                                ->orderBy('report_sellers.date_purchase', 'asc')
+                                ->get();
+
+            return view('webpanel/orders' , compact(
+                                                            'admin_area', 
+                                                            'status_alert', 
+                                                            'status_waiting', 
+                                                            'status_updated', 
+                                                            'user_id_admin',
+                                                            'status_registration',
+                                                            'result',
+                                                            'customer_name',
+                                                            'province'
+
+                                                        ));
+
+    }
     
 }

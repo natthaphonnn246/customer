@@ -51,7 +51,7 @@ class SellerCsvExport
                 header('Content-Type: text/csv; charset=utf-8');
                 header('Content-Disposition: attachment; filename= '.$filename);
 
-                $customers_customer_name = Customer::select('customer_id', 'customer_name')->get();
+                // $customers_customer_name = Customer::select('customer_id', 'customer_name')->get();
                 
                 $report_seller = ReportSeller::select(
                                                         'report_sellers.customer_id',
@@ -62,7 +62,8 @@ class SellerCsvExport
                                                         DB::raw('SUM(price*quantity) as total_sales'), 
                                                         'customers.province',
                                                         'customers.geography', 
-                                                        'customers.delivery_by'
+                                                        'customers.delivery_by',
+                                                        'report_sellers.date_purchase',
                                                     )
                                 ->join('customers', function (JoinClause $join) {
                                     $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
@@ -75,7 +76,8 @@ class SellerCsvExport
                                             'customers.admin_area', 
                                             'customers.province',
                                             'customers.geography', 
-                                            'customers.delivery_by'
+                                            'customers.delivery_by',
+                                            'report_sellers.date_purchase',
                                         )
                                 ->whereBetween('report_sellers.date_purchase', [$from_date, $to_date])
                                 ->havingBetween('total_sales', [$min_selling, $max_selling])
@@ -110,7 +112,8 @@ class SellerCsvExport
                                                                 DB::raw('SUM(price*quantity) as total_sales'), 
                                                                 'customers.province',
                                                                 'customers.geography', 
-                                                                'customers.delivery_by'
+                                                                'customers.delivery_by',
+                                                                'report_sellers.date_purchase',
                                                             )
                                         ->join('customers', function (JoinClause $join) {
                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
@@ -123,7 +126,8 @@ class SellerCsvExport
                                                     'customers.admin_area', 
                                                     'customers.geography', 
                                                     'customers.province',
-                                                    'customers.delivery_by'
+                                                    'customers.delivery_by',
+                                                    'report_sellers.date_purchase',
                                                 )
                                         ->whereBetween('report_sellers.date_purchase', [$from_date, $to_date])
                                         ->whereNotIn('report_sellers.customer_id', $code_notin)
@@ -176,7 +180,8 @@ class SellerCsvExport
                                                     DB::raw('SUM(price * quantity) as total_sales'), 
                                                     'customers.province',
                                                     'customers.geography', 
-                                                    'customers.delivery_by'
+                                                    'customers.delivery_by',
+                                                    'report_sellers.date_purchase',
                                                 )
                                             ->join('customers', function (JoinClause $join) {
                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
@@ -189,7 +194,8 @@ class SellerCsvExport
                                                         'customers.admin_area', 
                                                         'customers.province',
                                                         'customers.geography', 
-                                                        'customers.delivery_by'
+                                                        'customers.delivery_by',
+                                                        'report_sellers.date_purchase',
                                                     )
                                             ->whereNotIn('report_sellers.customer_id', $code_notin)
                                             ->orderBy('customer_id', 'asc')
@@ -215,4 +221,86 @@ class SellerCsvExport
             fclose( $output );
             exit;
     }
+
+    public function exportNumPurCsv(Request $request)
+    {
+        $from_check = $request->from ?? date('Y-m-d');
+        $to_check   = $request->to ?? date('Y-m-d');
+
+        // dd($from_check);
+
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $date = date('d-m-Y');
+        $filename = 'Number_Pur'.'_'. $date.'.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename= '.$filename);
+
+        $result = ReportSeller::select(
+                                'report_sellers.customer_id',
+                                'customers.customer_name',
+                                DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates"),
+                                DB::raw('SUM(report_sellers.quantity*report_sellers.price) AS total_orders'),
+                                'customers.delivery_by',
+                                'customers.geography',
+                                'customers.province',
+                        )
+                        ->join('customers', function (JoinClause $join) {
+                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                        })
+                        ->whereBetween('report_sellers.date_purchase', [$from_check, $to_check])
+                        ->whereNotIn('report_sellers.customer_id', $code_notin)
+                        ->groupBy(
+                            'report_sellers.customer_id', 
+                            'customers.customer_name', 
+                            'customers.geography', 
+                            'customers.province', 
+                            'customers.delivery_by'
+                        )
+                        ->orderBy('customer_id', 'asc')
+                        // ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) >= 4')
+                        ->cursor();
+
+                        $data = $result->toArray();
+                        // Create a file pointer with PHP.
+                        $output = fopen( 'php://output', 'w' );
+                
+                        // Write headers to CSV file.
+                        // fputcsv( $output, $header_args );
+                        // Loop through the prepared data to output it to CSV file.
+                        foreach( $data as $data_item ){
+
+                            fputcsv($output, $data_item, "|" );
+                        }
+
+                        // Close the file pointer with PHP with the updated output.
+                        fclose( $output );
+                        exit;
+    }
 }
+
+
+/* SELECT customer_id, date_purchase
+FROM report_sellers
+WHERE date_purchase BETWEEN '2025-07-01' AND '2025-07-31'
+  AND customer_id IN (
+    SELECT customer_id
+    FROM report_sellers
+    WHERE date_purchase BETWEEN '2025-07-01' AND '2025-07-31'
+    GROUP BY customer_id
+    HAVING COUNT(DISTINCT date_purchase) > 4
+  )
+GROUP BY customer_id, date_purchase; */
+
+
+/* SELECT 
+    customer_id,
+    COUNT(DISTINCT date_purchase) AS unique_purchase_days,
+    GROUP_CONCAT(DISTINCT date_purchase ORDER BY date_purchase ASC) AS purchase_dates
+FROM report_sellers
+WHERE date_purchase BETWEEN '2025-07-01' AND '2025-07-31'
+GROUP BY customer_id
+HAVING unique_purchase_days > 4; */

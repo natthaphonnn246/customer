@@ -807,6 +807,24 @@
                                         </select><br>
     
                                     </ul>
+
+                                    <!-- สถานะเปิดใช้งาน customer_status -->
+                                    <ul class="text-title ms-6 mr-6" style="text-align: start; margin-top: 10px;">
+                                        <span style="font-size: 16px; font-weight: 500; color:#545454;">สถานะเปิดใช้งาน</span>
+                                        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
+                                    </ul>
+                                    <ul class="text-muted ms-6 mr-6" style="padding-top: 10px;">
+                                    <label></label>
+                                        <span>สถานะลูกค้า (Customer Status)</span> <span style="font-size: 12px; color:red;">*vmdrug ปรับตามเหมาะสม</span>
+                                        <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="customer_status">
+    
+                                                <option {{$customer_view->customer_status == 'active' ? 'selected': ''}} value="active">เปิด</option>
+                                                <option {{$customer_view->customer_status == 'inactive' ? 'selected': ''}} value="inactive">ปิด</option>
+    
+                                        </select><br>
+    
+                                    </ul>
+                        
                         
                                 </div>
 

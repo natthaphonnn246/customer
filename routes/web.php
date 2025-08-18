@@ -35,8 +35,10 @@
     use App\Http\Controllers\ImportController;
     use App\Http\Controllers\ImportCsvController;
     use App\Http\Controllers\RecaptchaV2;
+    use App\Models\ReportSeller;
     use Illuminate\Support\Facades\DB;
     use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+    use App\Http\Controllers\ChooseBoxController;
 
 
     // Route::get('/', function() { return view('auth.login-tailwind');})->name('login');
@@ -382,6 +384,14 @@ Route::middleware('statusOnline')->group(function (){
 
         //delete-seller;
         Route::get('webpanel/report/delete-sale', [ReportSellerController::class, 'deleteSeller']);
+
+        //count_pur;
+        Route::get('/webpanel/report/count-purchase', [ReportSellerController::class, 'countPur']);
+        Route::get('/webpanel/report/purchase-dates', [ReportSellerController::class, 'countPur']);
+        Route::get('/webpanel/report/purchase-dates/{number_orders}', [ReportSellerController::class, 'countPur']);
+        Route::get('/webpanel/report/count-purchase/{id}', [ReportSellerController::class, 'PurOrders']);
+        Route::get('/webpanel/report/count-pur/exportexcel/check', [SellerExcelExport::class, 'exportNumPurExcel']);
+        Route::get('/webpanel/report/count-pur/exportcsv/check', [SellerCsvExport::class, 'exportNumPurCsv']);
 
     });
    

@@ -917,7 +917,7 @@
                             {{-- <a href="/webpanel/customer/delete/{{$user_code}}" id="trash"><i class="fa-regular fa-trash-can"></i></a> --}}
                             <button class="trash-customer" type="submit" id="trash{{$id}}"><i class="fa-regular fa-trash-can"></i></button>
 
-                    </td>
+                        </td>
                 </tr>
 
                 <!-- delete customer table -->

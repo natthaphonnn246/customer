@@ -48,7 +48,7 @@ class SellerExcelExport
                 $filename = $date;
                     // Start the output buffer.
 
-                $customers_customer_name = Customer::select('customer_id', 'customer_name')->get();
+                // Customer::select('customer_id', 'customer_name')->get();
                 
                 return ReportSeller::select(
                                             'report_sellers.customer_id',
@@ -59,7 +59,8 @@ class SellerExcelExport
                                             DB::raw('SUM(price*quantity) as total_sales'), 
                                             'customers.province', 
                                             'customers.geography', 
-                                            'customers.delivery_by'
+                                            'customers.delivery_by',
+                                            'report_sellers.date_purchase',
                                             )
                                     ->join('customers', function (JoinClause $join) {
                                         $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
@@ -72,7 +73,8 @@ class SellerExcelExport
                                                 'customers.admin_area', 
                                                 'customers.province', 
                                                 'customers.geography', 
-                                                'customers.delivery_by'
+                                                'customers.delivery_by',
+                                                'report_sellers.date_purchase'
                                             )
                                     ->whereBetween('report_sellers.date_purchase', [$from_date, $to_date])
                                     ->havingBetween('total_sales', [$min_selling, $max_selling])
@@ -100,7 +102,8 @@ class SellerExcelExport
                                                     DB::raw('SUM(price*quantity) as total_sales'), 
                                                     'customers.province', 
                                                     'customers.geography', 
-                                                    'customers.delivery_by'
+                                                    'customers.delivery_by',
+                                                    'report_sellers.date_purchase',
                                                     )
                                         ->join('customers', function (JoinClause $join) {
                                             $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
@@ -113,7 +116,8 @@ class SellerExcelExport
                                                     'customers.admin_area', 
                                                     'customers.province', 
                                                     'customers.geography', 
-                                                    'customers.delivery_by'
+                                                    'customers.delivery_by',
+                                                    'report_sellers.date_purchase',
                                                 )
                                         ->whereBetween('report_sellers.date_purchase', [$from_date, $to_date])
                                         ->whereNotIn('report_sellers.customer_id', $code_notin)
@@ -157,7 +161,9 @@ class SellerExcelExport
                                                     DB::raw('SUM(price * quantity) as total_sales'), 
                                                     'customers.province', 
                                                     'customers.geography', 
-                                                    'customers.delivery_by')
+                                                    'customers.delivery_by',
+                                                    'report_sellers.date_purchase',
+                                                    )
                                             ->join('customers', function (JoinClause $join) {
                                                 $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
                                             })
@@ -169,13 +175,54 @@ class SellerExcelExport
                                                         'customers.admin_area', 
                                                         'customers.province', 
                                                         'customers.geography', 
-                                                        'customers.delivery_by'
+                                                        'customers.delivery_by',
+                                                        'report_sellers.date_purchase',
                                                     )
                                             ->whereNotIn('report_sellers.customer_id', $code_notin)
                                             ->orderBy('customer_id', 'asc')
                                             ->downloadExcel('Seller_all'.'_'.$filename.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
         
         }
+    }
+
+    public function exportNumPurExcel(Request $request)
+    {
+        $from_check = $request->from ?? date('Y-m-d');
+        $to_check   = $request->to ?? date('Y-m-d');
+
+        // dd($from_check);
+
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $date = date('d-m-Y');
+        $filename = $date;
+
+        return ReportSeller::select(
+                                'report_sellers.customer_id',
+                                'customers.customer_name',
+                                DB::raw('COUNT(DISTINCT report_sellers.date_purchase) AS unique_purchase_days'),
+                                // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC) AS purchase_dates")
+                                // DB::raw("GROUP_CONCAT(DISTINCT report_sellers.date_purchase ORDER BY report_sellers.date_purchase ASC SEPARATOR ' | ') AS purchase_dates"),
+                                DB::raw('SUM(report_sellers.quantity*report_sellers.price) AS total_orders'),
+                                'customers.delivery_by',
+                                'customers.geography',
+                                'customers.province',
+                        )
+                        ->join('customers', function (JoinClause $join) {
+                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                        })
+                        ->whereBetween('report_sellers.date_purchase', [$from_check, $to_check])
+                        ->whereNotIn('report_sellers.customer_id', $code_notin)
+                        ->groupBy(
+                            'report_sellers.customer_id', 
+                            'customers.customer_name', 
+                            'customers.geography', 
+                            'customers.province', 
+                            'customers.delivery_by'
+                        )
+                        ->orderBy('customer_id', 'asc')
+                        // ->havingRaw('COUNT(DISTINCT report_sellers.date_purchase) >= 4')
+                        ->downloadExcel('Numberof_Pur'.'_'.$filename.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
     }
 
 }

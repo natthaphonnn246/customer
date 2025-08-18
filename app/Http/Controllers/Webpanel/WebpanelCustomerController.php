@@ -1459,6 +1459,9 @@ class WebpanelCustomerController
 
                 $delivery_by = $request->delivery_by;
 
+                $customer_status = $request->customer_status;
+                // dd($customer_status);
+
                 $points = $request->points ?? 0;
 
      /*    } */
@@ -1466,33 +1469,34 @@ class WebpanelCustomerController
                     ->where('id', $id)
                     ->update ([
 
-                        'customer_id' => $customer_id,
-                        'customer_code' => $customer_id,
-                        'customer_name' => $customer_name,
-                        'price_level' => $price_level,
-                        'customer_name' => $customer_name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'telephone' => $telephone,
-                        'address' => $address,
-                        'province' =>  $province_row,
-                        'amphur' => $amphur,
-                        'district' => $district,
-                        'zip_code' => $zip_code,
-                        'geography' => $geography_name,
-                        'admin_area' => $admin_area,
-                        'sale_area' => $sale_area,
-                        'text_area' => $text_area,
-                        'text_admin' => $text_admin,
-                        'cert_number' => $cert_number,
-                        'cert_expire' => $cert_expire,
-                        'status' => $status,
-                        'password' => $password,
-                        'status_update' => $status_update,
-                        'type' => $type,
-                        'status_user' => $status_user,
-                        'delivery_by' => $delivery_by,
-                        'points' => $points,
+                        'customer_id'       => $customer_id,
+                        'customer_code'     => $customer_id,
+                        'customer_name'     => $customer_name,
+                        'customer_status'   => $customer_status,
+                        'price_level'       => $price_level,
+                        'customer_name'     => $customer_name,
+                        'email'             => $email,
+                        'phone'             => $phone,
+                        'telephone'         => $telephone,
+                        'address'           => $address,
+                        'province'          =>  $province_row,
+                        'amphur'            => $amphur,
+                        'district'          => $district,
+                        'zip_code'          => $zip_code,
+                        'geography'         => $geography_name,
+                        'admin_area'        => $admin_area,
+                        'sale_area'         => $sale_area,
+                        'text_area'         => $text_area,
+                        'text_admin'        => $text_admin,
+                        'cert_number'       => $cert_number,
+                        'cert_expire'       => $cert_expire,
+                        'status'            => $status,
+                        'password'          => $password,
+                        'status_update'     => $status_update,
+                        'type'              => $type,
+                        'status_user'       => $status_user,
+                        'delivery_by'       => $delivery_by,
+                        'points'            => $points,
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
                     

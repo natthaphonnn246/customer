@@ -115,6 +115,22 @@
       background-color: rgba(122, 122, 122, 0.378);
       color: rgb(255, 255, 255);
     }
+    #delete_sellers {
+      background-color: none;
+      color: white;
+    }
+    #delete_sellers:hover {
+      background-color: rgba(122, 122, 122, 0.378);
+      color: rgb(255, 255, 255);
+    }
+    #count_pur {
+      background-color: none;
+      color: white;
+    }
+    #count_pur:hover {
+      background-color: rgba(122, 122, 122, 0.378);
+      color: rgb(255, 255, 255);
+    }
     #alertMenu {
       background-color: none;
       color: white;
@@ -166,7 +182,7 @@
     #content_area {
       background-color: #FFFFFF;
       border-radius: 2px;
-      min-width: 1500px;
+      min-width: 1600px;
     }
     .flex-container {
     display: flex;
@@ -266,7 +282,10 @@
                              <a href="/webpanel/report/product" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_salearea" style="font-size:14px;">สินค้าขายดี</a>
                           </li>
                           <li style="margin-left: 35px;">
-                            <a href="/webpanel/report/delete-sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_salearea" style="font-size:14px;">ลบข้อมูลการขาย</a>
+                            <a href="/webpanel/report/count-purchase" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="count_pur" style="font-size:14px;">จำนวนครั้งสั่งซื้อ</a>
+                         </li>
+                          <li style="margin-left: 35px;">
+                            <a href="/webpanel/report/delete-sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="delete_sellers" style="font-size:14px;">ลบข้อมูลการขาย</a>
                          </li>
                        {{--   <li>
                              <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
