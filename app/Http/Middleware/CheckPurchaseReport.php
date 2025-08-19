@@ -16,13 +16,12 @@ class CheckPurchaseReport
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->purchase_status === 1) {
-            return $next($request);
-        } else {
+        if (Auth::check() && Auth::user()->purchase_status === 0) {
+            Auth::logout();
 
-        Auth::logout();
-        return redirect('/login')->with('error_purchase', 'คุณไม่มีสิทธิ์เข้าถึง');
+            return redirect('/login')->with('error_purchase', 'คุณไม่มีสิทธิ์เข้าถึง');
         }
 
+        return $next($request);
     }
 }

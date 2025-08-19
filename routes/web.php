@@ -482,6 +482,26 @@ Route::middleware('statusOnline')->group(function (){
         Route::post('/portal/customer-detail/update/{id}', [PortalCustomerController::class, 'updateEdit']);
     });
 
+
+    // โค้ดนี้จะเหมือนกับโค้ดข้างบนเลยครับ ตั้งแต่บรรทัดที่ 462-483
+    //  - name('portal.') คือ ชื่อตอนเราใช้ {{ route('portal.')}}
+    //  - prefix('portal') คือ path เราจะขึ้นต้นด้วย /portal/
+    //  - middleware('auth', 'userRole', 'status', 'verified', 'maintenance', 'rights_area') ก็สามารถต่อรวมกันได้เลย
+
+    // Route::name('portal.')->prefix('portal')->middleware('auth', 'userRole', 'status', 'verified', 'maintenance', 'rights_area')->group(function () {
+    //     Route::get('/signin', [PortalCustomerController::class, 'indexPortal'])->name('portal'); ตรงนี้เวลาเรียกใช้ เอา prefix('') กับ ->name('') มาต่อกัน {{ route('portal.portal')}}
+
+    //     Route::name('customer-detail.')->prefix('customer-detail')->group(function () {
+    //         Route::post('/upload-store/{id}', [PortalCustomerController::class, 'certStore']);
+    //         Route::post('/upload-medical/{id}', [PortalCustomerController::class, 'certMedical']);
+    //         Route::post('/upload-commerce/{id}', [PortalCustomerController::class, 'certCommerce']);
+    //         Route::post('/upload-vat/{id}', [PortalCustomerController::class, 'certVat']);
+    //         Route::post('/upload-id/{id}', [PortalCustomerController::class, 'certId']);
+    //         Route::post('/update/{id}', [PortalCustomerController::class, 'updateEdit']);
+    //     });
+    // });
+
+
     //delete customer;
     Route::get('/webpanel/customer/delete/{id}', [WebpanelCustomerController::class, 'deleteCustomer']);
 
