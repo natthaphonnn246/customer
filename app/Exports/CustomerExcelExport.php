@@ -44,6 +44,7 @@ class CustomerExcelExport
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
+        //type;
         switch ($status) 
             {
                 //get excel;
