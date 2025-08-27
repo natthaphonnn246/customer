@@ -50,7 +50,7 @@ class CustomerExcelExport
                 // case $status == 'getexcel_customerall': ผิด
                 case 'getexcel_customerall':
                     $date = date('d-m-Y');
-                    return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
+                    return Customer::select('customer_code', 'customer_name', 'type', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
                                     // ->whereNotIn('customer_code', ['0000','4494'])
                                     ->whereNotIn('customer_code', $code_notin)
                                     ->downloadExcel('Customer_all'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
@@ -58,7 +58,7 @@ class CustomerExcelExport
 
                 case 'getexcel_completed':
                     $date = date('d-m-Y');
-                    return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
+                    return Customer::select('customer_code', 'customer_name', 'type', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
                                     // ->whereNotIn('customer_code', ['0000','4494'])
                                     ->whereNotIn('customer_code', $code_notin)
                                     ->where('status', 'ดำเนินการแล้ว')
@@ -67,7 +67,7 @@ class CustomerExcelExport
 
                 case 'getexcel_action':
                     $date = date('d-m-Y');
-                    return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
+                    return Customer::select('customer_code', 'customer_name', 'type', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
                                     // ->whereNotIn('customer_code', ['0000','4494'])
                                     ->whereNotIn('customer_code', $code_notin)
                                     ->where('status', 'ต้องดำเนินการ')
@@ -76,7 +76,7 @@ class CustomerExcelExport
 
                 case 'getexcel_waiting':
                     $date = date('d-m-Y');
-                    return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
+                    return Customer::select('customer_code', 'customer_name', 'type', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
                                     // ->whereNotIn('customer_code', ['0000','4494'])
                                     ->whereNotIn('customer_code', $code_notin)
                                     ->where('status', 'รอดำเนินการ')
@@ -85,7 +85,7 @@ class CustomerExcelExport
 
                 case 'getexcel_update':
                     $date = date('d-m-Y');
-                    return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
+                    return Customer::select('customer_code', 'customer_name', 'type', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
                                     // ->whereNotIn('customer_code', ['0000','4494'])
                                     ->whereNotIn('customer_code', $code_notin)
                                     ->where('status_update', 'updated')
@@ -94,7 +94,7 @@ class CustomerExcelExport
 
                 case 'getexcel_inactive':
                     $date = date('d-m-Y');
-                    return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
+                    return Customer::select('customer_code', 'customer_name', 'type', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
                                     // ->whereNotIn('customer_code', ['0000','4494'])
                                     ->whereNotIn('customer_code', $code_notin)
                                     ->where('customer_status', 'inactive')
@@ -103,7 +103,7 @@ class CustomerExcelExport
 
                 case 'getexcel_following':
                     $date = date('d-m-Y');
-                    return Customer::select('customer_code', 'customer_name', 'province', 'geography', 'admin_area', 'sale_area','status','status_user', 'delivery_by')
+                    return Customer::select('customer_code', 'customer_name', 'type', 'province', 'geography', 'admin_area', 'sale_area','status','status_user', 'delivery_by')
                                     // ->whereNotIn('customer_code', ['0000','4494'])
                                     ->whereNotIn('customer_code', $code_notin)
                                     ->where('status_user', 'กำลังติดตาม')
