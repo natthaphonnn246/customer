@@ -1384,6 +1384,9 @@ class WebpanelCustomerController
         if($request->has('submit_update'))
         { */
                 $customer_id = $request->customer_code;
+                if($customer_id == null) {
+                    $customer_id = '';
+                }
                 $customer_name = $request->customer_name;
                 $price_level = $request->price_level;
                 $phone = $request->phone;
