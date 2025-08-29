@@ -179,6 +179,20 @@
             background-color: #cccccc;
             color: #3c3c3c;
         }
+        #exportstatus {
+            background-color: #0fc843;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #exportstatus:hover {
+            background-color: #05b136;
+            color: #ffffff;
+        }
         #exportexcel {
             background-color: #dddddd;
             color: #3d3d3d;
@@ -383,6 +397,7 @@
 
             <a href="/webpanel/customer/export/getcsv/getcsv_customerall"  id="exportcsv" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export CSV</a>
             <a href="/webpanel/customer/export/getexcel/getexcel_customerall"  id="exportexcel" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export Excel</a>
+            <a href="/webpanel/customer/export/getcsv/getcsv_certstatus"  id="exportstatus" class="btn" type="submit"  name="" style="width: 210px; padding: 8px;">Export License (vmdrug)</a>
     
         </div>
 

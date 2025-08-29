@@ -169,6 +169,26 @@ class CustomerCsvExport
                  // Clean up output buffer before writing anything to CSV file.
                  ob_end_clean();
              break;
+
+             case 'getcsv_certstatus':
+                $date = date('Y-m-d');
+                $filename = 'License_status_'. $date. '.csv';
+                 // Start the output buffer.
+                ob_start();
+
+                // Set PHP headers for CSV output.
+                header('Content-Type: text/csv; charset=utf-8');
+                header('Content-Disposition: attachment; filename= '.$filename);
+                
+                $query = Customer::select('customer_code','status')
+                                   ->where('customer_code', '!=', '')
+                                   ->whereNotIn('customer_code', $code_notin)
+                                   ->get();
+
+                $data = $query->toArray();
+                // Clean up output buffer before writing anything to CSV file.
+                ob_end_clean();
+            break;
  
  
              default:
@@ -180,7 +200,19 @@ class CustomerCsvExport
              $output = fopen( 'php://output', 'w' );
  
              // Write headers to CSV file.
-             // fputcsv( $output, $header_args );
+
+            //  0016|"หมอยา ๙ (บางพลี)"|สมุทรปราการ|ภาคกลาง|A13|S01|รอดำเนินการ|inactive|standard
+           /*   fputcsv($output, [
+                    'Customer ID',
+                    'Customer Name',
+                    'Province',
+                    'Geography',
+                    'Admin Area',
+                    'Sale Area',
+                    'Status',
+                    'Customer Status',
+                    'Delivery'
+                ], '|'); */
  
              // Loop through the prepared data to output it to CSV file.
              foreach( $data as $data_item ){
