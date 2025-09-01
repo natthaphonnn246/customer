@@ -283,7 +283,10 @@
                           </li>
                           <li style="margin-left: 35px;">
                             <a href="/webpanel/report/count-purchase" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="count_pur" style="font-size:14px;">จำนวนครั้งสั่งซื้อ</a>
-                         </li>
+                          </li>
+                          <li style="margin-left: 35px;">
+                            <a href="/webpanel/report/sum-purchase" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="count_pur" style="font-size:14px;">สรุปจำนวนครั้งสั่งซื้อ</a>
+                          </li>
                           <li style="margin-left: 35px;">
                             <a href="/webpanel/report/delete-sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="delete_sellers" style="font-size:14px;">ลบข้อมูลการขาย</a>
                          </li>

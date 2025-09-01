@@ -393,6 +393,9 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/report/count-pur/exportexcel/check', [SellerExcelExport::class, 'exportNumPurExcel']);
         Route::get('/webpanel/report/count-pur/exportcsv/check', [SellerCsvExport::class, 'exportNumPurCsv']);
 
+        //summary-purchase;
+        Route::get('/webpanel/report/sum-purchase', [ReportSellerController::class, 'sumPur']);
+        Route::get('/webpanel/report/sumpur-dates', [ReportSellerController::class, 'sumPur']);
     });
    
     Route::get('/webpanel/datepicker', function (){
