@@ -256,8 +256,11 @@
                    </button>
                       <ul id="dropdown-customer" class="hidden py-2 space-y-2">
                             <li style="margin-left: 35px;">
-                               <a href="/webpanel/customer" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="store_all" style="font-size:14px;">ทั้งหมด</a>
+                                <a href="/webpanel/customer" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="store_all" style="font-size:14px;">ทั้งหมด</a>
                             </li>
+                            <li style="margin-left: 35px;">
+                                <a href="/webpanel/check-updated" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="store_all" style="font-size:14px;">ตรวจสอบใบอนุญาต</a>
+                           </li>
                          {{--   <li>
                                <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
                             </li> --}}

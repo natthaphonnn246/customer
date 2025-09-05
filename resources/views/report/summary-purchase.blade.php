@@ -464,6 +464,14 @@
                 $owner_per4 = $total > 0 ? (($owner['สั่งมากกว่า 4 ครั้ง'] ?? 0) / $total) * 100 : 0;
                 $owner_per  = $owner_per1 + $owner_per2 + $owner_per3 + $owner_per4;
 
+                $total_sale_standard = ($sale_standard['สั่ง 1 ครั้ง'] ?? 0) + ($sale_standard['สั่ง 2 ครั้ง'] ?? 0) + ($sale_standard['สั่ง 3 ครั้ง'] ?? 0) + ($sale_standard['สั่งมากกว่า 4 ครั้ง'] ?? 0);
+                $total_sale_owner = ($sale_owner['สั่ง 1 ครั้ง'] ?? 0) + ($sale_owner['สั่ง 2 ครั้ง'] ?? 0) + ($sale_owner['สั่ง 3 ครั้ง'] ?? 0) + ($sale_owner['สั่งมากกว่า 4 ครั้ง'] ?? 0);
+
+                $total_sale_1 = ($sale_standard['สั่ง 1 ครั้ง'] ?? 0) + ($sale_owner['สั่ง 1 ครั้ง'] ?? 0);
+                $total_sale_2 = ($sale_standard['สั่ง 2 ครั้ง'] ?? 0) + ($sale_owner['สั่ง 2 ครั้ง'] ?? 0);
+                $total_sale_3 = ($sale_standard['สั่ง 3 ครั้ง'] ?? 0) + ($sale_owner['สั่ง 3 ครั้ง'] ?? 0);
+                $total_sale_4 = ($sale_standard['สั่งมากกว่า 4 ครั้ง'] ?? 0) + ($sale_owner['สั่งมากกว่า 4 ครั้ง'] ?? 0);
+                $total_sale = $total_sale_1 + $total_sale_2 + $total_sale_3 + $total_sale_4;
             @endphp
 
             <div class="ms-6 mr-6 mb-2" id="protected">
@@ -527,6 +535,30 @@
                             <td style="color:#838383; text-align: center;">{{ number_format(($standard_per2 + $owner_per2),2) }}</td>
                             <td style="color:#838383; text-align: center;">{{ number_format(($standard_per3 + $owner_per3),2) }}</td>
                             <td style="color:#838383; text-align: center;">{{ number_format(($standard_per4 + $owner_per4),2) }}</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#838383; text-align: center;">ขายทั่วไป (บาท)</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format($total_sale_standard,2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format(($sale_standard['สั่ง 1 ครั้ง']),2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format(($sale_standard['สั่ง 2 ครั้ง']),2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format(($sale_standard['สั่ง 3 ครั้ง']),2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format(($sale_standard['สั่งมากกว่า 4 ครั้ง']),2) }}</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#838383; text-align: center;">ขายเอกชน (บาท)</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format($total_sale_owner,2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format(($sale_owner['สั่ง 1 ครั้ง']),2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format(($sale_owner['สั่ง 2 ครั้ง']),2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format(($sale_owner['สั่ง 3 ครั้ง']),2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format(($sale_owner['สั่งมากกว่า 4 ครั้ง']),2) }}</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#838383; text-align: center;">ขายรวม (บาท)</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format($total_sale,2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format($total_sale_1,2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format($total_sale_2,2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format($total_sale_3,2) }}</td>
+                            <td style="color:#838383; text-align: center;">{{ number_format($total_sale_4,2) }}</td>
                         </tr>
 
                     </tbody>

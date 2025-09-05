@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Illuminate\Support\Facades\DB;
 use App\Models\Customer;
 use Carbon\Carbon;
+use App\Enums\CustomerStatusEnum;
 
 class CustomerExcelExport 
 {
@@ -277,6 +278,143 @@ class CustomerExcelExport
             
         }
         
+    }
+
+    public function ExportLicenseExcel($status_license)
+    {
+        // dd($status);
+
+        //notin code;
+        $year_date = date('Y');
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        // dd($status_license);
+        //fill type;
+        switch ($status_license) 
+            {
+
+                case 'customerall':
+                    $date = date('d-m-Y');
+                    return  Customer::select(
+                                                'customers.customer_id',
+                                                'customers.sale_area',
+                                                'customers.admin_area',
+                                                'customers.customer_name',
+                                                'customers.status',
+                                                'customers.updated_at'
+                                            )
+                                        ->join('report_sellers', function ($join) {
+                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                        })
+                                        ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                        ->whereNotIn('customers.customer_id', $code_notin)
+                                        ->whereIn('status', [
+                                                                CustomerStatusEnum::Waiting->value,
+                                                                CustomerStatusEnum::Following->value,
+                                                                CustomerStatusEnum::Completed->value,
+                                                            ])
+                                        ->groupBy(
+                                                    'customers.id',
+                                                    'customers.customer_id', 
+                                                    'customers.sale_area',
+                                                    'customers.admin_area',
+                                                    'customers.customer_name', 
+                                                    'customers.status', 
+                                                    'customers.updated_at'
+                                                )
+                                        ->downloadExcel('License_customer'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
+                    break;
+
+                case CustomerStatusEnum::Completed->value:
+
+                        $date = date('d-m-Y');
+                        return  Customer::select(
+                                                    'customers.customer_id',
+                                                    'customers.sale_area',
+                                                    'customers.admin_area',
+                                                    'customers.customer_name',
+                                                    'customers.status',
+                                                    'customers.updated_at'
+                                                )
+                                            ->join('report_sellers', function ($join) {
+                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                            })
+                                            ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                            ->whereNotIn('customers.customer_id', $code_notin)
+                                            ->whereIn('status', [CustomerStatusEnum::Completed->value])
+                                            ->groupBy(
+                                                        'customers.id',
+                                                        'customers.customer_id', 
+                                                        'customers.sale_area',
+                                                        'customers.admin_area',
+                                                        'customers.customer_name', 
+                                                        'customers.status', 
+                                                        'customers.updated_at'
+                                                    )
+                                            ->downloadExcel('License_completed'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
+                        break;
+                  
+
+                case CustomerStatusEnum::Following->value:
+                        $date = date('d-m-Y');
+                        return Customer::select(
+                                                'customers.customer_id',
+                                                'customers.sale_area',
+                                                'customers.admin_area',
+                                                'customers.customer_name',
+                                                'customers.status',
+                                                'customers.updated_at'
+                                            )
+                                            ->join('report_sellers', function ($join) {
+                                                $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                            })
+                                            ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                            ->whereNotIn('customers.customer_id', $code_notin)
+                                            ->whereIn('status', [CustomerStatusEnum::Following->value])
+                                            ->groupBy(
+                                                        'customers.id',
+                                                        'customers.customer_id', 
+                                                        'customers.sale_area',
+                                                        'customers.admin_area',
+                                                        'customers.customer_name', 
+                                                        'customers.status', 
+                                                        'customers.updated_at'
+                                                    )
+                                            ->downloadExcel('License_following'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
+                        break;
+
+                case CustomerStatusEnum::Waiting->value:
+                    $date = date('d-m-Y');
+                    return Customer::select(
+                                            'customers.customer_id',
+                                            'customers.sale_area',
+                                            'customers.admin_area',
+                                            'customers.customer_name',
+                                            'customers.status',
+                                            'customers.updated_at'
+                                        )
+                                        ->join('report_sellers', function ($join) {
+                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                        })
+                                        ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                        ->whereNotIn('customers.customer_id', $code_notin)
+                                        ->whereIn('status', [CustomerStatusEnum::Waiting->value])
+                                        ->groupBy(
+                                                    'customers.id',
+                                                    'customers.customer_id', 
+                                                    'customers.sale_area',
+                                                    'customers.admin_area',
+                                                    'customers.customer_name', 
+                                                    'customers.status', 
+                                                    'customers.updated_at'
+                                                )
+                                        ->downloadExcel('License_wating'.'_'.$date.'.'.'xlsx',\Maatwebsite\Excel\Excel::XLSX, true);
+                    break;
+
+                default:
+                    return abort('403', 'ERROR EXPORT');
+            }
+            
     }
 
 }

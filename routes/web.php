@@ -396,6 +396,13 @@ Route::middleware('statusOnline')->group(function (){
         //summary-purchase;
         Route::get('/webpanel/report/sum-purchase', [ReportSellerController::class, 'sumPur']);
         Route::get('/webpanel/report/sumpur-dates', [ReportSellerController::class, 'sumPur']);
+
+        //check-updated;
+        Route::get('/webpanel/check-updated', [WebpanelCustomerController::class, 'checkLicense']);
+        Route::get('/webpanel/check-updated/{status}', [WebpanelCustomerController::class, 'checkLicense']);
+        Route::get('/webpanel/check-updated/export/license/getcsv/{status_license}', [CustomerCsvExport::class, 'ExportLicenseCsv']);
+        Route::get('/webpanel/check-updated/export/license/getexcel/{status_license}', [CustomerExcelExport::class, 'ExportLicenseExcel']);
+
     });
    
     Route::get('/webpanel/datepicker', function (){

@@ -22,6 +22,8 @@ enum CustomerStatusEnum: string
   //   echo "ลูกค้ารอการดำเนินการ";
   // }
 
-  case Waiting = 'รอดำเนินการ';
+  case Waiting      = 'รอดำเนินการ';
   case Registration = 'ลงทะเบียนใหม่';
+  case Completed    = 'ดำเนินการแล้ว';
+  case Following    = 'ต้องดำเนินการ';
 }

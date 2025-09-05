@@ -8,6 +8,9 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Illuminate\Support\Facades\DB;
 use App\Models\Customer;
 use Carbon\Carbon;
+use GuzzleHttp\Psr7\Request;
+use App\Enums\CustomerStatusEnum;
+use Illuminate\Database\Query\JoinClause;
 
 class CustomerCsvExport
 {
@@ -452,4 +455,268 @@ class CustomerCsvExport
            fclose( $output );
            exit;
     }
+    //check-license;
+    public function ExportLicenseCsv($status_license)
+    {
+        $year_date = date('Y');
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+    
+        if($status_license === CustomerStatusEnum::Completed->value)
+        {
+
+            $query_customer = DB::table('customers')
+                                ->select(
+                                    'customers.customer_id',
+                                    'customers.sale_area',
+                                    'customers.admin_area',
+                                    'customers.customer_name',
+                                    'customers.status',
+                                    'customers.updated_at'
+                                )
+                                ->join('report_sellers', function ($join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                ->whereNotIn('customers.customer_id', $code_notin)
+                                ->where('status', CustomerStatusEnum::Completed->value)
+                                ->groupBy(
+                                            'customers.customer_id', 
+                                            'customers.sale_area',
+                                            'customers.admin_area',
+                                            'customers.customer_name', 
+                                            'customers.status', 
+                                            'customers.updated_at'
+                                        )
+                                ->get();
+    
+            // แปลง stdClass → array
+            $data = $query_customer->map(function($item){
+                return [
+                    $item->customer_id,
+                    $item->sale_area,
+                    $item->admin_area,
+                    $item->customer_name,
+                    $item->status,
+                    $item->updated_at
+                ];
+            });
+    
+            return response()->stream(function() use ($data) {
+                    $output = fopen('php://output', 'w');
+        
+                    // Header CSV
+                    fputcsv($output, [
+                        'Customer ID',
+                        'Sale Area',
+                        'Admin Area',
+                        'Customer Name',
+                        'Status',
+                        'Date'
+                    ], '|');
+        
+                    foreach($data as $row){
+                        fputcsv($output, $row, '|');
+                    }
+        
+                    fclose($output);
+                }, 200, [
+                    "Content-Type" => "text/csv; charset=utf-8",
+                    "Content-Disposition" => "attachment; filename=License_completed_" . date('Y-m-d') . ".csv",
+                ]);
+
+        } elseif ($status_license === CustomerStatusEnum::Following->value) {
+
+            $query_customer = DB::table('customers')
+                                ->select(
+                                    'customers.customer_id',
+                                    'customers.sale_area',
+                                    'customers.admin_area',
+                                    'customers.customer_name',
+                                    'customers.status',
+                                    'customers.updated_at'
+                                )
+                                ->join('report_sellers', function ($join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                ->whereNotIn('customers.customer_id', $code_notin)
+                                ->where('status', CustomerStatusEnum::Following->value)
+                                ->groupBy(
+                                            'customers.customer_id', 
+                                            'customers.sale_area',
+                                            'customers.admin_area',
+                                            'customers.customer_name', 
+                                            'customers.status', 
+                                            'customers.updated_at'
+                                        )
+                                ->get();
+    
+            // แปลง stdClass → array
+            $data = $query_customer->map(function($item){
+                return [
+                    $item->customer_id,
+                    $item->sale_area,
+                    $item->admin_area,
+                    $item->customer_name,
+                    $item->status,
+                    $item->updated_at
+                ];
+            });
+    
+            return response()->stream(function() use ($data) {
+                    $output = fopen('php://output', 'w');
+        
+                    // Header CSV
+                    fputcsv($output, [
+                        'Customer ID',
+                        'Sale Area',
+                        'Admin Area',
+                        'Customer Name',
+                        'Status',
+                        'Date'
+                    ], '|');
+        
+                    foreach($data as $row){
+                        fputcsv($output, $row, '|');
+                    }
+        
+                    fclose($output);
+                    }, 200, [
+                        "Content-Type" => "text/csv; charset=utf-8",
+                        "Content-Disposition" => "attachment; filename=License_following_" . date('Y-m-d') . ".csv",
+                    ]);
+
+        } elseif ($status_license === CustomerStatusEnum::Waiting->value) {
+
+            $query_customer = DB::table('customers')
+                                ->select(
+                                    'customers.customer_id',
+                                    'customers.sale_area',
+                                    'customers.admin_area',
+                                    'customers.customer_name',
+                                    'customers.status',
+                                    'customers.updated_at'
+                                )
+                                ->join('report_sellers', function ($join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                ->whereNotIn('customers.customer_id', $code_notin)
+                                ->where('status', CustomerStatusEnum::Waiting->value)
+                                ->groupBy(
+                                            'customers.customer_id', 
+                                            'customers.sale_area',
+                                            'customers.admin_area',
+                                            'customers.customer_name', 
+                                            'customers.status', 
+                                            'customers.updated_at'
+                                        )
+                                ->get();
+    
+            // แปลง stdClass → array
+            $data = $query_customer->map(function($item){
+                return [
+                    $item->customer_id,
+                    $item->sale_area,
+                    $item->admin_area,
+                    $item->customer_name,
+                    $item->status,
+                    $item->updated_at
+                ];
+            });
+    
+            return response()->stream(function() use ($data) {
+                    $output = fopen('php://output', 'w');
+        
+                    // Header CSV
+                    fputcsv($output, [
+                        'Customer ID',
+                        'Sale Area',
+                        'Admin Area',
+                        'Customer Name',
+                        'Status',
+                        'Date'
+                    ], '|');
+        
+                    foreach($data as $row){
+                        fputcsv($output, $row, '|');
+                    }
+        
+                    fclose($output);
+                    }, 200, [
+                        "Content-Type" => "text/csv; charset=utf-8",
+                        "Content-Disposition" => "attachment; filename=License_waiting_" . date('Y-m-d') . ".csv",
+                    ]);
+
+        } elseif ($status_license === 'customerall') {
+            $query_customer = DB::table('customers')
+                                ->select(
+                                    'customers.customer_id',
+                                    'customers.sale_area',
+                                    'customers.admin_area',
+                                    'customers.customer_name',
+                                    'customers.status',
+                                    'customers.updated_at'
+                                )
+                                ->join('report_sellers', function ($join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                ->whereNotIn('customers.customer_id', $code_notin)
+                                ->whereIn('status', [
+                                                        CustomerStatusEnum::Waiting->value,
+                                                        CustomerStatusEnum::Following->value,
+                                                        CustomerStatusEnum::Completed->value
+                                                    ])
+                                ->groupBy(
+                                            'customers.customer_id', 
+                                            'customers.sale_area',
+                                            'customers.admin_area',
+                                            'customers.customer_name', 
+                                            'customers.status', 
+                                            'customers.updated_at'
+                                        )
+                                ->get();
+
+            // แปลง stdClass → array
+            $data = $query_customer->map(function($item){
+                return [
+                    $item->customer_id,
+                    $item->sale_area,
+                    $item->admin_area,
+                    $item->customer_name,
+                    $item->status,
+                    $item->updated_at
+                ];
+            });
+
+            return response()->stream(function() use ($data) {
+                    $output = fopen('php://output', 'w');
+
+                    // Header CSV
+                    fputcsv($output, [
+                        'Customer ID',
+                        'Sale Area',
+                        'Admin Area',
+                        'Customer Name',
+                        'Status',
+                        'Date'
+                    ], '|');
+
+                    foreach($data as $row){
+                        fputcsv($output, $row, '|');
+                    }
+
+                    fclose($output);
+                    }, 200, [
+                        "Content-Type" => "text/csv; charset=utf-8",
+                        "Content-Disposition" => "attachment; filename=License_customer_" . date('Y-m-d') . ".csv",
+                    ]);
+        }
+    
+        return redirect()->back()->with('error', 'Status ไม่ถูกต้อง');
+    }
+    
+
+    
 }

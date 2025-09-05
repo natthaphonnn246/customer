@@ -28,7 +28,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 use Illuminate\Database\Query\JoinClause;
-
+use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Days;
+use App\Enums\CustomerStatusEnum;
 
 class WebpanelCustomerController
 {
@@ -2906,6 +2907,270 @@ class WebpanelCustomerController
                             }
                 
 
+    }
+
+    public function checkLicense(Request $request)
+    {
+            $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+            $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_updated = Customer::where('status_update', 'updated')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_alert = $status_waiting + $status_updated;
+
+            $user_id_admin = $request->user()->user_id;
+
+            //admin_area;
+            $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
+
+            //check license;
+            $year_date = date('Y');
+            // dd($year_date);
+          /*   $result_check = DB::table('customers')->select(
+                                                        'customers.customer_id',
+                                                        // DB::raw('DISTINCT(customers.customer_id) AS customer_id'),
+                                                        'customers.customer_name',
+                                                        'customers.status',
+                                                        'customers.updated_at'
+                                                        )
+                                                        ->join('report_sellers', function (JoinClause $join) {
+                                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                        })
+                                                        ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                                        ->whereNotIn('customers.customer_id', $code_notin)
+                                                        ->whereIn('status', ['ดำเนินการแล้ว', 'ต้องดำเนินการ'])
+                                                        ->groupBy('customers.customer_id', 'customers.customer_name', 'customers.status', 'customers.updated_at')
+                                                        ->get(); */
+            $page = $request->page;
+            if ($page) {
+                $page = $request->page;
+            } else {
+                $page = 1;
+            }
+
+            $status_license = $request->status;
+            // dd($status_license);
+
+            if($status_license === CustomerStatusEnum::Waiting->value) {
+
+                $result_status = DB::table('customers')->select(
+                                                                'customers.customer_id',
+                                                                // DB::raw('DISTINCT(customers.customer_id) AS customer_id'),
+                                                                'customers.customer_name',
+                                                                'customers.status',
+                                                                'customers.updated_at',
+                                                                'sale_area',
+                                                                'admin_area'
+                                                                )
+                                                                ->join('report_sellers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                                                ->whereNotIn('customers.customer_id', $code_notin)
+                                                                ->whereIn('status', [CustomerStatusEnum::Waiting->value])
+                                                                ->groupBy(
+                                                                            'customers.customer_id', 
+                                                                            'customers.customer_name', 
+                                                                            'customers.status', 
+                                                                            'customers.updated_at',
+                                                                            'sale_area',
+                                                                            'admin_area'
+                                                                        )
+                                                                ->get();
+
+                $total_page = 0;
+                $start = 0;
+
+            } elseif ($status_license === CustomerStatusEnum::Following->value) {
+                $result_status = DB::table('customers')->select(
+                                                                'customers.customer_id',
+                                                                // DB::raw('DISTINCT(customers.customer_id) AS customer_id'),
+                                                                'customers.customer_name',
+                                                                'customers.status',
+                                                                'customers.updated_at',
+                                                                'sale_area',
+                                                                'admin_area'
+                                                                )
+                                                                ->join('report_sellers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                                                ->whereNotIn('customers.customer_id', $code_notin)
+                                                                ->whereIn('status', [CustomerStatusEnum::Following->value])
+                                                                ->groupBy(
+                                                                            'customers.customer_id', 
+                                                                            'customers.customer_name', 
+                                                                            'customers.status', 
+                                                                            'customers.updated_at',
+                                                                            'sale_area',
+                                                                            'admin_area'
+                                                                        )
+                                                                ->get();
+
+                $total_page = 0;
+                $start = 0;
+
+            } elseif ($status_license === CustomerStatusEnum::Completed->value) {
+                $result_status = DB::table('customers')->select(
+                                                                'customers.customer_id',
+                                                                // DB::raw('DISTINCT(customers.customer_id) AS customer_id'),
+                                                                'customers.customer_name',
+                                                                'customers.status',
+                                                                'customers.updated_at',
+                                                                'sale_area',
+                                                                'admin_area'
+                                                                )
+                                                                ->join('report_sellers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                                                ->whereNotIn('customers.customer_id', $code_notin)
+                                                                ->whereIn('status', [CustomerStatusEnum::Completed->value])
+                                                                ->groupBy(
+                                                                            'customers.customer_id', 
+                                                                            'customers.customer_name', 
+                                                                            'customers.status', 
+                                                                            'customers.updated_at',
+                                                                            'sale_area',
+                                                                            'admin_area'
+                                                                        )
+                                                                ->get();
+                $total_page = 0;
+                $start = 0;
+
+            } else {
+
+                $count_page = DB::table('customers')
+                                    ->join('report_sellers', function (JoinClause $join) {
+                                        $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                    })
+                                    ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                    ->whereNotIn('customers.customer_id', $code_notin)
+                                    ->whereIn('status', [
+                                                            CustomerStatusEnum::Waiting->value,
+                                                            CustomerStatusEnum::Following->value,
+                                                            CustomerStatusEnum::Completed->value,
+                                                        ])
+                                    ->distinct()
+                                    ->count('customers.customer_id'); 
+                // dd($count_page);
+
+                $perpage = 20;
+                $total_page = ceil($count_page / $perpage);
+
+                // dd($total_page);
+                $start = ($perpage * $page) - $perpage;
+
+                $result_status = DB::table('customers')->select(
+                                                                'customers.customer_id',
+                                                                // DB::raw('DISTINCT(customers.customer_id) AS customer_id'),
+                                                                'customers.customer_name',
+                                                                'customers.status',
+                                                                'customers.updated_at',
+                                                                'sale_area',
+                                                                'admin_area'
+                                                                )
+                                                                ->join('report_sellers', function (JoinClause $join) {
+                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                })
+                                                                ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                                                ->whereNotIn('customers.customer_id', $code_notin)
+                                                                ->whereIn('status', [
+                                                                                        CustomerStatusEnum::Waiting->value,
+                                                                                        CustomerStatusEnum::Following->value,
+                                                                                        CustomerStatusEnum::Completed->value
+                                                                                    ])
+                                                                ->groupBy(
+                                                                            'customers.customer_id', 
+                                                                            'customers.customer_name', 
+                                                                            'customers.status', 
+                                                                            'customers.updated_at',
+                                                                            'customers.sale_area',
+                                                                            'admin_area'
+                                                                            )
+                                                                ->orderBy('customers.customer_id', 'asc')
+                                                                ->offset($start)
+                                                                ->limit($perpage)
+                                                                ->get();
+            }
+
+            //count-customer;
+            $result_count = DB::table('customers')
+                                ->join('report_sellers', function (JoinClause $join) {
+                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                })
+                                ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                ->whereNotIn('customers.customer_id', $code_notin)
+                                ->whereIn('status', [
+                                                        CustomerStatusEnum::Waiting->value,
+                                                        CustomerStatusEnum::Following->value,
+                                                        CustomerStatusEnum::Completed->value,
+                                                    ])
+                                ->distinct()
+                                ->count('customers.customer_id'); 
+
+            $result_count_completed = DB::table('customers')
+                                        ->join('report_sellers', function (JoinClause $join) {
+                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                        })
+                                        ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                        ->whereNotIn('customers.customer_id', $code_notin)
+                                        ->whereIn('status', [ CustomerStatusEnum::Completed->value])
+                                        ->distinct()
+                                        ->count('customers.customer_id');   
+                                
+            $result_count_following = DB::table('customers')
+                                        ->join('report_sellers', function (JoinClause $join) {
+                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                        })
+                                        ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                        ->whereNotIn('customers.customer_id', $code_notin)
+                                        ->whereIn('status', [ CustomerStatusEnum::Following->value])
+                                        ->distinct()
+                                        ->count('customers.customer_id');   
+
+            $result_count_wating = DB::table('customers')
+                                        ->join('report_sellers', function (JoinClause $join) {
+                                            $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                        })
+                                        ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                        ->whereNotIn('customers.customer_id', $code_notin)
+                                        ->whereIn('status', [ CustomerStatusEnum::Waiting->value])
+                                        ->distinct()
+                                        ->count('customers.customer_id');  
+                                
+
+            $count_customer =  [
+                                    'ทั้งหมด' => $result_count,
+                                    'ดำเนินการแล้ว' => $result_count_completed,
+                                    'ต้องดำเนินการ' => $result_count_following,
+                                    'รอดำเนินการ'  => $result_count_wating,
+                               ];
+            return view('report/check-updated' , compact(
+                                                            'admin_area', 
+                                                            'status_alert', 
+                                                            'status_waiting', 
+                                                            'status_updated', 
+                                                            'user_id_admin',
+                                                            'status_registration',
+                                                            // 'result_check',
+                                                            'result_status',
+                                                            'count_customer',
+                                                            'page',
+                                                            'total_page',
+                                                            'start',
+
+                                                        ));
     }
 
 }
