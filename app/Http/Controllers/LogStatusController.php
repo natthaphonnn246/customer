@@ -166,13 +166,22 @@ class LogStatusController extends Controller
         echo $json; */
 
         $code_notin = ['1111', '5585', '7777', '8888', '9088'];
-        $check_row = User::select('user_id', 'user_code', 'email', 'name', 'last_activity', 'login_date')
+        $check_row = User::select(
+                                    'user_id', 
+                                    'user_code', 
+                                    'email', 
+                                    'name', 
+                                    // 'last_activity', 
+                                    DB::raw('UNIX_TIMESTAMP(last_activity) as last_activity'),
+                                    'login_date'
+                                )
                             // ->where('user_id','0000')
                             ->whereNotIn('user_id', $code_notin)
                             ->get();
                             $date = ["date" => time()];
                             $json = [$check_row, $date];
                             $arr_data = json_encode($json);
+
                             return $arr_data;
 
                             // echo json_encode($date);

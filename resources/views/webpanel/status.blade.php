@@ -407,7 +407,7 @@
      async function fetchStatus() {
         const response = await fetch('/webpanel/active-user/updated');
         const data =  await response.json();
-        // console.log(data.date);
+        // console.log(data);
 
         const data_row = data[0];
 
