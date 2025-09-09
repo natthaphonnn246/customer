@@ -664,7 +664,7 @@
                         {{-- <td scope="row" style="color:#9C9C9C; text-align: left;"><i class="fa-solid fa-circle" style="color: rgb(4, 181, 30);"></i> ดำเนินการแล้ว</td> --}}
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(58, 174, 19);">ดำเนินการแล้ว</span></td>
                         @else
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> </td>
+                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;">  <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(171, 171, 171);">ปิดบัญชี</span></td>
                         @endif
 
                         @if ($status_update == 'updated')
