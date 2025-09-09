@@ -758,13 +758,14 @@
                                     </ul>
                                     <ul class="text-muted ms-6 mr-6" style="padding-top: 10px;">
 
-                                        <span>สถานะบัญชี</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                        <span>สถานะอัปเดตใบอนุญาต</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                         <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="status">
     
                                                 <option {{$customer_view->status == 'ลงทะเบียนใหม่' ? 'selected': ''}} value="ลงทะเบียนใหม่">ลงทะเบียนใหม่</option>
                                                 <option {{$customer_view->status == 'รอดำเนินการ' ? 'selected': ''}} value="รอดำเนินการ">รอดำเนินการ</option>
                                                 <option {{$customer_view->status== 'ต้องดำเนินการ' ? 'selected': ''}} value="ต้องดำเนินการ">ต้องดำเนินการ</option>
                                                 <option {{$customer_view->status == 'ดำเนินการแล้ว' ? 'selected': ''}} value="ดำเนินการแล้ว">ดำเนินการแล้ว</option>
+                                                <option {{$customer_view->status == 'ปิดบัญชี' ? 'selected': ''}} value="ปิดบัญชี">ปิดบัญชี</option>
                                         
     
                                             </select><br>

@@ -312,7 +312,7 @@
 
         <form action="/webpanel/report/product/importproduct/updated/{{ $product_all?->id }}" method="post" enctype="multipart/form-data">
             @csrf
-            <div class="container" style="width:95%;">
+            <div class="ms-8 mr-8" style="">
                 <div class="row">
                     <div class="col-sm-6">
                         <ul class="mt-2">
