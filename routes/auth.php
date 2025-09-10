@@ -55,9 +55,16 @@ Route::middleware('auth')->group(function () {
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+    /* Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 
     Route::get('logout', [AuthenticatedSessionController::class, 'destroyPortal'])
-        ->name('logout');
+        ->name('logout'); */
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout'); // default logout
+
+    Route::get('logout', [AuthenticatedSessionController::class, 'destroyPortal'])
+        ->name('logout.portal'); // เปลี่ยนชื่อไม่ซ้ำ
+
 });
