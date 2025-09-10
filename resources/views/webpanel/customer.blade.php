@@ -446,6 +446,16 @@
         <hr class="my-4" style="color: #8E8E8E; width: 100%;">
 
         <div class="row ms-6" style="justify-content: left;">
+
+            @php
+                $total_customer             = $stats->total_customer;
+                $total_status_registration  = $stats->total_status_registration;
+                $total_status_waiting       = $stats->total_status_waiting;
+                $total_status_action        = $stats->total_status_action;
+                $total_status_completed     = $stats->total_status_completed;
+                $total_status_updated       = $stats->total_status_updated;
+                $customer_status_inactive   = $stats->customer_status_inactive;
+            @endphp
             
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">

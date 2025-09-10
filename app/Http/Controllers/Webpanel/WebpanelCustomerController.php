@@ -66,22 +66,28 @@ class WebpanelCustomerController
                                         ->orderByDesc('date_purchase')
                                         ->get();
 
-        // $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
-        // $total_status_registration = Customer::where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
-        // $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
-        // $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
-        // $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
-        // $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
-        // $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count();
-
-        //Raw query เพิ่ม performance;
-        $total_customer             = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+        //Raw query 7 ครั้งช้ามาก;
+     /*    $total_customer             = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_registration  = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_waiting       = DB::table('customers')->where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_action        = DB::table('customers')->where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_completed     = DB::table('customers')->where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_updated       = DB::table('customers')->where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
-        $customer_status_inactive   = DB::table('customers')->where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count();
+        $customer_status_inactive   = DB::table('customers')->where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count(); */
+
+        $stats = DB::table('customers')
+                    ->selectRaw("
+                        COUNT(*) as total_customer,
+                        SUM(CASE WHEN status = 'ลงทะเบียนใหม่' THEN 1 ELSE 0 END) as total_status_registration,
+                        SUM(CASE WHEN status = 'รอดำเนินการ' THEN 1 ELSE 0 END) as total_status_waiting,
+                        SUM(CASE WHEN status = 'ต้องดำเนินการ' THEN 1 ELSE 0 END) as total_status_action,
+                        SUM(CASE WHEN status = 'ดำเนินการแล้ว' THEN 1 ELSE 0 END) as total_status_completed,
+                        SUM(CASE WHEN status_update = 'updated' THEN 1 ELSE 0 END) as total_status_updated,
+                        SUM(CASE WHEN customer_status = 'inactive' THEN 1 ELSE 0 END) as customer_status_inactive
+                    ")
+                    ->whereNotIn('customer_code', $code_notin)
+                    ->first();
+
 
         $user_id_admin = $request->user()->user_id;
         //เพิ่มลูกค้า;
@@ -204,13 +210,13 @@ class WebpanelCustomerController
                                                         'start', 
                                                         'total_page', 
                                                         'page', 
-                                                        'total_customer', 
+                                                       /*  'total_customer', 
                                                         'total_status_waiting', 
                                                         'total_status_registration',
                                                         'total_status_action', 
                                                         'total_status_completed', 
                                                         'total_status_updated', 
-                                                        'customer_status_inactive', 
+                                                        'customer_status_inactive',  */
                                                         'status_alert', 
                                                         'status_waiting', 
                                                         'status_registration', 
@@ -220,7 +226,8 @@ class WebpanelCustomerController
                                                         'check_over_7',
                                                         'report_seller' */
                                                         'check_id',
-                                                        'check_purchase'
+                                                        'check_purchase',
+                                                        'stats'
                                                     ));
         
             }
@@ -255,20 +262,21 @@ class WebpanelCustomerController
                                                 'start', 
                                                 'total_page', 
                                                 'page', 
-                                                'total_customer', 
+                                               /*  'total_customer', 
                                                 'total_status_waiting', 
                                                 'total_status_registration',
                                                 'total_status_action', 
                                                 'total_status_completed', 
                                                 'total_status_updated', 
-                                                'customer_status_inactive', 
+                                                'customer_status_inactive',  */
                                                 'status_alert', 
                                                 'status_waiting', 
                                                 'status_registration', 
                                                 'status_updated', 
                                                 'user_id_admin',
                                                 'check_id',
-                                                'check_purchase'
+                                                'check_purchase',
+                                                'stats'
                                                 /* 'diffDay_five',
                                                 'diffDay_seven', */
                                             ));
