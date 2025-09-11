@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Jobs\RebuildCheckPurchaseCache;
 // use Illuminate\Http\JsonResponse;
 
 use App\Imports\import;
@@ -6530,6 +6531,10 @@ class ReportSellerController extends Controller
 
         }
         $count = ReportSeller::all()->count();
+
+        // dispatch job rebuild cache ทันที
+        // RebuildCheckPurchaseCache::dispatch();
+        RebuildCheckPurchaseCache::dispatchSync();
         
         return redirect('/webpanel/report/seller/importseller')->with('success_import', 'นำเข้าข้อมูลสำเร็จ :'.' '.$count);
             

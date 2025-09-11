@@ -787,7 +787,7 @@
                         {{-- {{ strtotime('2025-04-21'); }} --}}
                         <!-- Order -->
 
-                        @if(isset($user_code) && $user_code == '')
+                        @if(isset($user_code) && $user_code != '')
                             @if(!empty($check_purchase))
                                 @php 
                                 $id_purchase = $check_purchase->firstWhere('customer_id', $user_code)?->customer_id;

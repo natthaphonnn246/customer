@@ -30,6 +30,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Query\JoinClause;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Days;
 use App\Enums\CustomerStatusEnum;
+use Illuminate\Support\Facades\Cache;
+use App\Jobs\RebuildCheckPurchaseCache;
 
 class WebpanelCustomerController
 {
@@ -54,6 +56,12 @@ class WebpanelCustomerController
         //notin code;
         $code_notin = ['0000', '4494', '7787','8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
+        RebuildCheckPurchaseCache::dispatchSync(); // Job จะรันทันที
+        $check_purchase = Cache::get('check_purchase', collect());
+        // dd($check_purchase);
+       // รันทันทีไม่ใช้ queue
+
+
 /*         $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
                                     ->select('customer_id')
                                     ->distinct()
@@ -68,7 +76,7 @@ class WebpanelCustomerController
                                         
  */
         // Subquery: หา date_purchase ล่าสุดของแต่ละ customer_id
-        $subQuery = ReportSeller::query()
+  /*       $subQuery = ReportSeller::query()
                     ->select('customer_id')
                     ->selectRaw('MAX(date_purchase) AS max_date')
                     ->whereNotIn('customer_id', $code_notin)
@@ -82,8 +90,8 @@ class WebpanelCustomerController
                             })
                             ->select('report_sellers.customer_id', 'report_sellers.date_purchase')
                             ->orderByDesc('report_sellers.date_purchase')
-                            ->get();
-
+                            ->get(); */
+        
         //Raw query 7 ครั้งช้ามาก;
      /*    $total_customer             = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
         $total_status_registration  = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
