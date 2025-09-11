@@ -308,6 +308,9 @@ Route::middleware('statusOnline')->group(function (){
             return response()->json(["status" => $status]);
         }); */
 
+        //update status-wating;
+        Route::post('/webpanel/customer/update-status/wating', [WebpanelCustomerController::class, 'updateStatusWating']);
+
     });
 
     // Route::get('/webpanel/customer-status', [LogStatusController::class, 'create']);

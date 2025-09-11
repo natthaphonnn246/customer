@@ -523,9 +523,16 @@
                                 <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$customer_view->cert_number}}"><br>
                             </li>
                             <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                            <input class="form-control" style="margin-top:10px;  color: rgb(171, 171, 171);"  type="text" id="datepicker" name="cert_expire" value="{{$customer_view->cert_expire}}">
+                           @php
+                                $year = (int) date('Y');
+                              /*   $expireDate = \Carbon\Carbon::now();
+                                $checkDate  = \Carbon\Carbon::createFromFormat('d/m/Y H:i', '31/12/'.$year.' 23:59'); */
+
+                            @endphp
+
+                            <input class="form-control" style="margin-top:10px;  color: rgb(171, 171, 171);"  type="text" id="datepicker" name="cert_expire" value="{{ $customer_view->status === 'ดำเนินการแล้ว' ? '31/12/'.$year : $customer_view->cert_expire; }}">
                             {{-- <input id="date" style="margin-top:10px;  color: rgb(171, 171, 171);" type="date"  class="form-control" name="cert_expire" value="{{$customer_view->cert_expire}}"><br> --}}
-                        </ul>
+
                         
 
                              

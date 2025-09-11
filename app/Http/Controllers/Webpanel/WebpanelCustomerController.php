@@ -54,7 +54,7 @@ class WebpanelCustomerController
         //notin code;
         $code_notin = ['0000', '4494', '7787','8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
+/*         $check_id = ReportSeller::whereNotIn('customer_id', $code_notin)
                                     ->select('customer_id')
                                     ->distinct()
                                     ->get(); 
@@ -65,6 +65,24 @@ class WebpanelCustomerController
                                         ->groupBy('customer_id')
                                         ->orderByDesc('date_purchase')
                                         ->get();
+                                        
+ */
+        // Subquery: หา date_purchase ล่าสุดของแต่ละ customer_id
+        $subQuery = ReportSeller::query()
+                    ->select('customer_id')
+                    ->selectRaw('MAX(date_purchase) AS max_date')
+                    ->whereNotIn('customer_id', $code_notin)
+                    ->groupBy('customer_id');
+
+        // Join subquery กลับมา
+        $check_purchase = ReportSeller::query()
+                            ->joinSub($subQuery, 't', function ($join) {
+                                $join->on('report_sellers.customer_id', '=', 't.customer_id')
+                                    ->on('report_sellers.date_purchase', '=', 't.max_date');
+                            })
+                            ->select('report_sellers.customer_id', 'report_sellers.date_purchase')
+                            ->orderByDesc('report_sellers.date_purchase')
+                            ->get();
 
         //Raw query 7 ครั้งช้ามาก;
      /*    $total_customer             = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
@@ -225,7 +243,7 @@ class WebpanelCustomerController
                                                        /*  'check_over_5',
                                                         'check_over_7',
                                                         'report_seller' */
-                                                        'check_id',
+                                                        // 'check_id',
                                                         'check_purchase',
                                                         'stats'
                                                     ));
@@ -274,7 +292,7 @@ class WebpanelCustomerController
                                                 'status_registration', 
                                                 'status_updated', 
                                                 'user_id_admin',
-                                                'check_id',
+                                                // 'check_id',
                                                 'check_purchase',
                                                 'stats'
                                                 /* 'diffDay_five',
@@ -3179,6 +3197,40 @@ class WebpanelCustomerController
                                                             'start',
 
                                                         ));
+    }
+
+    public function updateStatusWating(Request $request)
+    {
+        $status = $request->input('status');
+
+        if ($status === 'waiting') {
+            $count_customer = Customer::count();
+
+            $updated = DB::table('customers')->update([
+                'status' => 'รอดำเนินการ'
+            ]);
+
+            if ($count_customer === $updated) {
+                return response()->json([
+                    'status'  => 'waiting',
+                    'message' => "อัปเดตครบทั้งหมด ($updated/$count_customer)"
+                ]);
+            } else {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => "อัปเดตไม่ครบ ($updated/$count_customer)"
+                ], 500);
+            }
+        }
+
+        // กรณีไม่ได้ส่ง waiting มา
+        return response()->json([
+            'status'  => 'ignored',
+            'message' => 'ไม่ได้อัปเดต เพราะ status ไม่ตรงกับ waiting'
+        ]);
+
+
+        
     }
 
 }

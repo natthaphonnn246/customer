@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" conten="{{ csrf_token() }}">
+    {{-- <meta name="csrf-token" conten="{{ csrf_token() }}"> --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -191,6 +193,20 @@
         }
         #exportstatus:hover {
             background-color: #05b136;
+            color: #ffffff;
+        }
+        #statuswating {
+            background-color: #ee2a18;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #statuswating:hover {
+            background-color: #f33d3d;
             color: #ffffff;
         }
         #exportexcel {
@@ -400,6 +416,91 @@
             <a href="/webpanel/customer/export/getcsv/getcsv_certstatus"  id="exportstatus" class="btn" type="submit"  name="" style="width: 210px; padding: 8px;">Export License (vmdrug)</a>
     
         </div>
+
+        <hr class="my-4" style="color: #8E8E8E; width: 100%;">
+
+        @php
+            $year = (int) date('Y');
+            $expireDate = \Carbon\Carbon::now();
+            // $expireDate = \Carbon\Carbon::createFromFormat('d/m/Y', '30/12/'.$year);
+            $checkDate  = \Carbon\Carbon::createFromFormat('d/m/Y', '31/12/'.$year);
+
+        @endphp
+
+        <div class="ms-6 text-left">
+            <button 
+                id="statuswating" 
+                type="submit"
+                class="btn btn-warning"
+                {{ $expireDate->toDateString() < $checkDate->toDateString() ? 'disabled' : '' }}>
+                อัปเดตสถานะใบอนุญาตเป็น : รอดำเนินการ
+            </button>
+        
+            <p class="text-sm text-gray-500 mt-2">
+                *ปุ่มนี้ทำงานทุกวันที่ <span class="font-semibold">31/12/{{ $year }}</span>
+            </p>
+        </div>
+
+
+        <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    
+                        document.getElementById('statuswating').addEventListener('click', function(e) {
+                            e.preventDefault();
+                            console.log('status_wating');
+                    
+                            fetch('/webpanel/customer/update-status/wating', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken // ส่ง CSRF token
+                                },
+                                body: JSON.stringify({
+                                    status: 'waiting'
+                                })
+                            })
+                            .then(result => result.json())
+                            .then(data => {
+                                //data ที่ไได้จาก json
+                                if(data.status === 'waiting') {
+                                    Swal.fire({
+                                        title: "สำเร็จ",
+                                        text: `${data.message}`,
+                                        icon: "success",
+                                        // showCancelButton: true,
+                                        confirmButtonColor: "#3085d6",
+                                        // cancelButtonColor: "#d33",
+                                        confirmButtonText: "ตกลง"
+                                        }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.reload();
+                                        }
+                                    });
+
+                                } else {
+                                    Swal.fire({
+                                        title: "ล้มเหลว",
+                                        text: `${data.message}`,
+                                        icon: "error",
+                                        // showCancelButton: true,
+                                        confirmButtonColor: "#3085d6",
+                                        // cancelButtonColor: "#d33",
+                                        confirmButtonText: "ตกลง"
+                                        }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.reload();
+                                        }
+                                    });
+                                }
+
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                        });
+                    });
+        </script>
 
         <hr class="my-4" style="color: #8E8E8E; width: 100%;">
 
@@ -686,10 +787,10 @@
                         {{-- {{ strtotime('2025-04-21'); }} --}}
                         <!-- Order -->
 
-                        @if(isset($user_code) && $user_code != '')
-                            @if(!empty($check_id))
+                        @if(isset($user_code) && $user_code == '')
+                            @if(!empty($check_purchase))
                                 @php 
-                                $id_purchase = $check_id->firstWhere('customer_id', $user_code)?->customer_id;
+                                $id_purchase = $check_purchase->firstWhere('customer_id', $user_code)?->customer_id;
                                 @endphp
 
                                 @if ($id_purchase == $user_code)
