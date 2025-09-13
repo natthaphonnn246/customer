@@ -44,6 +44,7 @@ class Customer extends Model
         'status_user',
         'delivery_by',
         'points',
+        'add_license',
         // 'maintenance_status',
         // 'allowed_maintenance',
 
@@ -253,6 +254,32 @@ class Customer extends Model
 
         $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
                     ->where('status_user','กำลังติดตาม')
+                    ->whereNotIn('customer_code', $code_notin)
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+    public static function customerCheckLicense($page)
+    {
+
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->where('add_license','ระบุขายส่ง')
+                        ->get();
+
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('add_license','ระบุขายส่ง')
                     ->whereNotIn('customer_code', $code_notin)
                     ->offset($start)
                     ->limit($perpage)

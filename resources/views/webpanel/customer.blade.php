@@ -556,6 +556,7 @@
                 $total_status_completed     = $stats->total_status_completed;
                 $total_status_updated       = $stats->total_status_updated;
                 $customer_status_inactive   = $stats->customer_status_inactive;
+                $add_license_status         = $stats->add_license_status;
             @endphp
             
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
@@ -629,6 +630,17 @@
                     <a href="/webpanel/customer/status/inactive" style="text-decoration: none; color:white;">ปิดบัญชี</a><br/>
                     @if (isset($customer_status_inactive))
                     <span>{{$customer_status_inactive != '' ? $customer_status_inactive : '0'}}</span>
+                    @else
+                    <span>error</span>
+                    @endif
+                </span>
+            </div>
+
+            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
+                <span style="color: white; text-align: center;">
+                    <a href="/webpanel/customer/status/check-license" style="text-decoration: none; color:white;">ขายส่ง</a><br/>
+                    @if (isset($add_license_status))
+                    <span>{{$add_license_status != '' ? $add_license_status : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif

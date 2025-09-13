@@ -307,7 +307,8 @@ class PortalCustomerController
                         'customer_status' => 'inactive',
                         'status_user' => '',
                         'delivery_by' => $delivery_by,
-                        'points' => '0'
+                        'points' => '0',
+                        'add_license' => 'ไม่ระบุ'
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
 

@@ -38,7 +38,7 @@ class RebuildCheckPurchaseCache implements ShouldQueue
 
             // เก็บ cache
             // Cache::put('check_purchase', $check_purchase, now()->addHours(1)); // เก็บ 1 ชั่วโมง หรือปรับตามต้องการ
-            Cache::put('check_purchase', $check_purchase, now()->addMinutes(15));
+            Cache::put('check_purchase', $check_purchase, now()->addMinutes(30));
 
         }
 }

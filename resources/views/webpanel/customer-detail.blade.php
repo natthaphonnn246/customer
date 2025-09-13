@@ -832,6 +832,17 @@
                                         </select><br>
     
                                     </ul>
+                                    <ul class="text-muted ms-6 mr-6" style="padding-top: 10px;">
+                                        <label></label>
+                                            <span>ใบอนุญาตขายยาเพิ่มติม (License)</span> <span style="font-size: 12px; color:red;">*ใบ ขย.5 แต่ติ๊กขายส่งหรือใบขายส่ง</span>
+                                            <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="add_license">
+        
+                                                    <option {{$customer_view->add_license == 'ไม่ระบุ' ? 'selected': ''}} value="ไม่ระบุ">ไม่ระบุ</option>
+                                                    <option {{$customer_view->add_license == 'ระบุขายส่ง' ? 'selected': ''}} value="ระบุขายส่ง">ระบุขายส่ง</option>
+        
+                                            </select><br>
+        
+                                        </ul>
                         
                         
                                 </div>

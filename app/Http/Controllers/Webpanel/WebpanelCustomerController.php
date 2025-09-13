@@ -109,7 +109,8 @@ class WebpanelCustomerController
                         SUM(CASE WHEN status = 'ต้องดำเนินการ' THEN 1 ELSE 0 END) as total_status_action,
                         SUM(CASE WHEN status = 'ดำเนินการแล้ว' THEN 1 ELSE 0 END) as total_status_completed,
                         SUM(CASE WHEN status_update = 'updated' THEN 1 ELSE 0 END) as total_status_updated,
-                        SUM(CASE WHEN customer_status = 'inactive' THEN 1 ELSE 0 END) as customer_status_inactive
+                        SUM(CASE WHEN customer_status = 'inactive' THEN 1 ELSE 0 END) as customer_status_inactive,
+                        SUM(CASE WHEN add_license = 'ระบุขายส่ง' THEN 1 ELSE 0 END) as add_license_status
                     ")
                     ->whereNotIn('customer_code', $code_notin)
                     ->first();
@@ -987,7 +988,7 @@ class WebpanelCustomerController
         }
 
         //notin code;
-        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+        $code_notin = ['0000', '4494', '7787','8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         //menu alert;
         $status_waiting = DB::table('customers')
@@ -1139,9 +1140,25 @@ class WebpanelCustomerController
 
             return view('webpanel/customer-following', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_status_following', 'status_waiting', 'status_registration',  'status_updated', 'status_alert', 'user_id_admin'));
 
-        } 
-        
-        else {
+        } else if ($status_check == 'check-license') {
+
+            $row_customer = Customer::customerCheckLicense($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+
+            //Dashborad;
+            /* $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count(); */
+
+            $total_customer             = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $customer_check_license  = DB::table('customers')->where('add_license', 'ระบุขายส่ง')->whereNotIn('customer_code', $code_notin)->count();
+
+            return view('webpanel/customer-check-license', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_check_license', 'status_waiting', 'status_registration',  'status_updated', 'status_alert', 'user_id_admin'));
+
+        } else {
             return abort(403, 'Error requesting');
         }
         
@@ -1345,7 +1362,8 @@ class WebpanelCustomerController
                     'customer_status' => 'inactive',
                     'status_user' => '',
                     'delivery_by' => $delivery_by,
-                    'points' => '0'
+                    'points' => '0',
+                    'add_license' => 'ไม่ระบุ'
                     // 'maintenance_status' => '',
                     // 'allowed_maintenance' => '',
 
@@ -1502,6 +1520,8 @@ class WebpanelCustomerController
 
                 $points = $request->points ?? 0;
 
+                $add_license = $request->add_license ?? 'ไม่ระบุ';
+
      /*    } */
                 DB::table('customers')
                     ->where('id', $id)
@@ -1535,6 +1555,7 @@ class WebpanelCustomerController
                         'status_user'       => $status_user,
                         'delivery_by'       => $delivery_by,
                         'points'            => $points,
+                        'add_license'       => $add_license,
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
                     
@@ -1824,175 +1845,124 @@ class WebpanelCustomerController
 
                                 $row = fgetcsv($fileStream , 1000 , "|");
                                 // dd($row[0]);
-                                if($row[0] ??= '') {
+                                if (!empty($row[0])) {
+                                    $customer_name_new = str_replace("'", "''", $row[2] ?? '');
+                                    $address = str_replace("'", "''", $row[4] ?? '');
+                                    $cert_number = str_replace("'", "''", $row[5] ?? '');
+                                    $cert_expire_new = '31/12/2024'; // ใช้ string ตรง ๆ เลย
+                                    $cert_store = str_replace("'", "''", $row[8] ?? '');
                                 
-                                    $customer_name_new = str_replace("'", "''", $row[2]);
-                                    $address = str_replace("'", "''", $row[4]);
-                                    $cert_number = str_replace("'", "''", $row[5]);
-                                    $cert_expire_new = date('31/12/2024'); 
-                                    $cert_store = str_replace("'", "''", $row[8]); 
-                                    $cert_number = str_replace("'", "''", $row[5]);
-                
-                                    $province = explode(" ", $row[4]);
-                                    $province_new = $province[count($province) - 5];
-                                    // dd($province);
-            
-                                    if($province_new == '' || $province_new == 1) {
-                                        $province = explode(" ", $row[4]);
-                                        $province_new = $province[count($province) - 2];
-                                        
+                                    // province
+                                    $provinceArr = explode(" ", $row[4] ?? '');
+                                    $province_new = $provinceArr[count($provinceArr) - 5] ?? '';
+                                
+                                    if ($province_new === '' || $province_new === '1') {
+                                        $province_new = $provinceArr[count($provinceArr) - 2] ?? '';
                                     }
-
                                 
-                                    $province_check = DB::table('provinces')->select('name_th', 'geography_id')->where('name_th',$province_new)->first();
-                                    // dd($province_check->geography_id);
-                                    $geography_name = DB::table('geographies')->select('id', 'name')->where('id', $province_check->geography_id)->first();
-                                    $name_geography = ($geography_name->name);
-                                    // dd($name_geography);
-
-                                    $amphur = explode(" ", $row[4]);
-                                    $amphur_new = $amphur[count($amphur) - 6];
-                                    // dd($amphur_new);
-            
-                                    if($amphur_new == '' || $amphur_new == 1) {
-                                        $amphur = explode(" ", $row[4]);
-                                        $amphur_new = $amphur[count($amphur) - 9];
-                                        // dd($amphur_new);
+                                    $province_check = DB::table('provinces')
+                                        ->select('name_th', 'geography_id')
+                                        ->where('name_th', $province_new)
+                                        ->first();
+                                
+                                    $geography_name = DB::table('geographies')
+                                        ->select('id', 'name')
+                                        ->where('id', optional($province_check)->geography_id)
+                                        ->first();
+                                
+                                    $name_geography = optional($geography_name)->name ?? 'ไม่พบข้อมูล';
+                                
+                                    // amphur
+                                    $amphurArr = explode(" ", $row[4] ?? '');
+                                    $amphur_new = $amphurArr[count($amphurArr) - 6] ?? '';
+                                
+                                    if ($amphur_new === '' || $amphur_new === '1') {
+                                        $amphur_new = $amphurArr[count($amphurArr) - 9] ?? '';
                                     }
-
-                                    //check saraburi;
-                                    $check_arr = explode(" ", $row[4]);
-                                    $check_saraburi = $check_arr[count($check_arr) - 2];
-                                   
-                                   /*  $check_arr_saraburi = array_filter($check_arr, function($value) {
-                                        return $value == 'กรุงเทพมหานคร';
-                                    }); */
-
-                                    // dd($check_arr_saraburi);
-                                 
                                 
-                                    $district = explode(" ", $row[4]);
-                                    $count_arr = count($district);
-
-
-                                    if($count_arr > 13) {
-
-                                        //check saraburi;
-                                        if($check_saraburi === 'สระบุรี') {
-                                            $district_new = $district[count($district) - 10];
-
+                                    // check saraburi
+                                    $checkArr = explode(" ", $row[4] ?? '');
+                                    $check_saraburi = $checkArr[count($checkArr) - 2] ?? '';
+                                
+                                    // district
+                                    $districtArr = explode(" ", $row[4] ?? '');
+                                    $count_arr = count($districtArr);
+                                    $district_new = '';
+                                
+                                    if ($count_arr > 13) {
+                                        if ($check_saraburi === 'สระบุรี') {
+                                            $district_new = $districtArr[$count_arr - 10] ?? '';
                                         } else {
-                                            $district_new = $district[count($district) - 13];
+                                            $district_new = $districtArr[$count_arr - 13] ?? '';
                                         }
-    
-                                    } elseif ($count_arr == 13) {
-                                        // $district = explode(" ", $row[4]);
-                                        $district_new = $district[count($district) - 10];
-
-                                    } elseif ($count_arr == 12) {
-                                        // $district = explode(" ", $row[4]);
-                                        $district_new = $district[count($district) - 10];
-
-                                    } elseif ($count_arr == 11) {
-                                        // $district = explode(" ", $row[4]);
-                                        $district_new = $district[count($district) - 10];
-
+                                    } elseif ($count_arr >= 11) {
+                                        $district_new = $districtArr[$count_arr - 10] ?? '';
                                     }
-                                    
-                
-
-                                    $zip_code = explode(" ", $row[4]);
-                                    $zip_code_new = $zip_code[count($zip_code) - 1];
-        
-                                    $address = explode(" ", $row[4]);
-                                    $address_new = $zip_code[0];
-
-                                    $sale_area_new = $row[1];
-                                    if ($sale_area_new == '') {
+                                
+                                    // zip code
+                                    $zipArr = explode(" ", $row[4] ?? '');
+                                    $zip_code_new = $zipArr[count($zipArr) - 1] ?? '';
+                                
+                                    // address แรกสุด
+                                    $address_new = $zipArr[0] ?? '';
+                                
+                                    // sale area
+                                    $sale_area_new = $row[1] ?? 'ไม่ระบุ';
+                                    if ($sale_area_new === '') {
                                         $sale_area_new = 'ไม่ระบุ';
                                     }
+                                
+                                    $status_user = str_replace("'", "''", $row[10] ?? '');
+                                
+                                    // delivery
+                                    $delivery_row = $row[18] ?? 0;
+                                    $delivery_by = $delivery_row == 1 ? 'owner' : 'standard';
 
-                                    $status_user = str_replace("'", "''", $row[10]); 
+                                    $customer_id = trim($row[0] ?? '');
+                                    $customer_id = mb_convert_encoding($customer_id, 'UTF-8', 'auto');
 
-                                    //delivery;
-                                    $delivery_row = $row[18];
-                                    if($delivery_row == 1) {
-                                        $delivery_by ='owner';
-                                    } else {
-                                        $delivery_by ='standard';
-                                    }
-
-                                    $customer_id = $row[0];
-                                    $customer_code  = $row[0];
-                                    $customer_name = $customer_name_new;
-                                    $price_level = $row[7];
-                                    $email = '';
-                                    $phone = '';
-                                    $telephone = '';
-                                    $address = $address_new;
-                                    $province = $province_new;
-                                    $amphur = $amphur_new;
-                                    $district = $district_new;
-                                    $zip_code = $zip_code_new;
-                                    $geography = $geography_name;
-                                    $admin_area = '';
-                                    $sale_area = $sale_area_new;
-                                    $text_area = '';
-                                    $text_admin = '';
-                                    $cert_store = '';
-                                    $cert_medical = '';
-                                    $cert_commerce = '';
-                                    $cert_vat = '';
-                                    $cert_id = '';
-                                    $cert_number = $row[5];
-                                    $cert_expire = $cert_expire_new;
-                                    $status = 'รอดำเนินการ';
-                                    $password = '';
-                                    $status_update = '';
-                                    $type = $row[8];
-                                    $register_by = 'import_master';
-                                    $customer_status = 'active';
-                                    // $delivery_by = 'standard';
-
-                            
-                            Customer::create([
-
-                                    'customer_id' => $customer_id,
-                                    'customer_code' => $customer_code,
-                                    'customer_name' => $customer_name,
-                                    'price_level' => $price_level,
-                                    'email' => $email,
-                                    'phone' => $phone,
-                                    'telephone' => $telephone,
-                                    'address' => $address,
-                                    'province' =>  $province,
-                                    'amphur' => $amphur,
-                                    'district' => $district,
-                                    'zip_code' => $zip_code,
-                                    'geography' => $name_geography,
-                                    'admin_area' => $admin_area,
-                                    'sale_area' => $sale_area,
-                                    'text_area' => $text_area,
-                                    'text_admin' => $text_admin,
-                                    'cert_store' => $cert_store,
-                                    'cert_medical' =>  $cert_medical,
-                                    'cert_commerce' => $cert_commerce,
-                                    'cert_vat' => $cert_vat,
-                                    'cert_id' => $cert_id,
-                                    'cert_number' => $cert_number,
-                                    'cert_expire' => $cert_expire,
-                                    'status' => $status,
-                                    'password' => $password,
-                                    'status_update' => $status_update,
-                                    'type' => $type,
-                                    'points' => $row[9],
-                                    'register_by' => $register_by,
-                                    'customer_status' => $customer_status,
-                                    'status_user' => $status_user,
-                                    'delivery_by' => $delivery_by,
-        
-                                ]);
-                            }
+                                
+                                    // เตรียมข้อมูลก่อน insert
+                                    $customerData = [
+                                        'customer_id' =>$customer_id,
+                                        'customer_code' => $customer_id,
+                                        'customer_name' => $customer_name_new,
+                                        'price_level' => $row[7] ?? '',
+                                        'email' => '',
+                                        'phone' => '',
+                                        'telephone' => '',
+                                        'address' => $address_new,
+                                        'province' => $province_new,
+                                        'amphur' => $amphur_new,
+                                        'district' => $district_new,
+                                        'zip_code' => $zip_code_new,
+                                        'geography' => $name_geography,
+                                        'admin_area' => '',
+                                        'sale_area' => $sale_area_new,
+                                        'text_area' => '',
+                                        'text_admin' => '',
+                                        'cert_store' => '',
+                                        'cert_medical' => '',
+                                        'cert_commerce' => '',
+                                        'cert_vat' => '',
+                                        'cert_id' => '',
+                                        'cert_number' => $row[5] ?? '',
+                                        'cert_expire' => $cert_expire_new,
+                                        'status' => 'รอดำเนินการ',
+                                        'password' => '',
+                                        'status_update' => '',
+                                        'type' => $row[8] ?? '',
+                                        'points' => (int) ($row[9] ?? 0),
+                                        'register_by' => 'import_master',
+                                        'customer_status' => 'active',
+                                        'status_user' => $status_user,
+                                        'delivery_by' => $delivery_by,
+                                        'add_license' => 'ไม่ระบุ'
+                                    ];
+                                
+                                    Customer::create($customerData);
+                                }
+                                
 
                         }
 
