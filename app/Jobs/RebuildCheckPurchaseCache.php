@@ -23,11 +23,28 @@ class RebuildCheckPurchaseCache implements ShouldQueue
 
             // Subquery: หาค่า date_purchase ล่าสุด
             $subQuery = ReportSeller::select('customer_id')
-                            ->selectRaw('MAX(date_purchase) as max_date')
-                            ->whereNotIn('customer_id', $code_notin)
-                            ->groupBy('customer_id');
+                        ->selectRaw('MAX(date_purchase) as max_date')
+                        ->whereNotIn('customer_id', $code_notin)
+                        ->groupBy('customer_id');
 
-            $check_purchase = ReportSeller::from('report_sellers as rs')
+            Cache::remember('check_purchase', now()->addMinutes(30), function () use ($subQuery) {
+                return ReportSeller::from('report_sellers as rs')
+                    ->joinSub($subQuery, 't', function ($join) {
+                        $join->on('rs.customer_id', '=', 't.customer_id')
+                            ->on('rs.date_purchase', '=', 't.max_date');
+                    })
+                    ->select('rs.customer_id', 'rs.date_purchase')
+                    ->orderByDesc('rs.date_purchase')
+                    ->get();
+                });
+          
+            // Subquery: หาค่า date_purchase ล่าสุด
+            /*   $subQuery = ReportSeller::select('customer_id')
+            ->selectRaw('MAX(date_purchase) as max_date')
+            ->whereNotIn('customer_id', $code_notin)
+            ->groupBy('customer_id'); */
+            
+           /*  $check_purchase = ReportSeller::from('report_sellers as rs')
                                 ->joinSub($subQuery, 't', function ($join) {
                                     $join->on('rs.customer_id', '=', 't.customer_id')
                                         ->on('rs.date_purchase', '=', 't.max_date');
@@ -36,9 +53,8 @@ class RebuildCheckPurchaseCache implements ShouldQueue
                                 ->orderByDesc('rs.date_purchase')
                                 ->get();
 
-            // เก็บ cache
-            // Cache::put('check_purchase', $check_purchase, now()->addHours(1)); // เก็บ 1 ชั่วโมง หรือปรับตามต้องการ
-            Cache::put('check_purchase', $check_purchase, now()->addMinutes(30));
+                                // เก็บ cache
+            Cache::put('check_purchase', $check_purchase, now()->addHours(1)); // เก็บ 1 ชั่วโมง หรือปรับตามต้องการ */
 
         }
 }

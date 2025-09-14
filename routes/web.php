@@ -311,6 +311,10 @@ Route::middleware('statusOnline')->group(function (){
         //update status-wating;
         Route::post('/webpanel/customer/update-status/wating', [WebpanelCustomerController::class, 'updateStatusWating']);
 
+        //cache_clear;
+        Route::get('/webpanel/customer/check/{cache_clear}', [WebpanelCustomerController::class, 'index']);
+
+
     });
 
     // Route::get('/webpanel/customer-status', [LogStatusController::class, 'create']);

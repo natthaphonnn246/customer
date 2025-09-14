@@ -33,10 +33,11 @@ use App\Enums\CustomerStatusEnum;
 use Illuminate\Support\Facades\Cache;
 use App\Jobs\RebuildCheckPurchaseCache;
 
+
 class WebpanelCustomerController
 {
     
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         // dd(strtotime('2025-04-21'));
         $page = $request->page;
@@ -56,8 +57,17 @@ class WebpanelCustomerController
         //notin code;
         $code_notin = ['0000', '4494', '7787','8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
+        if(($request->cache_clear ?? '') == 'cache') {
+            // ลบ cache เก่า
+            // dd($request->cache_clear);
+            Cache::forget('check_purchase');
+
+            return redirect()->back()->with('success_cache', 'cache_clear');
+
+        }
         RebuildCheckPurchaseCache::dispatchSync(); // Job จะรันทันที
         $check_purchase = Cache::get('check_purchase', collect());
+
         // dd($check_purchase);
        // รันทันทีไม่ใช้ queue
 

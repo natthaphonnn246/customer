@@ -195,6 +195,20 @@
             background-color: #05b136;
             color: #ffffff;
         }
+        #cache {
+            background-color: #ffdb49;
+            color: #383729;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #cache:hover {
+            background-color: #ffd000;
+            color: #2e2d1d;
+        }
         #statuswating {
             background-color: #ee2a18;
             color: #ffffff;
@@ -503,6 +517,35 @@
         </script>
 
         <hr class="my-4" style="color: #8E8E8E; width: 100%;">
+
+        <div class="ms-6 text-left">
+            <a href="/webpanel/customer/check/cache"  id="cache" class="btn" type="submit"  name="" style="width: 220px; padding: 8px;"><i class="fa-solid fa-trash"></i> เคลียร์แคลช</a>
+
+            <p class="text-sm text-gray-500 mt-2" style="font-weight:400">
+                *เคลียร์หลัง import csv รายงานขาย
+            </p>
+        </div>
+
+        <hr class="my-4" style="color: #8E8E8E; width: 100%;">
+
+        @if (session('success_cache') == 'cache_clear')
+            <script> 
+                    $('#bg').css('display', 'none');
+                    Swal.fire({
+                        title: "สำเร็จ",
+                        text: "เคลียร์แคลชเรียบร้อย",
+                        icon: "success",
+                        // showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        // cancelButtonColor: "#d33",
+                        confirmButtonText: "ตกลง"
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+            </script>
+        @endif
 
         <div class="ms-6" style="text-align: left;">
 

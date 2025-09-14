@@ -6532,6 +6532,9 @@ class ReportSellerController extends Controller
         }
         $count = ReportSeller::all()->count();
 
+/*         // ลบ cache เก่า
+        Cache::forget('check_purchase'); */
+        
         // dispatch job rebuild cache ทันที
         // RebuildCheckPurchaseCache::dispatch();
         RebuildCheckPurchaseCache::dispatchSync();
