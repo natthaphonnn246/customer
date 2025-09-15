@@ -22,7 +22,7 @@ class RebuildCheckPurchaseCache implements ShouldQueue
             $code_notin = ['0000','4494','7787','8118','9000','9001','9002','9003','9004','9005','9006','9007','9008','9009','9010','9011'];
 
             // Subquery: หาค่า date_purchase ล่าสุด
-          /*   $subQuery = ReportSeller::select('customer_id')
+            $subQuery = ReportSeller::select('customer_id')
                         ->selectRaw('MAX(date_purchase) as max_date')
                         ->whereNotIn('customer_id', $code_notin)
                         ->groupBy('customer_id');
@@ -36,9 +36,10 @@ class RebuildCheckPurchaseCache implements ShouldQueue
                     ->select('rs.customer_id', 'rs.date_purchase')
                     ->orderByDesc('rs.date_purchase')
                     ->get();
-                }); */
+                });
 
-                Cache::remember('check_purchase', now()->addMinutes(30), function () use ($code_notin) {
+                //เร็วสุด;
+              /*   Cache::remember('check_purchase', now()->addMinutes(30), function () use ($code_notin) {
                     return DB::table(DB::raw("
                         (
                             SELECT customer_id, date_purchase,
@@ -50,9 +51,7 @@ class RebuildCheckPurchaseCache implements ShouldQueue
                     ->where('row_num', 1)
                     ->orderBy('customer_id', 'asc')
                     ->get();
-                });
-                
-                
-          
+                }); */
+
         }
 }
