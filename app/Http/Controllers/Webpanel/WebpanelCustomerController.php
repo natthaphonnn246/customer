@@ -47,6 +47,13 @@ class WebpanelCustomerController
             $page = 1;
         }
 
+        $page_job = $request->page;
+        if ($page_job) {
+            $page_job = $request->page;
+        } else {
+            $page_job = 1;
+        }
+
         //แสดงข้อมูลลูกค้า;
         $row_customer = Customer::viewCustomer($page);
         $customer = $row_customer[0];
@@ -57,6 +64,10 @@ class WebpanelCustomerController
         //notin code;
         $code_notin = ['0000', '4494', '7787','8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
+        $page_job = request()->get('page', 1); // หรือค่าที่ต้องการ
+        $perPage  = 10;
+        
+        
         if(($request->cache_clear ?? '') == 'cache') {
             // ลบ cache เก่า
             // dd($request->cache_clear);
@@ -68,7 +79,12 @@ class WebpanelCustomerController
         RebuildCheckPurchaseCache::dispatchSync(); // Job จะรันทันที
         $check_purchase = Cache::get('check_purchase', collect());
 
-        // dd($check_purchase);
+
+        // dd(collect($check_purchase->items())->pluck('customer_id'));
+
+
+        
+
        // รันทันทีไม่ใช้ queue
 
 
@@ -264,7 +280,7 @@ class WebpanelCustomerController
                                                         'report_seller' */
                                                         // 'check_id',
                                                         'check_purchase',
-                                                        'stats'
+                                                        'stats',
                                                     ));
         
             }
@@ -313,7 +329,7 @@ class WebpanelCustomerController
                                                 'user_id_admin',
                                                 // 'check_id',
                                                 'check_purchase',
-                                                'stats'
+                                                'stats',
                                                 /* 'diffDay_five',
                                                 'diffDay_seven', */
                                             ));

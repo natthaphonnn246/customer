@@ -22,7 +22,7 @@ class RebuildCheckPurchaseCache implements ShouldQueue
             $code_notin = ['0000','4494','7787','8118','9000','9001','9002','9003','9004','9005','9006','9007','9008','9009','9010','9011'];
 
             // Subquery: หาค่า date_purchase ล่าสุด
-            $subQuery = ReportSeller::select('customer_id')
+          /*   $subQuery = ReportSeller::select('customer_id')
                         ->selectRaw('MAX(date_purchase) as max_date')
                         ->whereNotIn('customer_id', $code_notin)
                         ->groupBy('customer_id');
@@ -36,25 +36,23 @@ class RebuildCheckPurchaseCache implements ShouldQueue
                     ->select('rs.customer_id', 'rs.date_purchase')
                     ->orderByDesc('rs.date_purchase')
                     ->get();
+                }); */
+
+                Cache::remember('check_purchase', now()->addMinutes(30), function () use ($code_notin) {
+                    return DB::table(DB::raw("
+                        (
+                            SELECT customer_id, date_purchase,
+                                   ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY date_purchase DESC) as row_num
+                            FROM report_sellers
+                            WHERE customer_id NOT IN (" . implode(',', $code_notin) . ")
+                        ) as sub
+                    "))
+                    ->where('row_num', 1)
+                    ->orderBy('customer_id', 'asc')
+                    ->get();
                 });
+                
+                
           
-            // Subquery: หาค่า date_purchase ล่าสุด
-            /*   $subQuery = ReportSeller::select('customer_id')
-            ->selectRaw('MAX(date_purchase) as max_date')
-            ->whereNotIn('customer_id', $code_notin)
-            ->groupBy('customer_id'); */
-            
-           /*  $check_purchase = ReportSeller::from('report_sellers as rs')
-                                ->joinSub($subQuery, 't', function ($join) {
-                                    $join->on('rs.customer_id', '=', 't.customer_id')
-                                        ->on('rs.date_purchase', '=', 't.max_date');
-                                })
-                                ->select('rs.customer_id', 'rs.date_purchase')
-                                ->orderByDesc('rs.date_purchase')
-                                ->get();
-
-                                // เก็บ cache
-            Cache::put('check_purchase', $check_purchase, now()->addHours(1)); // เก็บ 1 ชั่วโมง หรือปรับตามต้องการ */
-
         }
 }

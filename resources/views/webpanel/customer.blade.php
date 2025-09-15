@@ -839,19 +839,28 @@
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px;"><span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(184, 184, 184);">NULL</span></td>
                         @endif
 
-                        {{-- {{ strtotime('2025-04-21'); }} --}}
-                        <!-- Order -->
-
+                        
                         @if(isset($user_code) && $user_code != '')
+                        
                             @if(!empty($check_purchase))
                                 @php 
+
+                                // $id_purchase = collect($check_purchase->items())->firstWhere('customer_id', $user_code)?->customer_id;
+
+                                // $item = collect($check_purchase->items())->firstWhere('customer_id', $user_code);
+                                // $id_purchase = $item?->customer_id;
+
                                 $id_purchase = $check_purchase->firstWhere('customer_id', $user_code)?->customer_id;
+
                                 @endphp
 
                                 @if ($id_purchase == $user_code)
 
                                 @php 
                                 $item = $check_purchase->firstWhere('customer_id', $user_code);
+                                // $item = collect($check_purchase->items())->firstWhere('customer_id', $user_code);
+
+                          
                                 @endphp
                                 
                                     @if ($item)
