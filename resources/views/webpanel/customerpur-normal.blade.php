@@ -514,7 +514,7 @@
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px;"><span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(184, 184, 184);">NULL</span></td>
                         @endif
 
-                        @if(empty($check_id))
+                        @if(!empty($check_id))
                             @php 
                             $id_purchase = $check_id->firstWhere('customer_id', $user_code)?->customer_id;
                             @endphp

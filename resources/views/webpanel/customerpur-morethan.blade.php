@@ -516,7 +516,9 @@
 
                         @if(!empty($check_id))
                             @php 
-                            $id_purchase = $check_id->firstWhere('customer_id', $user_code)?->customer_id;
+                            // $id_purchase = $check_id->firstWhere('customer_id', $user_code)?->customer_id; //สำหรับ get();
+                            $id_purchase = $check_id->contains($user_code) ? $user_code : null;
+
                             @endphp
 
                             @if ($id_purchase == $user_code)
@@ -529,6 +531,7 @@
                                     @php
                                         $check_over_5 = \Carbon\Carbon::parse($item->date_purchase)->addDays(5)->lessThan(now());
                                         $check_over_7 = \Carbon\Carbon::parse($item->date_purchase)->addDays(7)->lessThan(now());
+
                                     @endphp
                                 
                                     <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
