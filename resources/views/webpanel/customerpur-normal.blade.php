@@ -516,7 +516,8 @@
 
                         @if(!empty($check_id))
                             @php 
-                            $id_purchase = $check_id->firstWhere('customer_id', $user_code)?->customer_id;
+                            // $id_purchase = $check_id->firstWhere('customer_id', $user_code)?->customer_id;
+                            $id_purchase = $check_id->contains($user_code) ? $user_code : null;
                             @endphp
 
                             @if ($id_purchase == $user_code)
