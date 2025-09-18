@@ -514,73 +514,32 @@
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px;"><span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(184, 184, 184);">NULL</span></td>
                         @endif
 
-                        @if(!empty($check_id))
-                            @php 
-                            // $id_purchase = $check_id->firstWhere('customer_id', $user_code)?->customer_id;
-                            $id_purchase = $check_id->contains($user_code) ? $user_code : null;
-                            
-                            @endphp
-
-                            @if ($id_purchase == $user_code)
-
-                            @php 
-                            $item = $check_purchase->firstWhere('customer_id', $user_code);
-                            @endphp
-                            
-                                @if ($item)
-                                    @php
-                                        $check_over_5 = \Carbon\Carbon::parse($item->date_purchase)->addDays(5)->lessThan(now());
-                                        $check_over_7 = \Carbon\Carbon::parse($item->date_purchase)->addDays(7)->lessThan(now());
-                                    @endphp
+                        @if(isset($user_code) && $user_code != '')
+                            @if(!empty($check_id))
+                                @php 
+                                // $id_purchase = $check_id->firstWhere('customer_id', $user_code)?->customer_id;
+                                $id_purchase = $check_id->contains($user_code) ? $user_code : null;
                                 
-                                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
-                                        @if ($check_over_7)
-                                        <span id="less{{ $user_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(236, 59, 59);">
-                                            ไม่สั่งเกิน 7 วัน
-                                        </span>
-                                        
-                                        <div class="modal fade" style="margin-top:40px;" id="staticBackdrop_normal{{ $user_code }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-lg">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <span class="modal-title" id="staticBackdropLabel">ร้านค้า : {{ $user_code }} | {{ $user_name }}</span>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    
-                                                    <div class="modal-body">
-                                                        <div class="mb-2" style="text-align: left;">
-                                                            เลขที่: <span id="order-number{{ $user_code }}"></span> |
-                                                            <span style="background-color: #e04b30; color:white; border-radius:5px; padding:3px;" id="date-number{{ $user_code }}"></span>
-                                                        </div>
-                                                        <div class="relative overflow-x-auto">
-                                                            <table class="w-full text-left">
-                                                                <thead style="background-color:#222222; color:rgb(255, 255, 255);">
-                                                                    <tr>
-                                                                        <td class="px-6 py-3 text-center">รหัสสินค้า</td>
-                                                                        <td class="px-6 py-3">ชื่อสินค้า</td>
-                                                                        <td class="px-6 py-3 text-center">หน่วย</td>
-                                                                        <td class="px-6 py-3 text-center">จำนวน</td>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody id="result-area{{ $user_code }}">
-                                                                    <tr>
-                                                                        <td colspan="4" class="text-center py-4">กำลังโหลดข้อมูล...</td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                
-                                                </div>
-                                            </div>
-                                        </div>
+                                @endphp
 
+                                @if ($id_purchase == $user_code)
+
+                                @php 
+                                $item = $check_purchase->firstWhere('customer_id', $user_code);
+                                @endphp
+                                
+                                    @if ($item)
+                                        @php
+                                            $check_over_5 = \Carbon\Carbon::parse($item->date_purchase)->addDays(5)->lessThan(now());
+                                            $check_over_7 = \Carbon\Carbon::parse($item->date_purchase)->addDays(7)->lessThan(now());
+                                        @endphp
+                                    
+                                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
+                                            @if ($check_over_7)
+                                            <span id="less{{ $user_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(236, 59, 59);">
+                                                ไม่สั่งเกิน 7 วัน
+                                            </span>
                                             
-                                        @elseif ($check_over_5)
-                                            <span id="less{{ $user_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:#ffa51d;">
-                                                ใกล้ครบกำหนด
-                                            </span>
-
                                             <div class="modal fade" style="margin-top:40px;" id="staticBackdrop_normal{{ $user_code }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg">
                                                     <div class="modal-content">
@@ -592,7 +551,7 @@
                                                         <div class="modal-body">
                                                             <div class="mb-2" style="text-align: left;">
                                                                 เลขที่: <span id="order-number{{ $user_code }}"></span> |
-                                                                <span style="background-color: #ffa51d; color:white; border-radius:5px; padding:3px;" id="date-number{{ $user_code }}"></span>
+                                                                <span style="background-color: #e04b30; color:white; border-radius:5px; padding:3px;" id="date-number{{ $user_code }}"></span>
                                                             </div>
                                                             <div class="relative overflow-x-auto">
                                                                 <table class="w-full text-left">
@@ -616,138 +575,188 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        @else
 
-                                            <span id="less{{ $user_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(51, 197, 14);">
-                                                สั่งตามปกติ
-                                            </span>
+                                                
+                                            @elseif ($check_over_5)
+                                                <span id="less{{ $user_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:#ffa51d;">
+                                                    ใกล้ครบกำหนด
+                                                </span>
 
-                                            <div class="modal fade" style="margin-top:40px;" id="staticBackdrop_normal{{ $user_code }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <span class="modal-title" id="staticBackdropLabel">ร้านค้า : {{ $user_code }} | {{ $user_name }}</span>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
+                                                <div class="modal fade" style="margin-top:40px;" id="staticBackdrop_normal{{ $user_code }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <span class="modal-title" id="staticBackdropLabel">ร้านค้า : {{ $user_code }} | {{ $user_name }}</span>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            
+                                                            <div class="modal-body">
+                                                                <div class="mb-2" style="text-align: left;">
+                                                                    เลขที่: <span id="order-number{{ $user_code }}"></span> |
+                                                                    <span style="background-color: #ffa51d; color:white; border-radius:5px; padding:3px;" id="date-number{{ $user_code }}"></span>
+                                                                </div>
+                                                                <div class="relative overflow-x-auto">
+                                                                    <table class="w-full text-left">
+                                                                        <thead style="background-color:#222222; color:rgb(255, 255, 255);">
+                                                                            <tr>
+                                                                                <td class="px-6 py-3 text-center">รหัสสินค้า</td>
+                                                                                <td class="px-6 py-3">ชื่อสินค้า</td>
+                                                                                <td class="px-6 py-3 text-center">หน่วย</td>
+                                                                                <td class="px-6 py-3 text-center">จำนวน</td>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="result-area{{ $user_code }}">
+                                                                            <tr>
+                                                                                <td colspan="4" class="text-center py-4">กำลังโหลดข้อมูล...</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
                                                         
-                                                        <div class="modal-body">
-                                                            <div class="mb-2" style="text-align: left;">
-                                                                เลขที่: <span id="order-number{{ $user_code }}"></span> |
-                                                                <span style="background-color: #09be0f; color:white; border-radius:5px; padding:3px;" id="date-number{{ $user_code }}"></span>
-                                                            </div>
-                                                            <div class="relative overflow-x-auto">
-                                                                <table class="w-full text-left">
-                                                                    <thead style="background-color:#222222; color:rgb(255, 255, 255);">
-                                                                        <tr>
-                                                                            <td class="px-6 py-3 text-center">รหัสสินค้า</td>
-                                                                            <td class="px-6 py-3">ชื่อสินค้า</td>
-                                                                            <td class="px-6 py-3 text-center">หน่วย</td>
-                                                                            <td class="px-6 py-3 text-center">จำนวน</td>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody id="result-area{{ $user_code }}">
-                                                                        <tr>
-                                                                            <td colspan="4" class="text-center py-4">กำลังโหลดข้อมูล...</td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
                                                         </div>
-                                                    
                                                     </div>
                                                 </div>
-                                            </div>
-                                        @endif
-                                    </td>
-                                @endif
+                                            @else
 
-                                <!-- แสดงรายการสินค้าสุดท้าย -->
-                                <script>
-                                    $(document).ready(function() {
-                                        const use_id = "{{ $user_code }}";
-                                        const modalId = '#staticBackdrop_normal{{ $user_code }}';
-                                
-                                        $('#less{{ $user_code }}').click(function(e) {
-                                            e.preventDefault();
-                                
-                                            fetch('/webpanel/customer/purchase', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                                },
-                                                body: JSON.stringify({ use_id: use_id })
-                                            })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                const resultArea  = document.getElementById('result-area{{ $user_code }}');
-                                                const orderNumber = document.getElementById('order-number{{ $user_code }}');
-                                                const datePur     = document.getElementById('date-number{{ $user_code }}');
-                                
-                                                if (Array.isArray(data.use_id) && data.use_id.length > 0) {
-                                                    let rows  = '' ;
-                                                    let total = 0 ;
-                                                    data.use_id.forEach(item => {
+                                                <span id="less{{ $user_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(51, 197, 14);">
+                                                    สั่งตามปกติ
+                                                </span>
+
+                                                <div class="modal fade" style="margin-top:40px;" id="staticBackdrop_normal{{ $user_code }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <span class="modal-title" id="staticBackdropLabel">ร้านค้า : {{ $user_code }} | {{ $user_name }}</span>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            
+                                                            <div class="modal-body">
+                                                                <div class="mb-2" style="text-align: left;">
+                                                                    เลขที่: <span id="order-number{{ $user_code }}"></span> |
+                                                                    <span style="background-color: #09be0f; color:white; border-radius:5px; padding:3px;" id="date-number{{ $user_code }}"></span>
+                                                                </div>
+                                                                <div class="relative overflow-x-auto">
+                                                                    <table class="w-full text-left">
+                                                                        <thead style="background-color:#222222; color:rgb(255, 255, 255);">
+                                                                            <tr>
+                                                                                <td class="px-6 py-3 text-center">รหัสสินค้า</td>
+                                                                                <td class="px-6 py-3">ชื่อสินค้า</td>
+                                                                                <td class="px-6 py-3 text-center">หน่วย</td>
+                                                                                <td class="px-6 py-3 text-center">จำนวน</td>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="result-area{{ $user_code }}">
+                                                                            <tr>
+                                                                                <td colspan="4" class="text-center py-4">กำลังโหลดข้อมูล...</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </td>
+                                    @endif
+
+                                    <!-- แสดงรายการสินค้าสุดท้าย -->
+                                    <script>
+                                        $(document).ready(function() {
+                                            const use_id = "{{ $user_code }}";
+                                            const modalId = '#staticBackdrop_normal{{ $user_code }}';
+                                    
+                                            $('#less{{ $user_code }}').click(function(e) {
+                                                e.preventDefault();
+                                    
+                                                fetch('/webpanel/customer/purchase', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                                    },
+                                                    body: JSON.stringify({ use_id: use_id })
+                                                })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    const resultArea  = document.getElementById('result-area{{ $user_code }}');
+                                                    const orderNumber = document.getElementById('order-number{{ $user_code }}');
+                                                    const datePur     = document.getElementById('date-number{{ $user_code }}');
+                                    
+                                                    if (Array.isArray(data.use_id) && data.use_id.length > 0) {
+                                                        let rows  = '' ;
+                                                        let total = 0 ;
+                                                        data.use_id.forEach(item => {
+                                                            rows += `
+                                                                <tr>
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">${item.product_id}</td>
+                                                                    <td class="border border-gray-300 px-4 py-2">${item.product_name}</td>
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">${item.unit}</td>
+                                                                    <td class="border border-gray-300 px-4 py-2 text-center">${item.quantity}</td>
+                                        
+                                                                </tr>
+                                                            `;
+                                                            po_number     = `${item.purchase_order}`;
+                                                            date_purchase = `${item.date_purchase}`;
+
+                                                            total += Number(item.total_sale ?? 0);
+                                                            
+                                                        });
+
+                                                            
                                                         rows += `
                                                             <tr>
-                                                                <td class="border border-gray-300 px-4 py-2 text-center">${item.product_id}</td>
-                                                                <td class="border border-gray-300 px-4 py-2">${item.product_name}</td>
-                                                                <td class="border border-gray-300 px-4 py-2 text-center">${item.unit}</td>
-                                                                <td class="border border-gray-300 px-4 py-2 text-center">${item.quantity}</td>
-                                    
+                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">รวมเป็นเงิน</td>
+                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">฿${total.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
                                                             </tr>
                                                         `;
-                                                        po_number     = `${item.purchase_order}`;
-                                                        date_purchase = `${item.date_purchase}`;
-
-                                                        total += Number(item.total_sale ?? 0);
-                                                        
-                                                    });
-
-                                                        
-                                                    rows += `
-                                                        <tr>
-                                                            <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">รวมเป็นเงิน</td>
-                                                            <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">฿${total.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
-                                                        </tr>
-                                                    `;
-                                                                                        
-                                                    resultArea.innerHTML  = rows;
-                                                    orderNumber.innerHTML = po_number ?? '';
-                                                    datePur.innerHTML     = date_purchase ?? '';
-                                                } else {
+                                                                                            
+                                                        resultArea.innerHTML  = rows;
+                                                        orderNumber.innerHTML = po_number ?? '';
+                                                        datePur.innerHTML     = date_purchase ?? '';
+                                                    } else {
+                                                        resultArea.innerHTML = `
+                                                            <tr>
+                                                                <td colspan="4" class="text-center text-red-500 py-4">ไม่พบข้อมูล</td>
+                                                            </tr>
+                                                        `;
+                                                        orderNumber.innerHTML = '';
+                                                    }
+                                    
+                                                    // เปิด Modal
+                                                    const myModal = new bootstrap.Modal(document.querySelector(modalId));
+                                                    myModal.show();
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error:', error);
+                                                    const resultArea = document.getElementById('result-area{{ $user_code }}');
                                                     resultArea.innerHTML = `
                                                         <tr>
-                                                            <td colspan="4" class="text-center text-red-500 py-4">ไม่พบข้อมูล</td>
+                                                            <td colspan="4" class="text-center text-red-500 py-4">เกิดข้อผิดพลาดในการโหลดข้อมูล</td>
                                                         </tr>
                                                     `;
-                                                    orderNumber.innerHTML = '';
-                                                }
-                                
-                                                // เปิด Modal
-                                                const myModal = new bootstrap.Modal(document.querySelector(modalId));
-                                                myModal.show();
-                                            })
-                                            .catch(error => {
-                                                console.error('Error:', error);
-                                                const resultArea = document.getElementById('result-area{{ $user_code }}');
-                                                resultArea.innerHTML = `
-                                                    <tr>
-                                                        <td colspan="4" class="text-center text-red-500 py-4">เกิดข้อผิดพลาดในการโหลดข้อมูล</td>
-                                                    </tr>
-                                                `;
+                                                });
                                             });
                                         });
-                                    });
-                                </script>
-                            @else
-                                <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
-                                    <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(144, 209, 245);">
-                                        ไม่พบการสั่ง
-                                    </span>
-                                </td>
+                                    </script>
+                                @else
+                                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
+                                        <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(144, 209, 245);">
+                                            ไม่พบการสั่ง
+                                        </span>
+                                    </td>
+                                @endif
+                                
                             @endif
-                            
+
+                        @else
+                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
+                            <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(146, 146, 146);">
+                                ไม่ระบุ CODE
+                            </span>
+                        </td>
                         @endif
 
                         <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">{{$created_at}}</td>
