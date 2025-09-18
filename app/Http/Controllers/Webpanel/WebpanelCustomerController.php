@@ -3057,34 +3057,45 @@ class WebpanelCustomerController
                 // dd($total_page);
                 $start = ($perpage * $page) - $perpage;
 
-                $result_status = DB::table('customers')->select(
-                                                                'customers.customer_id',
+      /*           $sub_r = DB::tabel('report_sellers as r')
+                        ->select(
+                                'r.customer_id',
+                                'r.date_purchase'
+                                )
+                        ->groupBy(
+                                'r.customer_id',
+                                'r.date_purchase'
+                        ); */
+             
+
+                $result_status = DB::table('customers as c')->select(
+                                                                'c.customer_id',
                                                                 // DB::raw('DISTINCT(customers.customer_id) AS customer_id'),
-                                                                'customers.customer_name',
-                                                                'customers.status',
-                                                                'customers.updated_at',
-                                                                'sale_area',
-                                                                'admin_area'
+                                                                'c.customer_name',
+                                                                'c.status',
+                                                                'c.updated_at',
+                                                                'c.sale_area',
+                                                                'c.admin_area'
                                                                 )
-                                                                ->join('report_sellers', function (JoinClause $join) {
-                                                                    $join->on('customers.customer_id', '=', 'report_sellers.customer_id');
+                                                                ->join('report_sellers as r', function (JoinClause $join) {
+                                                                    $join->on('c.customer_id', '=', 'r.customer_id');
                                                                 })
-                                                                ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
-                                                                ->whereNotIn('customers.customer_id', $code_notin)
-                                                                ->whereIn('status', [
+                                                                ->whereBetween('r.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
+                                                                ->whereNotIn('c.customer_id', $code_notin)
+                                                                ->whereIn('c.status', [
                                                                                         CustomerStatusEnum::Waiting->value,
                                                                                         CustomerStatusEnum::Following->value,
                                                                                         CustomerStatusEnum::Completed->value
                                                                                     ])
                                                                 ->groupBy(
-                                                                            'customers.customer_id', 
-                                                                            'customers.customer_name', 
-                                                                            'customers.status', 
-                                                                            'customers.updated_at',
-                                                                            'customers.sale_area',
-                                                                            'admin_area'
+                                                                            'c.customer_id', 
+                                                                            'c.customer_name', 
+                                                                            'c.status', 
+                                                                            'c.updated_at',
+                                                                            'c.sale_area',
+                                                                            'c.admin_area'
                                                                             )
-                                                                ->orderBy('customers.customer_id', 'asc')
+                                                                ->orderBy('c.customer_id', 'asc')
                                                                 ->offset($start)
                                                                 ->limit($perpage)
                                                                 ->get();
@@ -3111,7 +3122,7 @@ class WebpanelCustomerController
                                         })
                                         ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
                                         ->whereNotIn('customers.customer_id', $code_notin)
-                                        ->whereIn('status', [ CustomerStatusEnum::Completed->value])
+                                        ->whereIn('status', [CustomerStatusEnum::Completed->value])
                                         ->distinct()
                                         ->count('customers.customer_id');   
                                 
@@ -3121,7 +3132,7 @@ class WebpanelCustomerController
                                         })
                                         ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
                                         ->whereNotIn('customers.customer_id', $code_notin)
-                                        ->whereIn('status', [ CustomerStatusEnum::Following->value])
+                                        ->whereIn('status', [CustomerStatusEnum::Following->value])
                                         ->distinct()
                                         ->count('customers.customer_id');   
 
@@ -3131,7 +3142,7 @@ class WebpanelCustomerController
                                         })
                                         ->whereBetween('report_sellers.date_purchase', [$year_date.'-01-01', $year_date.'-12-31'])
                                         ->whereNotIn('customers.customer_id', $code_notin)
-                                        ->whereIn('status', [ CustomerStatusEnum::Waiting->value])
+                                        ->whereIn('status', [CustomerStatusEnum::Waiting->value])
                                         ->distinct()
                                         ->count('customers.customer_id');  
                                 

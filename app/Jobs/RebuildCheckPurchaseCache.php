@@ -39,7 +39,8 @@ class RebuildCheckPurchaseCache implements ShouldQueue
                 }); */
 
                 //เร็วสุด;
-                Cache::remember('check_purchase', now()->addMinutes(30), function () use ($code_notin) {
+                // now()->addMinutes(30)
+                Cache::remember('check_purchase', now()->addHours(1), function () use ($code_notin) {
                     return DB::table(DB::raw("
                         (
                             SELECT customer_id, date_purchase,

@@ -244,6 +244,91 @@
             @endif
         @endsection
 
+        @php
+            $year = date('Y') + 543; 
+        @endphp
+  {{--       <script>
+       Swal.fire({
+                    title: 'กรุณาตรวจสอบ',
+                    html: `
+                        <p style="color: red;">CODE</p>
+                        <p style="color: blue;">ชื่อร้าน (ถ้าเปลี่ยนแปลงกรุณาแจ้งด้วย)*</p>
+                            <p style="color: red;">ใบอนุญาตขายยาปี {{ $year }}</p>
+                        <p style="color: green;">เลขที่ใบอนุญาต</p>
+                        <p style="color: orange;">วันหมดอายุ</p>
+                    `,
+                    icon: "warning",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "ตกลง"
+               /*      }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    } */
+                });
+
+        </script> --}}
+
+                            <!-- Modal -->
+<div class="modal fade" id="checkModal" tabindex="-1" aria-labelledby="checkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h5 class="modal-title w-100 text-center" style="font-size: 24px; font-weight:500; color: rgb(68, 68, 68);">กรุณาตรวจสอบ</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+        </div>
+        <div class="modal-body text-left">
+          <p style="color: rgb(0, 68, 255);"><i class="fa-regular fa-square-check"></i> CODE</p>
+          <p style="color: rgb(255, 62, 62);"><i class="fa-regular fa-square-check"></i> ชื่อร้าน (ถ้าเปลี่ยนแปลงกรุณาแจ้งด้วย)*</p>
+          <p style="color: rgb(255, 0, 162);"><i class="fa-regular fa-square-check"></i> ใบอนุญาตขายยา/สถานพยาบาลปี {{ $year }}</p>
+          <p style="color: rgb(132, 0, 255);"><i class="fa-regular fa-square-check"></i> ใบประกอบเช็กเลข ภ. และชื่อผู้ปฏิบัติหน้าที่ ข้อมูลต้องตรงกับใบอนุญาตขายยา</p>
+          <p style="color: green;"><i class="fa-regular fa-square-check"></i> เลขที่ใบอนุญาต</p>
+          <p style="color: rgb(255, 119, 0);"><i class="fa-regular fa-square-check"></i> วันหมดอายุ</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="acknowledgeBtn" class="btn btn-primary">รับทราบ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var myModal = new bootstrap.Modal(document.getElementById('checkModal'));
+    
+        // แสดง modal ถ้า flag skipModalUpdateForm ไม่อยู่
+        if (!sessionStorage.getItem('skipModalUpdateForm')) {
+            myModal.show();
+        } else {
+            // ลบ flag → ครั้งต่อไปเปิดหน้าใหม่ modal จะแสดง
+            sessionStorage.removeItem('skipModalUpdateForm');
+        }
+    
+        // ปุ่มรับทราบ modal
+        const acknowledgeBtn = document.getElementById('acknowledgeBtn');
+        if (acknowledgeBtn) {
+            acknowledgeBtn.addEventListener('click', function() {
+                myModal.hide();
+            });
+        }
+    
+        // จับ submit ของ form (updateForm)
+        const updateFormBtn = document.getElementById('updateForm');
+        if (updateFormBtn) {
+            updateFormBtn.addEventListener('click', function() {
+                // ตั้ง flag ก่อน reload → modal จะไม่แสดงตอน reload
+                sessionStorage.setItem('skipModalUpdateForm', 'true');
+                // form จะ submit ตามปกติ
+            });
+        }
+    });
+    </script>
+    
+    
+
+  
+                
+  
+
         <div class="py-2">
         </div>
         <span class="ms-6" style="color: #8E8E8E;"><a href="/portal/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / รายละเอียด</span>
@@ -921,6 +1006,9 @@
                             });
 
                     </script>
+        
+        
+        
 
                     <!--- php upload ใบอนุญาตขายยา/สถานพยาบาล--->
                   {{--   <script>
