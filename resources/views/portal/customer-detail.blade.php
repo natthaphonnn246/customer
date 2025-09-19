@@ -291,44 +291,38 @@
     </div>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var myModal = new bootstrap.Modal(document.getElementById('checkModal'));
-    
-        // แสดง modal ถ้า flag skipModalUpdateForm ไม่อยู่
-        if (!sessionStorage.getItem('skipModalUpdateForm')) {
-            myModal.show();
-        } else {
-            // ลบ flag → ครั้งต่อไปเปิดหน้าใหม่ modal จะแสดง
-            sessionStorage.removeItem('skipModalUpdateForm');
-        }
-    
-        // ปุ่มรับทราบ modal
-        const acknowledgeBtn = document.getElementById('acknowledgeBtn');
-        if (acknowledgeBtn) {
-            acknowledgeBtn.addEventListener('click', function() {
-                myModal.hide();
+    <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var myModal = new bootstrap.Modal(document.getElementById('checkModal'));
+            
+                // แสดง modal ถ้า flag skipModalUpdateForm ไม่อยู่
+                if (!sessionStorage.getItem('skipModalUpdateForm')) {
+                    myModal.show();
+                } else {
+                    // ลบ flag → ครั้งต่อไปเปิดหน้าใหม่ modal จะแสดง
+                    sessionStorage.removeItem('skipModalUpdateForm');
+                }
+            
+                // ปุ่มรับทราบ modal
+                const acknowledgeBtn = document.getElementById('acknowledgeBtn');
+                if (acknowledgeBtn) {
+                    acknowledgeBtn.addEventListener('click', function() {
+                        myModal.hide();
+                    });
+                }
+            
+                // จับ submit ของ form (updateForm)
+                const updateFormBtn = document.getElementById('updateForm');
+                if (updateFormBtn) {
+                    updateFormBtn.addEventListener('click', function() {
+                        // ตั้ง flag ก่อน reload → modal จะไม่แสดงตอน reload
+                        sessionStorage.setItem('skipModalUpdateForm', 'true');
+                        // form จะ submit ตามปกติ
+                    });
+                }
             });
-        }
-    
-        // จับ submit ของ form (updateForm)
-        const updateFormBtn = document.getElementById('updateForm');
-        if (updateFormBtn) {
-            updateFormBtn.addEventListener('click', function() {
-                // ตั้ง flag ก่อน reload → modal จะไม่แสดงตอน reload
-                sessionStorage.setItem('skipModalUpdateForm', 'true');
-                // form จะ submit ตามปกติ
-            });
-        }
-    });
     </script>
     
-    
-
-  
-                
-  
-
         <div class="py-2">
         </div>
         <span class="ms-6" style="color: #8E8E8E;"><a href="/portal/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / รายละเอียด</span>
@@ -400,6 +394,20 @@
                             </div>
                         </li>
 
+                        <script>
+
+                                              
+                            const staticBackdropStore = document.getElementById('staticBackdrop_store');
+                            if (staticBackdropStore) {
+                                staticBackdropStore.addEventListener('click', function() {
+                                    // ตั้ง flag ก่อน reload → modal จะไม่แสดงตอน reload
+                                    sessionStorage.setItem('skipModalUpdateForm', 'true');
+                                    // form จะ submit ตามปกติ
+                                });
+                            }
+
+                        </script>
+
                         <li class="mt-4">
                             <span>ใบประกอบวิชาชีพ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                             <button type="button" class="btn mt-2" id="certMedical" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_medical">
@@ -450,6 +458,18 @@
                             </div>
                         </li>
 
+                        <script>
+                            
+                            const staticBackdropMedical = document.getElementById('staticBackdrop_medical');
+                            if (staticBackdropMedical) {
+                                staticBackdropMedical.addEventListener('click', function() {
+                                    // ตั้ง flag ก่อน reload → modal จะไม่แสดงตอน reload
+                                    sessionStorage.setItem('skipModalUpdateForm', 'true');
+                                    // form จะ submit ตามปกติ
+                                });
+                            }
+
+                        </script>
 
                         <li class="mt-4">
                             <span>ใบทะเบียนพาณิชย์</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
@@ -501,6 +521,17 @@
                             </div>
                         </li>
 
+                        <script>
+                            const staticBackdropCommerce = document.getElementById('staticBackdrop_commerce');
+                            if (staticBackdropCommerce) {
+                                staticBackdropCommerce.addEventListener('click', function() {
+                                    // ตั้ง flag ก่อน reload → modal จะไม่แสดงตอน reload
+                                    sessionStorage.setItem('skipModalUpdateForm', 'true');
+                                    // form จะ submit ตามปกติ
+                                });
+                            }
+                        </script>
+
                         <li class="mt-4">
                             <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                             <button type="button" class="btn mt-2" id="certVat" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_vat">
@@ -551,6 +582,17 @@
                             </div>
                         </li>
 
+                        <script>
+                            const staticBackdropVat = document.getElementById('staticBackdrop_vat');
+                            if (staticBackdropVat) {
+                                staticBackdropVat.addEventListener('click', function() {
+                                    // ตั้ง flag ก่อน reload → modal จะไม่แสดงตอน reload
+                                    sessionStorage.setItem('skipModalUpdateForm', 'true');
+                                    // form จะ submit ตามปกติ
+                                });
+                            }
+                        </script>
+
                         <li class="mt-4">
                             <span>สำเนาบัตรประชาชน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                             <button type="button" class="btn mt-2" id="certId" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_id">
@@ -600,6 +642,18 @@
                             </div>
                             </div>
                         </li>
+
+                        <script>
+                            const staticBackdropId = document.getElementById('staticBackdrop_id');
+                            if (staticBackdropId) {
+                                staticBackdropId.addEventListener('click', function() {
+                                    // ตั้ง flag ก่อน reload → modal จะไม่แสดงตอน reload
+                                    sessionStorage.setItem('skipModalUpdateForm', 'true');
+                                    // form จะ submit ตามปกติ
+                                });
+                            }
+                        </script>
+
                         {{-- <span>ใบอนุญาตขายยา/สถานพยาบาล</span>
                         <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certStore" >ใบอนุญาตขายยา/สถานพยาบาล</div>
                         @if ($customer_edit->cert_store == '')
@@ -819,7 +873,7 @@
 </div>
 
                     @if (session('status') == 'updated_success')
-                        <script> 
+                       {{--  <script> 
                                 $('#bgs').css('display', 'none');
                                 Swal.fire({
                                     title: 'กรุณาติดต่อผู้ดูแล',
@@ -834,7 +888,25 @@
                                         window.location.reload();
                                     }
                                 });
-                        </script>
+                        </script> --}}
+
+                        <script>
+                                    $('#bgs').css('display', 'none');
+                                    Swal.fire({
+                                        title: 'กรุณาติดต่อผู้ดูแล',
+                                        text: 'บันทึกเรียบร้อย',
+                                        icon: "success",
+                                        confirmButtonColor: "#3085d6",
+                                        confirmButtonText: "ตกลง"
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            // ตั้ง flag ก่อน reload → modal จะไม่แสดงหลังจาก reload
+                                            sessionStorage.setItem('skipModalUpdateForm', 'true');
+                                            window.location.reload();
+                                        }
+                                    });
+                            </script>
+                            
                     @endif
 
                     @if (session('status') == 'updated_fail')
