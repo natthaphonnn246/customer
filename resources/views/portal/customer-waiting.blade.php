@@ -235,20 +235,19 @@
             cursor: not-allowed;    /* เมาส์เป็นรูปห้าม */
             text-decoration: none;  /* เอาเส้นใต้ลิงก์ออก (ถ้าอยากให้ดูเหมือนปุ่ม) */
         }
-
+/* 
         .alert-icon {
             animation: shake 1s infinite; /* 1s ต่อรอบ, ทำซ้ำไม่จำกัด */
-            display: inline-block;
+ /*            display: inline-block;
                 }
 
-        /* animation shake */
         @keyframes shake {
             0% { transform: translateX(0); }
             25% { transform: translateX(-3px); }
             50% { transform: translateX(3px); }
             75% { transform: translateX(-3px); }
             100% { transform: translateX(0); }
-        }
+        } */
     </style>
 
     <div class="contentArea">
@@ -299,10 +298,12 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
                     </div>
                     <div class="modal-body text-center">
-                    <p style="color: red; font-size:72px;">
+                 {{--    <p style="color: red; font-size:72px;">
                         <i class="fa-regular fa-triangle-exclamation alert-icon"></i>
-                    </p>
-                        
+                    </p> --}}
+                        <p style="color: red;">
+                            <img src="/icons/alarm.gif" alt="" style="width:100%; height:auto; max-width:500px;">
+                        </p>
                       <p style="color: rgb(0, 68, 255); font-size:24px;">กรุณากลับมาอีกครั้งในภายหลัง</p>
                     </div>
                     <div class="modal-footer">
