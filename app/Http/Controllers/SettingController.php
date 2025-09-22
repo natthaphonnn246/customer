@@ -16,16 +16,19 @@ class SettingController extends Controller
                 'maintenance_status'         => 'required|in:0,1',
                 'allowed_maintenance_status' => 'required|in:0,1',
                 'del_reportseller'           => 'required|in:0,1',
+                'check_edit'                 => 'required|in:0,1',
             ]);
 
-            $maintenance_status = $request->maintenance_status;
+            $maintenance_status         = $request->maintenance_status;
             $allowed_maintenance_status = $request->allowed_maintenance_status;
-            $del_reportseller = $request->del_reportseller;
+            $del_reportseller           = $request->del_reportseller;
+            $check_edit                 = $request->check_edit;
 
             Setting::where('setting_id', 'WS01')->update([
                 'web_status'         => $maintenance_status,
                 'allowed_web_status' => $allowed_maintenance_status,
                 'del_reportseller'   => $del_reportseller,
+                'check_edit'         => $check_edit,
             ]);
 
             return redirect('/webpanel/setting')->with('settings', 'Successfully updated');
@@ -36,7 +39,7 @@ class SettingController extends Controller
     {
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $setting_view = Setting::select('web_status', 'allowed_web_status', 'del_reportseller')
+        $setting_view = Setting::select('web_status', 'allowed_web_status', 'del_reportseller', 'check_edit')
             ->where('setting_id', 'WS01')
             ->first();
 

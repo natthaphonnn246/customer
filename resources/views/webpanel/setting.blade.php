@@ -158,6 +158,22 @@
                     </div>
                     <hr class="mt-8" style="color: #8E8E8E; width: 100%;">
                 </div>
+
+                <div class="row ms-6 mr-6 mt-4">
+                    <div class="col-sm-6">
+                        <ul style="width: 100%;">
+                            <span style="color:#8E8E8E;">สถานะเปิดให้แอดมินแก้ไขลูกค้า</span> <span style="font-size: 12px; color:red;">*เปิดเท่ากับแก้ไขลูกค้าได้</span>
+                            <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="check_edit">
+
+                                <option {{$setting_view->check_edit == '1' ? 'selected': ''}} value="1">ปิด</option>
+                                <option {{$setting_view->check_edit == '0' ? 'selected': ''}} value="0">เปิด</option>                           
+                                
+                            </select>
+                        </ul>
+
+                    </div>
+                    <hr class="mt-8" style="color: #8E8E8E; width: 100%;">
+                </div>
             @endif
             <div style="text-align:left; margin-left:30px;">
                 <button type="submit" id="updateForm" name="submit_setting" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>

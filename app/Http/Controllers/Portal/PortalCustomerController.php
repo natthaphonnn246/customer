@@ -327,6 +327,7 @@ class PortalCustomerController
     //portal/customer;
     public function customerView(Request $request)
     {
+        // dd('dd');
 
         $page = $request->page;
         if ($page) {
@@ -334,6 +335,11 @@ class PortalCustomerController
         } else {
             $page = 1;
         }
+
+
+
+        $check_edit = DB::table('settings')->where('setting_id', '=', 'WS01')->first()?->check_edit;
+        // dd($check_edit);
 
         $keyword_code = $request->keyword;
         $id = $request->user()->admin_area;
@@ -442,7 +448,26 @@ class PortalCustomerController
 
             // dd($check_search->admin_area);
             if (!empty($check_customer_code)) {
-                return view('portal/customer', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'status_waiting', 'status_action', 'status_completed', 'status_all', 'status_alert', 'pur_report', 'check_id', 'check_purchase'));
+                return view('portal/customer', array_merge(
+                                                compact(
+                                                    'customer_list', 
+                                                    'user_name', 
+                                                    'page', 
+                                                    'total_page', 
+                                                    'start', 
+                                                    'status_waiting', 
+                                                    'status_action', 
+                                                    'status_completed', 
+                                                    'status_all', 
+                                                    'status_alert', 
+                                                    'pur_report', 
+                                                    'check_id', 
+                                                    'check_purchase',
+                                                    'check_edit'
+                                                ),
+                                                ['json_edit' => json_encode($check_edit)]
+                                            ));
+                
             //  dd('check');
             }
 
@@ -451,7 +476,26 @@ class PortalCustomerController
  
         }
         // dd($customer_list);
-        return view('portal/customer', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'status_waiting', 'status_action', 'status_completed', 'status_all', 'status_alert', 'pur_report', 'check_id', 'check_purchase'));
+        return view('portal/customer', array_merge(
+                                        compact(
+                                            'customer_list', 
+                                            'user_name', 
+                                            'page', 
+                                            'total_page', 
+                                            'start', 
+                                            'status_waiting', 
+                                            'status_action', 
+                                            'status_completed', 
+                                            'status_all', 
+                                            'status_alert', 
+                                            'pur_report', 
+                                            'check_id', 
+                                            'check_purchase',
+                                            'check_edit'
+                                        ),
+                                        ['json_edit' => json_encode($check_edit)]
+                                    ));
+        
     }
     
     //portal/customer/status/{status_custoemr};
@@ -468,6 +512,8 @@ class PortalCustomerController
 
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $check_edit = DB::table('settings')->where('setting_id', '=', 'WS01')->first()?->check_edit;
 
         $id = $request->user()->admin_area;
         $code = $request->user()->user_code;
@@ -541,7 +587,8 @@ class PortalCustomerController
 
             dd($check_customer_codes->customer_id); */
             if($keyword_code != '') {
-                $customer_list = DB::table('customers')->where('status', '0')
+
+                $customer_list = DB::table('customers')->where('status', 'รอดำเนินการ')
                                             ->where('admin_area',$id)
                                             // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                             ->whereNotIn('customer_id', $code_notin)
@@ -558,7 +605,7 @@ class PortalCustomerController
                 $total_page = ceil($count_page / $perpage);
                 $start = ($perpage * $page) - $perpage;
 
-                $check_customer_code = DB::table('customers')->where('status', '0')
+                $check_customer_code = DB::table('customers')->where('status', 'รอดำเนินการ')
                                                 ->where('admin_area',$id)
                                                 // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                                 ->whereNotIn('customer_id', $code_notin)
@@ -572,14 +619,48 @@ class PortalCustomerController
 
                 // dd($check_search->admin_area);
                 if (!empty($check_customer_code)) {
-                    return view('portal/customer-waiting', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'count_all',  'count_waiting', 'count_action', 'count_completed', 'count_alert', 'status_customer'));
+
+                    // dd('customer');
+                    return view('portal/customer-waiting', array_merge(
+                                                            compact(
+                                                                    'customer_list', 
+                                                                    'user_name', 
+                                                                    'page', 
+                                                                    'total_page', 
+                                                                    'start', 
+                                                                    'count_all',  
+                                                                    'count_waiting', 
+                                                                    'count_action', 
+                                                                    'count_completed', 
+                                                                    'count_alert', 
+                                                                    'status_customer',
+                                                                    'check_edit'
+                                                                ),
+                                                                ['json_edit' => json_encode($check_edit)]
+                                                            ));
                 }
 
                     return back();
     
             }
 
-        return view('portal/customer-waiting', compact('customer_list', 'user_name', 'page', 'total_page', 'start', 'count_all',  'count_waiting', 'count_action', 'count_completed', 'count_alert', 'status_customer'));
+            return view('portal/customer-waiting', array_merge(
+                                                    compact(
+                                                            'customer_list', 
+                                                            'user_name', 
+                                                            'page', 
+                                                            'total_page', 
+                                                            'start', 
+                                                            'count_all',  
+                                                            'count_waiting', 
+                                                            'count_action', 
+                                                            'count_completed', 
+                                                            'count_alert', 
+                                                            'status_customer',
+                                                            'check_edit'
+                                                        ),
+                                                        ['json_edit' => json_encode($check_edit)]
+                                                    ));
 
         } else if($status_customer == 'action') {
             
@@ -668,12 +749,42 @@ class PortalCustomerController
 
                 // dd($check_search->admin_area);
                 if (!empty($check_customer_code)) {
-                    return view('portal/customer-action', compact('customer_list', 'user_name', 'page', 'total_page', 'start','count_all', 'count_waiting', 'count_action', 'count_completed','count_alert',  'status_customer'));
+                    return view('portal/customer-action', array_merge(
+                                                                compact(
+                                                                    'customer_list', 
+                                                                    'user_name', 
+                                                                    'page', 
+                                                                    'total_page', 
+                                                                    'start',
+                                                                    'count_all', 
+                                                                    'count_waiting', 
+                                                                    'count_action', 
+                                                                    'count_completed',
+                                                                    'count_alert',  
+                                                                    'status_customer',
+                                                                    'check_edit'
+                                                                ), ['json_edit' => json_encode($check_edit)]
+                                                            ));
                 }
                 return back();
             }
 
-            return view('portal/customer-action', compact('customer_list', 'user_name', 'page', 'total_page', 'start','count_all', 'count_waiting', 'count_action', 'count_completed','count_alert',  'status_customer'));
+            return view('portal/customer-action', array_merge(
+                                                    compact(
+                                                            'customer_list', 
+                                                            'user_name', 
+                                                            'page', 
+                                                            'total_page', 
+                                                            'start',
+                                                            'count_all', 
+                                                            'count_waiting', 
+                                                            'count_action', 
+                                                            'count_completed',
+                                                            'count_alert',  
+                                                            'status_customer',
+                                                            'check_edit'
+                                                        ), ['json_edit' => json_encode($check_edit)]
+                                                    ));
         
         } else if ($status_customer == 'completed') {
 
@@ -763,12 +874,42 @@ class PortalCustomerController
 
                 // dd($check_search->admin_area);
                 if (!empty($check_customer_code)) {
-                    return view('portal/customer-completed', compact('customer_list', 'user_name', 'page', 'total_page', 'start','count_all', 'count_waiting', 'count_action', 'count_completed','count_alert', 'status_customer'));
+                    return view('portal/customer-completed', array_merge(
+                                                                    compact(
+                                                                        'customer_list', 
+                                                                        'user_name', 
+                                                                        'page', 
+                                                                        'total_page', 
+                                                                        'start',
+                                                                        'count_all', 
+                                                                        'count_waiting', 
+                                                                        'count_action', 
+                                                                        'count_completed',
+                                                                        'count_alert', 
+                                                                        'status_customer',
+                                                                        'check_edit'
+                                                                    ), ['json_edit' => json_encode($check_edit)]
+                                                                ));
                 }
                 return back();
             }
 
-            return view('portal/customer-completed', compact('customer_list', 'user_name', 'page', 'total_page', 'start','count_all', 'count_waiting', 'count_action', 'count_completed','count_alert', 'status_customer'));
+            return view('portal/customer-completed', array_merge(
+                                                            compact(
+                                                                'customer_list', 
+                                                                'user_name', 
+                                                                'page', 
+                                                                'total_page', 
+                                                                'start',
+                                                                'count_all', 
+                                                                'count_waiting', 
+                                                                'count_action', 
+                                                                'count_completed',
+                                                                'count_alert', 
+                                                                'status_customer',
+                                                                'check_edit'
+                                                            ), ['json_edit' => json_encode($check_edit)]
+                                                            ));
         }
     }
 

@@ -229,6 +229,27 @@
                     white-space: nowrap;
                     z-index: 9999; /* กันโดนซ่อนโดย content อื่น */
         }
+        .disabled-link {
+            pointer-events: none;   /* กดไม่ได้ */
+            opacity: 0.4;           /* ทำให้ปุ่มจางลง */
+            cursor: not-allowed;    /* เมาส์เป็นรูปห้าม */
+            text-decoration: none;  /* เอาเส้นใต้ลิงก์ออก (ถ้าอยากให้ดูเหมือนปุ่ม) */
+        }
+
+        .alert-icon {
+            animation: shake 1s infinite; /* 1s ต่อรอบ, ทำซ้ำไม่จำกัด */
+            display: inline-block;
+                }
+
+        /* animation shake */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            50% { transform: translateX(3px); }
+            75% { transform: translateX(-3px); }
+            100% { transform: translateX(0); }
+        }
+
       /*   #listStatus:hover {
             color: #f7ff1b;
             text-decoration: none;
@@ -281,6 +302,41 @@
             @endsection
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
     
+            <div class="modal fade" id="checkModal" tabindex="-1" aria-labelledby="checkModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header text-center">
+                      <h5 class="modal-title w-100 text-center" style="font-size: 24px; font-weight:400; color: rgb(249, 48, 48);">ปิดแก้ไขข้อมูลลูกค้าชั่วคราว</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                    <p style="color: red; font-size:72px;">
+                        <i class="fa-regular fa-triangle-exclamation alert-icon"></i>
+                    </p>
+                        
+                      <p style="color: rgb(0, 68, 255); font-size:24px;">กรุณากลับมาอีกครั้งในภายหลัง</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" id="acknowledgeBtn" class="btn btn-primary">รับทราบ</button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <script>
+                let checkEdit = @json($check_edit); // จะได้ boolean จริง ๆ
+                if(checkEdit) {
+                    var myModal = new bootstrap.Modal(document.getElementById('checkModal'));
+                    myModal.show();
+
+                    document.getElementById('acknowledgeBtn').addEventListener('click', function () {
+                        var modal = bootstrap.Modal.getInstance(document.getElementById('checkModal'));
+                        modal.hide();
+                    });
+
+                }
+            </script>
+
             <div class="col-9 py-2">
             </div>
             <span class="ms-6" style="color: #8E8E8E;">ข้อมูลลูกค้า /Status : <span style="color:rgb(255, 255, 255);  padding: 5px 10px 5px 10px; background-color: rgb(58, 174, 19); border-radius:8px;">ดำเนินการแล้ว</span></span>
@@ -452,7 +508,20 @@
 
                     <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px; ">{{$created_at}}</td>
 
-                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:15px;"><a href="/portal/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                    @php
+                        $dis_check =  $check_edit;
+                        $dis_check = $dis_check > 0;
+                    @endphp
+
+                    <td scope="row" style="color:#9C9C9C; text-align:center; padding:15px;">
+                        <a href="{{ $dis_check ? 'javascript:void(0)' : '/portal/customer/'.$id }}"
+                            id="edit"
+                            class="{{ $dis_check ? 'disabled-link' : '' }}">
+                            <i class="fa-regular fa-eye"></i>
+                        </a>
+                    </td>
+
+                    {{-- <td scope="row" style="color:#9C9C9C; text-align: center; padding:15px;"><a href="/portal/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a> --}}
                     {{-- <button id="trash"><i class="fa-regular fa-trash-can"></i></button> --}}
                     </td>
                 @endif
