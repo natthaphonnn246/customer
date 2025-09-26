@@ -60,7 +60,7 @@ class CustomerExcelExport
 
                 case 'getexcel_completed':
                     $date = date('d-m-Y');
-                    return Customer::select('customer_code', 'customer_name', 'type', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
+                    return Customer::select('customer_code', 'customer_name', 'type', 'cert_number', 'province', 'geography', 'admin_area', 'sale_area','status', 'delivery_by')
                                     // ->whereNotIn('customer_code', ['0000','4494'])
                                     ->whereNotIn('customer_code', $code_notin)
                                     ->where('status', 'ดำเนินการแล้ว')
