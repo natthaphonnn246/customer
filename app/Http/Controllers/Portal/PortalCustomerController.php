@@ -25,6 +25,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
 use Carbon\Carbon;
 use Illuminate\Database\Query\JoinClause;
+use App\Mail\StatusUpdatedMail;
+use App\Mail\RegisterUpdatedMail;
+use Illuminate\Support\Facades\Mail;
 
 class PortalCustomerController
 {
@@ -320,7 +323,21 @@ class PortalCustomerController
 
         }
 
-            return back()->with('success', 'ลงทะเบียนสำเร็จ กรุณาติดต่อผู้ดูแลด้วยครับ');
+           // $status = Customer::findOrFail($id);
+           $status = Customer::where('customer_code', $customer_code)->first();
+        //    dd($status->status);
+
+           if ($status->status === 'ลงทะเบียนใหม่') {
+               
+            //    $checkUpdate = 'register';
+               Mail::to('vmdrugcenter2019@gmail.com')->queue(new RegisterUpdatedMail($status->customer_code));
+
+               //not queue;
+               /* Mail::to('vmdrugcenter2019@gmail.com')->send(new StatusUpdatedMail($status->id)); */
+
+           }
+
+        return back()->with('success', 'ลงทะเบียนสำเร็จ กรุณาติดต่อผู้ดูแลด้วยครับ');
 
     }
 
@@ -977,6 +994,8 @@ class PortalCustomerController
     public function updateEdit(Request $request, $id)
     {
 
+        // dd($id);
+
         date_default_timezone_set("Asia/Bangkok");
 /* 
         if($request->has('submit_update'))
@@ -1027,22 +1046,41 @@ class PortalCustomerController
      /*    } */
             Customer::where('id', $id)
                     ->update ([
-               
-                        'email' => $email,
-                        'phone' => $phone,
-                        'telephone' => $telephone,
-                        'address' => $address,
-                        'province' =>  $province_row,
-                        'amphur' => $amphur,
-                        'district' => $district,
-                        'zip_code' => $zip_code,
-                        'geography' => $geography_name,
-                        'cert_number' => $cert_number,
-                        'cert_expire' => $cert_expire,
-                        'status_update' => 'updated',
-                        'delivery_by' => $delivery_by,
+
+                            'email' => $email,
+                            'phone' => $phone,
+                            'telephone' => $telephone,
+                            'address' => $address,
+                            'province' =>  $province_row,
+                            'amphur' => $amphur,
+                            'district' => $district,
+                            'zip_code' => $zip_code,
+                            'geography' => $geography_name,
+                            'cert_number' => $cert_number,
+                            'cert_expire' => $cert_expire,
+                            'status_update' => 'updated',
+                            'delivery_by' => $delivery_by,
                     
                     ]);
+
+                    $status = Customer::findOrFail($id);
+                    // dd($status->id);
+
+                    if ($status->status_update === 'updated') {
+                        
+                        $checkUpdate = 'submit';
+                        Mail::to('vmdrugcenter2019@gmail.com')->queue(new StatusUpdatedMail($status->id,$checkUpdate));
+
+                        //not queue;
+                        /* Mail::to('vmdrugcenter2019@gmail.com')->send(new StatusUpdatedMail($status->id)); */
+
+                    }
+                    
+        
+             /*    return response()->json([
+                    'message' => 'อัปเดตสถานะเรียบร้อย (ส่งอีเมลในคิวแล้ว)',
+                    'order'   => $order
+                ]); */
 
                 // usleep(100000);
                 // check user id;
@@ -1092,6 +1130,20 @@ class PortalCustomerController
 
                         ]);
 
+                // $status = Customer::findOrFail($id);
+                $status = Customer::where('customer_id', $id)->first();
+                // dd($status->status_update);
+
+                if ($status->status_update === 'updated') {
+                    
+                    $checkUpdate = 'certstore';
+                    Mail::to('vmdrugcenter2019@gmail.com')->queue(new StatusUpdatedMail($status->id, $checkUpdate));
+
+                    //not queue;
+                    /* Mail::to('vmdrugcenter2019@gmail.com')->send(new StatusUpdatedMail($status->id)); */
+
+                }
+
             }
             return back();
     }
@@ -1123,6 +1175,20 @@ class PortalCustomerController
                             'status_update' => 'updated',
 
                         ]);
+
+                // $status = Customer::findOrFail($id);
+                $status = Customer::where('customer_id', $id)->first();
+                // dd($status->status_update);
+
+                if ($status->status_update === 'updated') {
+                    
+                    $checkUpdate = 'certmedical';
+                    Mail::to('vmdrugcenter2019@gmail.com')->queue(new StatusUpdatedMail($status->id, $checkUpdate));
+
+                    //not queue;
+                    /* Mail::to('vmdrugcenter2019@gmail.com')->send(new StatusUpdatedMail($status->id)); */
+
+                }
 
             }
             return back();
@@ -1156,6 +1222,19 @@ class PortalCustomerController
 
                         ]);
 
+                // $status = Customer::findOrFail($id);
+                $status = Customer::where('customer_id', $id)->first();
+                // dd($status->status_update);
+
+                if ($status->status_update === 'updated') {
+                    
+                    // Mail::to('vmdrugcenter2019@gmail.com')->queue(new StatusUpdatedMail($status->id));
+
+                    //not queue;
+                    /* Mail::to('vmdrugcenter2019@gmail.com')->send(new StatusUpdatedMail($status->id)); */
+
+                }
+
             }
             return back();
     }
@@ -1187,6 +1266,19 @@ class PortalCustomerController
 
                         ]);
 
+                // $status = Customer::findOrFail($id);
+                $status = Customer::where('customer_id', $id)->first();
+                // dd($status->status_update);
+
+                if ($status->status_update === 'updated') {
+                    
+                    // Mail::to('vmdrugcenter2019@gmail.com')->queue(new StatusUpdatedMail($status->id));
+
+                    //not queue;
+                    /* Mail::to('vmdrugcenter2019@gmail.com')->send(new StatusUpdatedMail($status->id)); */
+
+                }
+
             }
             return back();
     }
@@ -1217,6 +1309,19 @@ class PortalCustomerController
                             'status_update' => 'updated',
 
                         ]);
+
+                // $status = Customer::findOrFail($id);
+                $status = Customer::where('customer_id', $id)->first();
+                // dd($status->status_update);
+
+                if ($status->status_update === 'updated') {
+                    
+                    // Mail::to('vmdrugcenter2019@gmail.com')->queue(new StatusUpdatedMail($status->id));
+
+                    //not queue;
+                    /* Mail::to('vmdrugcenter2019@gmail.com')->send(new StatusUpdatedMail($status->id)); */
+
+                }
 
             }
             return back();

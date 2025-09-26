@@ -330,6 +330,7 @@ class CustomerExcelExport
                         $date = date('d-m-Y');
                         return  Customer::select(
                                                     'customers.customer_id',
+                                                    'customers.cert_number',
                                                     'customers.sale_area',
                                                     'customers.admin_area',
                                                     'customers.customer_name',
@@ -345,6 +346,7 @@ class CustomerExcelExport
                                             ->groupBy(
                                                         'customers.id',
                                                         'customers.customer_id', 
+                                                        'customers.cert_number',
                                                         'customers.sale_area',
                                                         'customers.admin_area',
                                                         'customers.customer_name', 

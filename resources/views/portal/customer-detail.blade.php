@@ -695,6 +695,7 @@
                     </ul>
             <form action="/portal/customer-detail/update/{{$customer_edit->id}}" method="post" enctype="multipart/form-data">
                     @csrf
+                    {{-- @method('PUT') --}}
                     <ul class="text-muted py-3" style="padding-top: 10px;">
                         <li class="py-2">
                             <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>

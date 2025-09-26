@@ -39,6 +39,7 @@
     use Illuminate\Support\Facades\DB;
     use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
     use App\Http\Controllers\ChooseBoxController;
+    use App\Http\Controllers\StatusUpdateController;
 
 
     // Route::get('/', function() { return view('auth.login-tailwind');})->name('login');
@@ -538,8 +539,10 @@ Route::middleware('statusOnline')->group(function (){
     //purchase;
     Route::get('/portal/customer/purchase/{fixed_id}', [PortalCustomerController::class, 'fixedDate'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport');
     // Route::get('/portal/customer/purchase/{fixed_id}', [PortalCustomerController::class, 'fixedDate'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport');
-
+    // resource
     Route::get('/portal/customer/{id}', [PortalCustomerController::class, 'customerEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'maintenance', 'rights_area');
+   //update smtp;
+    // Route::put('/portal/customer/{id}', [StatusUpdateController::class, 'update'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'maintenance', 'rights_area');
 
     ///search customer;
     Route::get('/portal/customer/search/code', [PortalCustomerController::class, 'customerSearch'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
