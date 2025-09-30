@@ -136,7 +136,12 @@ class WebpanelCustomerController
                         SUM(CASE WHEN status = 'ดำเนินการแล้ว' THEN 1 ELSE 0 END) as total_status_completed,
                         SUM(CASE WHEN status_update = 'updated' THEN 1 ELSE 0 END) as total_status_updated,
                         SUM(CASE WHEN customer_status = 'inactive' THEN 1 ELSE 0 END) as customer_status_inactive,
-                        SUM(CASE WHEN add_license = 'ระบุขายส่ง' THEN 1 ELSE 0 END) as add_license_status
+                        SUM(CASE WHEN add_license = 'ระบุขายส่ง' THEN 1 ELSE 0 END) as add_license_status,
+                        SUM(CASE WHEN type = 'ข.ย.1' THEN 1 ELSE 0 END) as type_status_1,
+                        SUM(CASE WHEN type = 'ข.ย.2' THEN 1 ELSE 0 END) as type_status_2,
+                        SUM(CASE WHEN type = 'สมพ.2' THEN 1 ELSE 0 END) as type_status_3,
+                        SUM(CASE WHEN type = 'คลินิกยา/สถานพยาบาล' THEN 1 ELSE 0 END) as type_status_4,
+                        SUM(CASE WHEN type = '' THEN 1 ELSE 0 END) as type_status_5
                     ")
                     ->whereNotIn('customer_code', $code_notin)
                     ->first();
@@ -1179,11 +1184,101 @@ class WebpanelCustomerController
             /* $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
             $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count(); */
 
-            $total_customer             = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $total_customer          = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
             $customer_check_license  = DB::table('customers')->where('add_license', 'ระบุขายส่ง')->whereNotIn('customer_code', $code_notin)->count();
 
             return view('webpanel/customer-check-license', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_check_license', 'status_waiting', 'status_registration',  'status_updated', 'status_alert', 'user_id_admin'));
 
+        } else if ($status_check == 'checktype-1') {
+
+        $row_customer = Customer::customerCheckLicense_1($page);
+        $customer = $row_customer[0];
+        // dd(gettype($customer));
+        $start = $row_customer[1];
+        $total_page = $row_customer[2];
+        $page = $row_customer[3];
+
+        //Dashborad;
+        /* $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+        $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count(); */
+
+        $total_customer          = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+        $customer_check_license  = DB::table('customers')->where('type', 'ข.ย.1')->whereNotIn('customer_code', $code_notin)->count();
+
+        return view('webpanel/customer-check-type-1', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_check_license', 'status_waiting', 'status_registration',  'status_updated', 'status_alert', 'user_id_admin'));
+
+        } else if ($status_check == 'checktype-2') {
+
+            $row_customer = Customer::customerCheckLicense_2($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+    
+            //Dashborad;
+            /* $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count(); */
+    
+            $total_customer          = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $customer_check_license  = DB::table('customers')->where('type', 'ข.ย.2')->whereNotIn('customer_code', $code_notin)->count();
+    
+            return view('webpanel/customer-check-type-2', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_check_license', 'status_waiting', 'status_registration',  'status_updated', 'status_alert', 'user_id_admin'));
+    
+        } else if ($status_check == 'checktype-3') {
+
+            $row_customer = Customer::customerCheckLicense_3($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+    
+            //Dashborad;
+            /* $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count(); */
+    
+            $total_customer          = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $customer_check_license  = DB::table('customers')->where('type', 'สมพ.2')->whereNotIn('customer_code', $code_notin)->count();
+    
+            return view('webpanel/customer-check-type-3', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_check_license', 'status_waiting', 'status_registration',  'status_updated', 'status_alert', 'user_id_admin'));
+    
+        } else if ($status_check == 'checktype-4') {
+
+            $row_customer = Customer::customerCheckLicense_4($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+    
+            //Dashborad;
+            /* $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count(); */
+    
+            $total_customer          = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $customer_check_license  = DB::table('customers')->where('type', 'คลินิกยา/สถานพยาบาล')->whereNotIn('customer_code', $code_notin)->count();
+    
+            return view('webpanel/customer-check-type-4', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_check_license', 'status_waiting', 'status_registration',  'status_updated', 'status_alert', 'user_id_admin'));
+    
+        } else if ($status_check == 'checktype-5') {
+
+            $row_customer = Customer::customerCheckLicense_5($page);
+            $customer = $row_customer[0];
+            // dd(gettype($customer));
+            $start = $row_customer[1];
+            $total_page = $row_customer[2];
+            $page = $row_customer[3];
+    
+            //Dashborad;
+            /* $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
+            $customer_status_following = Customer::where('status_user', 'กำลังติดตาม')->whereNotIn('customer_code', ['0000','4494'])->count(); */
+    
+            $total_customer          = DB::table('customers')->whereNotIn('customer_code', $code_notin)->count();
+            $customer_check_license  = DB::table('customers')->where('type', '')->whereNotIn('customer_code', $code_notin)->count();
+    
+            return view('webpanel/customer-check-type-5', compact('customer', 'start', 'total_page', 'page', 'total_customer', 'customer_check_license', 'status_waiting', 'status_registration',  'status_updated', 'status_alert', 'user_id_admin'));
+    
         } else {
             return abort(403, 'Error requesting');
         }

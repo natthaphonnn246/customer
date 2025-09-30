@@ -617,7 +617,7 @@
                                         <option {{$customer_view->type == '' ? 'selected': ''}} value="">ไม่ระบุ</option>
                                         <option {{$customer_view->type == 'ข.ย.1' ? 'selected': ''}} value="ข.ย.1">ข.ย.1</option>
                                         <option {{$customer_view->type == 'ข.ย.2' ? 'selected': ''}} value="ข.ย.2">ข.ย.2</option>
-                                        <option {{$customer_view->type == 'ย.บ.1' ? 'selected': ''}} value="ย.บ.1">ย.บ.1</option>
+                                        <option {{$customer_view->type == 'สมพ.2' ? 'selected': ''}} value="สมพ.2">สมพ.2</option>
                                         <option {{$customer_view->type == 'คลินิกยา/สถานพยาบาล' ? 'selected': ''}} value="คลินิกยา/สถานพยาบาล">คลินิกยา/สถานพยาบาล</option>
                                     
                                     </select>

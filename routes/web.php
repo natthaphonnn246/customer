@@ -39,6 +39,7 @@
     use Illuminate\Support\Facades\DB;
     use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
     use App\Http\Controllers\ChooseBoxController;
+    use App\Http\Controllers\FdaReporterController;
     use App\Http\Controllers\StatusUpdateController;
 
 
@@ -405,6 +406,10 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/report/sum-purchase', [ReportSellerController::class, 'sumPur']);
         Route::get('/webpanel/report/sumpur-dates', [ReportSellerController::class, 'sumPur']);
 
+        //fdareporter;
+        Route::get('/webpanel/report/fdareporter', [FdaReporterController::class, 'FdaReporter']);
+        Route::get('/webpanel/report/updated/fdareporter', [FdaReporterController::class, 'FdaReporter']);
+
         //check-updated;
         Route::get('/webpanel/check-updated', [WebpanelCustomerController::class, 'checkLicense']);
         Route::get('/webpanel/check-updated/{status}', [WebpanelCustomerController::class, 'checkLicense']);
@@ -438,6 +443,8 @@ Route::middleware('statusOnline')->group(function (){
 
     Route::get('/webpanel/customer/status/{status_check}', [WebpanelCustomerController::class, 'indexStatus'])->middleware('auth', 'role','status', 'verified');
 
+    //check-customer-type;
+    // Route::get('/webpanel/customer/status/{status_check}', [WebpanelCustomerController::class, 'indexStatus'])->middleware('auth', 'role','status', 'verified');
 
     //webpanel customer update;
     // Route::match(['POST', 'HEAD'],'/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware('auth', 'role','status', 'verified');

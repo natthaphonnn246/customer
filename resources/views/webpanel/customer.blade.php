@@ -600,6 +600,12 @@
                 $total_status_updated       = $stats->total_status_updated;
                 $customer_status_inactive   = $stats->customer_status_inactive;
                 $add_license_status         = $stats->add_license_status;
+                $type_status_1              = $stats->type_status_1;
+                $type_status_2              = $stats->type_status_2;
+                $type_status_3              = $stats->type_status_3;
+                $type_status_4              = $stats->type_status_4;
+                $type_status_5              = $stats->type_status_5;
+
             @endphp
             
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
@@ -689,6 +695,62 @@
                     @endif
                 </span>
             </div>
+
+            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
+                <span style="color: white; text-align: center;">
+                    <a href="/webpanel/customer/status/checktype-1" style="text-decoration: none; color:white;">ข.ย.1</a><br/>
+                    @if (isset($type_status_1))
+                    <span>{{$type_status_1 != '' ? $type_status_1 : '0'}}</span>
+                    @else
+                    <span>error</span>
+                    @endif
+                </span>
+            </div>
+
+            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
+                <span style="color: white; text-align: center;">
+                    <a href="/webpanel/customer/status/checktype-2" style="text-decoration: none; color:white;">ข.ย.2</a><br/>
+                    @if (isset($type_status_2))
+                    <span>{{$type_status_2 != '' ? $type_status_2 : '0'}}</span>
+                    @else
+                    <span>error</span>
+                    @endif
+                </span>
+            </div>
+
+            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
+                <span style="color: white; text-align: center;">
+                    <a href="/webpanel/customer/status/checktype-3" style="text-decoration: none; color:white;">สมพ.2</a><br/>
+                    @if (isset($type_status_3))
+                    <span>{{$type_status_3 != '' ? $type_status_3 : '0'}}</span>
+                    @else
+                    <span>error</span>
+                    @endif
+                </span>
+            </div>
+
+            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
+                <span style="color: white; text-align: center;">
+                    <a href="/webpanel/customer/status/checktype-4" style="text-decoration: none; color:white;">คลินิกยา/สถานพยาบาล</a><br/>
+                    @if (isset($type_status_4))
+                    <span>{{$type_status_4 != '' ? $type_status_4 : '0'}}</span>
+                    @else
+                    <span>error</span>
+                    @endif
+                </span>
+            </div>
+
+            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
+                <span style="color: white; text-align: center;">
+                    <a href="/webpanel/customer/status/checktype-5" style="text-decoration: none; color:white;">ไม่ระบุแบบอนุญาต</a><br/>
+                    @if (isset($type_status_5))
+                    <span>{{$type_status_5 != '' ? $type_status_5 : '0'}}</span>
+                    @else
+                    <span>error</span>
+                    @endif
+                </span>
+            </div>
+
 
         </div>
         <hr class="my-3" style="color: #8E8E8E; width: 100%;">

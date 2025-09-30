@@ -288,6 +288,141 @@ class Customer extends Model
         return [$customer, $start, $total_page, $page];
     }
 
+    public static function customerCheckLicense_1($page)
+    {
+
+        //notin code;
+        $code_notin = ['0000', '4494', '7787','8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->where('type','ข.ย.1')
+                        ->get();
+
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('type','ข.ย.1')
+                    ->whereNotIn('customer_code', $code_notin)
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+
+    public static function customerCheckLicense_2($page)
+    {
+
+        //notin code;
+        $code_notin = ['0000', '4494', '7787','8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->where('type','ข.ย.2')
+                        ->get();
+
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('type','ข.ย.2')
+                    ->whereNotIn('customer_code', $code_notin)
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+
+    public static function customerCheckLicense_3($page)
+    {
+
+        //notin code;
+        $code_notin = ['0000', '4494', '7787','8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->where('type','สมพ.2')
+                        ->get();
+
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('type','สมพ.2')
+                    ->whereNotIn('customer_code', $code_notin)
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+
+    public static function customerCheckLicense_4($page)
+    {
+
+        //notin code;
+        $code_notin = ['0000', '4494', '7787','8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->where('type','คลินิกยา/สถานพยาบาล')
+                        ->get();
+
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('type','คลินิกยา/สถานพยาบาล')
+                    ->whereNotIn('customer_code', $code_notin)
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+
+    public static function customerCheckLicense_5($page)
+    {
+
+        //notin code;
+        $code_notin = ['0000', '4494', '7787','8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->where('type','')
+                        ->get();
+
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+                    ->where('type','')
+                    ->whereNotIn('customer_code', $code_notin)
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+
     public static function customerEdit($id)
     {
         $customer_edit = DB::table('customers')->where('id', $id)->first();

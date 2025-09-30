@@ -272,7 +272,7 @@
     <div class="contentArea w-full max-w-full break-words">
         <div class="py-2">
         </div>
-        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / ขายส่ง</span>
+        <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / คลินิกยา/สถานพยาบาล</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
       {{--   <div class="mr-6" style="text-align: right;">
@@ -312,7 +312,7 @@
 
             <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
                 <span style="color: white; text-align: center;">
-                    ขายส่ง<br/>
+                    คลินิกยา/สถานพยาบาล<br/>
                     @if (isset($customer_check_license))
                     <span>{{$customer_check_license != '' ? $customer_check_license : '0'}}</span>
                     @else
@@ -573,11 +573,11 @@
                 <li class="page-item">
 
                 @if ($page == 1)
-                    <a class="page-link" href="/webpanel/customer/status/check-license?page={{ 1 }}" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/checktype-4?page={{ 1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/check-license?page={{ $page-1 }}" aria-label="Previous">
+                    <a class="page-link" href="/webpanel/customer/status/checktype-4?page={{ $page-1 }}" aria-label="Previous">
                     <span aria-hidden="true">Previous</span>
                     </a>
                 @endif
@@ -586,16 +586,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 10 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/check-license?page={{ $i }}">{{ $i }}</a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/checktype-4?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/check-license?page={{ $i }}">{{ $i }}</a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/customer/status/checktype-4?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/check-license?page={{ $i }}">{{ $i }}</a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/customer/status/checktype-4?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                 
                 @endif
@@ -603,11 +603,11 @@
                 <li class="page-item">
                 
                 @if ($page == $total_page)
-                    <a class="page-link" href="/webpanel/customer/status/check-license?page={{ $page }}" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/checktype-4?page={{ $page }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @else
-                    <a class="page-link" href="/webpanel/customer/status/check-license?page={{ $page + 1 }}" aria-label="Next">
+                    <a class="page-link" href="/webpanel/customer/status/checktype-4?page={{ $page + 1 }}" aria-label="Next">
                     <span aria-hidden="true">next</span>
                     </a>
                 @endif

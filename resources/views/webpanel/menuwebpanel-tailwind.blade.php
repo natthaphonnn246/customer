@@ -282,6 +282,9 @@
                              <a href="/webpanel/report/seller" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_all" style="font-size:14px;">การขายสินค้า</a>
                           </li>
                           <li style="margin-left: 35px;">
+                            <a href="/webpanel/report/fdareporter" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_all" style="font-size:14px;">แบบ ข.ย.13</a>
+                         </li>
+                          <li style="margin-left: 35px;">
                              <a href="/webpanel/report/product" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_salearea" style="font-size:14px;">สินค้าขายดี</a>
                           </li>
                           <li style="margin-left: 35px;">
