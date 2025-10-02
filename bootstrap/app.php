@@ -28,6 +28,7 @@ use Illuminate\Foundation\Configuration\Middleware;
                                     'statusOnline'  => \App\Http\Middleware\StatusOnline::class,
                                     'purReport'     => \App\Http\Middleware\PurchaseReport::class,
                                     'CheckPurReport'=> \App\Http\Middleware\CheckPurchaseReport::class,
+                                    'CustomerDetailCheck'=> \App\Http\Middleware\CustomerDetailCheck::class,
                                 ]);
                             })
                             ->withExceptions(function (Exceptions $exceptions) {

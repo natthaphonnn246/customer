@@ -1381,6 +1381,88 @@ class ProductController extends Controller
             
    }
 
+   public function importUpdateProduct(Request $request)
+   {
+        // dd('import');
+        date_default_timezone_set("Asia/Bangkok");
+
+        if($request->has('submit_csv') == true) 
+        {
+            
+                $path = $request->file('import_csv');
+                if($path == null) {
+                    // $path == '';
+                    $path = '';
+
+                } else {
+
+                    $rename = 'Product_update'.'_'.date("l jS \of F Y h:i:s A").'.csv';
+                    $request->file('import_csv')->storeAs('importcsv',$rename,'importfiles'); //importfiles filesystem.php->disk;
+                    $fileStream = fopen(storage_path('app/public/importcsv/'.$rename),'r');
+
+                            $batchSize = 500;
+                            $dataBatch = [];
+
+                            $firstRow = fgetcsv($fileStream, 1000, "|");
+                            $isHeader = in_array('รหัสสินค้า', $firstRow);
+
+                            while (!feof($fileStream)) {
+                                $row = fgetcsv($fileStream, 1000, "|");
+
+                                // ตรวจสอบว่า row ว่างหรือมีจำนวน column ไม่เพียงพอ //ข้ามแถวนี้ไปเลย ไม่ทำอะไรกับมัน;
+                                if ($row === false || $row[0] === 'รหัสสินค้า' || count($row) < 15 || empty($row[0])) {
+                                    continue;
+                                }
+
+                                $exists = DB::table('products')->where('product_id', $row[0])->exists(); //เช็กว่ามี product_id ไหม ค่าที่ได้ คือ true = มี , false = ไม่มี;
+
+                                if (!$exists) {
+
+                                    $dataBatch[] = [
+                                                        'product_id'    => $row[0],
+                                                        'product_name'  => $row[1],
+                                                        'generic_name'  => $row[2],
+                                                        'category'      => $row[3],
+                                                        'sub_category'  => $row[4],
+                                                        'type'          => $row[5],
+                                                        'unit'          => $row[6],
+                                                        'cost'          => $row[7],
+                                                        'price_1'       => $row[8],
+                                                        'price_2'       => $row[9],
+                                                        'price_3'       => $row[10],
+                                                        'price_4'       => $row[11],
+                                                        'price_5'       => $row[12],
+                                                        'quantity'      => $row[13],
+                                                        'status'        => $row[14],
+                                                    ];
+                                }
+                                // ทำ bulk insert ทีละชุด
+                                if (count($dataBatch) >= $batchSize) {
+
+                                        Product::insert($dataBatch); // ใส่ข้อมูลทั้งหมดใน $dataBatch ลง DB ทีเดียว
+                                        $dataBatch = [];             // เคลียร์ $dataBatch เพื่อเก็บข้อมูลชุดใหม่
+                                    
+                                }
+
+                            }
+
+                            // insert ข้อมูลที่เหลือ
+                            if (!empty($dataBatch)) {
+                                Product::insert($dataBatch);
+                            }
+
+                            fclose($fileStream);
+
+                }
+
+        }
+        $count_batch = count($dataBatch);
+        // dd($count_batch);
+        // $count = Product::all()->count();
+        
+        return redirect('/webpanel/report/product/importproduct')->with('success_import_updated', 'นำเข้าข้อมูลสำเร็จ :'.' '.$count_batch);
+   }
+
    public function show(Request $request)
    {
 

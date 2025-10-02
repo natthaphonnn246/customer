@@ -516,7 +516,11 @@
                         </ul>
             
             <form action="/webpanel/customer-detail/update/{{$customer_view->id}}" method="post" enctype="multipart/form-data">
+                        {{-- @csrf --}}
+
                         @csrf
+                        @method('PUT')
+                        
                         <ul class="text-muted" style="padding-top: 10px;">
                             <li class="mt-4">
                                 <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>

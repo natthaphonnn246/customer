@@ -268,28 +268,28 @@
 
         </script> --}}
 
-                            <!-- Modal -->
-<div class="modal fade" id="checkModal" tabindex="-1" aria-labelledby="checkModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header text-center">
-          <h5 class="modal-title w-100 text-center" style="font-size: 24px; font-weight:500; color: rgb(68, 68, 68);">กรุณาตรวจสอบ</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+    <!-- Modal -->
+    <div class="modal fade" id="checkModal" tabindex="-1" aria-labelledby="checkModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+            <h5 class="modal-title w-100 text-center" style="font-size: 24px; font-weight:500; color: rgb(68, 68, 68);">กรุณาตรวจสอบ</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+            </div>
+            <div class="modal-body text-left">
+            <p style="color: rgb(0, 68, 255);"><i class="fa-regular fa-square-check"></i> CODE</p>
+            <p style="color: rgb(255, 62, 62);"><i class="fa-regular fa-square-check"></i> ชื่อร้าน (ถ้าเปลี่ยนแปลงกรุณาแจ้งด้วย)*</p>
+            <p style="color: rgb(255, 0, 162);"><i class="fa-regular fa-square-check"></i> ใบอนุญาตขายยา/สถานพยาบาลปี {{ $year }}</p>
+            <p style="color: rgb(132, 0, 255);"><i class="fa-regular fa-square-check"></i> ใบประกอบเช็กเลข ภ. และชื่อผู้ปฏิบัติหน้าที่ ข้อมูลต้องตรงกับใบอนุญาตขายยา</p>
+            <p style="color: green;"><i class="fa-regular fa-square-check"></i> เลขที่ใบอนุญาต</p>
+            <p style="color: rgb(255, 119, 0);"><i class="fa-regular fa-square-check"></i> วันหมดอายุ</p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" id="acknowledgeBtn" class="btn btn-primary">รับทราบ</button>
+            </div>
         </div>
-        <div class="modal-body text-left">
-          <p style="color: rgb(0, 68, 255);"><i class="fa-regular fa-square-check"></i> CODE</p>
-          <p style="color: rgb(255, 62, 62);"><i class="fa-regular fa-square-check"></i> ชื่อร้าน (ถ้าเปลี่ยนแปลงกรุณาแจ้งด้วย)*</p>
-          <p style="color: rgb(255, 0, 162);"><i class="fa-regular fa-square-check"></i> ใบอนุญาตขายยา/สถานพยาบาลปี {{ $year }}</p>
-          <p style="color: rgb(132, 0, 255);"><i class="fa-regular fa-square-check"></i> ใบประกอบเช็กเลข ภ. และชื่อผู้ปฏิบัติหน้าที่ ข้อมูลต้องตรงกับใบอนุญาตขายยา</p>
-          <p style="color: green;"><i class="fa-regular fa-square-check"></i> เลขที่ใบอนุญาต</p>
-          <p style="color: rgb(255, 119, 0);"><i class="fa-regular fa-square-check"></i> วันหมดอายุ</p>
         </div>
-        <div class="modal-footer">
-          <button type="button" id="acknowledgeBtn" class="btn btn-primary">รับทราบ</button>
-        </div>
-      </div>
     </div>
-  </div>
 
     <script>
             document.addEventListener("DOMContentLoaded", function() {

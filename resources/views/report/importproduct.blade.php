@@ -42,7 +42,7 @@
         #admin:hover {
             background-color: #0b59f6;
         }
-        #importCustomer {
+        #importProductUpdate {
             background-color: #007bff;
             color: #ffffff;
             border: none;
@@ -52,8 +52,22 @@
             border-radius: 4px;
             text-align: center;
         }
-        #importCustomer:hover {
+        #importProductUpdate:hover {
             background-color: #0b59f6;
+            color: #ffffff;
+        }
+        #importProductMaster {
+            background-color: #f9a723;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #importProductMaster:hover {
+            background-color: #f19603;
             color: #ffffff;
         }
         #edit {
@@ -290,7 +304,7 @@
             <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
             <div class="ms-6" style="text-align: left; margin-top: 10px;">
-                <span style="color: #e84545;">**นำเข้าไฟล์สินค้า (Product from db:vmdrug) tb: Products</span>
+                <span style="color: #e84545;">**นำเข้าไฟล์สินค้า <span style="font-weight: 700; color:#007bff;">Master</span> (Product from db:vmdrug) tb: Products</span>
             </div>
 
             @error('import_csv')
@@ -315,7 +329,7 @@
                 <form method="post" id="import" action="/webpanel/report/product/importcsv" enctype="multipart/form-data" style="margin-top: 10px;">
                     @csrf
                     <input type="file"  id="import_csv" name="import_csv" class="form-control text-muted"><br/>
-                    <input type="submit" id="importCustomer" name="submit_csv" class="btn btn-primary mb-4" value="นำเข้าไฟล์">
+                    <input type="submit" id="importProductUpdate" name="submit_csv" class="btn btn-primary mb-4" value="นำเข้าไฟล์">
                 
                 </form>
                 
@@ -327,6 +341,30 @@
                 </div>
                 @endif
             
+            </div>
+
+            <hr class="my-3" style="color: #8E8E8E; width: 100%;">
+
+
+            <div class="ms-6" style="text-align: left; margin-top: 10px;">
+                <span style="color: #e84545;">**นำเข้าไฟล์สินค้า <span style="font-weight: 700; color:#007bff;">Update</span> (Product from db:vmdrug) tb: Products</span>
+            </div>
+
+            <div class="ms-6 mr-6" style="text-align: left;">
+
+                <form method="post" id="import" action="/webpanel/report/product/importcsv-updated" enctype="multipart/form-data" style="margin-top: 10px;">
+                    @csrf
+                    <input type="file"  id="import_csv" name="import_csv" class="form-control text-muted"><br/>
+                    <input type="submit" id="importProductMaster" name="submit_csv" class="btn btn-primary mb-4" value="นำเข้าไฟล์">
+                
+                </form>
+
+                @if(Session::get('success_import_updated'))
+                <div class="py-4">
+                    <ul class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success_import_updated') }}</ul>
+                </div>
+                @endif
+
             </div>
                
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">

@@ -247,6 +247,11 @@
             cursor: not-allowed;    /* เมาส์เป็นรูปห้าม */
             text-decoration: none;  /* เอาเส้นใต้ลิงก์ออก (ถ้าอยากให้ดูเหมือนปุ่ม) */
         }
+        .modal-body {
+        max-height: 60vh;
+        overflow-y: auto;
+        }
+
 
      /*    .alert-icon {
             animation: shake 1s infinite;
@@ -307,6 +312,7 @@
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
 
 
+            <!-- check modal --->
             <div class="modal fade" id="checkModal" tabindex="-1" aria-labelledby="checkModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content">
@@ -329,9 +335,9 @@
                   </div>
                 </div>
             </div>
-
+ 
             <script>
-                let checkEdit = @json($check_edit); // จะได้ boolean จริง ๆ
+         /*        let checkEdit = @json($check_edit); // จะได้ boolean จริง ๆ
                 if(checkEdit) {
                     var myModal = new bootstrap.Modal(document.getElementById('checkModal'));
                     myModal.show();
@@ -341,9 +347,109 @@
                         modal.hide();
                     });
 
-                }
+                } */
             </script>
-            
+
+             <!-- check modal waiting --->
+             @if(isset($count_modal_waiting) && $count_modal_waiting > 0)
+                <div class="modal fade" id="checkModalWaiting" tabindex="-1" aria-labelledby="checkModalWaitingLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                        <h5 class="modal-title w-100 text-center" style="font-size: 20px; font-weight:500; color: rgb(255, 156, 7);">
+                            กรุณาอัปเดตข้อมูลให้ครบ : 
+                            <span style="border: solid 2px; padding:5px; font-weight:500; border-radius: 10px; color:rgb(255, 182, 11);">ต้องดำเนินการ</span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+                        </div>
+                        <div class="modal-body text-left">
+                            <table class="table table-bordered table-striped table-hover align-middle">
+                                <thead class="table-warning">
+                                    <tr>
+                                        <td style="width: 30%; text-align:center; font-weight:500; color:#464646;">รหัสร้านค้า</td>
+                                        <td style="width: 70%; text-align:center; font-weight:500; color:#464646;">
+                                            ชื่อร้านค้า
+                                        </td>
+                                 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($check_modal_waiting as $row_modal)
+                                        <tr>
+                                            <td style="text-align:center; font-weight:400; color:#838383;">{{ $row_modal->customer_id }}</td>
+                                            <td style="text-align:left; font-weight:400; color:#838383;">
+                                                <a href="{{ asset('/portal/customer/'.$row_modal->id) }}">
+                                                    {{ $row_modal->customer_name }}
+                                                    {{-- <sup style="background-color:#e04b30; color:white; border-radius:5px; padding:3px;">Edit</sup> --}}
+                                                </a>
+                                                
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="modal-footer">
+                        <button type="button" id="acknowledgeBtnWaiting" class="btn btn-warning">รับทราบ</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            @endif
+
+                <script> 
+
+         /*            let checkEdit = @json($check_edit); // จะได้ boolean จริง ๆ
+
+                    if(checkEdit == 0) {
+                        var myModal = new bootstrap.Modal(document.getElementById('checkModalWaiting')); 
+                        myModal.show(); 
+                        document.getElementById('acknowledgeBtnWaiting').addEventListener('click', function () { 
+                            var modal = bootstrap.Modal.getInstance(document.getElementById('checkModalWaiting')); modal.hide(); 
+                        }); 
+                    } */
+                    // console.log('log'); 
+                </script>
+                
+            <!-- ต้องการเปิด 2 modal พร้อมกัน -->
+            <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                    let checkEdit = @json($check_edit); // true/false หรือ 1/0
+                    
+                    if (checkEdit) {
+                        // modal 1
+                        var modal1 = new bootstrap.Modal(document.getElementById('checkModal'));
+                        // var modal2 = new bootstrap.Modal(document.getElementById('checkModalWaiting'));
+
+                        // เปิด modal แรก
+                        modal1.show();
+
+                        // ปุ่มปิด modal1
+                        document.getElementById('acknowledgeBtn').addEventListener('click', function () {
+                            var m1 = bootstrap.Modal.getInstance(document.getElementById('checkModal'));
+                            m1.hide();
+                        });
+
+                        // เมื่อ modal1 ปิดแล้ว → เปิด modal2
+                    /*     document.getElementById('checkModal').addEventListener('hidden.bs.modal', function () {
+                            modal2.show();
+                        }); */
+
+                    } else {
+                        // modal 2
+                        var modal2 = new bootstrap.Modal(document.getElementById('checkModalWaiting'));
+                        modal2.show();
+
+                        // ปุ่มปิด modal2
+                        document.getElementById('acknowledgeBtnWaiting').addEventListener('click', function () {
+                            var m2 = bootstrap.Modal.getInstance(document.getElementById('checkModalWaiting'));
+                            m2.hide();
+                        });
+                    }
+                });
+
+            </script>
 
             <div class="py-2">
                 {{-- <span style="color: #8E8E8E;">ข้อมูลลูกค้า (Customer)</span> --}}

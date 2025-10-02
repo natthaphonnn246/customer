@@ -363,6 +363,7 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('webpanel/report/product/importproduct', [ProductController::class, 'import']);
         Route::get('webpanel/report/product/importproduct/{id}', [ProductController::class, 'productInfo']);
         Route::post('webpanel/report/product/importproduct/updated/{id}', [ProductController::class, 'updateInfo']);
+        //importcsv_product master;
         Route::post('/webpanel/report/product/importcsv', [ProductController::class, 'importFile']);
         Route::get('/webpanel/report/product/new-product', [ProductController::class, 'newInfo']);
         Route::post('/webpanel/report/product/new-product/created', [ProductController::class, 'createInfo']);
@@ -376,6 +377,9 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/product/product-detail/{id}', [ProductController::class, 'show']);
         Route::get('/webpanel/report/product/exportcsv/check', [ProductCsvExport::class, 'exportProductCsv']);
         Route::get('/webpanel/report/product/exportexcel/check', [ProductExcelExport::class, 'exportSellerExcel']);
+
+        //import_product_update;
+        Route::post('/webpanel/report/product/importcsv-updated', [ProductController::class, 'importUpdateProduct']);
 
         //export item;
         Route::get('/webpanel/report/seller/exportcsv/check/item/{id}', [ProductCsvExport::class, 'exportItemCsv']);
@@ -449,7 +453,11 @@ Route::middleware('statusOnline')->group(function (){
     //webpanel customer update;
     // Route::match(['POST', 'HEAD'],'/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware('auth', 'role','status', 'verified');
     // Route::post('/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware('auth', 'role','status', 'verified');
-    Route::match(['GET', 'POST'], '/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware(['auth', 'role', 'status', 'verified']);
+
+    // Route::match(['GET', 'POST'], '/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware(['auth', 'role', 'status', 'verified']);
+
+    Route::put('/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware(['auth', 'role', 'status', 'verified']);
+
     Route::get('/portal/signin/update-amphure', [ProvinceController::class, 'amphure']);
     Route::get('/portal/signin/update-district', [ProvinceController::class, 'district']);
     Route::get('/portal/signin/update-zipcode', [ProvinceController::class, 'zipcode']);
@@ -547,7 +555,7 @@ Route::middleware('statusOnline')->group(function (){
     Route::get('/portal/customer/purchase/{fixed_id}', [PortalCustomerController::class, 'fixedDate'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport');
     // Route::get('/portal/customer/purchase/{fixed_id}', [PortalCustomerController::class, 'fixedDate'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport');
     // resource
-    Route::get('/portal/customer/{id}', [PortalCustomerController::class, 'customerEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'maintenance', 'rights_area');
+    Route::get('/portal/customer/{id}', [PortalCustomerController::class, 'customerEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'maintenance', 'rights_area', 'CustomerDetailCheck');
    //update smtp;
     // Route::put('/portal/customer/{id}', [StatusUpdateController::class, 'update'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'maintenance', 'rights_area');
 

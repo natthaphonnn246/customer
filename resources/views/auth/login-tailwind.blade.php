@@ -352,6 +352,30 @@
                                     
                                 });
                         </script>
+                        @endif
+
+                        @if (session('error_check') == 'กรุณาติดต่อผู้ดูแล')
+                        <script> 
+                                Swal.fire({
+                                    title: "⚠️ กรุณาเข้าระบบใหม่",
+                                    // text: "กรุณารอสักครู่",
+                                    icon: "warning",
+                                    confirmButtonText: "ตกลง",
+                                    width: '400px', 
+                                    height: '200px',
+                                    customClass: {
+                                        popup: 'rounded-popup',
+                                        title: 'text-xl',
+                                        icon: 'custom-icon-color',
+                                        confirmButton: 'custom-confirm-button'
+                                    }
+                                    }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.reload();
+                                    }
+                                    
+                                });
+                        </script>
 
                         @endif
 

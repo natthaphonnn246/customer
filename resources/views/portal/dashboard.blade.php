@@ -62,6 +62,10 @@
                 transform: translate(-50%, -50%); /* เอียงซ้าย 45 องศา */
                 white-space: nowrap; /* ป้องกันตัดบรรทัด */
         }
+        .modal-body {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
 
      /*    #dashPortal {
             position:fixed;
@@ -125,6 +129,67 @@
             </div>
         
     </div>
+
+        @if(isset($count_modal_waiting) && $count_modal_waiting > 0 && $check_edit === 0)
+            <div class="modal fade" id="checkModalWaiting" tabindex="-1" aria-labelledby="checkModalWaitingLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                    <h5 class="modal-title w-100 text-center" style="font-size: 20px; font-weight:500; color: rgb(255, 156, 7);">
+                        กรุณาอัปเดตข้อมูลให้ครบ : 
+                        <span style="border: solid 2px; padding:5px; font-weight:500; border-radius: 10px; color:rgb(255, 182, 11);">ต้องดำเนินการ</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+                    </div>
+                    <div class="modal-body text-left">
+                        <table class="table table-bordered table-striped table-hover align-middle">
+                            <thead class="table-warning">
+                                <tr>
+                                    <td style="width: 30%; text-align:center; font-weight:500; color:#464646;">รหัสร้านค้า</td>
+                                    <td style="width: 70%; text-align:center; font-weight:500; color:#464646;">
+                                        ชื่อร้านค้า
+                                    </td>
+                            
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($check_modal_waiting as $row_modal)
+                                    <tr>
+                                        <td style="text-align:center; font-weight:400; color:#838383;">{{ $row_modal->customer_id }}</td>
+                                        <td style="text-align:left; font-weight:400; color:#838383;">
+                                            <a href="{{ asset('/portal/customer/'.$row_modal->id) }}">
+                                                {{ $row_modal->customer_name }}
+                                                {{-- <sup style="background-color:#e04b30; color:white; border-radius:5px; padding:3px;">Edit</sup> --}}
+                                            </a>
+                                            
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="modal-footer">
+                    <button type="button" id="acknowledgeBtnWaiting" class="btn btn-warning">รับทราบ</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        @endif
+
+        <script>
+             document.addEventListener("DOMContentLoaded", function () {
+                var modal2 = new bootstrap.Modal(document.getElementById('checkModalWaiting'));
+                        modal2.show();
+
+                        // ปุ่มปิด modal2
+                        document.getElementById('acknowledgeBtnWaiting').addEventListener('click', function () {
+                            var m2 = bootstrap.Modal.getInstance(document.getElementById('checkModalWaiting'));
+                            m2.hide();
+                        });
+             });
+        </script>
+
         <script type="text/javascript">
                 
                 const options = {

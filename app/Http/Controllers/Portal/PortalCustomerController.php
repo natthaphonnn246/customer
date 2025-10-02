@@ -72,7 +72,28 @@ class PortalCustomerController
 
         $status_alert = $status_waiting + $status_action;
 
-        return view('portal/dashboard', compact('user_name', 'status_all', 'status_waiting', 'status_action', 'status_completed', 'status_alert'));
+        $check_modal_waiting = DB::table('customers')
+                                ->select('id', 'customer_id', 'customer_name')
+                                ->where('admin_area', $id)
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->where('customer_status', '!=', 'inactive')
+                                ->where('status', 'ต้องดำเนินการ')
+                                ->get();
+
+        $count_modal_waiting = count($check_modal_waiting);
+        $check_edit = DB::table('settings')->where('setting_id', '=', 'WS01')->first()?->check_edit;
+
+        return view('portal/dashboard', compact(
+                                                'user_name', 
+                                                'status_all', 
+                                                'status_waiting', 
+                                                'status_action', 
+                                                'status_completed', 
+                                                'status_alert',
+                                                'check_modal_waiting',
+                                                'count_modal_waiting',
+                                                'check_edit'
+                                            ));
     
     }
     public function indexPortal(Request $request)
@@ -369,6 +390,17 @@ class PortalCustomerController
         //                         ->whereNotIn('customer_id', $code_notin)
         //                         ->count();
 
+        //check modal;
+        $check_modal_waiting = DB::table('customers')
+                                ->select('id', 'customer_id', 'customer_name')
+                                ->where('admin_area', $id)
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->where('customer_status', '!=', 'inactive')
+                                ->where('status', 'ต้องดำเนินการ')
+                                ->get();
+
+        $count_modal_waiting = count($check_modal_waiting);
+        // dd(count($check_modal_waiting));
         $count_page = DB::table('customers')->where('admin_area', $id)
                                 ->whereNotIn('customer_id', $code_notin)
                                 ->where('customer_status', '!=', 'inactive')
@@ -480,7 +512,9 @@ class PortalCustomerController
                                                     'pur_report', 
                                                     'check_id', 
                                                     'check_purchase',
-                                                    'check_edit'
+                                                    'check_edit',
+                                                /*     'count_modal_waiting',
+                                                    'check_modal_waiting' */
                                                 ),
                                                 ['json_edit' => json_encode($check_edit)]
                                             ));
@@ -508,7 +542,9 @@ class PortalCustomerController
                                             'pur_report', 
                                             'check_id', 
                                             'check_purchase',
-                                            'check_edit'
+                                            'check_edit',
+                                            'count_modal_waiting',
+                                            'check_modal_waiting'
                                         ),
                                         ['json_edit' => json_encode($check_edit)]
                                     ));
