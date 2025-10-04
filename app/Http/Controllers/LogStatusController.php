@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LogStatus;
 use App\Models\User;
 use App\Models\Customer;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Sleep;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,7 @@ class LogStatusController extends Controller
     public function statusOnline() 
     {
 
+        
         $dateTime = date_default_timezone_set("Asia/Bangkok");
         //menu;
           //notin code;
@@ -63,12 +65,23 @@ class LogStatusController extends Controller
         $check_row = User::select('user_id', 'user_code', 'email', 'name', 'last_activity', 'login_date')
                             ->whereNotIn('user_id', $code_notin)
                             ->get();
+
+        // $setting = Setting::where('allowed_web_status', 1)->first();
+
         foreach($check_row as $row) {
            
 
                 // Sleep::for(1)->second();
                 
-                return view('webpanel/customer-status', compact('check_row', 'status_waiting', 'status_registration', 'status_updated', 'status_alert', 'date'));
+                return view('webpanel/customer-status', compact(
+                                                                'check_row', 
+                                                                'status_waiting', 
+                                                                'status_registration', 
+                                                                'status_updated', 
+                                                                'status_alert', 
+                                                                'date'
+                                                                // 'setting'
+                                                            ));
             
         }
         // dd($check->login_date);
@@ -125,6 +138,7 @@ class LogStatusController extends Controller
 
         $user_id_admin = $request->user()->user_id;
                             // dd($user_id_admin);
+
         return view('webpanel/status', compact('status_waiting', 'status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
 
        /*  $code_notin = ['1111', '5585', '7777', '8888', '9088'];
@@ -166,6 +180,16 @@ class LogStatusController extends Controller
         echo $json; */
 
         $code_notin = ['1111', '5585', '7777', '8888', '9088'];
+        // DB::statement("SET time_zone = '+07:00'");
+
+     /*    if (app()->environment('local')) {
+            DB::statement("SET time_zone = '+07:00'");
+        }
+ */
+        // SET GLOBAL time_zone = '+07:00';
+
+        $setting = Setting::where('setting_id', 'WS01')->first()->web_status;
+
         $check_row = User::select(
                                     'user_id', 
                                     'user_code', 
@@ -177,28 +201,20 @@ class LogStatusController extends Controller
                                 )
                             // ->where('user_id','0000')
                             ->whereNotIn('user_id', $code_notin)
+                            // ->where('user_id', '9099')
                             ->get();
                             $date = ["date" => time()];
                             $json = [$check_row, $date];
                             $arr_data = json_encode($json);
 
-                            return $arr_data;
+                            // return $arr_data;
+      
+                            return response()->json([
+                                'user'    => $check_row,
+                                'date'    => $date,
+                                'setting' => $setting,
+                            ]);
 
-                            // echo json_encode($date);
-                            
-                           
-        /* foreach ($check_row as $row) {
-            $date = time();
-            $data = [
-                "user_id" => $row['user_id'],
-                "user" => $row['name'],
-                'last_activity' => $date,
-                ];
-
-        }
-        
-        $row = json_encode($data);
-        echo $row; */
     }
 
     /**

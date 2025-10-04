@@ -285,7 +285,7 @@
 
             <div class="py-2">
             </div>
-            <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/report/product/importproduct" id="backLink">ย้อนกลับ</a> / อัปเดตต้นทุนสินค้า</span>
+            <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/report/product/importproduct" id="backLink">ย้อนกลับ</a> / อัปเดตสถานะสินค้า</span>
             {{-- <span class="ms-6" style="color: #8E8E8E;">รายงานการขายสินค้า</span> --}}
             <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
@@ -312,7 +312,7 @@
             {{-- {{$check_provinces}} --}}
             <div class="ms-6 mr-6" style="text-align: left;">
 
-                <form method="post" id="import" action="/webpanel/report/product/update-cost/importcsv" enctype="multipart/form-data" style="margin-top: 10px;">
+                <form method="post" id="import" action="/webpanel/report/product/update-status/importcsv" enctype="multipart/form-data" style="margin-top: 10px;">
                     @csrf
                     @method('put')
                     <input type="file"  id="import_csv" name="import_cost" class="form-control text-muted"><br/>

@@ -368,7 +368,19 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/report/product/new-product', [ProductController::class, 'newInfo']);
         Route::post('/webpanel/report/product/new-product/created', [ProductController::class, 'createInfo']);
         Route::get('/webpanel/report/product/update-cost', [ProductController::class, 'updateCost']);
-        Route::post('/webpanel/report/product/update-cost/importcsv', [ProductController::class, 'importCostProduct']);
+
+        //update cost;
+        // Route::post('/webpanel/report/product/update-cost/importcsv', [ProductController::class, 'importCostProduct']);
+        Route::put('/webpanel/report/product/update-cost/importcsv', [ProductController::class, 'importCostProduct']);
+
+        //update product_status;
+        Route::put('/webpanel/report/product/update-status/importcsv', [ProductController::class, 'importStatusProduct']);
+        Route::get('/webpanel/report/product/update-status', [ProductController::class, 'updateStatus']);
+
+        //export excel and csv stock;
+        Route::get('/webpanel/report/product/deadstock/exportexcel/check', [ProductExcelExport::class, 'deadStockExcel']);
+        Route::get('/webpanel/report/product/deadstock/exportcsv/check', [ProductCsvExport::class, 'exportStockCsv']);
+        
         Route::get('/webpanel/report/product/importproduct/deleted/{id}', [ProductController::class, 'deleteProduct']);
         Route::get('webpanel/report/product/importcategory', [CategoryController::class, 'import']);
         Route::post('/webpanel/report/product/importcsv/category', [CategoryController::class, 'importFile']);
@@ -395,6 +407,9 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/report/product/sales/region/exportcsv', [RegionProductCsvExport::class, 'exportProductRegionCsv']);
         Route::get('/webpanel/report/product/sales/region/exportexcel', [RegionProductExcelExport::class, 'exportProductRegionExcel']);
 
+        //deadstock;
+        Route::get('/webpanel/report/product/deadstock', [ProductController::class, 'deadStock']);
+        Route::get('/webpanel/report/product/deadstock/search', [ProductController::class, 'deadStock']);
         //delete-seller;
         Route::get('webpanel/report/delete-sale', [ReportSellerController::class, 'deleteSeller']);
 

@@ -459,5 +459,60 @@ class ProductCsvExport
             fclose( $output );
             exit;
         }
+
+        public function exportStockCsv(Request $request)
+        {
+
+            date_default_timezone_set("Asia/Bangkok");
+
+            $from = $request->from;
+            $to   = $request->to;
+            $date = $from.'_to_'.$to;
+            $filename = 'Product_stock_'.$date.'.csv';
+        
+            // ตั้งค่า header สำหรับดาวน์โหลด CSV
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename='.$filename);
+        
+            $stock_product = DB::table('products as p')
+                            ->leftJoin('report_sellers as r', function ($join) use ($from, $to) {
+                                $join->on('p.product_id', '=', 'r.product_id')
+                                    ->whereBetween('r.date_purchase', [$from, $to]);
+                            })
+                            ->select(
+                                'p.product_id',
+                                'p.product_name',
+                                'p.generic_name',
+                                'p.quantity',
+                                'p.unit',
+                                'p.status'
+                            )
+                            ->where('p.status', 'เปิด')
+                            ->whereNull('r.product_id')
+                            ->orderBy('p.product_id')
+                            ->get();
+                    
+                        $data = $stock_product->toArray();
+                    
+                        $output = fopen('php://output', 'w');
+                    
+                        // เขียน header ลงไฟล์ CSV
+                        fputcsv($output, [
+                            'Product ID',
+                            'Product Name',
+                            'Generic Name',
+                            'Quantity',
+                            'Unit',
+                            'Status'
+                        ], "|");
+                    
+                        // แปลง object → array ก่อนเขียน
+                        foreach ($data as $data_item) {
+                            fputcsv($output, (array) $data_item, "|");
+                        }
+                    
+                        fclose($output);
+                        exit;
+        }
     }
 

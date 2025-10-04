@@ -16,7 +16,7 @@ class StatusOnline
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    /* public function handle(Request $request, Closure $next): Response
     {
         $user_id = Auth::user()->user_id;
         User::where('user_id', $user_id)->update(['last_activity' => now()]);
@@ -26,6 +26,29 @@ class StatusOnline
         if ($log_login_date) {
             $log_login_date->last_activity = now();
             $log_login_date->save();
+        }
+
+        return $next($request);
+    } */
+
+    public function handle(Request $request, Closure $next): Response
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            // อัปเดต last_activity ของ user
+            User::where('user_id', $user->user_id)
+                ->update(['last_activity' => now()]);
+
+            // อัปเดต last_activity ของ LogStatus ล่าสุด
+            $log_login_date = LogStatus::where('user_id', $user->user_id)
+                ->latest('id')
+                ->first();
+
+            if ($log_login_date) {
+                $log_login_date->last_activity = now();
+                $log_login_date->save();
+            }
         }
 
         return $next($request);

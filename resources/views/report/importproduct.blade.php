@@ -262,6 +262,20 @@
             background-color:  #878787;
             color: #ffffff;
         }
+        #updateStatus {
+            background-color: #bf49ff;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #updateStatus:hover {
+            background-color:  #a510f6;
+            color: #ffffff;
+        }
     </style>
 
         @if($user_id_admin == '0000')
@@ -347,7 +361,7 @@
 
 
             <div class="ms-6" style="text-align: left; margin-top: 10px;">
-                <span style="color: #e84545;">**นำเข้าไฟล์สินค้า <span style="font-weight: 700; color:#007bff;">Update</span> (Product from db:vmdrug) tb: Products</span>
+                <span style="color: #e84545;">**นำเข้าไฟล์สินค้า <span style="font-weight: 700; color:#007bff;">Update สินค้าใหม่</span> (Product from db:vmdrug) tb: Products</span>
             </div>
 
             <div class="ms-6 mr-6" style="text-align: left;">
@@ -372,6 +386,7 @@
             <div class="ms-6 mr-6" style="text-align: left;">
                 <a href="/webpanel/report/product/new-product"  id="createProduct" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">เพิ่มสินค้าใหม่</a>
                 <a href="/webpanel/report/product/update-cost"  id="updateProduct" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">อัปเดตต้นทุน</a>
+                <a href="/webpanel/report/product/update-status"  id="updateStatus" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">สถานะสินค้า</a>
 
             </div>
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">

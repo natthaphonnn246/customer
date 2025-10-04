@@ -1141,6 +1141,65 @@ class ProductController extends Controller
                                                 ));
     }
 
+    public function updateStatus (Request $request)
+    {
+     
+        $id = $request->id;
+        // dd($id);
+
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        //menu alert;
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+
+        $user_id_admin = $request->user()->user_id;
+
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+         //menu alert;
+         $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+
+        $user_id_admin = $request->user()->user_id;
+   
+
+        return view('/report/update-status', compact(
+                                                    'status_alert', 
+                                                    'status_waiting', 
+                                                    'status_updated', 
+                                                    'status_registration', 
+                                                    'user_id_admin',
+ 
+                                                ));
+    }
+
     public function importCostProduct(Request $request)
     {
         date_default_timezone_set("Asia/Bangkok");
@@ -1148,14 +1207,16 @@ class ProductController extends Controller
         if($request->has('submit_csv') == true) 
         {
             
+                $count = 0;
                 $path = $request->file('import_cost');
                 if($path == null) {
-                    $path == '';
+                    $path = '';
+                    // $path == '';
     
                 } else {
 
                     // dd('dd');
-                    $count = 0;
+                    // $count = 0;
                     $rename = 'Product_update' . '_' . date("l jS \of F Y h:i:s A") . '.csv';
 
                     // เปิดไฟล์จาก path ที่คุณเก็บไว้
@@ -1167,39 +1228,29 @@ class ProductController extends Controller
                         // อ่านทีละบรรทัดแบบปลอดภัย
                         while (($row = fgetcsv($fileStream, 1000, "|")) !== false) {
 
+                        // ตรวจสอบว่า row ว่างหรือมีจำนวน column ไม่เพียงพอ //ข้ามแถวนี้ไปเลย ไม่ทำอะไรกับมัน;
+                        if ($row === false || $row[0] === 'รหัสสินค้า' || count($row) < 15 || empty($row[0])) {
+                            continue;
+                        }
+
                         if (!empty($row[0])) {
                         $updated =  Product::where('product_id', $row[0])->update([
-/*                                             'product_id'    => $row[0],
+
+                                            'product_id'    => $row[0],
                                             'product_name'  => $row[1],
                                             'generic_name'  => $row[2],
                                             'category'      => $row[3],
                                             'sub_category'  => $row[4],
                                             'type'          => $row[5],
                                             'unit'          => $row[6],
-                                            'cost'          => '5',
-                                            'price_1'       => $row[7],
-                                            'price_2'       => $row[8],
-                                            'price_3'       => $row[9],
-                                            'price_4'       => $row[10],
-                                            'price_5'       => $row[11],
-                                            'quantity'      => $row[12],
-                                            'status'        => $row[13], */
-
-                                            'product_id' => $row[0],
-                                            'product_name' => $row[1],
-                                            'generic_name' => $row[2],
-                                            'category' => $row[3],
-                                            'sub_category' => $row[4],
-                                            'type' => $row[5],
-                                            'unit' => $row[6],
-                                            'cost' => $row[7],
-                                            'price_1' => $row[8],
-                                            'price_2' => $row[9],
-                                            'price_3' => $row[10],
-                                            'price_4' => $row[11],
-                                            'price_5' => $row[12],
-                                            'quantity' => $row[13],
-                                            'status' => $row[14],
+                                            'cost'          => $row[7],
+                                            'price_1'       => $row[8],
+                                            'price_2'       => $row[9],
+                                            'price_3'       => $row[10],
+                                            'price_4'       => $row[11],
+                                            'price_5'       => $row[12],
+                                            'quantity'      => $row[13],
+                                            'status'        => $row[14],
                                             
                                         ]);
 
@@ -1221,6 +1272,67 @@ class ProductController extends Controller
         }
             
    }
+
+   public function importStatusProduct(Request $request)
+   {
+       date_default_timezone_set("Asia/Bangkok");
+
+       if($request->has('submit_csv') == true) 
+       {
+           
+               $count = 0;
+               $path = $request->file('import_cost');
+               if($path == null) {
+                   $path = '';
+                   // $path == '';
+   
+               } else {
+
+                   // dd('dd');
+                //    $count = 0;
+                   $rename = 'Product_update_status' . '_' . date("l jS \of F Y h:i:s A") . '.csv';
+
+                   // เปิดไฟล์จาก path ที่คุณเก็บไว้
+                   $request->file('import_cost')->storeAs('importcsv',$rename,'importfiles'); //importfiles filesystem.php->disk;
+                   $fileStream = fopen(storage_path('app/public/importcsv/' . $rename), 'r');
+
+                   if ($fileStream) {
+
+                       // อ่านทีละบรรทัดแบบปลอดภัย
+                       while (($row = fgetcsv($fileStream, 1000, "|")) !== false) {
+
+                       // ตรวจสอบว่า row ว่างหรือมีจำนวน column ไม่เพียงพอ //ข้ามแถวนี้ไปเลย ไม่ทำอะไรกับมัน;
+                   /*     if ($row === false || $row[0] === 'รหัสสินค้า' || count($row) < 15 || empty($row[0])) {
+                           continue;
+                       } */
+
+                       if (!empty($row[0])) {
+                        
+                       $updated =  Product::where('product_id', $row[0])->update([
+
+                                           'product_id'    => $row[0],
+                                           'status'        => 'ปิด',
+                                           
+                                       ]);
+
+                                       $count += $updated;
+                           }
+
+                       }
+
+                       // ปิดไฟล์หลังจากอ่านจบ
+                       fclose($fileStream);
+                   }
+
+
+           }
+           
+           // $count = Product::all()->count();
+
+           return redirect('/webpanel/report/product/update-status')->with('success_import', 'นำเข้าข้อมูลสำเร็จ :'.' '.$count);
+       }
+           
+  }
 
 
     public function updateInfo (Request $request) {
@@ -2128,4 +2240,111 @@ class ProductController extends Controller
                                         ));
     }
  */
+
+// สินค้าขายไม่ดี หรือไม่เคลื่อนไหว
+    public function deadStock(Request $request)
+    {
+          //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        //menu alert;
+        $status_waiting = DB::table('customers')->where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_updated = DB::table('customers')->where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = DB::table('customers')->where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+
+        $user_id_admin = $request->user()->user_id;
+
+        $from = $request->from ?? date('Y-m-d');
+        $to   = $request->to ?? date('Y-m-d');
+
+        $dead_stock = DB::table('products as p')
+                        ->leftJoin('report_sellers as r', function ($join) use ($from, $to) {
+                            $join->on('p.product_id', '=', 'r.product_id')
+                                ->whereBetween('r.date_purchase', [$from, $to]);
+                                // ->where('p.status', 'เปิด')
+                        })
+                        ->select(
+                                'p.product_id',
+                                'p.product_name',
+                                'p.generic_name',
+                                'p.quantity',
+                                'p.unit',
+                                'p.status',
+                            )
+                        ->whereNull('r.product_id')
+                        ->orderByRaw("CASE WHEN status = 'เปิด' THEN 0 ELSE 1 END")
+                        ->get();
+
+        $count_dead_stock = count($dead_stock);
+                        // dd($dead_stock);
+
+        $dead_stock_on = DB::table('products as p')
+                            ->leftJoin('report_sellers as r', function ($join) use ($from, $to) {
+                                $join->on('p.product_id', '=', 'r.product_id')
+                                    ->whereBetween('r.date_purchase', [$from, $to]);
+                            })
+                            ->select(
+                                    'p.product_id',
+                                    'p.product_name',
+                                    'p.generic_name',
+                                    'p.quantity',
+                                    'p.unit',
+                                    'p.status',
+                                )
+                            ->where('p.status','เปิด')
+                            ->whereNull('r.product_id')
+                            ->get();
+
+        $count_dead_stock_on = count($dead_stock_on);
+        // dd($count_dead_stock_close);
+
+        $dead_stock_close = DB::table('products as p')
+                        ->leftJoin('report_sellers as r', function ($join) use ($from, $to) {
+                            $join->on('p.product_id', '=', 'r.product_id')
+                                ->whereBetween('r.date_purchase', [$from, $to]);
+                        })
+                        ->select(
+                                'p.product_id',
+                                'p.product_name',
+                                'p.generic_name',
+                                'p.quantity',
+                                'p.unit',
+                                'p.status',
+                            )
+                        ->where('p.status','ปิด')
+                        ->whereNull('r.product_id')
+                        ->get();
+
+        $count_dead_stock_close = count($dead_stock_close);   
+
+        $count_productall = Product::count();
+
+        $count_productall_notmove = Product::where('status', 'ปิด')->count();
+
+        return view('/report/product-deadstock', compact(
+                                                        'status_alert',
+                                                        'status_waiting',
+                                                        'status_updated',
+                                                        'status_registration',
+                                                        'user_id_admin',
+                                                        'dead_stock',
+                                                        'count_dead_stock',
+                                                        'count_productall',
+                                                        'count_dead_stock_on',
+                                                        'count_dead_stock_close',
+                                                        'count_productall_notmove'
+                                                    ));
+    }
 }

@@ -11,7 +11,7 @@
 
     <!-- recaptcha -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         function enableSubmitbtn() {
             document.getElementById("submitBtn").disabled = false;
@@ -252,51 +252,64 @@
                         </ul>
                  
                         @if (session('login_fail') == 'fail')
-                        <script> 
-                                Swal.fire({
-                                    title: "⚠️ บัญชีของท่านถูกระงับ",
-                                    // text: "กรุณาติดต่อผู้ดูแล",
-                                    icon: "warning",
-                                    confirmButtonText: "ตกลง",
-                                    width: '400px', 
-                                    height: '200px',
-                                    customClass: {
-                                        popup: 'rounded-popup-close',
-                                        title: 'text-xl',
-                                        icon: 'custom-icon-color-close',
-                                        confirmButton: 'custom-confirm-button-close'
-                                    }
-                                    }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.reload();
-                                    }
-                                });
+                        
+                        <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            Swal.fire({
+                                title: "⚠️ บัญชีของท่านถูกระงับ",
+                                html: "<p style='font-size:16px;'>โปรดติดต่อผู้ดูแลระบบเพื่อขอความช่วยเหลือ</p>",
+                                icon: "warning",
+                                confirmButtonColor: "#ff9800",
+                                confirmButtonText: "ตกลง",
+                                width: 400,
+                                padding: "1.5em",
+                                customClass: {
+                                    popup: "rounded-lg shadow-lg p-6 custom-popup-close",
+                                    title: "text-xl font-bold custom-title-close",
+                                    icon: "custom-icon-close",
+                                    confirmButton: "bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded custom-confirm-button-close"
+                                },
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        });
                         </script>
                         @endif
                         
+                        
                         @if (session('login_error') == 'error')
-                        <script> 
-                                Swal.fire({
-                                    title: "⚠️ ไม่พบบัญชีผู้ใช้งาน",
-                                    // text: "กรุณาติดต่อผู้ดูแล",
-                                    icon: "error",
-                                    confirmButtonText: "ตกลง",
-                                    width: '400px', 
-                                    height: '200px',
-                                    customClass: {
-                                        popup: 'rounded-popup-error',
-                                        title: 'text-xl',
-                                        icon: 'custom-icon-color-error',
-                                        confirmButton: 'custom-confirm-button-error'
-                                    }
-                                    }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.reload();
-                                    }
-                                });
+                        
+                        <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            Swal.fire({
+                                title: "⚠️ ไม่พบบัญชีผู้ใช้งาน",
+                                html: "<p style='font-size:16px;'>โปรดตรวจสอบชื่อผู้ใช้และรหัสผ่านอีกครั้ง</p>",
+                                icon: "error",
+                                confirmButtonColor: "#d33",
+                                confirmButtonText: "ตกลง",
+                                width: 400,
+                                padding: "1.5em",
+                                customClass: {
+                                    popup: "rounded-lg shadow-lg p-6 custom-popup-error",
+                                    title: "text-xl font-bold custom-title-error",
+                                    icon: "custom-icon-error",
+                                    confirmButton: "bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded custom-confirm-button-error"
+                                },
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        });
                         </script>
-
                         @endif
+                        
 
                         @if ($errors->has('g-recaptcha-response'))
                         <div class="text-red-500 text-center">
@@ -305,81 +318,65 @@
                         @endif
 
                         @if (session('recaptcha_error') == 'recaptcha_error')
-                        <script> 
-                                Swal.fire({
-                                    title: "⚠️ เกิดข้อผิดพลาด",
-                                    // text: "กรุณาติดต่อผู้ดูแล",
-                                    icon: "warning",
-                                    confirmButtonColor: "#3085d6",
-                                    confirmButtonText: "ตกลง",
-                                    width: '400px', 
-                                    height: '200px',
-                                    customClass: {
-                                        popup: 'rounded-popup-recaptcha',
-                                        title: 'text-xl',
-                                        icon: 'custom-icon-color-recaptcha',
-                                        confirmButton: 'custom-confirm-button-recaptcha'
-                                    }
-                                    }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.reload();
-                                    }
-                                });
+                        
+                        <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            Swal.fire({
+                                title: "⚠️ เกิดข้อผิดพลาด",
+                                html: "<p style='font-size:16px;'>ระบบตรวจสอบ reCAPTCHA ไม่ผ่าน กรุณาลองใหม่อีกครั้ง</p>",
+                                icon: "warning",
+                                confirmButtonColor: "#3085d6",
+                                confirmButtonText: "ตกลง",
+                                width: 400,
+                                padding: "1.5em",
+                                customClass: {
+                                    popup: "rounded-lg shadow-lg p-6 custom-popup-recaptcha",
+                                    title: "text-xl font-bold custom-title-recaptcha",
+                                    icon: "custom-icon-recaptcha",
+                                    confirmButton: "bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded custom-confirm-button-recaptcha"
+                                },
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        });
                         </script>
-
                         @endif
+                        
                         {{-- 'allowed_status', 'ปิดปรับปรุงระบบ' --}}
                         {{-- 'error_active', 'กรุณาติดต่อผู้ดูแล' --}}
                         @if (session('error_active') == 'กรุณาติดต่อผู้ดูแล')
-                        <script> 
-                                Swal.fire({
-                                    title: "⚠️ ปิดปรับปรุงระบบ",
-                                    // text: "กรุณารอสักครู่",
-                                    icon: "warning",
-                                    confirmButtonText: "ตกลง",
-                                    width: '400px', 
-                                    height: '200px',
-                                    customClass: {
-                                        popup: 'rounded-popup',
-                                        title: 'text-xl',
-                                        icon: 'custom-icon-color',
-                                        confirmButton: 'custom-confirm-button'
-                                    }
-                                    }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.reload();
-                                    }
-                                    
-                                });
+                        
+                        <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            Swal.fire({
+                                title: "⚠️ ปิดปรับปรุงระบบ",
+                                html: "<p style='font-size:16px;'>{{ session('error_active') }}</p>",
+                                icon: "warning",
+                                confirmButtonText: "ตกลง",
+                                customClass: {
+                                    popup: "rounded-lg shadow-lg p-6",
+                                    title: "text-2xl font-bold",
+                                    confirmButton: "bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+                                },
+                                width: 400,
+                                padding: "1.5em",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        });
                         </script>
                         @endif
+                        
 
-                        @if (session('error_check') == 'กรุณาติดต่อผู้ดูแล')
-                        <script> 
-                                Swal.fire({
-                                    title: "⚠️ กรุณาเข้าระบบใหม่",
-                                    // text: "กรุณารอสักครู่",
-                                    icon: "warning",
-                                    confirmButtonText: "ตกลง",
-                                    width: '400px', 
-                                    height: '200px',
-                                    customClass: {
-                                        popup: 'rounded-popup',
-                                        title: 'text-xl',
-                                        icon: 'custom-icon-color',
-                                        confirmButton: 'custom-confirm-button'
-                                    }
-                                    }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.reload();
-                                    }
-                                    
-                                });
-                        </script>
-
-                        @endif
-
-                        @if (session('email') == 'บัญชีถูกบล็อกชั่วคราว')
+                       {{--  @if (session('email') == 'บัญชีถูกบล็อกชั่วคราว')
                         <script> 
                                 Swal.fire({
                                     title: "⚠️ บัญชีถูกบล็อกชั่วคราว",
@@ -452,7 +449,80 @@
                                 });
                         </script>
 
+                        @endif --}}
+
+                        @if (session('email') == 'บัญชีถูกบล็อกชั่วคราว')
+                        <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            Swal.fire({
+                                title: "⚠️ บัญชีถูกบล็อกชั่วคราว",
+                                html: "<p style='font-size:16px;'>โปรดติดต่อผู้ดูแลระบบ</p>",
+                                icon: "error",
+                                confirmButtonColor: "#d33",
+                                confirmButtonText: "ตกลง",
+                                width: 400,
+                                padding: "1.5em",
+                                customClass: {
+                                    popup: "rounded-lg shadow-lg p-6 custom-popup-error",
+                                    title: "text-xl font-bold",
+                                    icon: "custom-icon-error",
+                                    confirmButton: "bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
+                                },
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then(() => window.location.reload());
+                        });
+                        </script>
                         @endif
+
+                        @if (session('attepmt_fail') == 'ข้อมูลไม่ถูกต้อง')
+                        <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            Swal.fire({
+                                title: "⚠️ ข้อมูลไม่ถูกต้อง",
+                                html: "<p style='font-size:16px;'>กรุณาตรวจสอบข้อมูลอีกครั้ง</p>",
+                                icon: "warning",
+                                confirmButtonColor: "#f0ad4e",
+                                confirmButtonText: "ตกลง",
+                                width: 400,
+                                padding: "1.5em",
+                                customClass: {
+                                    popup: "rounded-lg shadow-lg p-6 custom-popup-warning",
+                                    title: "text-xl font-bold",
+                                    icon: "custom-icon-warning",
+                                    confirmButton: "bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded"
+                                },
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then(() => window.location.reload());
+                        });
+                        </script>
+                        @endif
+
+                        @if (session('error_purchase') == 'คุณไม่มีสิทธิ์เข้าถึง')
+                        <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            Swal.fire({
+                                title: "⚠️ คุณไม่มีสิทธิ์เข้าถึง",
+                                html: "<p style='font-size:16px;'>กรุณาติดต่อผู้ดูแลระบบเพื่อขอสิทธิ์</p>",
+                                icon: "warning",
+                                confirmButtonColor: "#f0ad4e",
+                                confirmButtonText: "ตกลง",
+                                width: 400,
+                                padding: "1.5em",
+                                customClass: {
+                                    popup: "rounded-lg shadow-lg p-6 custom-popup-warning",
+                                    title: "text-xl font-bold",
+                                    icon: "custom-icon-warning",
+                                    confirmButton: "bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded"
+                                },
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then(() => window.location.reload());
+                        });
+                        </script>
+                        @endif
+
 
                         
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
