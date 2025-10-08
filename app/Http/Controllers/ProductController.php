@@ -1038,6 +1038,11 @@ class ProductController extends Controller
         $category = $request->category;
         $sub_category = $request->sub_category;
         $status = $request->status;
+        $khor_yor_1 = $request->khor_yor_1 ?? 0;
+        $khor_yor_2 = $request->khor_yor_2 ?? 0;
+        $som_phor_2 = $request->som_phor_2 ?? 0;
+        $clinic     = $request->clinic ?? 0;
+        
 
         $check_id = Product::where('product_id', $product_id)->first();
 
@@ -1062,6 +1067,10 @@ class ProductController extends Controller
                                         'price_4' => $price_4,
                                         'price_5' => $price_5,
                                         'status' => $status,
+                                        'khor_yor_1' => $khor_yor_1,
+                                        'khor_yor_2' => $khor_yor_2,
+                                        'som_phor_2' => $som_phor_2,
+                                        'clinic' => $clinic
                                     ]);
 
                     $check_create = $create->firstWhere('product_id', $product_id)->product_id;
@@ -1251,6 +1260,10 @@ class ProductController extends Controller
                                             'price_5'       => $row[12],
                                             'quantity'      => $row[13],
                                             'status'        => $row[14],
+/*                                             'khor_yor_1'    => $row[15],
+                                            'khor_yor_2'    => $row[16],
+                                            'som_phor_2'    => $row[17],
+                                            'clinic'        => $row[18], */
                                             
                                         ]);
 
@@ -1357,6 +1370,10 @@ class ProductController extends Controller
             $category = $request->category;
             $sub_category = $request->sub_category;
             $status = $request->status;
+            $khor_yor_1 = $request->khor_yor_1 ?? 0;
+            $khor_yor_2 = $request->khor_yor_2 ?? 0;
+            $som_phor_2 = $request->som_phor_2 ?? 0;
+            $clinic     = $request->clinic ?? 0;
 
             Product::where('id', $id)->update([
                         'product_id' => $product_id,
@@ -1373,6 +1390,10 @@ class ProductController extends Controller
                         'category' => $category,
                         'sub_category' => $sub_category,
                         'status' => $status,
+                        'khor_yor_1' => $khor_yor_1,
+                        'khor_yor_2' => $khor_yor_2,
+                        'som_phor_2' => $som_phor_2,
+                        'clinic' => $clinic,
                     ]);
 
             // $check_id = Product::select('id')->where('id', $id)->first();
@@ -1467,6 +1488,10 @@ class ProductController extends Controller
                                                         'price_5'       => $row[12],
                                                         'quantity'      => $row[13],
                                                         'status'        => $row[14],
+                                                        /* 'khor_yor_1'    => $row[15],
+                                                        'khor_yor_2'    => $row[16],
+                                                        'som_phor_2'    => $row[17],
+                                                        'clinic'        => $row[18], */
                                                     ];
 
                                 // ทำ bulk insert ทีละชุด
@@ -1546,6 +1571,10 @@ class ProductController extends Controller
                                                         'price_5'       => $row[12],
                                                         'quantity'      => $row[13],
                                                         'status'        => $row[14],
+                                                     /*    'khor_yor_1'    => $row[15],
+                                                        'khor_yor_2'    => $row[16],
+                                                        'som_phor_2'    => $row[17],
+                                                        'clinic'        => $row[18], */
                                                     ];
                                 }
                                 // ทำ bulk insert ทีละชุด
@@ -2347,4 +2376,405 @@ class ProductController extends Controller
                                                         'count_productall_notmove'
                                                     ));
     }
+
+    public function updateKhoryor (Request $request)
+    {
+     
+        $id = $request->id;
+        // dd($id);
+
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        //menu alert;
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+
+        $user_id_admin = $request->user()->user_id;
+
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+         //menu alert;
+         $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+
+        $user_id_admin = $request->user()->user_id;
+   
+        // dd('d');
+
+        return view('/report/update-type', compact(
+                                                    'status_alert', 
+                                                    'status_waiting', 
+                                                    'status_updated', 
+                                                    'status_registration', 
+                                                    'user_id_admin',
+ 
+                                                ));
+    }
+
+    public function importKhorYor(Request $request)
+    {
+        date_default_timezone_set("Asia/Bangkok");
+
+        if($request->has('submit_csv') == true) 
+        {
+            
+                $count = 0;
+                $path = $request->file('import_cost');
+                if($path == null) {
+                    $path = '';
+                    // $path == '';
+    
+                } else {
+
+                    // dd('dd');
+                    // $count = 0;
+                    $rename = 'Update_khoryor' . '_' . date("l jS \of F Y h:i:s A") . '.csv';
+
+                    // เปิดไฟล์จาก path ที่คุณเก็บไว้
+                    $request->file('import_cost')->storeAs('importcsv',$rename,'importfiles'); //importfiles filesystem.php->disk;
+                    $fileStream = fopen(storage_path('app/public/importcsv/' . $rename), 'r');
+
+                    if ($fileStream) {
+
+                        // อ่านทีละบรรทัดแบบปลอดภัย
+                        while (($row = fgetcsv($fileStream, 1000, "|")) !== false) {
+
+                        // ตรวจสอบว่า row ว่างหรือมีจำนวน column ไม่เพียงพอ //ข้ามแถวนี้ไปเลย ไม่ทำอะไรกับมัน;
+                        if ($row === false || $row[0] === 'รหัสสินค้า' || count($row) < 6 || empty($row[0])) {
+                            continue;
+                        }
+
+                        if (!empty($row[0])) {
+                        $updated =  Product::where('product_id', $row[0])->update([
+
+                                            'khor_yor_1'    => $row[2],
+                                            'khor_yor_2'    => $row[3],
+                                            'som_phor_2'    => $row[4],
+                                            'clinic'        => $row[5],
+                                            
+                                        ]);
+
+                                        $count += $updated;
+                            }
+
+                        }
+
+                        // ปิดไฟล์หลังจากอ่านจบ
+                        fclose($fileStream);
+                    }
+
+
+            }
+            
+            // $count = Product::all()->count();
+            
+            return redirect('/webpanel/report/product/update-type')->with('success_import', 'นำเข้าข้อมูลสำเร็จ :'.' '.$count);
+        }
+    }
+
+    public function indexType (Request $request)
+    {
+        
+            $from = $request->from ?? date('Y-m-d');
+            $to   = $request->to ?? date('Y-m-d');
+            $generic = $request->generic ?: 'ไม่ระบุ'; 
+            $product = $request->product ?: 'ไม่ระบุ'; 
+            
+            //notin code;
+            $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+    
+            $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+    
+            $status_updated = Customer::where('status_update', 'updated')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+    
+            $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+    
+            $status_alert = $status_waiting + $status_updated;
+    
+            $user_id_admin = $request->user()->user_id;
+    
+            //dropdown admin_area;
+            $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
+    
+            //dropdown sale_area;
+            $sale_area =  Salearea::select('sale_area', 'sale_name')->get();
+    
+            $category = Category::orderBy('categories_id', 'ASC')->get();
+    
+            $cate_id = $request->cate_id;
+            // dd($cate_id);
+    
+                        $products = [];
+    
+                        if (isset($cate_id)) {
+                            $products = DB::table('products as p')
+                                ->select('product_id', 'product_name', 'generic_name', 'khor_yor_2')
+                                ->where('khor_yor_2', 1)
+                                ->where('category', $cate_id)
+                                ->orderBy('product_id', 'ASC')
+                                ->get();
+                        } else {
+                            $products = DB::table('products as p')
+                                ->select('product_id', 'product_name', 'generic_name', 'khor_yor_2')
+                                ->where('khor_yor_2', 1)
+                                ->orderBy('product_id', 'ASC')
+                                ->get();
+                        }
+                        
+                        return view('product/product-type', compact(
+                            'status_alert',
+                            'status_registration', 
+                            'status_waiting', 
+                            'status_updated',
+                            'user_id_admin',
+
+                        ));
+            
+    }        
+
+    //แบบอนุญาต ร้านค้า ข.ย.2;
+    public function productTypeKhoryor(Request $request)
+    {
+        $from = $request->from ?? date('Y-m-d');
+        $to   = $request->to ?? date('Y-m-d');
+        $generic = $request->generic ?: 'ไม่ระบุ'; 
+        $product = $request->product ?: 'ไม่ระบุ'; 
+        
+        $keyword = $request->keyword;
+    //    if($keyword) {
+    //     dd($keyword);
+    //    }
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        $user_id_admin = $request->user()->user_id;
+
+        //dropdown admin_area;
+        $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
+
+        //dropdown sale_area;
+        $sale_area =  Salearea::select('sale_area', 'sale_name')->get();
+
+        $category = Category::orderBy('categories_id', 'ASC')->get();
+
+        $cate_id = $request->cate_id;
+        // dd($cate_id);
+
+                    $allProducts = collect();
+
+                    if (isset($cate_id)) {
+                       /*  $products = DB::table('products as p')
+                            ->select('product_id', 'product_name', 'generic_name', 'khor_yor_2')
+                            ->where('khor_yor_2', 1)
+                            ->where('category', $cate_id)
+                            ->orderBy('product_id', 'ASC')
+                            ->get(); */
+
+                            DB::table('products as p')
+                                ->select('product_id', 'product_name', 'generic_name', 'khor_yor_2')
+                                ->where('khor_yor_2', 1)
+                                ->where('category', $cate_id)
+                                ->orderBy('product_id', 'ASC')
+                                ->chunk(1000, function ($products) use (&$allProducts) {
+
+                                        // รวมข้อมูลแต่ละ chunk เข้า collection หลัก
+                                        $allProducts = $allProducts->merge($products);
+                                });
+                              
+
+
+                    } else {
+                        
+                    
+                            DB::table('products as p')
+                                ->where('khor_yor_2', 1)
+                                ->select('product_id', 'product_name', 'generic_name', 'khor_yor_2')
+                                // ->where('product_id', 'Like', "%{$keyword}%")
+                                // ->orWhere('product_name', 'Like', "%{$keyword}%")
+                                ->when($keyword, function ($query) use ($keyword) {
+                                    $query->where(function ($q) use ($keyword) {
+                                        $q->where('product_id', 'like', "%{$keyword}%")
+                                        ->orWhere('product_name', 'like', "%{$keyword}%");
+                                    });
+                                })
+                                ->orderBy('product_id', 'ASC')
+                                ->chunk(1000, function ($products) use (&$allProducts) {
+
+                                        // รวมข้อมูลแต่ละ chunk เข้า collection หลัก
+                                        $allProducts = $allProducts->merge($products);
+                                });
+                       
+              
+                    }
+                    
+                    return view('product/product-type-khoryor-2', compact(
+                        'status_alert',
+                        'status_registration', 
+                        'status_waiting', 
+                        'status_updated',
+                        'user_id_admin',
+                        'category'
+                    ), ['khor_yor_2' => $allProducts]);
+        
+    }
+    
+    //แบบอนุญาต ร้านค้าสมุนไพร
+    public function productTypeSomphor(Request $request)
+    {
+
+
+        $from = $request->from ?? date('Y-m-d');
+        $to   = $request->to ?? date('Y-m-d');
+        $generic = $request->generic ?: 'ไม่ระบุ'; 
+        $product = $request->product ?: 'ไม่ระบุ'; 
+        
+        $keyword = $request->keyword;
+    //    if($keyword) {
+    //     dd($keyword);
+    //    }
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        $user_id_admin = $request->user()->user_id;
+
+        //dropdown admin_area;
+        $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
+
+        //dropdown sale_area;
+        $sale_area =  Salearea::select('sale_area', 'sale_name')->get();
+
+        $category = Category::orderBy('categories_id', 'ASC')->get();
+
+        $cate_id = $request->cate_id;
+        // dd($cate_id);
+
+                    $allProducts = collect();
+
+                    if (isset($cate_id)) {
+                       /*  $products = DB::table('products as p')
+                            ->select('product_id', 'product_name', 'generic_name', 'khor_yor_2')
+                            ->where('khor_yor_2', 1)
+                            ->where('category', $cate_id)
+                            ->orderBy('product_id', 'ASC')
+                            ->get(); */
+
+                            DB::table('products as p')
+                                ->select(
+                                        'product_id', 
+                                        'product_name', 
+                                        'generic_name', 
+                                        'som_phor_2'
+                                        )
+                                ->where('som_phor_2', 1)
+                                ->where('category', $cate_id)
+                                ->orderBy('product_id', 'ASC')
+                                ->chunk(1000, function ($products) use (&$allProducts) {
+
+                                        // รวมข้อมูลแต่ละ chunk เข้า collection หลัก
+                                        $allProducts = $allProducts->merge($products);
+                                });
+                              
+
+
+                    } else {
+                        
+                    
+                            DB::table('products as p')
+                                ->where('som_phor_2', 1)
+                                ->select(
+                                        'product_id', 
+                                        'product_name', 
+                                        'generic_name', 
+                                        'som_phor_2'
+                                        )
+                                ->when($keyword, function ($query) use ($keyword) {
+                                    $query->where(function ($q) use ($keyword) {
+                                        $q->where('product_id', 'like', "%{$keyword}%")
+                                        ->orWhere('product_name', 'like', "%{$keyword}%");
+                                    });
+                                })
+                                ->orderBy('product_id', 'ASC')
+                                ->chunk(1000, function ($products) use (&$allProducts) {
+
+                                        // รวมข้อมูลแต่ละ chunk เข้า collection หลัก
+                                        $allProducts = $allProducts->merge($products);
+                                });
+                       
+              
+                    }
+                    
+                    return view('product/product-type-somphor-2', compact(
+                        'status_alert',
+                        'status_registration', 
+                        'status_waiting', 
+                        'status_updated',
+                        'user_id_admin',
+                        'category'
+                    ), ['som_phor_2' => $allProducts]);
+        
+    }        
+
 }

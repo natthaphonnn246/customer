@@ -130,6 +130,9 @@
 
         <ul class="text-title my-2 ms-6" style="text-align: start;">
             <span style="font-size: 15px; color:#00a6ff;">ล็อกอินทั้งหมด : {{$count_check_login->check_login != '' ? $count_check_login->check_login : '0'}} ครั้ง</span> 
+            <span style="color:#8E8E8E;">|</span>
+            <span style="font-size: 15px; color:#ff004c;">ล็อกอินประเภทร้านค้าทั้งหมด : {{$count_check_type ? $count_check_type : '0'}} ครั้ง</span> 
+
         </ul>
         <ul class="text-title my-3 ms-6" style="text-align: start;">
             <span style="font-size: 18px; font-weight: 500;">ข้อมูลแอดมิน</span>
@@ -168,6 +171,21 @@
                                             @else --}}
                                             <option {{$admin_master->purchase_status == 0 ? 'selected': '' }} value="0">ไม่มี</option>
                                             <option {{$admin_master->purchase_status == 1 ? 'selected': '' }} value="1">มี</option>
+                                          {{--   @endif --}}
+        
+                                        </select>
+                                    </ul>
+                                </li>
+                                <li class="my-4" style="width: 100%;">
+                                    <ul style="width: 100%;">
+                                        <span>สิทธิ์เข้าถึงประเภทร้านค้า (ข.ย.2 / สมพ.2)</span> <span style="font-size: 12px; color:red;">*มี = มีสิทธิ์ใช้งานเมื่อปิดการเข้าถึงในหน้าตั้งค่า</span>
+                                        <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="allowed_check_type" id="rolemain">
+                                
+                                            {{-- @if(($admin_master->user_code) == 0000)
+                                            <option value="2" selected>มี</option>
+                                            @else --}}
+                                            <option {{$admin_master->allowed_check_type == 0 ? 'selected': '' }} value="0">ไม่มี</option>
+                                            <option {{$admin_master->allowed_check_type == 1 ? 'selected': '' }} value="1">มี</option>
                                           {{--   @endif --}}
         
                                         </select>

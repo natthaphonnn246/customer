@@ -421,7 +421,52 @@
 
                             </select>
                         </ul>
+                        
+                        <div class="" style="text-align: left; margin-top: 10px;">
+                            <span style="color: #373737; font-size:18px; font-weight:400;">แบบอนุญาตขายยา</span>
+                        </div>
+            
+                        <div style="margin-left:10px;">
+                            <ul class="mt-2 py-2">
+                                <span class="mt-4" style="color:#717171;">แบบ ข.ย.1</span>
+                                <select class="form-select" style="margin-top:16px; color: rgb(171, 171, 171);" aria-label="Default select example" name="khor_yor_1">
+                            
+                                    <option {{ $product_all?->khor_yor_1 == '0' ? 'selected' : '' }} value="0">ปิด</option>
+                                    <option {{ $product_all?->khor_yor_1 == '1' ? 'selected' : '' }} value="1">เปิด</option>
+    
+                                </select>
+                            </ul>
 
+                            <ul class="mt-2">
+                                <span class="mt-4" style="color:#717171;">แบบ ข.ย.2</span>
+                                <select class="form-select" style="margin-top:16px; color: rgb(171, 171, 171);" aria-label="Default select example" name="khor_yor_2">
+                            
+                                    <option {{ $product_all?->khor_yor_2 == '0' ? 'selected' : '' }} value="0">ปิด</option>
+                                    <option {{ $product_all?->khor_yor_2 == '1' ? 'selected' : '' }} value="1">เปิด</option>
+    
+                                </select>
+                            </ul>
+
+                            <ul class="mt-2">
+                                <span class="mt-4" style="color:#717171;">แบบ สมพ.2</span>
+                                <select class="form-select" style="margin-top:16px; color: rgb(171, 171, 171);" aria-label="Default select example" name="som_phor_2">
+                            
+                                    <option {{ $product_all?->som_phor_2 == '0' ? 'selected' : '' }} value="0">ปิด</option>
+                                    <option {{ $product_all?->som_phor_2 == '1' ? 'selected' : '' }} value="1">เปิด</option>
+    
+                                </select>
+                            </ul>
+
+                            <ul class="mt-2">
+                                <span class="mt-4" style="color:#717171;">คลินิกยา/สถานพยาบาล</span>
+                                <select class="form-select" style="margin-top:16px; color: rgb(171, 171, 171);" aria-label="Default select example" name="clinic">
+                            
+                                    <option {{ $product_all?->clinic == '0' ? 'selected' : '' }} value="0">ปิด</option>
+                                    <option {{ $product_all?->clinic == '1' ? 'selected' : '' }} value="1">เปิด</option>
+    
+                                </select>
+                            </ul>
+                        </div>
                         <hr class="mt-4" style="color:#8E8E8E;">
                         <div style="text-align:right;">
                             <button type="submit" id="updateForm" name="submit_update" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>

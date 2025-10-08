@@ -24,6 +24,12 @@ class Product extends Model
         'price_5',
         'quantity',
         'status',
+        'khor_yor_1',
+        'khor_yor_2',
+        'som_phor_2',
+        'clinic'
+
+
 
     ];
 

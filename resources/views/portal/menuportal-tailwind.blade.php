@@ -64,11 +64,27 @@
       background-color: rgb(2, 119, 54);
       color: white;
     }
+    #typePortal {
+      background-color: none;
+      color: white;
+    }
+    #typePortal:hover {
+      background-color: rgb(2, 119, 54);
+      color: white;
+    }
     #alertlPortal_all {
       background-color: none;
       color: white;
     }
     #alertPortal_all:hover {
+      background-color: rgba(122, 122, 122, 0.378);
+      color: white;
+    }
+    #checkProduct {
+      background-color: none;
+      color: white;
+    }
+    #checkProduct:hover {
       background-color: rgba(122, 122, 122, 0.378);
       color: white;
     }
@@ -198,6 +214,27 @@
             </ul>
          </li>
          <li>
+
+          @if($check_type_pass || $code_pass)
+          <div>
+              @yield('product-type')
+              <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group" id="typePortal" aria-controls="dropdown-product" data-collapse-toggle="dropdown-product">
+                  <i class="fa-regular fa-folder-open"></i>
+                  <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">สินค้า</span>
+                  <i class="fa-solid fa-plus m-2"></i>
+              </button>
+              <ul id="dropdown-product" class="hidden py-2 space-y-2">
+                  <li style="margin-left: 35px;">
+                      <a href="/portal/product-type" class="flex items-center w-full p-2 text-gray-900 pl-11 group rounded-lg" id="checkProduct" style="font-size:14px;">แบบอนุญาตขายยา</a>
+                  </li>
+                  <li style="margin-left: 35px;">
+                      <a href="/portal/limited-sales" class="flex items-center w-full p-2 text-gray-900 pl-11 group rounded-lg"  id="checkProduct" style="font-size:14px;">สินค้าจำกัดการขาย</a>
+                  </li>
+              </ul>
+          </div>
+        @endif
+      
+      
             <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg" id="alertPortal" aria-controls="dropdown-alert" data-collapse-toggle="dropdown-alert">
                   <i class="fa-regular fa-bell" style="font-size:18px;"></i>
                      <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">แจ้งเตือน</span>

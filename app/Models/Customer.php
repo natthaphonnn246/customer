@@ -45,6 +45,7 @@ class Customer extends Model
         'delivery_by',
         'points',
         'add_license',
+        'purchase',
         // 'maintenance_status',
         // 'allowed_maintenance',
 
@@ -70,7 +71,7 @@ class Customer extends Model
         $total_page = ceil($count_page / $perpage);
         $start = ($perpage * $page) - $perpage;
 
-        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'purchase', 'created_at')
                     // ->whereNotIn('customer_code',['0000', '4494'])
                     ->whereNotIn('customer_code',$code_notin)
                     ->orderBy('id','asc')

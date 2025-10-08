@@ -289,6 +289,16 @@
                             </li>
                         </ul>
 
+                        <div class="mb-4 my-4">
+                            <ul class="mt-4" style="width: 100%;  margin-top:15px;">
+                                <span style="font-size:18px; font-weight:500;">ช่องทางกานสั่งสินค้า</span><span style="font-size: 14px; color:red;"> *เลือกช่องทางที่สั่งมากสุด</span>
+                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="purchase">
+                                    <option value="1">สั่งซื้อผ่านทางเว็บไซต์</option>
+                                    <option value="0">สั่งซื้อผ่านช่องทางอื่น ๆ (เช่น LINE หรือทางโทรศัพท์)</option>
+                                </select>
+                            </ul>
+                        </div>
+
                         <ul class="ms-6 mr-5 text-center">
                             <button type="submit" name="submit_form" class="btn py-3" style="border:none; width: 90%; color: white; padding: 10px;">บันทึกข้อมูล</button>   
                             <hr class="mt-4" style="color:rgb(157, 157, 157); width:">

@@ -12,6 +12,7 @@ class Setting extends Model
         'allowed_web_status',
         'del_reportseller',
         'check_edit',
+        'check_type',
   
     ];
     protected $table = 'settings';

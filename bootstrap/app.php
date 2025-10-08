@@ -29,6 +29,9 @@ use Illuminate\Foundation\Configuration\Middleware;
                                     'purReport'     => \App\Http\Middleware\PurchaseReport::class,
                                     'CheckPurReport'=> \App\Http\Middleware\CheckPurchaseReport::class,
                                     'CustomerDetailCheck'=> \App\Http\Middleware\CustomerDetailCheck::class,
+                                    'confirmType'=> \App\Http\Middleware\CheckTypeStore::class,
+                                    'allowedType'=> \App\Http\Middleware\CheckTypeUser::class,
+                                    'checkMenu'=> \App\Http\Middleware\CheckMenuAdmin::class,
                                 ]);
                             })
                             ->withExceptions(function (Exceptions $exceptions) {

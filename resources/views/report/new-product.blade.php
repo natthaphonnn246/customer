@@ -310,7 +310,8 @@
 
         <form action="/webpanel/report/product/new-product/created" method="post" enctype="multipart/form-data">
             @csrf
-            <div class="container" style="width:95%;">
+            {{-- <div class="container" style="width:95%;"> --}}
+            <div class="ms-8 mr-8" style="">
                 <div class="row">
                     <div class="col-sm-6">
                         <ul class="mt-2">
@@ -419,6 +420,52 @@
 
                             </select>
                         </ul>
+
+                        <div class="" style="text-align: left; margin-top: 10px;">
+                            <span style="color: #373737; font-size:18px; font-weight:400;">แบบอนุญาตขายยา</span>
+                        </div>
+            
+                        <div style="margin-left:10px;">
+                            <ul class="mt-2 py-2">
+                                <span class="mt-4" style="color:#717171;">แบบ ข.ย.1</span>
+                                <select class="form-select" style="margin-top:16px; color: rgb(171, 171, 171);" aria-label="Default select example" name="khor_yor_1">
+                            
+                                    <option value="0">ปิด</option>
+                                    <option value="1">เปิด</option>
+    
+                                </select>
+                            </ul>
+
+                            <ul class="mt-2">
+                                <span class="mt-4" style="color:#717171;">แบบ ข.ย.2</span>
+                                <select class="form-select" style="margin-top:16px; color: rgb(171, 171, 171);" aria-label="Default select example" name="khor_yor_1">
+                            
+                                    <option value="0">ปิด</option>
+                                    <option value="1">เปิด</option>
+
+                                </select>
+                            </ul>
+
+                            <ul class="mt-2">
+                                <span class="mt-4" style="color:#717171;">แบบ สมพ.2</span>
+                                <select class="form-select" style="margin-top:16px; color: rgb(171, 171, 171);" aria-label="Default select example" name="som_phor_2">
+                            
+                                    <option value="0">ปิด</option>
+                                    <option value="1">เปิด</option>
+    
+                                </select>
+                            </ul>
+
+                            <ul class="mt-2">
+                                <span class="mt-4" style="color:#717171;">คลินิกยา/สถานพยาบาล</span>
+                                <select class="form-select" style="margin-top:16px; color: rgb(171, 171, 171);" aria-label="Default select example" name="clinic">
+                            
+                                    <option value="0">ปิด</option>
+                                    <option value="1">เปิด</option>
+    
+                                </select>
+                            </ul>
+                        </div>
 
                         <hr class="mt-4" style="color:#8E8E8E;">
                         <div style="text-align:right;">

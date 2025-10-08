@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Portal;
 use App\Models\User;
 use App\Models\Salearea;
 use App\Models\Customer;
+use App\Models\Category;
 use App\Models\Province;
 use Illuminate\Http\File;
 use Illuminate\View\View;
@@ -28,6 +29,10 @@ use Illuminate\Database\Query\JoinClause;
 use App\Mail\StatusUpdatedMail;
 use App\Mail\RegisterUpdatedMail;
 use Illuminate\Support\Facades\Mail;
+use App\Models\ProductType;
+use App\Models\Setting;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 
 class PortalCustomerController
 {
@@ -242,6 +247,7 @@ class PortalCustomerController
             $cert_expire = $request->cert_expire;
             // $status = 'รอดำเนินการ';
             $status = 'ลงทะเบียนใหม่';
+            $purchase = $request->purchase;
         }   
 
             if($cert_store != '' && $customer_id != '')
@@ -332,7 +338,8 @@ class PortalCustomerController
                         'status_user' => '',
                         'delivery_by' => $delivery_by,
                         'points' => '0',
-                        'add_license' => 'ไม่ระบุ'
+                        'add_license' => 'ไม่ระบุ',
+                        'purchase'    => $purchase
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
 
@@ -373,7 +380,6 @@ class PortalCustomerController
         } else {
             $page = 1;
         }
-
 
 
         $check_edit = DB::table('settings')->where('setting_id', '=', 'WS01')->first()?->check_edit;
@@ -466,6 +472,15 @@ class PortalCustomerController
                                         ->orderByDesc('date_purchase')
                                         ->get(); 
 
+
+/*         $setting_check = Setting::where('setting_id', 'WS01')->value('check_type');
+        $code_type = User::where('user_id', $code)->first()->value('allowed_check_type');
+        
+        if ((int)$setting_check === 1 && (int)$code_type === 1) {
+            $check_type_pass = 1;
+        } else {
+            $check_type_pass = 0;
+        } */
         //keyword;
         if($keyword_code != '') {
             $customer_list = DB::table('customers')->where('admin_area',$id)
@@ -544,7 +559,7 @@ class PortalCustomerController
                                             'check_purchase',
                                             'check_edit',
                                             'count_modal_waiting',
-                                            'check_modal_waiting'
+                                            'check_modal_waiting',
                                         ),
                                         ['json_edit' => json_encode($check_edit)]
                                     ));
@@ -1079,6 +1094,8 @@ class PortalCustomerController
                 }
                 $delivery_by = $request->delivery_by;
 
+                $purchase = $request->purchase;
+
      /*    } */
             Customer::where('id', $id)
                     ->update ([
@@ -1096,6 +1113,7 @@ class PortalCustomerController
                             'cert_expire' => $cert_expire,
                             'status_update' => 'updated',
                             'delivery_by' => $delivery_by,
+                            'purchase' => $purchase,
                     
                     ]);
 
@@ -1951,6 +1969,320 @@ class PortalCustomerController
             'status'  => 'error',
             'message' => 'ไม่พบข้อมูล'
         ], 400);
+    }
+
+    //แบบอนุญาตขายยา;
+    public function protalIndexType(Request $request)
+    {
+         //notin code;
+         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+         $id = $request->user()->admin_area;
+         $code = $request->user()->user_code;
+ 
+         $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+         $status_all = DB::table('customers')->select('status')
+                                 ->where('admin_area', $id)
+                                 ->whereNotIn('customer_status', ['inactive'])
+                                 // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                 ->whereNotIn('customer_id', $code_notin)
+                                 ->count();
+ 
+         $status_waiting = DB::table('customers')->where('admin_area', $id)
+                                     ->where('status', 'รอดำเนินการ')
+                                     ->whereNotIn('customer_status', ['inactive'])
+                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                     ->whereNotIn('customer_id', $code_notin)
+                                     ->count();
+                                     // dd($count_waiting);
+         $status_action = DB::table('customers')->where('admin_area', $id)
+                                     ->where('status', 'ต้องดำเนินการ')
+                                     ->whereNotIn('customer_status', ['inactive'])
+                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                     ->whereNotIn('customer_id', $code_notin)
+                                     ->count();
+ 
+         $status_completed = DB::table('customers')->where('admin_area', $id)
+                                     ->where('status', 'ดำเนินการแล้ว')
+                                     ->whereNotIn('customer_status', ['inactive'])
+                                     // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                     ->whereNotIn('customer_id', $code_notin)
+                                     ->count();
+ 
+         $status_alert = $status_waiting + $status_action;
+
+        $check_rights_type = User::where('user_code', $code)->first()->allowed_check_type;
+
+        $setting_rights_type = DB::table('settings')->where('setting_id', 'WS01')->first()->check_type;
+        
+         return view('portal/portal-product-type', compact(
+                                                 'user_name', 
+                                                 'status_all', 
+                                                 'status_waiting', 
+                                                 'status_action', 
+                                                 'status_completed', 
+                                                 'status_alert',
+                                                 'check_rights_type',
+                                                 'setting_rights_type',
+                                             ));
+     
+    }
+
+    public function protalTypeKhoryor(Request $request)
+    {
+        $from = $request->from ?? date('Y-m-d');
+        $to   = $request->to ?? date('Y-m-d');
+        $generic = $request->generic ?: 'ไม่ระบุ'; 
+        $product = $request->product ?: 'ไม่ระบุ'; 
+        
+        $keyword = $request->keyword;
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $id = $request->user()->admin_area;
+        $code = $request->user()->user_code;
+
+        $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+        $status_all = DB::table('customers')->select('status')
+                                ->where('admin_area', $id)
+                                ->whereNotIn('customer_status', ['inactive'])
+                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
+
+        $status_waiting = DB::table('customers')->where('admin_area', $id)
+                                    ->where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+                                    // dd($count_waiting);
+        $status_action = DB::table('customers')->where('admin_area', $id)
+                                    ->where('status', 'ต้องดำเนินการ')
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_completed = DB::table('customers')->where('admin_area', $id)
+                                    ->where('status', 'ดำเนินการแล้ว')
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_action;
+
+
+        $category = Category::orderBy('categories_id', 'ASC')->get();
+
+        $cate_id = $request->cate_id;
+        // dd($cate_id);
+
+                    $results = collect();
+
+                    if (isset($cate_id)) {
+                       /*  $products = DB::table('products as p')
+                            ->select('product_id', 'product_name', 'generic_name', 'khor_yor_2')
+                            ->where('khor_yor_2', 1)
+                            ->where('category', $cate_id)
+                            ->orderBy('product_id', 'ASC')
+                            ->get(); */
+
+                            DB::table('products as p')
+                                ->select('product_id', 'product_name', 'generic_name', 'khor_yor_2')
+                                ->where('khor_yor_2', 1)
+                                ->where('category', $cate_id)
+                                ->orderBy('product_id', 'ASC')
+                                ->chunk(1000, function ($products) use (&$results) {
+
+                                        // รวมข้อมูลแต่ละ chunk เข้า collection หลัก
+                                        $results = $results->merge($products);
+                                });
+                              
+
+
+                    } else {
+
+                        
+                    
+                            DB::table('products as p')
+                                ->where('khor_yor_2', 1)
+                                ->select('product_id', 'product_name', 'generic_name', 'khor_yor_2')
+                                ->when($keyword, function ($query) use ($keyword) {
+                                    $query->where(function ($q) use ($keyword) {
+                                        $q->where('product_id', 'like', "%{$keyword}%")
+                                        ->orWhere('product_name', 'like', "%{$keyword}%");
+                                    });
+                                })
+                                ->orderBy('product_id', 'ASC')
+                                ->chunk(1000, function ($products) use (&$results) {
+
+                                        // รวมข้อมูลแต่ละ chunk เข้า collection หลัก
+                                        $results = $results->merge($products);
+                                });
+
+                                // Pagination
+                                $row_perPage = 50;
+                                $row_page = request()->get('page', 1);
+                                $total = $results->count();
+                                $row_total_page = ceil($total / $row_perPage);
+                                $row_start = $start = ($row_page - 1) * $row_perPage + 1;
+
+                                // ดึงข้อมูลเฉพาะหน้าที่ต้องการ
+                                $results = $results->slice(($row_page - 1) * $row_perPage, $row_perPage)->values();
+
+              
+                    }
+
+                    $perPage = isset($cate_id) ? '' : $row_perPage;
+                    $page = isset($cate_id) ? '' : $row_page;
+                    $total_page = isset($cate_id) ? '' : $row_total_page;
+                    $start = isset($cate_id) ? 1 : $row_start;
+                    
+                    return view('portal/portal-product-khoryor', compact(
+                                'user_name', 
+                                'status_all', 
+                                'status_waiting', 
+                                'status_action', 
+                                'status_completed', 
+                                'status_alert',
+                                'category',
+                                'total_page',
+                                'page',
+                                'start'
+                            ), ['khor_yor_2' => $results]);
+                
+    }
+
+    public function protalTypeSomphor(Request $request)
+    {
+        $from = $request->from ?? date('Y-m-d');
+        $to   = $request->to ?? date('Y-m-d');
+        $generic = $request->generic ?: 'ไม่ระบุ'; 
+        $product = $request->product ?: 'ไม่ระบุ'; 
+        
+        $keyword = $request->keyword;
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $id = $request->user()->admin_area;
+        $code = $request->user()->user_code;
+
+        $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+        $status_all = DB::table('customers')->select('status')
+                                ->where('admin_area', $id)
+                                ->whereNotIn('customer_status', ['inactive'])
+                                // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
+
+        $status_waiting = DB::table('customers')->where('admin_area', $id)
+                                    ->where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+                                    // dd($count_waiting);
+        $status_action = DB::table('customers')->where('admin_area', $id)
+                                    ->where('status', 'ต้องดำเนินการ')
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_completed = DB::table('customers')->where('admin_area', $id)
+                                    ->where('status', 'ดำเนินการแล้ว')
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_action;
+
+
+        $category = Category::orderBy('categories_id', 'ASC')->get();
+
+        $cate_id = $request->cate_id;
+        // dd($cate_id);
+
+                    $results = collect();
+
+                    if (isset($cate_id)) {
+
+                            DB::table('products as p')
+                                ->select(
+                                        'product_id', 
+                                        'product_name', 
+                                        'generic_name', 
+                                        'som_phor_2'
+                                        )
+                                ->where('som_phor_2', 1)
+                                ->where('category', $cate_id)
+                                ->orderBy('product_id', 'ASC')
+                                ->chunk(1000, function ($products) use (&$results) {
+
+                                        // รวมข้อมูลแต่ละ chunk เข้า collection หลัก
+                                        $results = $results->merge($products);
+                                });
+                              
+
+
+                    } else {
+                        
+                    
+                            DB::table('products as p')
+                                ->where('som_phor_2', 1)
+                                ->select(
+                                        'product_id', 
+                                        'product_name', 
+                                        'generic_name', 
+                                        'som_phor_2'
+                                        )
+                                ->when($keyword, function ($query) use ($keyword) {
+                                    $query->where(function ($q) use ($keyword) {
+                                        $q->where('product_id', 'like', "%{$keyword}%")
+                                        ->orWhere('product_name', 'like', "%{$keyword}%");
+                                    });
+                                })
+                                ->orderBy('product_id', 'ASC')
+                                ->chunk(1000, function ($products) use (&$results) {
+
+                                        // รวมข้อมูลแต่ละ chunk เข้า collection หลัก
+                                        $results = $results->merge($products);
+                                });
+
+                                // Pagination
+                                $row_perPage = 50;
+                                $row_page = request()->get('page', 1);
+                                $total = $results->count();
+                                $row_total_page = ceil($total / $row_perPage);
+                                $row_start = $start = ($row_page - 1) * $row_perPage + 1;
+
+                                // ดึงข้อมูลเฉพาะหน้าที่ต้องการ
+                                $results = $results->slice(($row_page - 1) * $row_perPage, $row_perPage)->values();
+                       
+              
+                    }
+
+                    $perPage = isset($cate_id) ? '' : $row_perPage;
+                    $page = isset($cate_id) ? '' : $row_page;
+                    $total_page = isset($cate_id) ? '' : $row_total_page;
+                    $start = isset($cate_id) ? 1 : $row_start;
+                    
+                    return view('portal/portal-product-somphor', compact(
+                                'user_name', 
+                                'status_all', 
+                                'status_waiting', 
+                                'status_action', 
+                                'status_completed', 
+                                'status_alert',
+                                'category',
+                                'total_page',
+                                'page',
+                                'start'
+                            ), ['somphor_2' => $results]);
+        
     }
 
 }

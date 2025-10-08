@@ -4,6 +4,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Customer;
+use App\Models\ProductType;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Client\ConnectionException;
@@ -92,6 +93,7 @@ Class UserController
                                             'login_date'      => '',
                                             'last_activity'   => '',
                                             'purchase_status' => '0',
+                                            'allowed_check_type' => '0',
 
                                         ]);
 
@@ -294,9 +296,27 @@ Class UserController
         $user_id_admin = $request->user()->user_id;
 
         $count_check_login = User::select('check_login')->where('id',$id)->first();
+
+        $check_user_id = User::find($id)?->user_id;
+        // dd($check_user_id);
+
+        $count_check_type = ProductType::where('user_id', $check_user_id)->count();
+        // dd($count_check_type);
         // dd($count_check_login->check_login);
 
-        return view('webpanel/admin-detail', compact('admin_master', 'province', 'amphur', 'district', 'status_alert','status_registration', 'status_waiting', 'status_updated', 'user_id_admin', 'count_check_login'));
+        return view('webpanel/admin-detail', compact(
+                                                        'admin_master', 
+                                                        'province', 
+                                                        'amphur', 
+                                                        'district', 
+                                                        'status_alert',
+                                                        'status_registration', 
+                                                        'status_waiting', 
+                                                        'status_updated', 
+                                                        'user_id_admin', 
+                                                        'count_check_login',
+                                                        'count_check_type'
+                                                    ));
     }
 
     public function update(Request $request, $id)
@@ -348,6 +368,7 @@ Class UserController
 
                 $province_master = DB::table('provinces')->select('id', 'name_th')->where('id', $province)->first();
                 $province_row = $province_master->name_th;
+                $allowed_check_type = $request->allowed_check_type;
 
             DB::table('users')
                 ->where('id', $id)
@@ -372,6 +393,7 @@ Class UserController
                     'updated_at' => $update_time,
                     'allowed_user_status' => $allowed_mtnance,
                     'purchase_status' => $purchase_status,
+                    'allowed_check_type' =>$allowed_check_type,
                 
                 ]);
 

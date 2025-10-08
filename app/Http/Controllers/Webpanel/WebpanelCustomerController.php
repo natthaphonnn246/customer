@@ -1397,6 +1397,7 @@ class WebpanelCustomerController
             $cert_expire = $request->cert_expire;
             // $status = 'รอดำเนินการ';
             $status = 'ลงทะเบียนใหม่';
+            $purchase = $request->purchase;
 
         }   
 
@@ -1484,7 +1485,8 @@ class WebpanelCustomerController
                     'status_user' => '',
                     'delivery_by' => $delivery_by,
                     'points' => '0',
-                    'add_license' => 'ไม่ระบุ'
+                    'add_license' => 'ไม่ระบุ',
+                    'purchase' => $purchase
                     // 'maintenance_status' => '',
                     // 'allowed_maintenance' => '',
 
@@ -1643,6 +1645,8 @@ class WebpanelCustomerController
 
                 $add_license = $request->add_license ?? 'ไม่ระบุ';
 
+                $purchase = $request->purchase;
+
      /*    } */
                 DB::table('customers')
                     ->where('id', $id)
@@ -1677,6 +1681,7 @@ class WebpanelCustomerController
                         'delivery_by'       => $delivery_by,
                         'points'            => $points,
                         'add_license'       => $add_license,
+                        'purchase'          => $purchase,
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
                     
@@ -2078,7 +2083,8 @@ class WebpanelCustomerController
                                         'customer_status' => 'active',
                                         'status_user' => $status_user,
                                         'delivery_by' => $delivery_by,
-                                        'add_license' => 'ไม่ระบุ'
+                                        'add_license' => 'ไม่ระบุ',
+                                        'purchase'    => '1',
                                     ];
                                 
                                     Customer::create($customerData);

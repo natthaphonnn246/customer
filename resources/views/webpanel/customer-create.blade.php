@@ -342,6 +342,16 @@
                             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="text_add"></textarea>
                         </div>
 
+                        <div class="mb-4 my-4">
+                            <ul class="mt-4" style="width: 100%;  margin-top:15px;">
+                                <span style="font-size:18px; font-weight:500; color:#545454">ช่องทางการสั่งสินค้า</span><span style="font-size: 14px; color:red;"> *เลือกช่องทางที่สั่งมากสุด</span>
+                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="purchase">
+                                <option value="1">สั่งซื้อผ่านทางเว็บไซต์</option>
+                                <option value="0">สั่งซื้อผ่านช่องทางอื่น ๆ (เช่น LINE หรือทางโทรศัพท์)</option>
+                                </select>
+                            </ul>
+                        </div>
+
                             <button type="submit" id="submitForm" name="submit_form" class="btn py-3 ms-1" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>
                             {{-- <p class="textrow" style="text-align: center;"><span>กรุณาติดต่อเจ้าหน้าที่ เมื่อดำเนินการเรียบร้อย</span></p> --}}
                         </div>

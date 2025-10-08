@@ -299,7 +299,7 @@
                    
                  
                     <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">รายงาน</span>
-                    <i class="fa-solid fa-plus m-2"></i>
+                  <i class="fa-solid fa-plus m-2"></i>
                  </button>
                     <ul id="dropdown-report" class="hidden py-2 space-y-2">
                           <li style="margin-left: 35px;">
@@ -328,11 +328,59 @@
                           </li> --}}
                     </ul>
               </li>
+              <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group" id="reportMenu" aria-controls="dropdown-product" data-collapse-toggle="dropdown-product">
+                <i class="fa-regular fa-folder-open"></i>
+                {{-- <svg class="w-6 h-6 text-gray-800" style="color:white;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                   <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5"/>
+                 </svg> --}}
+                 
+               
+                  <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">สินค้า</span>
+                <i class="fa-solid fa-plus m-2"></i>
+               </button>
+               <ul id="dropdown-product" class="hidden py-2 space-y-2">
+                    <li style="margin-left: 35px;">
+                      <a href="/webpanel/report/product-type" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_all" style="font-size:14px;">แบบอนุญาตขายยา</a>
+                    </li>
+                    <li style="margin-left: 35px;">
+                      <a href="/webpanel/report/product/limited-sales" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_all" style="font-size:14px;">สินค้าจำกัดการขาย</a>
+                    </li>
+                    <li style="margin-left: 35px;">
+                      <a href="/webpanel/report/status-type" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_all" style="font-size:14px;">สถานะการใช้งาน</a>
+                    </li>
+
+              </ul>
                 <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group" id="alertMenu" aria-controls="dropdown-alert" data-collapse-toggle="dropdown-alert">
                   <i class="fa-regular fa-bell" style="font-size:18px; color:white"></i>
-                     <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">แจ้งเตือน</span>
+                     <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px; color:white;">แจ้งเตือน</span>
                      <span class="inline-flex items-center justify-center p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300" style="color:white; padding:10px; max-height:24px; background-color:brown;"><p>@yield('status_alert')</p></span>
                </button>
+               <ul id="dropdown-report" class="hidden py-2 space-y-2">
+                <li style="margin-left: 35px;">
+                   <a href="/webpanel/report/seller" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_all" style="font-size:14px;">การขายสินค้า</a>
+                </li>
+                <li style="margin-left: 35px;">
+                  <a href="/webpanel/report/fdareporter" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_all" style="font-size:14px;">แบบ ข.ย.13</a>
+                </li>
+                <li style="margin-left: 35px;">
+                   <a href="/webpanel/report/product" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_salearea" style="font-size:14px;">สินค้าขายดี</a>
+                </li>
+                <li style="margin-left: 35px;">
+                  <a href="/webpanel/report/product/deadstock" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_salearea" style="font-size:14px;">สินค้าไม่เคลื่อนไหว</a>
+               </li>
+                <li style="margin-left: 35px;">
+                  <a href="/webpanel/report/count-purchase" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="count_pur" style="font-size:14px;">จำนวนครั้งสั่งซื้อ</a>
+                </li>
+                <li style="margin-left: 35px;">
+                  <a href="/webpanel/report/sum-purchase" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="count_pur" style="font-size:14px;">สรุปจำนวนครั้งสั่งซื้อ</a>
+                </li>
+                <li style="margin-left: 35px;">
+                  <a href="/webpanel/report/delete-sale" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="delete_sellers" style="font-size:14px;">ลบข้อมูลการขาย</a>
+               </li>
+             {{--   <li>
+                   <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
+                </li> --}}
+              </ul>
                <ul id="dropdown-alert" class="hidden py-2 space-y-2">
                     <li style="margin-left: 25px;">
                         <a href="/webpanel/customer/status/waiting" class="flex items-center w-full p-2 transition duration-75 rounded-lg group" id="alert_register">

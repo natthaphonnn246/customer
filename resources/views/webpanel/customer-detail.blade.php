@@ -874,6 +874,17 @@
                                     @endif
                                 </div>
                                 <hr class="mr-6 ms-6 mt-4" style="color:#8E8E8E;">
+
+                                <div class="mb-4 my-4">
+                                    <ul class="mt-4" style="width: 100%;  margin-top:15px;">
+                                        <span style="font-size:18px; font-weight:500; color:#545454">ช่องทางการสั่งสินค้า</span><span style="font-size: 14px; color:red;"> *เลือกช่องทางที่สั่งมากสุด</span>
+                                        <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="purchase">
+                                        <option {{ $customer_view->purchase === 1 ? 'selected': '' }} value="1">สั่งซื้อผ่านทางเว็บไซต์</option>
+                                        <option  {{ $customer_view->purchase === 0 ? 'selected': '' }} value="0">สั่งซื้อผ่านช่องทางอื่น ๆ (เช่น LINE หรือทางโทรศัพท์)</option>
+                                        </select>
+                                    </ul>
+                                </div>
+
                                 <div style="text-align:right;">
                                     <button type="submit" id="updateForm" name="submit_update" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
                                     <a href="/webpanel/customer/getcsv/{{$admin_area_check->customer_id}}" type="button" id="exportCsv" class="btn my-2" style="border:none; width: 120px; color: rgb(67, 67, 67); padding: 10px;">Export CSV</a>

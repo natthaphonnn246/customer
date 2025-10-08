@@ -311,22 +311,25 @@
             border-radius: 5px;
             
         }
-/*         #protected {
-                    position: relative;
-                    }
+        #alertMenu {
+            background-color: none;
+            color: rgb(102, 102, 102);
+        }
+        #alertMenu:hover {
+            background-color: rgb(16, 100, 89);
+            color: white;
+        }
+        .tr-hover:hover {
+            background-color: rgb(8, 123, 110);
+            color: white;
+            border-radius: 5px;
+        }
+  
+        .table tbody tr:hover {
+            background-color: #f0f0f0; /* สีเมื่อ hover */
+            cursor: pointer; /* เปลี่ยน cursor */
+        }
 
-                    #protected::after {
-                    content: "© ห้ามบันทึกภาพหน้าจอ";
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    font-size: 120px;
-                    color: rgba(234, 43, 43, 0.111);
-                    pointer-events: none;
-                    transform: translate(-50%, -50%) rotate(-45deg);
-                    white-space: nowrap;
-                }
- */
 
 
     </style>
@@ -372,47 +375,32 @@
         <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
         </div>
-        <span class="ms-6" style="color: #8E8E8E;">รายงานแบบ ข.ย.13 (FDAReporter)</span>
+        <span class="ms-6" style="color: #8E8E8E;">แบบอนุญาตขายยา / ประเภท ร้าน ข.ย.2</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
-
-{{--         <div class="ms-6" style="text-align: left;">
-
-            <a href="/webpanel/report/count-pur/exportcsv/check?from={{ request('from') }}&to={{ request('to') }}"  id="exportcsv" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export CSV</a>
-            <a href="/webpanel/report/count-pur/exportexcel/check?from={{ request('from') }}&to={{ request('to') }}"  id="exportexcel" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export Excel</a>
-    
-        </div> --}}
 
         <hr class="my-4" style="color: #8E8E8E; width: 100%;">
 
         <div class="ms-6 mr-6 mb-6" style="text-align: left;">
 
-            <form method="get" action="/webpanel/report/updated/fdareporter">
-                <div class="row mt-2 ms-2" style="width: 80%">
-                
-                        <div class="col-sm-5">
-                            <label class="py-2" for="from">วันที่เริ่ม : </label>
-                            <input type="text" class="block w-full" id="fromcheck" style="border:solid 1px rgb(208, 208, 208); padding: 10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="from" value="{{ request('from') == '' ? date('Y-m-d') : request('from') }}">
+            <div class="col-sm-8 ms-6">
+                <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/report/product-type/khor-yor-2">
+                    <ul class="ms-2 my-2">
+                        <span>ค้นหาสินค้า : </span>
+                    </ul>
+                    {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <!---icon -->
                         </div>
-                        <div class="col-sm-5">
-                            <label class="py-2" for="to">ถึงวันที่ : </label>
-                            <input type="text" class="block w-full" id="tocheck" style="border:solid 1px rgb(208, 208, 208); padding:10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="to" value="{{ request('to') == '' ? date('Y-m-d') : request('to') }}">
-                        </div>
-                        <div class="col-sm-2 mt-10">
-                            <button type="submit" class="btn btn-primary" style="width:80px; font-size:15px; font-weight:500; padding:8px;">ค้นหา</button>
-                        </div>
-                
-                        <div class="col-sm-5 mt-2">
-                            <label class="py-2" for="from">ค้นหาสามัญทางยา : </label>
-                            <input type="text" class="block w-full" id="generic" style="border:solid 1px rgb(208, 208, 208); padding: 10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="generic" value="" placeholder="ระบุชื่อสามัญทางยา">
-                        </div>
+                        <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="รหัสสินค้า | ชื่อสินค้า" />
+                        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
+                    
+                    </div>
+                    <p class="py-2" id="keyword_search"></p>
+                    @csrf   
+                </form>
+            </div>
 
-                        <div class="col-sm-5 mt-2">
-                            <label class="py-2" for="from">ค้นหาชื่อยา/รหัสสินค้า : </label>
-                            <input type="text" class="block w-full" id="product" style="border:solid 1px rgb(208, 208, 208); padding: 10px; border-radius:7px; width:100%; color:#9d9d9d; font-size:14px;" name="product" value="" placeholder="ระบุชื่อสินค้า | รหัสสินค้า">
-                        </div>
-
-                </div>
-            </form>
             <script>
                 $( function() {
                     var dateFormat = 'dd/mm/yy',
@@ -451,111 +439,90 @@
 
             <div class="ms-6 mr-6 mb-2" id="protected">
                 <hr class="my-3 mt-4" style="color: #8E8E8E; width: 100%;">
-                <table class="table table-striped table-bordered mt-4" style="table-layout: auto; width:100%; vertical-align: middle;">
-                    <thead>
-                        <tr>
-                            <th style="color:#838383; text-align: center; vertical-align: middle; font-weight: 500; width: 2%;">#</th>
-                            <th style="color:#838383; text-align: center; vertical-align: middle; font-weight: 500; width: 5%;">รหัสร้านค้า</th>
-                            <th style="color:#838383; text-align: center; vertical-align: middle; font-weight: 500; width: 15%;">ชื่อร้านค้า</th>
-                            <th style="color:#838383; text-align: center; vertical-align: middle; font-weight: 500; width: 5%;">รหัสสินค้า</th>
-                            <th style="color:#838383; text-align: center; vertical-align: middle; font-weight: 500; width: 20%;">ชื่อสินค้า</th>
-                            <th style="color:#838383; text-align: center; vertical-align: middle; font-weight: 500; width: 10%;">ชื่อสามัญทางยา</th>
-                            <th style="color:#838383; text-align: center; vertical-align: middle; font-weight: 500; width: 5%;">จำนวน</th>
-                            <th style="color:#838383; text-align: center; vertical-align: middle; font-weight: 500; width: 5%;">หน่วย</th>
-                            <th style="color:#838383; text-align: center; vertical-align: middle; font-weight: 500; width: 10%;">วันที่สั่ง</th>
-                        </tr>
-                    </thead>
-              {{--       <tbody>
+            
+                <button id="dropdownCsvBtn" data-dropdown-toggle="dropdownCsv" style="background-color: rgb(4, 179, 1); width: 220px; border-radius:5px; color:#ffffff; height:40px;">
+                    เลือกร้านค้า
+                </button>
+        
+                <div id="dropdownCsv" class="z-10 hidden divide-y divide-gray-100 rounded-lg shadow w-44 absolute">
+                    <a href="/webpanel/report/product-type/khor-yor-2" class="block px-4 py-2 text-sm" id="listCsv"">ข.ย.2</a>
+                    <a href="/webpanel/report/product-type/somphor-2" class="block px-4 py-2 text-sm" id="listCsv">สมุนไพร</a>
+                </div>
+                <div class="relative flex w-full mr-4">
+                
+                    <div class="min-h-screen bg-gray-200 flex flex-col w-full">
 
-                        @if($reporter)
-                            @php 
-                            $start = 1;
-                            @endphp
-                        @foreach($reporter as $row)
-                            @php
-                                $customer_id   = $row->customer_id;
-                                $customer_name = $row->customer_name;
-                                $product_id   = $row->product_id;
-                                $product_name = $row->product_name;
-                                $generic_name = $row->generic_name;
-                                $qty  = $row->qty;
-                                $unit = $row->unit;
-                                $date_purchase = $row->date_purchase;
-                            @endphp
-                        <tr>
-                            <td style="color:#838383; text-align: center;">{{ $start++ }}</td>
-                            <td style="color:#838383; text-align: center;">{{ $customer_id }}</td>
-                            <td style="color:#838383; text-align: left;">{{ $customer_name }}</td>
-                            <td style="color:#838383; text-align: center;">{{ $product_id }}</td>
-                            <td style="color:#838383; text-align: left;">{{ $product_name }}</td>
-                            <td style="color:#838383; text-align: left;">{{ $generic_name }}</td>
-                            <td style="color:#838383; text-align: center;">{{ $qty }}</td>
-                            <td style="color:#838383; text-align: center;">{{ $unit }}</td>
-                            <td style="color:#838383; text-align: center;">{{ $date_purchase }}</td>
-                        </tr>
-                        @endforeach
-                        @endif
+                    <div class="flex items-center justify-between bg-white border-b p-5 shadow-sm">
+                        <h1 class="text-2xl font-bold text-gray-700">ประเภทร้านค้า : ข.ย.2</h1>
+                    </div>
+                
+                     <div class="flex flex-1">
+                
+                        <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen overflow-y-auto">
+                            <h1 class="text-2xl font-bold py-4 ms-6">หมวดหมู่สินค้า</h1>
+                        
+                            <nav class="space-y-2">
+                                <a href="{{ url('/webpanel/report/product-type/khor-yor-2') }}" 
+                                   class="block px-4 py-2 rounded-lg font-medium" id="alertMenu">
+                                    สินค้าทั้งหมด
+                                </a>
+                                <hr style="color:#838383;">
+                                @if(isset($category) && count($category) > 0)
+                                    @foreach($category as $row_cat)
+                                        <a href="{{ url('/webpanel/report/product-type/khor-yor-2/' . $row_cat->categories_id) }}" 
+                                           class="block px-4 py-2 rounded-lg font-medium duration-75 transition" id="alertMenu">
+                                            {{ $row_cat->categories_name }}
+                                        </a>
+                                        <hr style="color:#838383;">
+                                    @endforeach
+                                @else
+                                    <p class="text-gray-400 italic">ยังไม่มีหมวดหมู่สินค้า</p>
+                                @endif
+                            </nav>
+                        </aside>
+                        
+                        
+                
+                        <main class="flex-1 p-0 bg-white w-full">
+                            <div class="overflow-x-auto w-full">
+                                <table class="table table-striped table-bordered table-hover" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:2%;">#</th>
+                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">รหัสสินค้า</th>
+                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:20%;">ชื่อสินค้า</th>
+                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ชื่อสามัญทางยา</th>
+                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ประเภท</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(isset($khor_yor_2) && count($khor_yor_2) > 0) 
+                                        @php 
+                                            $start = 1;
+                                        @endphp
+                                        
+                                        @foreach($khor_yor_2 as $row)
+                                            <tr class="tr-hover">
 
-                    </tbody>
-                </table> --}}
-
-                <tbody>
-                    @if($reporter)
-                        @php 
-                            $start = 1;
-                            $prevCustomer = null;
-                            $colorIndex = 0;
-                            $colors = ['#f9f9f9', '#e8f5e9', '#e3f2fd', '#fff3e0']; // สลับสีพื้นหลัง
-                        @endphp
+                                                <td style="text-align: center; color:#6b6b6b;">{{ $start++ }}</td>
+                                                <td style="text-align: center; color:#6b6b6b;">{{ $row->product_id }}</td>
+                                                <td style="text-align: left; color:#05b46e;">{{ $row->product_name }}</td>
+                                                <td style="text-align: left; color:#6b6b6b;">{{ $row->generic_name }}</td>
+                                                <td style="text-align: center; color:#6b6b6b;">{{ $row->khor_yor_2 == 1 ? 'ข.ย.2':'' }}</td>
+                                            </tr>
+                                        @endforeach
+                                        @else
+                                            <td colspan="5" style="text-align: center; color:#6b6b6b;">ไม่พบสินค้าประเภท ร้านค้า: ข.ย.2</td>
+                                        @endif
+                                    </tbody>
+                                        
+                            </table>
                 
-                        @foreach($reporter as $row)
-                            @php
-                                $customer_id   = $row->customer_id;
-                                $customer_name = $row->customer_name;
-                                $product_id    = $row->product_id;
-                                $product_name  = $row->product_name;
-                                $generic_name  = $row->generic_name;
-                                $qty           = $row->qty;
-                                $unit          = $row->unit;
-                                $date_purchase = $row->date_purchase;
+                            </div>
+                        </main>
                 
-                                // ถ้าลูกค้าเปลี่ยน -> เพิ่ม sub-header และเปลี่ยนสีพื้นหลัง
-                                if ($prevCustomer !== $customer_id) {
-                                    $colorIndex++;
-                                    $bgColor = $colors[$colorIndex % count($colors)];
-                                    $prevCustomer = $customer_id;
-                                    $showHeader = true;
-                                } else {
-                                    $showHeader = false;
-                                }
-                            @endphp
-                
-                            {{-- Sub-header ของร้าน --}}
-                            @if($showHeader)
-                                <tr style="background-color: {{ $bgColor }}; font-weight: 400;">
-                                    <td colspan="9" style="padding: 10px; border-top: 1px solid #5b6975; color:#147bbf;">
-                                        ร้านค้า: {{ $customer_name }} (รหัส: {{ $customer_id }})
-                                    </td>
-                                </tr>
-                            @endif
-                
-                            {{-- ข้อมูลสินค้า --}}
-                            <tr style="background-color: {{ $bgColor }};">
-                                <td style="text-align: center; color:#6b6b6b;">{{ $start++ }}</td>
-                                <td style="text-align: center; color:#6b6b6b;">{{ $customer_id }}</td>
-                                <td style="text-align: left; color:#6b6b6b;">{{ $customer_name }}</td>
-                                <td style="text-align: center; color:#6b6b6b;">{{ $product_id }}</td>
-                                <td style="text-align: left; color:#05b46e;">{{ $product_name }}</td>
-                                <td style="text-align: left; color:#6b6b6b;">{{ $generic_name }}</td>
-                                <td style="text-align: center; color:#e43342; font-weight: bold;">{{ $qty }}</td>
-                                <td style="text-align: center; color:#6b6b6b;">{{ $unit }}</td>
-                                <td style="text-align: center; color:#6b6b6b;">{{ $date_purchase }}</td>
-                            </tr>
-                        @endforeach
-                    @endif
-                </tbody>
-            </table>
-                
+                    </div>
+                </div>
                 
           
             </div>
@@ -563,6 +530,7 @@
         </div>
 
     </div>
+</div>
 @endsection
 </body>
 </html>

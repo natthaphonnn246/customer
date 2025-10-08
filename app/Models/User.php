@@ -43,6 +43,7 @@ class User extends Authenticatable
         'last_activity',
         'is_blocked',
         'purchase_status',
+        'allowed_check_type',
     ];
     protected $table = 'users';
     protected $connection = 'mysql';

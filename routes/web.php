@@ -3,6 +3,7 @@
     use App\Http\Controllers\ProfileController;
     use App\Http\Controllers\UserController;
     use App\Exports;
+    use Illuminate\Http\Request;
     use App\Models\User;
     use App\Exports\CustomerExcelExport;
     use App\Exports\CustomerAreaExport;
@@ -41,6 +42,7 @@
     use App\Http\Controllers\ChooseBoxController;
     use App\Http\Controllers\FdaReporterController;
     use App\Http\Controllers\StatusUpdateController;
+    use App\Http\Controllers\ProductTypeController;
 
 
     // Route::get('/', function() { return view('auth.login-tailwind');})->name('login');
@@ -65,7 +67,7 @@ Route::middleware('statusOnline')->group(function (){
       //dashboard portal charts;
     Route::get('/portal/dashboard', function () {
         return view('/portal/dashboard');
-    })->middleware('auth', 'status','maintenance');
+    })->middleware('auth', 'status','maintenance', 'checkMenu');
 
     Route::get('/portal/dashboard',[PortalCustomerController::class , 'dashboardCharts'])->middleware('auth', 'status','maintenance');
 
@@ -377,6 +379,19 @@ Route::middleware('statusOnline')->group(function (){
         Route::put('/webpanel/report/product/update-status/importcsv', [ProductController::class, 'importStatusProduct']);
         Route::get('/webpanel/report/product/update-status', [ProductController::class, 'updateStatus']);
 
+        //update type (แบบ ข.ย.)
+        Route::get('/webpanel/report/product/update-type', [ProductController::class, 'updateKhoryor']);
+        Route::put('/webpanel/report/product/update-type/importcsv', [ProductController::class, 'importKhoryor']);
+
+        //report product-type (แบบ ข.ย.)
+        Route::get('/webpanel/report/product-type', [ProductController::class, 'indexType']);
+        Route::get('/webpanel/report/product-type/khor-yor-2/{cate_id?}', [ProductController::class, 'productTypeKhoryor']);
+
+        //report product-type (สมุนไพร)
+         Route::get('/webpanel/report/product-type/somphor-2/{cate_id?}', [ProductController::class, 'productTypeSomphor']);
+        //report search type;
+        // Route::get('/webpanel/report/product-type', [ProductController::class, 'productType']);
+
         //export excel and csv stock;
         Route::get('/webpanel/report/product/deadstock/exportexcel/check', [ProductExcelExport::class, 'deadStockExcel']);
         Route::get('/webpanel/report/product/deadstock/exportcsv/check', [ProductCsvExport::class, 'exportStockCsv']);
@@ -434,6 +449,15 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/check-updated/{status}', [WebpanelCustomerController::class, 'checkLicense']);
         Route::get('/webpanel/check-updated/export/license/getcsv/{status_license}', [CustomerCsvExport::class, 'ExportLicenseCsv']);
         Route::get('/webpanel/check-updated/export/license/getexcel/{status_license}', [CustomerExcelExport::class, 'ExportLicenseExcel']);
+
+        //limited sales;
+        Route::get('/webpanel/report/product/limited-sales',[ProductTypecontroller::class, 'limitedSaleWebpanel']);
+
+        //status online type;
+
+        Route::get('/webpanel/report/status-type', [LogStatusController::class, 'indexType']);
+
+        Route::get('/webpanel/type-active/updated', [LogStatusController::class, 'updatedType']);
 
     });
    
@@ -507,7 +531,7 @@ Route::middleware('statusOnline')->group(function (){
     Route::post('/portal/signin/create', [PortalCustomerController::class, 'signin']);
 
     //portal-sign;
-    Route::middleware('auth', 'userRole', 'status', 'verified', 'maintenance', 'rights_area')->group(function () {
+    Route::middleware('auth', 'userRole', 'status', 'verified', 'maintenance', 'rights_area', 'checkMenu')->group(function () {
 
         // Route::get('/portal/portal-sign', [CustomerController::class, 'indexPortal']); //portalSign;
         Route::get('/portal/signin', [PortalCustomerController::class, 'indexPortal'])->name('portal'); //portalSign
@@ -560,22 +584,22 @@ Route::middleware('statusOnline')->group(function (){
     Route::get('/webpanel/sale/delete/{id}', [SaleareaController::class, 'deleteSalearea']);
 
     //portal customer;
-    Route::get('/portal/customer', [PortalCustomerController::class, 'customerView'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'purReport')->name('portal.customer');
-    Route::get('/portal/customer/status/{status_customer}', [PortalCustomerController::class, 'customerViewEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
+    Route::get('/portal/customer', [PortalCustomerController::class, 'customerView'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'purReport', 'checkMenu')->name('portal.customer');
+    Route::get('/portal/customer/status/{status_customer}', [PortalCustomerController::class, 'customerViewEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'checkMenu');
 
     //fetch; 'purReport'
-    Route::post('/portal/customer/purchase', [PortalCustomerController::class, 'purchaseOrder'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport');
+    Route::post('/portal/customer/purchase', [PortalCustomerController::class, 'purchaseOrder'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport', 'checkMenu');
 
     //purchase;
-    Route::get('/portal/customer/purchase/{fixed_id}', [PortalCustomerController::class, 'fixedDate'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport');
+    Route::get('/portal/customer/purchase/{fixed_id}', [PortalCustomerController::class, 'fixedDate'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport', 'checkMenu');
     // Route::get('/portal/customer/purchase/{fixed_id}', [PortalCustomerController::class, 'fixedDate'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'CheckPurReport');
     // resource
-    Route::get('/portal/customer/{id}', [PortalCustomerController::class, 'customerEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'maintenance', 'rights_area', 'CustomerDetailCheck');
+    Route::get('/portal/customer/{id}', [PortalCustomerController::class, 'customerEdit'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'maintenance', 'rights_area', 'CustomerDetailCheck', 'checkMenu');
    //update smtp;
     // Route::put('/portal/customer/{id}', [StatusUpdateController::class, 'update'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea', 'maintenance', 'rights_area');
 
     ///search customer;
-    Route::get('/portal/customer/search/code', [PortalCustomerController::class, 'customerSearch'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
+    Route::get('/portal/customer/search/code', [PortalCustomerController::class, 'customerSearch'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'checkMenu');
     // Route::get('/portal/customer/search/code', [PortalCustomerController::class, 'customerKeyword'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area');
   /*   Route::get('/webpanel/date', function() {
         return view('webpanel/date');
@@ -583,6 +607,24 @@ Route::middleware('statusOnline')->group(function (){
    /*  Route::get('/logintail', function() {
         return view('auth/login-tailwind');
     }); */
+
+    //type แบบอนุญาตขายยา ข.ย.2;
+    Route::get('/portal/product-type', [PortalCustomerController::class, 'protalIndexType'])->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'checkMenu')
+        ->name('portal.product-type');
+
+    Route::get('/portal/product-type/khor-yor-2/{cate_id?}', [PortalCustomerController::class, 'protalTypeKhoryor'])
+        ->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'confirmType', 'allowedType', 'checkMenu');
+
+    Route::get('/portal/product-type/somphor-2/{cate_id?}', [PortalCustomerController::class, 'protalTypeSomphor'])
+        ->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'confirmType', 'allowedType', 'checkMenu');
+
+    //check pass ;
+    Route::post('/portal/product-type/check-password',[ProductTypecontroller::class, 'checkLiceseType'])
+        ->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'checkMenu');
+
+     //limited-sales;
+     Route::get('/portal/limited-sales',[ProductTypecontroller::class, 'limitedSale'])
+        ->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'checkMenu');
 });
 
 

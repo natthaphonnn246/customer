@@ -862,6 +862,15 @@
                                         <textarea class="form-control" style="color: rgb(255, 86, 56);" id="exampleFormControlTextarea1" rows="3" name="text_admin" disabled>{{$customer_edit->text_admin}}</textarea>
                                     </div>
                                
+                                    <div class="mb-4 my-4">
+                                        <ul class="mt-4" style="width: 100%;  margin-top:15px;">
+                                            <span style="font-size:18px; font-weight:500;">ช่องทางการสั่งสินค้า</span><span style="font-size: 14px; color:red;"> *เลือกช่องทางที่สั่งมากสุด</span>
+                                            <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="purchase">
+                                            <option {{ $customer_edit->purchase === 1 ? 'selected': '' }} value="1">สั่งซื้อผ่านทางเว็บไซต์</option>
+                                            <option  {{ $customer_edit->purchase === 0 ? 'selected': '' }} value="0">สั่งซื้อผ่านช่องทางอื่น ๆ (เช่น LINE หรือทางโทรศัพท์)</option>
+                                            </select>
+                                        </ul>
+                                    </div>
 
                                 <div style="text-align:right; margin-top: 20px;">
                                     <button type="submit" id="updateForm" name="submit_update" class="btn my-2" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>

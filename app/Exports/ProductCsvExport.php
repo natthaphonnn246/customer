@@ -468,7 +468,7 @@ class ProductCsvExport
             $from = $request->from;
             $to   = $request->to;
             $date = $from.'_to_'.$to;
-            $filename = 'Product_stock_'.$date.'.csv';
+            $filename = 'สินค้าไม่เคลื่อนไหว_'.$date.'.csv';
         
             // ตั้งค่า header สำหรับดาวน์โหลด CSV
             header('Content-Type: text/csv; charset=utf-8');

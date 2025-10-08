@@ -411,7 +411,7 @@ class ProductExcelExport
                 };
         
             // ดาวน์โหลดไฟล์ Excel
-            return Excel::download($export, 'Product_stock_'.$date.'.xlsx');
+            return Excel::download($export, 'สินค้าไม่เคลื่อนไหว_'.$date.'.xlsx');
 
     }
 }

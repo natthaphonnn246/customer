@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LogStatus;
 use App\Models\User;
 use App\Models\Customer;
+use App\Models\ProductType;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Sleep;
@@ -165,27 +166,19 @@ class LogStatusController extends Controller
      */
     public function updated(LogStatus $logStatus)
     {
-        header('Content-Type: application/json');
+/*         header('Content-Type: application/json');
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Pragma: no-cache');
-        header('Expires: 0');
-        
-      /*   $data = [
-            "name" => time(),
-            "email" => "john@example.com",
-            "age" => 30
-        ];
-        
-        $json = json_encode($data);
-        echo $json; */
+        header('Expires: 0'); */
+         
 
         $code_notin = ['1111', '5585', '7777', '8888', '9088'];
         // DB::statement("SET time_zone = '+07:00'");
 
-     /*    if (app()->environment('local')) {
+  /*        if (app()->environment('local')) {
             DB::statement("SET time_zone = '+07:00'");
-        }
- */
+        } */
+ 
         // SET GLOBAL time_zone = '+07:00';
 
         $setting = Setting::where('setting_id', 'WS01')->first()->web_status;
@@ -213,31 +206,82 @@ class LogStatusController extends Controller
                                 'user'    => $check_row,
                                 'date'    => $date,
                                 'setting' => $setting,
-                            ]);
+                                
+                            ])
+                            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                            ->header('Pragma', 'no-cache')
+                            ->header('Expires', '0');
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(LogStatus $logStatus)
+    public function indexType(Request $request)
     {
-        //
+
+        $dateTime = date_default_timezone_set("Asia/Bangkok");
+        //menu;
+          //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+          //menu alert;
+        $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+        $user_id_admin = $request->user()->user_id;
+                            // dd($user_id_admin);
+
+        return view('product/status-online', compact('status_waiting', 'status_registration', 'status_updated', 'status_alert', 'user_id_admin'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, LogStatus $logStatus)
+    public function updatedType(LogStatus $logStatus)
     {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(LogStatus $logStatus)
-    {
-        //
+        date_default_timezone_set('Asia/Bangkok');
+
+        if (app()->environment('local')) {
+          DB::statement("SET time_zone = '+07:00'");
+      }
+        $code_notin = ['1111', '5585', '7777', '8888', '9088'];
+
+                    $check_row = ProductType::select(
+                                                    'user_id',
+                                                    'email',
+                                                    'user_name',
+                                                    // DB::raw('UNIX_TIMESTAMP(last_activity) as last_activity'),
+                                                    'last_activity',
+                                                    'login_date',
+                                                    'ip_address'
+                                                )
+                                                ->whereNotIn('user_id', $code_notin)
+                                                ->whereIn('last_activity', function($query) {
+                                                    $query->select(DB::raw('MAX(last_activity)'))
+                                                        ->from('tb_log_type')
+                                                        ->groupBy('user_id');
+                                                })
+                                                ->get();
+                                                
+                                                $date = ["date" => time()];
+                                                
+                                                return response()->json([
+                                                    'user' => $check_row,
+                                                    'date' => $date,
+                                                ])
+                                                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                                                ->header('Pragma', 'no-cache')
+                                                ->header('Expires', '0');
+
     }
 }
