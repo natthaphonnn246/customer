@@ -378,15 +378,13 @@
         <span class="ms-6" style="color: #8E8E8E;">แบบอนุญาตขายยา / ประเภท ร้านสมุนไพร</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
-        <hr class="my-4" style="color: #8E8E8E; width: 100%;">
-
-        <div class="mr-12" style="text-align: right;">
+        <div class="mr-6" style="text-align: right;">
 
             <a href="/webpanel/report/product-type/khor-yor-2/export/getcsv/somphor-2"  id="exportcsv" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export CSV</a>
             <a href="/webpanel/report/product-type/khor-yor-2/export/getexcel/somphor-2"  id="exportexcel" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export Excel</a>
     
         </div>
-
+        <hr class="my-4" style="color: #8E8E8E; width: 100%;">
         <div class="ms-6 mr-6 mb-6" style="text-align: left;">
 
             <div class="col-sm-8 ms-6">
