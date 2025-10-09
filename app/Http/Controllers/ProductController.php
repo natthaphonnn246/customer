@@ -2651,9 +2651,24 @@ class ProductController extends Controller
                                         // รวมข้อมูลแต่ละ chunk เข้า collection หลัก
                                         $allProducts = $allProducts->merge($products);
                                 });
+
+                                // Pagination
+                                $row_perPage = 50;
+                                $row_page = request()->get('page', 1);
+                                $total = $allProducts->count();
+                                $row_total_page = ceil($total / $row_perPage);
+                                $row_start = $start = ($row_page - 1) * $row_perPage + 1;
+
+                                // ดึงข้อมูลเฉพาะหน้าที่ต้องการ
+                                $allProducts = $allProducts->slice(($row_page - 1) * $row_perPage, $row_perPage)->values();
                        
               
                     }
+
+                    $perPage = isset($cate_id) ? '' : $row_perPage;
+                    $page = isset($cate_id) ? '' : $row_page;
+                    $total_page = isset($cate_id) ? 1 : $row_total_page;
+                    $start = isset($cate_id) ? 1 : $row_start;
                     
                     return view('product/product-type-khoryor-2', compact(
                         'status_alert',
@@ -2661,7 +2676,10 @@ class ProductController extends Controller
                         'status_waiting', 
                         'status_updated',
                         'user_id_admin',
-                        'category'
+                        'category',
+                        'total_page',
+                        'page',
+                        'start'
                     ), ['khor_yor_2' => $allProducts]);
         
     }
@@ -2762,9 +2780,24 @@ class ProductController extends Controller
                                         // รวมข้อมูลแต่ละ chunk เข้า collection หลัก
                                         $allProducts = $allProducts->merge($products);
                                 });
+
+                                // Pagination
+                                $row_perPage = 50;
+                                $row_page = request()->get('page', 1);
+                                $total = $allProducts->count();
+                                $row_total_page = ceil($total / $row_perPage);
+                                $row_start = $start = ($row_page - 1) * $row_perPage + 1;
+
+                                // ดึงข้อมูลเฉพาะหน้าที่ต้องการ
+                                $allProducts = $allProducts->slice(($row_page - 1) * $row_perPage, $row_perPage)->values();
                        
               
                     }
+
+                    $perPage = isset($cate_id) ? '' : $row_perPage;
+                    $page = isset($cate_id) ? '' : $row_page;
+                    $total_page = isset($cate_id) ? 1 : $row_total_page;
+                    $start = isset($cate_id) ? 1 : $row_start;
                     
                     return view('product/product-type-somphor-2', compact(
                         'status_alert',
@@ -2772,7 +2805,10 @@ class ProductController extends Controller
                         'status_waiting', 
                         'status_updated',
                         'user_id_admin',
-                        'category'
+                        'category',
+                        'total_page',
+                        'page',
+                        'start'
                     ), ['som_phor_2' => $allProducts]);
         
     }        

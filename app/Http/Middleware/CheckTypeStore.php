@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Setting;
 use App\Models\ProductType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,9 +29,9 @@ class CheckTypeStore
     
             // ดึงข้อมูลล่าสุดของผู้ใช้
             $user_checked = ProductType::where('user_id', $user->user_id)
-                ->latest('id')
-                ->first();
-    
+                            ->latest('id')
+                            ->first();
+                
             if (!$user_checked) {
                 return redirect()->route('portal.product-type');
             }
@@ -47,9 +48,14 @@ class CheckTypeStore
     
                 // แปลง last_activity เป็น timestamp (ถ้าเก็บ datetime)
                 $lastActiveTimestamp = strtotime($log_login_date->last_activity);
+
+                // กำหนดเวลาเข้าใช้งาน
+                $setting_timer = Setting::where('setting_id', 'WS01')->first();
+                $check_type_time = $setting_timer?->check_time_type ?? 300;
+                
     
                 // เช็คว่าเกิน 300 วินาทีหรือไม่
-                if ((time() - $lastActiveTimestamp) > 300) {
+                if ((time() - $lastActiveTimestamp) > $check_type_time) {
                     return redirect()->route('portal.product-type');
                 }
     

@@ -343,6 +343,7 @@
                 <span class="ms-6" style="color: #363636; font-size:20px;">สูตร 
                     <span style="text-decoration:underline;">Dextromethorphan</span>
                     ตำรับยาเม็ด สูตรเดี่ยวและผสม ขายรวมกัน 
+                    <span style="text-decoration:underline;">ทุกยี่ห้อ</span>
                     <span style="color:red;">ไม่เกิน 2,000 เม็ด/ร้านค้า/เดือน</span>
                 </span>
             </div>
@@ -387,7 +388,10 @@
             <span class="ms-6" style="color: #363636; font-size:20px;">สูตร 
                 <span style="text-decoration:underline;">Sildenafil, Tadalafil</span>
                 ตำรับยาเม็ด สูตรเดี่ยวและผสม ขายรวมกัน 
-                <span style="color:red;">ไม่เกิน 1,000 เม็ด/ร้านค้า/เดือน</span>
+  
+                    <span style="text-decoration:underline;">ทุกยี่ห้อ</span>
+                    <span style="color:red;">ไม่เกิน 1,000 เม็ด/ร้านค้า/เดือน</span>
+                
             </span>
         </div>
 

@@ -380,6 +380,13 @@
 
         <hr class="my-4" style="color: #8E8E8E; width: 100%;">
 
+        <div class="mr-12" style="text-align: right;">
+
+            <a href="/webpanel/report/product-type/khor-yor-2/export/getcsv/somphor-2"  id="exportcsv" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export CSV</a>
+            <a href="/webpanel/report/product-type/khor-yor-2/export/getexcel/somphor-2"  id="exportexcel" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Export Excel</a>
+    
+        </div>
+
         <div class="ms-6 mr-6 mb-6" style="text-align: left;">
 
             <div class="col-sm-8 ms-6">
@@ -498,7 +505,7 @@
                                     <tbody>
                                         @if(isset($som_phor_2) && count($som_phor_2) > 0) 
                                         @php 
-                                            $start = 1;
+                                            // $start = 1;
                                         @endphp
                                         
                                         @foreach($som_phor_2 as $row)
@@ -532,6 +539,68 @@
             
         </div>
 
+    </div>
+
+    <div class="ms-12 mb-6">
+        @if($total_page > 1)
+            <nav aria-label="Page navigation example">
+            <ul class="pagination py-4">
+            <li class="page-item">
+
+            @if ($page == 1)
+                <a class="page-link" href="/webpanel/report/product-type/somphor-2?page=<?=1 ; ?>" aria-label="Previous">
+                <span aria-hidden="true">Previous</span>
+                </a>
+            @else
+                <a class="page-link" href="/webpanel/report/product-type/somphor-2?page=<?= $page-1 ; ?>" aria-label="Previous">
+                <span aria-hidden="true">Previous</span>
+                </a>
+            @endif
+            </li>
+
+            @if($total_page > 14)
+
+                @for ($i= 1; $i <= 10 ; $i++)
+                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/product-type/somphor-2?page={{ $i }}">{{ $i }}</a></li>
+                @endfor
+                <li class="page-item"><a class="page-link">...</a></li>
+                @for ($i= $total_page-1; $i <= $total_page ; $i++)
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/report/product-type/somphor-2?page={{ $i }}">{{ $i }}</a></li>
+                @endfor
+
+            @else
+                @for ($i= 1; $i <= $total_page ; $i++)
+                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/product-type/somphor-2?page={{ $i }}">{{ $i }}</a></li>
+                @endfor
+            
+            @endif
+
+            <li class="page-item">
+            
+            @if ($page == $total_page)
+                <a class="page-link" href="/webpanel/report/product-type/somphor-2?page={{ $page }}" aria-label="Next">
+                <span aria-hidden="true">next</span>
+                </a>
+            @else
+                <a class="page-link" href="/webpanel/report/product-type/somphor-2?page={{ $page + 1 }}" aria-label="Next">
+                <span aria-hidden="true">next</span>
+                </a>
+            @endif
+            </li>
+            </ul>
+            </nav>
+
+            <hr>
+            <div class="py-3">
+                <p class="text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
+            </div>
+
+        @else
+        <hr>
+        <div class="py-3">
+            <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
+        </div>
+        @endif
     </div>
 </div>
 @endsection

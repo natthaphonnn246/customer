@@ -414,4 +414,81 @@ class ProductExcelExport
             return Excel::download($export, 'สินค้าไม่เคลื่อนไหว_'.$date.'.xlsx');
 
     }
+
+    //export type;
+    public function typeExcel(Request $request)
+    {
+
+            // dd('test');
+            date_default_timezone_set("Asia/Bangkok");
+
+            $type_name = $request->type_name;
+
+            if($type_name == 'khoryor-2')
+            {
+                $name = 'สินค้า_สำหรับร้านข.ย.2';
+                // ดึงข้อมูลจาก DB
+                $data = DB::table('products')
+                        ->where('khor_yor_2', 1)
+                        ->select(
+                                'product_id', 
+                                'product_name', 
+                                'generic_name', 
+                                DB::raw('CASE WHEN khor_yor_2 = 1 THEN "ข.ย.2" ELSE "" END AS som_phor_2_text'),
+                                )
+                        ->orderBy('product_id', 'ASC')
+                        ->get();
+
+            } else {
+
+                $name = 'สินค้า_สำหรับร้านสมุนไพร';
+                // ดึงข้อมูลจาก DB
+                $data = DB::table('products')
+                        ->where('som_phor_2', 1)
+                        ->select(
+                                'product_id', 
+                                'product_name', 
+                                'generic_name', 
+                                DB::raw('CASE WHEN som_phor_2 = 1 THEN "สมุนไพร" ELSE "" END AS som_phor_2_text'),
+                                )
+                        ->orderBy('product_id', 'ASC')
+                        ->get();
+
+
+            }
+
+                // สร้าง Export class แบบ inline
+                $export = new class($data) implements FromCollection, WithHeadings {
+                        protected $data;
+                
+                        public function __construct($data)
+                        {
+                            $this->data = $data;
+                        }
+                
+                        public function collection()
+                        {
+                            return $this->data;
+                        }
+                
+                        public function headings(): array
+                        {
+                            return [
+                                'Product ID',
+                                'Product Name',
+                                'Generic Name',
+                                'Type',
+
+                            ];
+                        }
+                    };
+
+                // ดาวน์โหลดไฟล์ Excel
+                return Excel::download($export, $name.'.xlsx');
+
+        
+    
+          
+
+    }
 }

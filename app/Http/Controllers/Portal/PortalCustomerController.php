@@ -2014,6 +2014,26 @@ class PortalCustomerController
         $check_rights_type = User::where('user_code', $code)->first()->allowed_check_type;
 
         $setting_rights_type = DB::table('settings')->where('setting_id', 'WS01')->first()->check_type;
+
+        $user = Auth::user();
+        $log_login_date = ProductType::where('user_id', $user->user_id)
+                        ->latest('id')
+                        ->first();
+                    // กำหนดเวลาเข้าใช้งาน
+        $setting_timer = Setting::where('setting_id', 'WS01')->first();
+        $check_type_time = $setting_timer?->check_time_type ?? 300;
+
+            // แปลง last_activity เป็น timestamp (ถ้าเก็บ datetime)
+            $lastActiveTimestamp = strtotime($log_login_date->last_activity);
+        
+
+        // เช็คว่าเกิน 300 วินาทีหรือไม่
+        if ((time() - $lastActiveTimestamp) > $check_type_time) {
+            $check_timer = 1;
+            
+        } else {
+            $check_timer = 0;
+        }
         
          return view('portal/portal-product-type', compact(
                                                  'user_name', 
@@ -2024,6 +2044,7 @@ class PortalCustomerController
                                                  'status_alert',
                                                  'check_rights_type',
                                                  'setting_rights_type',
+                                                 'check_timer',
                                              ));
      
     }
@@ -2137,7 +2158,7 @@ class PortalCustomerController
 
                     $perPage = isset($cate_id) ? '' : $row_perPage;
                     $page = isset($cate_id) ? '' : $row_page;
-                    $total_page = isset($cate_id) ? '' : $row_total_page;
+                    $total_page = isset($cate_id) ? 1 : $row_total_page;
                     $start = isset($cate_id) ? 1 : $row_start;
                     
                     return view('portal/portal-product-khoryor', compact(
@@ -2267,7 +2288,7 @@ class PortalCustomerController
 
                     $perPage = isset($cate_id) ? '' : $row_perPage;
                     $page = isset($cate_id) ? '' : $row_page;
-                    $total_page = isset($cate_id) ? '' : $row_total_page;
+                    $total_page = isset($cate_id) ? 1 : $row_total_page;
                     $start = isset($cate_id) ? 1 : $row_start;
                     
                     return view('portal/portal-product-somphor', compact(

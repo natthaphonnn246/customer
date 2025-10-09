@@ -101,7 +101,8 @@
         <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
         @endsection
 
-    <div class="contentArea w-full max-w-full break-words" id="bg">
+    <div class="contentArea w-full max-w-full break-words">
+        {{-- <div id="bg"> --}}
         <div class="py-2">
             {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">แอดมินทั้งหมด (Admin)</a> / รายละเอียด</span> --}}
             {{-- <span style="color: #8E8E8E;">ตั้งค่าระบบ (Settings)</span> --}}
@@ -112,9 +113,9 @@
             <span style="font-size: 18px; font-weight: 500; color:#464646;">ตั้งค่าเว็บไซต์</span>
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
         </ul>
-        <form method="post" action="/webpanel/setting/update-setting" enctype="multipart/form-data" id="bg">
-            @csrf
 
+        <form method="post" action="/webpanel/setting/update-setting" enctype="multipart/form-data">
+            @csrf
             @if(!empty($setting_view))
                 <div class="row ms-6 mr-6 mt-4">
                     <div class="col-sm-6">
@@ -160,6 +161,7 @@
                 </div>
 
                 <div class="row ms-6 mr-6 mt-4">
+                    <span class="mb-4" style="font-weight: 400; font-size:18px; color:#656565;">อัปเดตข้อมูลร้านค้า</span>
                     <div class="col-sm-6">
                         <ul style="width: 100%;">
                             <span style="color:#8E8E8E;">สถานะเปิดให้แอดมินแก้ไขลูกค้า</span> <span style="font-size: 12px; color:red;">*เปิดเท่ากับแก้ไขลูกค้าได้</span>
@@ -176,6 +178,7 @@
                 </div>
 
                 <div class="row ms-6 mr-6 mt-4">
+                    <span class="mb-4" style="font-weight: 400; font-size:18px; color:#656565;">ประเภทร้านค้า</span>
                     <div class="col-sm-6">
                         <ul style="width: 100%;">
                             <span style="color:#8E8E8E;">สถานะเปิดให้แอดมินเข้าถึงประเภทร้านค้า (ข.ย.2 / สมพ2)</span> <span style="font-size: 12px; color:red;">*เปิดเท่ากับเข้าใช้งานได้</span>
@@ -188,6 +191,20 @@
                         </ul>
 
                     </div>
+
+                    <div class="col-sm-6">
+                        <ul style="width: 100%;">
+                            <span style="color:#8E8E8E;">กำหนดเวลาเข้าใช้งานประเภทร้านค้า (ข.ย.2/สมุนไพร)</span> <span style="font-size: 12px; color:red;">*หน่วยเป็นนาที</span>
+                            <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="check_time_type">
+
+                                <option {{$setting_view->check_time_type === 300 ? 'selected': ''}} value="300">5</option>
+                                <option {{$setting_view->check_time_type === 900 ? 'selected': ''}} value="900">15</option>
+                                <option {{$setting_view->check_time_type === 1800 ? 'selected': ''}} value="1800">30</option>                              
+                                
+                            </select>
+                        </ul>
+
+                    </div>
                     <hr class="mt-8" style="color: #8E8E8E; width: 100%;">
                 </div>
             @endif
@@ -195,8 +212,7 @@
                 <button type="submit" id="updateForm" name="submit_setting" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
             </div>
         </form>
-    </div>
-
+    {{-- </div> --}}
     @if(Session::has('settings'))
 
         <script>
@@ -220,5 +236,6 @@
         </script>
     @endif
     @endsection
+</div>
 </body>
 </html>

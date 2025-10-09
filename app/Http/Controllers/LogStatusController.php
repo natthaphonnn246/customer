@@ -251,9 +251,13 @@ class LogStatusController extends Controller
 
         date_default_timezone_set('Asia/Bangkok');
 
-        if (app()->environment('local')) {
+     /*    if (app()->environment('local')) {
           DB::statement("SET time_zone = '+07:00'");
-      }
+        } */
+          // กำหนดเวลาเข้าใช้งาน
+        $setting_timer = Setting::where('setting_id', 'WS01')->first();
+        $check_type_time = $setting_timer?->check_time_type ?? 300;
+
         $code_notin = ['1111', '5585', '7777', '8888', '9088'];
 
                     $check_row = ProductType::select(
@@ -276,8 +280,9 @@ class LogStatusController extends Controller
                                                 $date = ["date" => time()];
                                                 
                                                 return response()->json([
-                                                    'user' => $check_row,
-                                                    'date' => $date,
+                                                    'user'            => $check_row,
+                                                    'date'            => $date,
+                                                    'check_type_time' => $check_type_time,
                                                 ])
                                                 ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
                                                 ->header('Pragma', 'no-cache')

@@ -459,6 +459,13 @@ Route::middleware('statusOnline')->group(function (){
 
         Route::get('/webpanel/type-active/updated', [LogStatusController::class, 'updatedType']);
 
+        //export_csv type;
+        Route::get('/webpanel/report/product-type/khor-yor-2/export/getcsv/{type_name}', [ProductCsvExport::class, 'exportTypeCsv']);
+        Route::get('/webpanel/report/product-type/somphor-2/export/getcsv/{type_name}', [ProductCsvExport::class, 'exportTypeCsv']);
+
+        //export_excel type;
+        Route::get('/webpanel/report/product-type/khor-yor-2/export/getexcel/{type_name}', [ProductExcelExport::class, 'typeExcel']);
+        Route::get('/webpanel/report/product-type/somphor-2/export/getexcel/{type_name}', [ProductExcelExport::class, 'typeExcel']);
     });
    
     Route::get('/webpanel/datepicker', function (){

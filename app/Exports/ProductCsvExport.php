@@ -514,5 +514,87 @@ class ProductCsvExport
                         fclose($output);
                         exit;
         }
+
+        //product-type;
+        public function exportTypeCsv(Request $request)
+        {
+
+            date_default_timezone_set("Asia/Bangkok");
+
+            $type_name = $request->type_name;
+
+            // dd($type_name);
+
+            if($type_name === 'khoryor-2')
+            {
+                $filename = 'สินค้า_ข.ย.2.csv';
+        
+                // ตั้งค่า header สำหรับดาวน์โหลด CSV
+                header('Content-Type: text/csv; charset=utf-8');
+                header('Content-Disposition: attachment; filename='.$filename);
+            
+                $stock_product =  DB::table('products')
+                                    ->where('khor_yor_2', 1)
+                                    ->select(
+                                            'product_id', 
+                                            'product_name', 
+                                            'generic_name', 
+                                            'khor_yor_2'
+                                            )
+                                    ->orderBy('product_id', 'ASC')
+                                    ->get();
+                        
+                            $data = $stock_product->toArray();
+                        
+                            $output = fopen('php://output', 'w');
+                        
+                            // เขียน header ลงไฟล์ CSV
+                            fputcsv($output, [
+                                'Product ID',
+                                'Product Name',
+                                'Generic Name',
+                                'Type'
+                            ], "|");
+
+            } else {
+
+            $filename = 'สินค้า_สมุนไพร.csv';
+        
+            // ตั้งค่า header สำหรับดาวน์โหลด CSV
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename='.$filename);
+        
+            $stock_product =  DB::table('products')
+                                ->where('som_phor_2', 1)
+                                ->select(
+                                        'product_id', 
+                                        'product_name', 
+                                        'generic_name', 
+                                        'som_phor_2'
+                                        )
+                                ->orderBy('product_id', 'ASC')
+                                ->get();
+                    
+                        $data = $stock_product->toArray();
+                    
+                        $output = fopen('php://output', 'w');
+                    
+                        // เขียน header ลงไฟล์ CSV
+                        fputcsv($output, [
+                            'Product ID',
+                            'Product Name',
+                            'Generic Name',
+                            'Type'
+                        ], "|");
+                    }
+                    
+                        // แปลง object → array ก่อนเขียน
+                        foreach ($data as $data_item) {
+                            fputcsv($output, (array) $data_item, "|");
+                        }
+                    
+                        fclose($output);
+                        exit;
+        }
     }
 

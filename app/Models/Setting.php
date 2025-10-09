@@ -13,6 +13,7 @@ class Setting extends Model
         'del_reportseller',
         'check_edit',
         'check_type',
+        'check_time_type',
   
     ];
     protected $table = 'settings';

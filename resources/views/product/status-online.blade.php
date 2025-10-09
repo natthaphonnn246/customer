@@ -346,6 +346,9 @@
         const tableBody = document.querySelector("#type-table tbody");
         // console.log(data.date);
 
+        const check_timer = data.check_type_time;
+        console.log(check_timer);
+
         let start = 1;
         //เคลียร์ตาราง;
         tableBody.innerHTML = "";
@@ -353,12 +356,15 @@
 
             const lastActivity = Date.parse(rowd.last_activity) / 1000;
             const count_time = (data.date.date - lastActivity)/60;
+
             console.log(count_time);
 
 
             const row = document.createElement("tr");
         
-                if(data.date.date - lastActivity < 300) {
+                if(data.date.date - lastActivity < check_timer) {
+
+                    // console.log('pass');
 
                  
                         row.innerHTML = `<td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${start++}</td>
