@@ -272,6 +272,24 @@
             border-radius: 5px;
             
         }
+        :root {
+            --vh: 100vh;
+            }
+            @supports (-webkit-touch-callout: none) {
+            :root {
+                --vh: 100dvh;
+            }
+            }
+            .h-screen-fix {
+            height: var(--vh);
+            min-height: 100vh;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
 
 
     </style>
@@ -393,8 +411,11 @@
                     <a href="/portal/product-type/khor-yor-2" class="block px-4 py-2 text-sm" id="listCsv"">ข.ย.2</a>
                     <a href="/portal/product-type/somphor-2" class="block px-4 py-2 text-sm" id="listCsv">สมุนไพร</a>
                 </div>
-                <div class="relative flex w-full mr-4">
+              {{--   <div class="relative flex w-full mr-4">
                 
+                    <div class="min-h-screen bg-gray-200 flex flex-col w-full"> --}}
+
+                <div class="relative flex w-full mr-4 h-full">
                     <div class="min-h-screen bg-gray-200 flex flex-col w-full">
 
                     <div class="flex items-center justify-between bg-white border-b p-5 shadow-sm">
@@ -403,7 +424,9 @@
                 
                      <div class="flex h-full">
                 
-                        <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen overflow-y-auto">
+                        {{-- <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen overflow-y-auto"> --}}
+                        <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen-fix overflow-y-auto">
+
 
                             <h1 class="text-2xl font-bold py-4 ms-6">หมวดหมู่สินค้า</h1>
                         
