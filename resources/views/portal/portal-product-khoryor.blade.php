@@ -424,7 +424,7 @@
                     </div>
                 
                      {{-- <div class="flex flex-1">class="h-full" --}}
-                    <div class="flex h-full">
+                    <div class="flex flex-1">
                 
                         {{-- <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen-fix overflow-y-auto"> --}}
                         <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen overflow-y-auto">
