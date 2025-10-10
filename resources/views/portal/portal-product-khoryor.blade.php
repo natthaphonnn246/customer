@@ -411,9 +411,7 @@
                     <a href="/portal/product-type/khor-yor-2" class="block px-4 py-2 text-sm" id="listCsv"">ข.ย.2</a>
                     <a href="/portal/product-type/somphor-2" class="block px-4 py-2 text-sm" id="listCsv">สมุนไพร</a>
                 </div>
-        {{--         <div class="relative flex w-full mr-4">
-                
-                    <div class="min-h-screen bg-gray-200 flex flex-col w-full"> --}}
+
                     <div class="relative flex w-full mr-4 h-full">
                         <div class="min-h-screen bg-gray-200 flex flex-col w-full">
 
@@ -422,9 +420,8 @@
                             <span style="font-size:18px; font-weight:500; color:#ea3c3c;">(ขายยาบรรจุเสร็จฯ / คลินิกการพยาบาลและผดุงครรภ์ / คลินิกสัตว์ / ขายยาสัตว์)</span>
                         </h1>
                     </div>
-                
-                     {{-- <div class="flex flex-1">class="h-full" --}}
-                    <div class="flex flex-1">
+
+                    <div class="flex h-screen overflow-hidden">
                 
                         {{-- <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen-fix overflow-y-auto"> --}}
                         <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen overflow-y-auto">
@@ -453,7 +450,7 @@
                         
                         
                 
-                        <main class="flex-1 p-2 bg-white w-full">
+                        <main class="flex-1 p-2 bg-white w-full overflow-y-auto">
                             <div class="overflow-x-auto w-full">
                                 <table class="table table-striped table-bordered table-hover" style="width: 100%;">
                                     <thead>
