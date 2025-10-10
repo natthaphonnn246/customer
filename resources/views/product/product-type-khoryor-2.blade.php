@@ -497,7 +497,7 @@
                                             <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">รหัสสินค้า</th>
                                             <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:20%;">ชื่อสินค้า</th>
                                             <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ชื่อสามัญทางยา</th>
-                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ประเภท</th>
+                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ประเภทร้านค้า</th>
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -414,8 +414,8 @@
         {{--         <div class="relative flex w-full mr-4">
                 
                     <div class="min-h-screen bg-gray-200 flex flex-col w-full"> --}}
-                <div class="relative flex w-full mr-4 h-full">
-                    <div class="min-h-screen bg-gray-200 flex flex-col w-full">
+                    <div class="relative flex w-full mr-4 h-full">
+                        <div class="min-h-screen bg-gray-200 flex flex-col w-full">
 
                     <div class="flex items-center justify-between bg-white border-b p-5 shadow-sm">
                         <h1 class="text-2xl font-bold text-gray-700">ประเภทร้านค้า : ข.ย.2 
@@ -426,7 +426,8 @@
                      {{-- <div class="flex flex-1">class="h-full" --}}
                     <div class="flex h-full">
                 
-                        <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen-fix overflow-y-auto">
+                        {{-- <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen-fix overflow-y-auto"> --}}
+                        <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen overflow-y-auto">
 
                             <h1 class="text-2xl font-bold py-4 ms-6">หมวดหมู่สินค้า</h1>
                         
@@ -461,7 +462,7 @@
                                             <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">รหัสสินค้า</th>
                                             <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:20%;">ชื่อสินค้า</th>
                                             <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ชื่อสามัญทางยา</th>
-                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ประเภท</th>
+                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ประเภทร้านค้า</th>
                                         </tr>
                                     </thead>
                                     <tbody>

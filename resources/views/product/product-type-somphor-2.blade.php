@@ -497,7 +497,7 @@
                                             <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">รหัสสินค้า</th>
                                             <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:20%;">ชื่อสินค้า</th>
                                             <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ชื่อสามัญทางยา</th>
-                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ประเภท</th>
+                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ประเภทร้านค้า</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -513,7 +513,7 @@
                                                 <td style="text-align: center; color:#6b6b6b;">{{ $row->product_id }}</td>
                                                 <td style="text-align: left; color:#05b46e;">{{ $row->product_name }}</td>
                                                 <td style="text-align: left; color:#6b6b6b;">{{ $row->generic_name }}</td>
-                                                <td style="text-align: center; color:#6b6b6b;">{{ $row->som_phor_2 == 1 ? 'ข.ย.2':'' }}</td>
+                                                <td style="text-align: center; color:#6b6b6b;">{{ $row->som_phor_2 == 1 ? 'สมุนไพร':'' }}</td>
                                             </tr>
                                         @endforeach
                                         @else
