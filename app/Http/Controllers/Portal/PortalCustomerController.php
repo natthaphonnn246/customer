@@ -2024,7 +2024,7 @@ class PortalCustomerController
         $check_type_time = $setting_timer?->check_time_type ?? 300;
 
             // แปลง last_activity เป็น timestamp (ถ้าเก็บ datetime)
-            $lastActiveTimestamp = strtotime($log_login_date->last_activity);
+            $lastActiveTimestamp = strtotime($log_login_date?->last_activity);
         
 
         // เช็คว่าเกิน 300 วินาทีหรือไม่
