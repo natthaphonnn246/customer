@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
     @section ('title', 'customer')
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,7 @@
 
     <title>cms.vmdrug</title>
 </head>
-<body>
+<body class="h-full">
 
     @extends ('portal/menuportal-tailwind')
     @section('content')
@@ -401,7 +401,7 @@
                         <h1 class="text-2xl font-bold text-gray-700">ประเภทร้านค้า : สมุนไพร</h1>
                     </div>
                 
-                     <div class="flex flex-1">
+                     <div class="flex h-full">
                 
                         <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen overflow-y-auto">
 
@@ -453,7 +453,7 @@
                                                 <td style="text-align: center; color:#6b6b6b;">{{ $row->product_id }}</td>
                                                 <td style="text-align: left; color:#05b46e;">{{ $row->product_name }}</td>
                                                 <td style="text-align: left; color:#6b6b6b;">{{ $row->generic_name }}</td>
-                                                <td style="text-align: center; color:#6b6b6b;">{{ $row->som_phor_2 == 1 ? 'ข.ย.2':'' }}</td>
+                                                <td style="text-align: center; color:#6b6b6b;">{{ $row->som_phor_2 == 1 ? 'สมุนไพร':'' }}</td>
                                             </tr>
                                         @endforeach
                                         @else

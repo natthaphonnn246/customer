@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
     @section ('title', 'customer')
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,7 @@
 
     <title>cms.vmdrug</title>
 </head>
-<body>
+<body class="h-full">
 
     @extends ('portal/menuportal-tailwind')
     @section('content')
@@ -403,7 +403,8 @@
                         </h1>
                     </div>
                 
-                     <div class="flex flex-1">
+                     {{-- <div class="flex flex-1">class="h-full" --}}
+                    <div class="flex h-full">
                 
                         <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen overflow-y-auto">
                             <h1 class="text-2xl font-bold py-4 ms-6">หมวดหมู่สินค้า</h1>
