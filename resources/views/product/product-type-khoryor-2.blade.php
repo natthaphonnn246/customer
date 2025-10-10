@@ -458,7 +458,7 @@
                     <div class="min-h-screen bg-gray-200 flex flex-col w-full">
 
                     <div class="flex items-center justify-between bg-white border-b p-5 shadow-sm">
-                        <h1 class="text-2xl font-bold text-gray-700">ประเภทร้านค้า : ข.ย.2</h1>
+                        <h1 class="text-2xl font-bold text-gray-700">ประเภทร้านค้า (ข.ย.2)</h1>
                     </div>
                 
                      <div class="flex flex-1">

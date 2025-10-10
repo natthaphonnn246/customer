@@ -197,4 +197,78 @@ class ProductTypeController extends Controller
                                                     'product_viagra'
                                                     ));
         }
+
+        public function customerType(Request $request)
+        {
+            $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+            $id = $request->user()->admin_area;
+            $code = $request->user()->user_code;
+    
+            $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
+            $status_all = DB::table('customers')->select('status')
+                                    ->where('admin_area', $id)
+                                    ->whereNotIn('customer_status', ['inactive'])
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+    
+            $status_waiting = DB::table('customers')->where('admin_area', $id)
+                                        ->where('status', 'รอดำเนินการ')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+                                        // dd($count_waiting);
+            $status_action = DB::table('customers')->where('admin_area', $id)
+                                        ->where('status', 'ต้องดำเนินการ')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+    
+            $status_completed = DB::table('customers')->where('admin_area', $id)
+                                        ->where('status', 'ดำเนินการแล้ว')
+                                        ->whereNotIn('customer_status', ['inactive'])
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+    
+            $status_alert = $status_waiting + $status_action;
+
+            $customer_type = DB::table('customers')
+                                ->select(
+                                        'customer_id',
+                                        'customer_name',
+                                        'type',
+                                        'admin_area',
+                                        'sale_area'
+                                        )
+                                ->whereNot('customer_status', 'inactive')
+                                ->where('type', 'ข.ย.2')->get();
+            // dd($customer_type);
+
+            $customer_type_somphor = DB::table('customers')
+                                ->select(
+                                        'customer_id',
+                                        'customer_name',
+                                        'type',
+                                        'admin_area',
+                                        'sale_area'
+                                        )
+                                ->whereNot('customer_status', 'inactive')
+                                ->where('type', 'สมพ.2')->get();
+
+            return view('portal/customer-type-check', compact(
+                                                                'user_name', 
+                                                                'status_all', 
+                                                                'status_waiting', 
+                                                                'status_action', 
+                                                                'status_completed', 
+                                                                'status_alert',
+                                                                'customer_type',
+                                                                'customer_type_somphor'
+                                                            ));
+
+        }
 }

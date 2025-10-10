@@ -181,7 +181,7 @@
                     <span class="mb-4" style="font-weight: 400; font-size:18px; color:#656565;">ประเภทร้านค้า</span>
                     <div class="col-sm-6">
                         <ul style="width: 100%;">
-                            <span style="color:#8E8E8E;">สถานะเปิดให้แอดมินเข้าถึงประเภทร้านค้า (ข.ย.2 / สมพ2)</span> <span style="font-size: 12px; color:red;">*เปิดเท่ากับเข้าใช้งานได้</span>
+                            <span style="color:#8E8E8E;">สถานะเปิดให้แอดมินเข้าถึงประเภทร้านค้า (ข.ย.2 / สมพ.2)</span> <span style="font-size: 12px; color:red;">*เปิดเท่ากับเข้าใช้งานได้</span>
                             <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="check_type">
 
                                 <option {{$setting_view->check_type == '1' ? 'selected': ''}} value="1">ปิด</option>
@@ -194,7 +194,7 @@
 
                     <div class="col-sm-6">
                         <ul style="width: 100%;">
-                            <span style="color:#8E8E8E;">กำหนดเวลาเข้าใช้งานประเภทร้านค้า (ข.ย.2/สมุนไพร)</span> <span style="font-size: 12px; color:red;">*หน่วยเป็นนาที</span>
+                            <span style="color:#8E8E8E;">กำหนดเวลาเข้าใช้งานประเภทร้านค้า (ข.ย.2 / สมพ.2)</span> <span style="font-size: 12px; color:red;">*หน่วยเป็นนาที</span>
                             <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="check_time_type">
 
                                 <option {{$setting_view->check_time_type === 300 ? 'selected': ''}} value="300">5</option>

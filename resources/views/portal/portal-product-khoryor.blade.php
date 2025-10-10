@@ -416,8 +416,8 @@
                         <div class="min-h-screen bg-gray-200 flex flex-col w-full">
 
                     <div class="flex items-center justify-between bg-white border-b p-5 shadow-sm">
-                        <h1 class="text-2xl font-bold text-gray-700">ประเภทร้านค้า : ข.ย.2 
-                            <span style="font-size:18px; font-weight:500; color:#ea3c3c;">(ขายยาบรรจุเสร็จฯ / คลินิกการพยาบาลและผดุงครรภ์ / คลินิกสัตว์ / ขายยาสัตว์)</span>
+                        <h1 class="text-xl font-bold text-gray-700">ประเภทร้านค้า (ข.ย.2)
+                            <span style="font-size:18px; font-weight:500; color:#ea3c3c;">ขายยาบรรจุเสร็จฯ / คลินิกการพยาบาลและผดุงครรภ์ / โรงพยาบาลคลินิกสัตว์และขายยาสัตว์</span>
                         </h1>
                     </div>
 

@@ -632,6 +632,10 @@ Route::middleware('statusOnline')->group(function (){
      //limited-sales;
      Route::get('/portal/limited-sales',[ProductTypecontroller::class, 'limitedSale'])
         ->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'checkMenu');
+
+    //customer-type;
+     Route::get('/portal/customer-type',[ProductTypecontroller::class, 'customerType'])
+        ->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'checkMenu');
 });
 
 

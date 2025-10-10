@@ -332,7 +332,7 @@
     <div class="contentArea w-full max-w-full break-words py-4" >
 
         {{-- <div class="py-2"></div> --}}
-        <span class="ms-6" style="color: #8E8E8E;">สินค้าจำกัดขายต่อเดือน | ข.ย.13</span>
+        <span class="ms-6" style="color: #8E8E8E;">ประเภทร้านค้า : ข.ย.2/สมุนไพร</span>
         <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
         <hr class="my-4" style="color: #8E8E8E; width: 100%;">
@@ -340,11 +340,8 @@
         <div class="ms-6 mr-6 mb-6" style="text-align: left;" id=protected>
 
             <div style="text-align: left;">
-                <span class="ms-6" style="color: #363636; font-size:20px;">สูตร 
-                    <span style="text-decoration:underline;">Dextromethorphan</span>
-                    ตำรับยาเม็ด สูตรเดี่ยวและผสม ขายรวมกัน 
-                    <span style="text-decoration:underline;">ทุกยี่ห้อ</span>
-                    <span style="color:red;">ไม่เกิน 2,000 เม็ด/ร้านค้า/เดือน</span>
+                <span class="ms-6" style="color: #363636; font-size:20px; font-weight:500;">
+                    ประเภทร้านค้า (ข.ย.2)
                 </span>
             </div>
 
@@ -352,30 +349,32 @@
                 <thead>
                     <tr>
                         <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:2%;">#</th>
-                        <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">รหัสสินค้า</th>
-                        <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:20%;">ชื่อสินค้า</th>
-                        <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ชื่อสามัญทางยา</th>
-                        <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">หน่วยสินค้า</th>
+                        <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">รหัสร้านค้า</th>
+                        <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:15%;">ชื่อร้านค้า</th>
+                        <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">แบบอนุญาต</th>
+                        <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">แอดมิน</th>
+                        <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">เขตการขาย</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if(isset($product_dextro) && count($product_dextro) > 0) 
+                    @if(isset($customer_type) && count($customer_type) > 0) 
                     @php 
                         $start = 1;
                     @endphp
                     
-                    @foreach($product_dextro as $row)
+                    @foreach($customer_type as $row)
                         <tr class="tr-hover">
 
                             <td style="text-align: center; color:#6b6b6b;">{{ $start++ }}</td>
-                            <td style="text-align: center; color:#6b6b6b;">{{ $row->product_id }}</td>
-                            <td style="text-align: left; color:#fa5454;">{{ $row->product_name }}</td>
-                            <td style="text-align: left; color:#6b6b6b;">{{ $row->generic_name }}</td>
-                            <td style="text-align: center; color:#6b6b6b;">{{ $row->unit }}</td>
+                            <td style="text-align: center; color:#6b6b6b;">{{ $row->customer_id }}</td>
+                            <td style="text-align: left; color:#4aa1ff;">{{ $row->customer_name }}</td>
+                            <td style="text-align: center; color:#6b6b6b;">{{ $row->type }}</td>
+                            <td style="text-align: center; color:#6b6b6b;">{{ $row->admin_area }}</td>
+                            <td style="text-align: center; color:#6b6b6b;">{{ $row->sale_area }}</td>
                         </tr>
                     @endforeach
                     @else
-                        <td colspan="5" style="text-align: center; color:#6b6b6b;">ไม่พบสินค้าประเภท ร้านค้า: สมุนไพร</td>
+                        <td colspan="5" style="text-align: center; color:#6b6b6b;">ไม่พบประเภทร้านค้า: สมุนไพร</td>
                     @endif
                 </tbody>
                     
@@ -383,15 +382,11 @@
         
         </div>
 
-        <!-- viagra -->
+        <!-- somphor -->
+        <div class="ms-6 mr-6 mb-6" style="text-align: left;" id=protected>
         <div style="text-align: left;">
-            <span class="ms-6" style="color: #363636; font-size:20px;">สูตร 
-                <span style="text-decoration:underline;">Sildenafil, Tadalafil</span>
-                ตำรับยาเม็ด สูตรเดี่ยวและผสม ขายรวมกัน 
-  
-                    <span style="text-decoration:underline;">ทุกยี่ห้อ</span>
-                    <span style="color:red;">ไม่เกิน 1,000 เม็ด/ร้านค้า/เดือน</span>
-                
+            <span class="ms-6" style="color: #363636; font-size:20px; font-weight:500;">
+                ประเภทร้านค้า (สมุนไพร)
             </span>
         </div>
 
@@ -399,35 +394,37 @@
             <thead>
                 <tr>
                     <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:2%;">#</th>
-                    <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">รหัสสินค้า</th>
-                    <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:20%;">ชื่อสินค้า</th>
-                    <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ชื่อสามัญทางยา</th>
-                    <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">หน่วยสินค้า</th>
+                    <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">รหัสร้านค้า</th>
+                    <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:15%;">ชื่อร้านค้า</th>
+                    <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">แบบอนุญาต</th>
+                    <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">แอดมิน</th>
+                    <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">เขตการขาย</th>
                 </tr>
             </thead>
             <tbody>
-                @if(isset($product_viagra) && count($product_viagra) > 0) 
+                @if(isset($customer_type_somphor) && count($customer_type_somphor) > 0) 
                 @php 
                     $start = 1;
                 @endphp
                 
-                @foreach($product_viagra as $row_viagra)
+                @foreach($customer_type_somphor as $row_somphor)
                     <tr class="tr-hover">
 
                         <td style="text-align: center; color:#6b6b6b;">{{ $start++ }}</td>
-                        <td style="text-align: center; color:#6b6b6b;">{{ $row_viagra->product_id }}</td>
-                        <td style="text-align: left; color:#fa5454;">{{ $row_viagra->product_name }}</td>
-                        <td style="text-align: left; color:#6b6b6b;">{{ $row_viagra->generic_name }}</td>
-                        <td style="text-align: center; color:#6b6b6b;">{{ $row_viagra->unit }}</td>
+                            <td style="text-align: center; color:#6b6b6b;">{{ $row_somphor->customer_id }}</td>
+                            <td style="text-align: left; color:#01b24e;">{{ $row_somphor->customer_name }}</td>
+                            <td style="text-align: center; color:#6b6b6b;">{{ $row_somphor->type }}</td>
+                            <td style="text-align: center; color:#6b6b6b;">{{ $row_somphor->admin_area }}</td>
+                            <td style="text-align: center; color:#6b6b6b;">{{ $row_somphor->sale_area }}</td>
                     </tr>
                 @endforeach
                 @else
-                    <td colspan="5" style="text-align: center; color:#6b6b6b;">ไม่พบสินค้าประเภท ร้านค้า: สมุนไพร</td>
+                    <td colspan="5" style="text-align: center; color:#6b6b6b;">ไม่พบประเภทร้านค้า: สมุนไพร</td>
                 @endif
             </tbody>
                 
         </table>
-    
+    </div>
     </div>
     </div>
        

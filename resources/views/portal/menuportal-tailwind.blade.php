@@ -230,6 +230,9 @@
                   <li style="margin-left: 35px;">
                       <a href="/portal/limited-sales" class="flex items-center w-full p-2 text-gray-900 pl-11 group rounded-lg"  id="checkProduct" style="font-size:14px;">สินค้าจำกัดการขาย</a>
                   </li>
+                  <li style="margin-left: 35px;">
+                    <a href="/portal/customer-type" class="flex items-center w-full p-2 text-gray-900 pl-11 group rounded-lg"  id="checkProduct" style="font-size:14px;">ประเภทร้านค้า</a>
+                </li>
               </ul>
           </div>
         @endif

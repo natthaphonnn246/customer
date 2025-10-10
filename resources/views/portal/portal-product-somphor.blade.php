@@ -419,7 +419,7 @@
                     <div class="min-h-screen bg-gray-200 flex flex-col w-full">
 
                     <div class="flex items-center justify-between bg-white border-b p-5 shadow-sm">
-                        <h1 class="text-2xl font-bold text-gray-700">ประเภทร้านค้า : สมุนไพร</h1>
+                        <h1 class="text-xl font-bold text-gray-700">ประเภทร้านค้า (สมุนไพร)</h1>
                     </div>
                 
                      {{-- <div class="flex h-full"> --}}
@@ -466,7 +466,7 @@
                                     <tbody>
                                         @if(isset($somphor_2) && count($somphor_2) > 0) 
                                         @php 
-                                            $start = 1;
+                                            // $start = 1;
                                         @endphp
                                         
                                         @foreach($somphor_2 as $row)

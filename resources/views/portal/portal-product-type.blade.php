@@ -431,7 +431,7 @@
                             
                                 checkpassBtn.addEventListener('click', async function() {
                                     Swal.fire({
-                                                title: 'ประเภทร้านค้า : ข.ย.2',
+                                                title: 'ประเภทร้านค้า (ข.ย.2)',
                                                 text: 'คุณต้องการเข้าใช้งานหรือไม่',
                                                 icon: "warning",
                                                 showCancelButton: true, 
@@ -457,7 +457,7 @@
                             
                                 checksomphorBtn.addEventListener('click', async function() {
                                     Swal.fire({
-                                                title: 'ประเภทร้านค้า : สมุนไพร',
+                                                title: 'ประเภทร้านค้า (สมุนไพร)',
                                                 text: 'คุณต้องการเข้าใช้งานหรือไม่',
                                                 icon: "warning",
                                                 showCancelButton: true, 
@@ -564,7 +564,7 @@
             
                 checkpassBtn.addEventListener('click', async function() {
                     Swal.fire({
-                                title: 'ประเภทร้านค้า : ข.ย.2',
+                                title: 'ประเภทร้านค้า (ข.ย.2)',
                                 text: 'คุณต้องการเข้าใช้งานหรือไม่',
                                 icon: "warning",
                                 showCancelButton: true, 
@@ -590,7 +590,7 @@
             
                 checksomphorBtn.addEventListener('click', async function() {
                     Swal.fire({
-                                title: 'ประเภทร้านค้า : สมุนไพร',
+                                title: 'ประเภทร้านค้า (สมุนไพร)',
                                 text: 'คุณต้องการเข้าใช้งานหรือไม่',
                                 icon: "warning",
                                 showCancelButton: true, 
@@ -684,7 +684,7 @@
                         if (data.valid) {
 
                             Swal.fire({
-                                        title: 'ยินดีต้อนรับ ข.ย.2',
+                                        title: 'ประเภทร้านค้า (ข.ย.2)',
                                         // text: 'ประเภทร้านค้า: ข.ย.2',
                                         icon: "success",
                                         // showCancelButton: true,
@@ -809,7 +809,7 @@
                         if (data.valid) {
 
                             Swal.fire({
-                                        title: 'ยินดีต้อนรับ สมุนไพร',
+                                        title: 'ประเภทร้านค้า (สมุนไพร)',
                                         // text: 'ประเภทร้านค้า: สมุนไพร',
                                         icon: "success",
                                         // showCancelButton: true,
