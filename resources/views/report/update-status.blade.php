@@ -290,7 +290,7 @@
             <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 
             <div class="ms-6" style="text-align: left; margin-top: 10px;">
-                <span style="color: #e84545;">**นำเข้าไฟล์สินค้า (Product from db:vmdrug) tb: Products</span>
+                <span style="color: #e84545;">**นำเข้าไฟล์สินค้า (ไฟล์จะมีแค่รหัสสินค้าเท่านั้น!! status = ปิด) tb: Products</span>
             </div>
 
             @error('import_csv')

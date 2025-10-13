@@ -285,7 +285,7 @@
 
             <div class="py-2">
             </div>
-            <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/report/product/importproduct" id="backLink">ย้อนกลับ</a> / อัปเดตต้นทุนสินค้า</span>
+            <span class="ms-6" style="color: #8E8E8E;"><a href="/webpanel/report/product/importproduct" id="backLink">ย้อนกลับ</a> / อัปเดตทุกอย่าง (ยกเว้นแบบอนุญาตขายยา)</span>
             {{-- <span class="ms-6" style="color: #8E8E8E;">รายงานการขายสินค้า</span> --}}
             <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
 

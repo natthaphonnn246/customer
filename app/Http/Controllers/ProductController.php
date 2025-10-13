@@ -9,6 +9,7 @@ use App\Imports\SellersImport;
 use App\Models\Category;
 use App\Models\Salearea;
 use App\Models\Customer;
+use App\Models\Subcategory;
 use App\Models\user;
 use Illuminate\View\View;
 use Illuminate\Http\File;
@@ -2811,6 +2812,22 @@ class ProductController extends Controller
                         'start'
                     ), ['som_phor_2' => $allProducts]);
         
-    }        
+    }
+    
+    //update ajax category->sub_category
+    public function updateSubcategary(Request $request)
+    {
+        $category_id = $request->input('category_id');
+        $cate_id_sub = substr($category_id, 0, 4);
+    
+        // query แบบตรง 4 ตัวอักษร + /xxx
+        $subcategories = Subcategory::where('subcategories_id', 'like', $cate_id_sub . '/%')->get();
+    
+        $html = '';
+        foreach ($subcategories as $sub) {
+            $html .= '<option value="' . $sub->subcategories_id . '">' . e($sub->subcategories_name) .' ('.$sub->subcategories_id.')'. '</option>';
+        }
+        return response($html);
+    }
 
 }

@@ -2019,7 +2019,8 @@ class PortalCustomerController
         $log_login_date = ProductType::where('user_id', $user->user_id)
                         ->latest('id')
                         ->first();
-                    // กำหนดเวลาเข้าใช้งาน
+                        
+        // กำหนดเวลาเข้าใช้งาน
         $setting_timer = Setting::where('setting_id', 'WS01')->first();
         $check_type_time = $setting_timer?->check_time_type ?? 300;
 

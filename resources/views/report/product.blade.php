@@ -44,7 +44,7 @@
             background-color: #0b59f6;
         }
         #importProduct {
-            background-color: #555eff;
+            background-color: #01a930;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -54,7 +54,7 @@
             text-align: center;
         }
         #importProduct:hover {
-            background-color: #434cf9;
+            background-color: #008b27;
             color: #ffffff;
         }
         #byCategory {
@@ -352,9 +352,9 @@
 
         <div class="ms-6" style="text-align: left;">
             {{-- <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a> --}}
-            <a href="/webpanel/report/product/importproduct"  id="importProduct" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Product</a>
-            <a href="/webpanel/report/product/importcategory"  id="importCate" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Category</a>
-            <a href="/webpanel/report/product/importsubcategory"  id="importsubCate" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Sub-category</a>
+            <a href="/webpanel/report/product/importproduct"  id="importProduct" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">สินค้าทั้งหมด</a>
+            <a href="/webpanel/report/product/importcategory"  id="importCate" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">หมวดหมู่หลัก</a>
+            <a href="/webpanel/report/product/importsubcategory"  id="importsubCate" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">หมวดหมู่ย่อย</a>
             {{-- @php
                 if($_GET['min_seller'])
             @endphp --}}

@@ -405,6 +405,9 @@ Route::middleware('statusOnline')->group(function (){
         Route::get('/webpanel/report/product/exportcsv/check', [ProductCsvExport::class, 'exportProductCsv']);
         Route::get('/webpanel/report/product/exportexcel/check', [ProductExcelExport::class, 'exportSellerExcel']);
 
+        //update ajax category->sub_category;
+        Route::get('/webpanel/report/product/new-product/subcategory', [ProductController::class, 'updateSubcategary']);
+
         //import_product_update;
         Route::post('/webpanel/report/product/importcsv-updated', [ProductController::class, 'importUpdateProduct']);
 

@@ -386,7 +386,7 @@
                     <div class="col-sm-6">
                         <ul class="mt-1" ">
                             <span style="color:#717171;">หมวดหมู่ยา</span><span style="font-size: 12px; color:red;"></span>
-                            <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="category">
+                            <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" id="category" name="category">
                                 
                                 @if(!empty($category))
                                     @foreach($category as $row_cate)
@@ -400,7 +400,7 @@
 
                         <ul class="mt-3" ">
                             <span style="color:#717171;">หมวดหมู่ยาย่อย</span><span style="font-size: 12px; color:red;"></span>
-                            <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="sub_category">
+                            <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" id="sub_category" name="sub_category">
                             
                                 @if(!empty($subcategory))
                                     @foreach($subcategory as $row_sub)
@@ -410,6 +410,30 @@
 
                             </select>
                         </ul>
+
+                        <script>
+                                document.getElementById('category').addEventListener('change', async function (e) {
+                                    e.preventDefault();
+                                
+                                    const categoryId = this.value;
+                                    console.log('category_id:', categoryId);
+                                
+                                    if (!categoryId) return;
+                                
+                                    try {
+                                        const response = await fetch(`/webpanel/report/product/new-product/subcategory?category_id=${categoryId}`);
+                                        const data = await response.text();
+                                
+                                        console.log('response data (HTML):', data);
+
+                                        const subSelect = document.getElementById('sub_category');
+                                        subSelect.innerHTML = data;
+
+                                    } catch (error) {
+                                        console.error('Fetch error:', error);
+                                    }
+                                });
+                        </script>
 
                         <ul class="mt-3" ">
                             <span style="color:#717171;">สถานะสินค้า</span><span style="font-size: 12px; color:red;"></span>

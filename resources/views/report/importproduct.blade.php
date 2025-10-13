@@ -249,7 +249,7 @@
             color: #ffffff;
         }
         #updateProduct {
-            background-color: #9f9f9f;
+            background-color: #fe0000a2;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -259,12 +259,12 @@
             text-align: center;
         }
         #updateProduct:hover {
-            background-color:  #878787;
+            background-color:  #fb3838e1;
             color: #ffffff;
         }
         #updateStatus {
-            background-color: #bf49ff;
-            color: #ffffff;
+            background-color: #e1e1e1;
+            color: #6f6f6f;
             border: none;
             cursor: pointer;
             padding: 8px 16px;
@@ -273,8 +273,8 @@
             text-align: center;
         }
         #updateStatus:hover {
-            background-color:  #a510f6;
-            color: #ffffff;
+            background-color:  #cbcbcb;
+            color: #656565;
         }
         #updateType {
             background-color: #4998ff;
@@ -399,7 +399,7 @@
 
             <div class="ms-6 mr-6" style="text-align: left;">
                 <a href="/webpanel/report/product/new-product"  id="createProduct" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">เพิ่มสินค้าใหม่</a>
-                <a href="/webpanel/report/product/update-cost"  id="updateProduct" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">อัปเดตต้นทุน</a>
+                <a href="/webpanel/report/product/update-cost"  id="updateProduct" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">รวมทั้งหมด</a>
                 <a href="/webpanel/report/product/update-status"  id="updateStatus" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">สถานะสินค้า</a>
                 <a href="/webpanel/report/product/update-type"  id="updateType" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">แบบอนุญาตขายยา</a>
 
