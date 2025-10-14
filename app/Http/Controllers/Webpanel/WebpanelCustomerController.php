@@ -141,7 +141,8 @@ class WebpanelCustomerController
                         SUM(CASE WHEN type = 'ข.ย.2' THEN 1 ELSE 0 END) as type_status_2,
                         SUM(CASE WHEN type = 'สมพ.2' THEN 1 ELSE 0 END) as type_status_3,
                         SUM(CASE WHEN type = 'คลินิกยา/สถานพยาบาล' THEN 1 ELSE 0 END) as type_status_4,
-                        SUM(CASE WHEN type = '' THEN 1 ELSE 0 END) as type_status_5
+                        SUM(CASE WHEN type = '' THEN 1 ELSE 0 END) as type_status_5,
+                        SUM(CASE WHEN purchase = 0 THEN 1 ELSE 0 END) as other_purchase
                     ")
                     ->whereNotIn('customer_code', $code_notin)
                     ->first();
@@ -3303,6 +3304,46 @@ class WebpanelCustomerController
 
 
         
+    }
+
+    public function otherPurchase(Request $request)
+    {
+        $code_notin = ['0000', '4494', '7787', '8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+            $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_updated = Customer::where('status_update', 'updated')
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                        ->whereNotIn('customer_id', $code_notin)
+                                        ->count();
+
+            $status_alert = $status_waiting + $status_updated;
+
+            $user_id_admin = $request->user()->user_id;
+
+            //admin_area;
+            $admin_area =  User::where('admin_area', '!=', '')->where('rights_area', '!=', '')->get();
+
+            $result = DB::table('customers')->where('purchase', 0)->get();
+            $total_customer = Customer::whereNotIn('customer_id', $code_notin)->get();
+
+            return view('webpanel/other-purchase' , compact(
+                                                        'admin_area', 
+                                                        'status_alert', 
+                                                        'status_waiting', 
+                                                        'status_updated', 
+                                                        'user_id_admin',
+                                                        'status_registration',
+                                                        'result',
+                                                        'total_customer'
+
+                                                    ));
     }
 
 }

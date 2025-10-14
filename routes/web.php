@@ -496,6 +496,9 @@ Route::middleware('statusOnline')->group(function (){
 
     Route::get('/webpanel/customer/status/{status_check}', [WebpanelCustomerController::class, 'indexStatus'])->middleware('auth', 'role','status', 'verified');
 
+    //other-purchase (Line, telephone);
+    Route::get('/webpanel/customer/order/other-purchase', [WebpanelCustomerController::class, 'otherPurchase'])->middleware('auth', 'role','status', 'verified');
+
     //check-customer-type;
     // Route::get('/webpanel/customer/status/{status_check}', [WebpanelCustomerController::class, 'indexStatus'])->middleware('auth', 'role','status', 'verified');
 

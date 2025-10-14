@@ -578,8 +578,8 @@
                         <tr>
                             <th class="text-center border-end" style="width: 4%; color:#3d3d3d;">#</th>
                             <th class="text-center border-end" style="width: 8%; color:#3d3d3d;">รหัสสินค้า</th>
-                            <th class="border-end" style="width: 28%; color:#3d3d3d;">ชื่อสินค้า</th>
-                            <th class="border-end" style="width: 15%; color:#3d3d3d;">ชื่อสามัญทางยา</th>
+                            <th class="border-end" style="width: 28%; color:#3d3d3d; text-align:center;">ชื่อสินค้า</th>
+                            <th class="border-end" style="width: 15%; color:#3d3d3d; text-align:center;">ชื่อสามัญทางยา</th>
                             <th class="text-center border-end" style="width: 8%; color:#3d3d3d;">คงเหลือ</th>
                             <th class="text-center border-end" style="width: 8%; color:#3d3d3d;">หน่วย</th>
                             <th class="text-center">สถานะสินค้า</th>

@@ -241,7 +241,10 @@
                                             {{-- @if ((($customer_view->cert_store)) != '') --}}
                                             @if (!empty($customer_view->cert_store))
                                             
-                                                <img src={{asset("storage/".$customer_view->cert_store)}}?v=<?php echo time(); ?>" id="previewStore" style="width: 100%";/>
+                                                <img src={{asset("storage/".$customer_view->cert_store)}}?v=<?php echo time(); ?>" 
+                                                    id="previewStore" 
+                                                    style="width: 100%; cursor: pointer;"
+                                                />
                                             {{-- {{time()}} --}}
                                             @else
                                             <img src="/profile/image.jpg" width="100%" id="previewStore">
@@ -249,6 +252,7 @@
                                         
                                             <input type="file" id="imageStore" class="form-control" name="cert_store" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>
                                             {{-- <hr class="py-2 mt-2"> --}}
+                                            
                                             <div class="modal-footer mt-4">
 
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
@@ -293,7 +297,10 @@
                                             {{-- @if ((($customer_view->cert_medical)) != '') --}}
                                             @if (!empty($customer_view->cert_medical))
                                             
-                                                <img src={{asset("storage/".$customer_view->cert_medical)}}?v=<?php echo time(); ?>" id="previewMedical" style="width: 100%";/>
+                                                <img src={{asset("storage/".$customer_view->cert_medical)}}?v=<?php echo time(); ?>" 
+                                                    id="previewMedical" 
+                                                    style="width: 100%; cursor: pointer;"
+                                                />
                                             {{-- {{time()}} --}}
                                             @else
                                             <img src="/profile/image.jpg" width="100%" id="previewMedical">
@@ -346,7 +353,10 @@
                                             {{-- @if ((($customer_view->cert_commerce)) != '') --}}
                                             @if (!empty($customer_view->cert_commerce))
                                             
-                                                <img src={{asset("storage/".$customer_view->cert_commerce)}}?v=<?php echo time(); ?>" id="previewCommerce" style="width: 100%";/>
+                                                <img src={{asset("storage/".$customer_view->cert_commerce)}}?v=<?php echo time(); ?>" 
+                                                    id="previewCommerce" 
+                                                    style="width: 100%; cursor: pointer;"
+                                                />
                                             {{-- {{time()}} --}}
                                             @else
                                             <img src="/profile/image.jpg" width="100%" id="previewCommerce">
@@ -398,7 +408,10 @@
                                             {{-- @if ((($customer_view->cert_vat)) != '') --}}
                                             @if (!empty($customer_view->cert_vat))
                                             
-                                                <img src={{asset("storage/".$customer_view->cert_vat)}}?v=<?php echo time(); ?>" id="previewVat" style="width: 100%";/>
+                                                <img src={{asset("storage/".$customer_view->cert_vat)}}?v=<?php echo time(); ?>" 
+                                                    id="previewVat" 
+                                                    style="width: 100%; cursor: pointer;"
+                                                />
                                             {{-- {{time()}} --}}
                                             @else
                                             <img src="/profile/image.jpg" width="100%" id="previewVat">
@@ -449,7 +462,10 @@
                                             @csrf
                                             @if (!empty($customer_view->cert_id))
                                             
-                                                <img src={{asset("storage/".$customer_view->cert_id)}}?v=<?php echo time(); ?>" id="previewId" style="width: 100%";/>
+                                                <img src={{asset("storage/".$customer_view->cert_id)}}?v=<?php echo time(); ?>" 
+                                                    id="previewId" 
+                                                    style="width: 100%; cursor: pointer;"
+                                                />
                                             {{-- {{time()}} --}}
                                             @else
                                             <img src="/profile/image.jpg" width="100%" id="previewId">
@@ -931,55 +947,7 @@
                                     });
                             </script>
                         @endif
-                                <!--- update user information-->
-                                  {{--   <script>
-                                            $('#updateForm').click(function() {
-                                                
-                                                $('#bg').css('display', 'none');
-                                                let user = $('#form').serialize();
-                                           /*      let customer_id = $('#codeId').val();
-                                                console.log(customer_id); */
-
-                                                $.ajax({
-                                                    // url: '/webpanel/customer-detail/update/{{$customer_view->customer_code}}',
-                                                    url: '/webpanel/customer-detail/update/{{$customer_view->id}}',
-                                                    type: 'post',
-                                                    data: user,
-                                                    success: function(data) {
-
-                                                        if (data == 'success') {
-                                                            Swal.fire({
-                                                            title: 'สำเร็จ',
-                                                            text: 'อัปเดตข้อมูลเรียบร้อย',
-                                                            icon:'success',
-                                                            confirmButtonText: 'ตกลง'
-
-                                                            }).then((data)=>{
-                                                                $('#bg').css('display', '');
-                                                                // window.location.href = "/webpanel/customer";
-
-                                                            });
-
-                                                        } else {
-                                                            Swal.fire({
-                                                            title: 'เกิดข้อผิดพลาด',
-                                                            text: 'ไม่สามารถอัปเดตข้อมูลได้',
-                                                            icon: 'error',
-                                                            confirmButtonText: 'ตกลง'
-
-                                                            }).then ((data)=>{  
-                                                                if(data.isConfirmed) {
-                                                                    window.location.reload();
-                                                                }
-                                                            })
-                                                        }
-
-                                                        console.log(data);
-                                                    }
-                                                });
-                                            });
-                                    </script> --}}
-
+                              
                 </div>
        
     </div>
@@ -1109,134 +1077,59 @@
                 });
 
         </script>
-{{-- 
-{{$customer_view->cert_store;}} --}}
-        <!--- php upload ใบอนุญาตขายยา/สถานพยาบาล--->
-      {{--   <script>
-
-                $(document).ready(function(){
-                    $('#certStore').click(function(){
-                        // e.preventDefault(); ปิดใช้งาน submit ปกติ
-                        const now = new Date().getTime();
-
-                        Swal.fire ({
-                            html:
-                            '<p style="text-align: start;">แก้ไขใบอนุญาตขายยา/สถานพยาบาล/Code : {{$customer_view->customer_code; }}</p>'
-                            +'<hr>'
-                            +'<form action="/webpanel/customer-detail/upload-store/{{$customer_view->customer_code}}" method="post" enctype="multipart/form-data">'
-                            +'@csrf'
-                            +'@if ((($customer_view->cert_store)) != '')'
-                            // +'<img src="/storage/certs/{{$customer_view->cert_store ; }}" id="fileImage" style="width: 100%";/>'
-                            // +'<img src="{{asset("storage/".$customer_view->cert_store)}}" id="fileImage" style="width: 100%";/>'
-                            //update = "storage/".$customer_view->cert_strore; //test;
-                            +`<img src="{{asset("storage/".$customer_view->cert_store)}}?v=${now}" id="fileImage" style="width: 100%";/>`
-                            +'@else'
-                            +'<img src="/profile/image.jpg" width="100%" id="fileImage">'
-                            +'@endif'
-                            +'<hr>'
-                            +'<input type="file" id="image" class="form-control" name="cert_store" style="margin-top: 10px;"; accept="image/png, image/jpg, image/jpeg"/>'
-                            +'<hr>'
-                            +'<div style="margin-top: 10px; text-align: end;">'
-                            +'<button onclick="closeWin()" type="button" onclick="closeOpenedWindow()" class="btn" id="cancelUpload" data-dismiss="modal">ปิด</button>'
-                            +'<button type="submit" name="submit_store" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>'
-                            +'</div>'
-                            +'</form>',
-                            showConfirmButton: false, 
-
-                            // confirmButtonText: 'บันทึก',
-                            // showCancelButton: true,
-                        
-                            });
-
-                                    /// preview image swal filre;
-                                        let image = document.querySelector('#image');
-                                        let fileImage = document.querySelector('#fileImage');
-
-                                        image.onchange = evt => {
-                                        const [file] = image.files;
-                                        if(file) {
-                                        fileImage.src = URL.createObjectURL(file);
-                                        }
-                                        }
-                                        //ตรวจสอบ image size;
-                                        $('#image').bind('change', function() {
-                                        const maxSize = 1000000; //byte
-                                        const mb = maxSize/maxSize;
-                                        let size = this.files[0].size;
-                                        if( size > maxSize ) {
-
-                                            Swal.fire({
-                                                icon:'warning',
-                                                title: 'ภาพใหญ่เกิน',
-                                                text: 'ขนาดภาพไม่เกิน 1 MB (ใบอนุญาตขายยา)',
-                                                showConfirmButton: true,
-                                                confirmButtonText: 'ตกลง'
-
-                                            }).then(function() {
-                                                $("#image").val('');
-                                            });
-
-                                        }
-                                    });
-                                });
-                            });
-                    //close window reload window;
-                    function closeWin() {
-                    Swal.close();
-                    // window.location.reload();
-                    }
-        </script> --}}
-
-      {{--   <script>
-
-                                    /// preview image swal filre;
-                                    let image = document.querySelector('#image');
-                                        let fileImage = document.querySelector('#fileImage');
-
-                                        image.onchange = evt => {
-                                        const [file] = image.files;
-                                        if(file) {
-                                        fileImage.src = URL.createObjectURL(file);
-                                        }
-                                        }
-                                        //ตรวจสอบ image size;
-                                        $('#image').bind('change', function() {
-                                        const maxSize = 1000000; //byte
-                                        const mb = maxSize/maxSize;
-                                        let size = this.files[0].size;
-                                        if( size > maxSize ) {
-
-                                            Swal.fire({
-                                                icon:'warning',
-                                                title: 'ภาพใหญ่เกิน',
-                                                text: 'ขนาดภาพไม่เกิน 1 MB (ใบอนุญาตขายยา)',
-                                                showConfirmButton: true,
-                                                confirmButtonText: 'ตกลง'
-
-                                            }).then(function() {
-                                                $("#image").val('');
-                                                window.location.reload();
-                                            });
-
-                                        }
-                                    });
-                             
-        </script> --}}
 
         <!-- preview image -->
+
+        <!-- Modal สำหรับแสดงรูปขยาย -->
+        <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content bg-dark border-0 position-relative">
+
+                    <button type="button"
+                        class="btn btn-danger position-absolute top-0 end-0 m-3 px-3 py-1"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        style="z-index: 10; font-weight: bold;">
+                            ✕ ปิด
+                    </button>
+                        
+                    <div class="modal-body p-0 text-center">
+                    <img id="expandedImage" class="img-fluid rounded" alt="Expanded Preview">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
-            document.getElementById('imageStore').addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.getElementById('previewStore');
-                        img.src = e.target.result;
-                        img.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const imageInput = document.getElementById('imageStore');
+                const previewImage = document.getElementById('previewStore');
+                const expandedImage = document.getElementById('expandedImage');
+
+                // แสดงรูป preview เมื่อเลือกไฟล์ใหม่
+                if (imageInput) {
+                    imageInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                    });
                 }
-            });
+
+                // คลิกที่รูป preview เพื่อเปิด modal ขยาย
+                if (previewImage) {
+                    previewImage.addEventListener('click', function() {
+                    expandedImage.src = previewImage.src;
+                    const modal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
+                    modal.show();
+                    });
+                }
+                });
 
              //ตรวจสอบ image size;
              $('#imageStore').bind('change', function() {
@@ -1262,9 +1155,58 @@
                                 });
         </script>
 
+        <!-- Modal สำหรับแสดงรูปขยาย -->
+        <div class="modal fade" id="imagePreviewMedical" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content bg-dark border-0 position-relative">
+
+                    <button type="button"
+                        class="btn btn-danger position-absolute top-0 end-0 m-3 px-3 py-1"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        style="z-index: 10; font-weight: bold;">
+                            ✕ ปิด
+                    </button>
+                        
+                    <div class="modal-body p-0 text-center">
+                    <img id="expandedImageMedical" class="img-fluid rounded" alt="Expanded Preview">
+                    </div>
+                </div>
+            </div>
+        </div>
      
 
         <script>
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    const imageInputMedical = document.getElementById('imageMedical');
+                    const previewImageMedical = document.getElementById('previewMedical');
+                    const expandedImageMedical = document.getElementById('expandedImageMedical');
+
+                    // แสดงรูป preview เมื่อเลือกไฟล์ใหม่
+                    if (imageInputMedical) {
+                        imageInputMedical.addEventListener('change', function(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                            previewImageMedical.src = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                        });
+                    }
+
+                    // คลิกที่รูป preview เพื่อเปิด modal ขยาย
+                    if (previewImageMedical) {
+                        previewImageMedical.addEventListener('click', function() {
+                        expandedImageMedical.src = previewImageMedical.src;
+                        const modal = new bootstrap.Modal(document.getElementById('imagePreviewMedical'));
+                        modal.show();
+                        });
+                    }
+                });
+
                 document.getElementById('imageMedical').addEventListener('change', function(event) {
                     const file = event.target.files[0];
                     if (file) {
@@ -1302,7 +1244,56 @@
                                     });
         </script>
 
+          <!-- Modal สำหรับแสดงรูปขยาย -->
+          <div class="modal fade" id="imagePreviewCommerce" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content bg-dark border-0 position-relative">
+
+                    <button type="button"
+                        class="btn btn-danger position-absolute top-0 end-0 m-3 px-3 py-1"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        style="z-index: 10; font-weight: bold;">
+                            ✕ ปิด
+                    </button>
+                        
+                    <div class="modal-body p-0 text-center">
+                    <img id="expandedImageCommerce" class="img-fluid rounded" alt="Expanded Preview">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
+                 document.addEventListener('DOMContentLoaded', function() {
+                    const imageInputCommerce = document.getElementById('imageCommerce');
+                    const previewImageCommerce = document.getElementById('previewCommerce');
+                    const expandedImageCommerce = document.getElementById('expandedImageCommerce');
+
+                    // แสดงรูป preview เมื่อเลือกไฟล์ใหม่
+                    if (imageInputCommerce) {
+                        imageInputCommerce.addEventListener('change', function(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                            previewImageCommerce.src = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                        });
+                    }
+
+                    // คลิกที่รูป preview เพื่อเปิด modal ขยาย
+                    if (previewImageCommerce) {
+                        previewImageCommerce.addEventListener('click', function() {
+                        expandedImageCommerce.src = previewImageCommerce.src;
+                        const modal = new bootstrap.Modal(document.getElementById('imagePreviewCommerce'));
+                        modal.show();
+                        });
+                    }
+                });
+
                 document.getElementById('imageCommerce').addEventListener('change', function(event) {
                     const file = event.target.files[0];
                     if (file) {
@@ -1340,7 +1331,56 @@
                                     });
         </script>
 
+        <!-- Modal สำหรับแสดงรูปขยาย -->
+        <div class="modal fade" id="imagePreviewVat" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content bg-dark border-0 position-relative">
+
+                    <button type="button"
+                        class="btn btn-danger position-absolute top-0 end-0 m-3 px-3 py-1"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        style="z-index: 10; font-weight: bold;">
+                            ✕ ปิด
+                    </button>
+                        
+                    <div class="modal-body p-0 text-center">
+                    <img id="expandedImageVat" class="img-fluid rounded" alt="Expanded Preview">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
+                 document.addEventListener('DOMContentLoaded', function() {
+                    const imageInputVat = document.getElementById('imageVat');
+                    const previewImageVat = document.getElementById('previewVat');
+                    const expandedImageVat = document.getElementById('expandedImageVat');
+
+                    // แสดงรูป preview เมื่อเลือกไฟล์ใหม่
+                    if (imageInputVat) {
+                        imageInputVat.addEventListener('change', function(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                            previewImageVat.src = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                        });
+                    }
+
+                    // คลิกที่รูป preview เพื่อเปิด modal ขยาย
+                    if (previewImageVat) {
+                        previewImageVat.addEventListener('click', function() {
+                        expandedImageVat.src = previewImageVat.src;
+                        const modal = new bootstrap.Modal(document.getElementById('imagePreviewVat'));
+                        modal.show();
+                        });
+                    }
+                });
+
                 document.getElementById('imageVat').addEventListener('change', function(event) {
                     const file = event.target.files[0];
                     if (file) {
@@ -1378,7 +1418,57 @@
                                     });
         </script>
 
+         <!-- Modal สำหรับแสดงรูปขยาย -->
+         <div class="modal fade" id="imagePreviewId" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content bg-dark border-0 position-relative">
+
+                    <button type="button"
+                        class="btn btn-danger position-absolute top-0 end-0 m-3 px-3 py-1"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        style="z-index: 10; font-weight: bold;">
+                            ✕ ปิด
+                    </button>
+                        
+                    <div class="modal-body p-0 text-center">
+                    <img id="expandedImageId" class="img-fluid rounded" alt="Expanded Preview">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    const imageInputId = document.getElementById('imageId');
+                    const previewImageId = document.getElementById('previewId');
+                    const expandedImageId = document.getElementById('expandedImageId');
+
+                    // แสดงรูป preview เมื่อเลือกไฟล์ใหม่
+                    if (imageInputId) {
+                        imageInputId.addEventListener('change', function(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                            previewImageId.src = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                        });
+                    }
+
+                    // คลิกที่รูป preview เพื่อเปิด modal ขยาย
+                    if (previewImageId) {
+                        previewImageId.addEventListener('click', function() {
+                        expandedImageId.src = previewImageId.src;
+                        const modal = new bootstrap.Modal(document.getElementById('imagePreviewId'));
+                        modal.show();
+                        });
+                    }
+                });
+
                 document.getElementById('imageId').addEventListener('change', function(event) {
                     const file = event.target.files[0];
                     if (file) {

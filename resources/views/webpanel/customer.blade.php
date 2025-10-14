@@ -605,6 +605,7 @@
                 $type_status_3              = $stats->type_status_3;
                 $type_status_4              = $stats->type_status_4;
                 $type_status_5              = $stats->type_status_5;
+                $other_purchase             = $stats->other_purchase;
 
             @endphp
             
@@ -745,6 +746,17 @@
                     <a href="/webpanel/customer/status/checktype-5" style="text-decoration: none; color:white;">ไม่ระบุแบบอนุญาต</a><br/>
                     @if (isset($type_status_5))
                     <span>{{$type_status_5 != '' ? $type_status_5 : '0'}}</span>
+                    @else
+                    <span>error</span>
+                    @endif
+                </span>
+            </div>
+
+            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
+                <span style="color: white; text-align: center;">
+                    <a href="/webpanel/customer/order/other-purchase" style="text-decoration: none; color:white;">สั่งซื้อ​ (Line, โทรศัพท์)</a><br/>
+                    @if (isset($other_purchase))
+                    <span>{{$other_purchase != '' ? $other_purchase : '0'}}</span>
                     @else
                     <span>error</span>
                     @endif
