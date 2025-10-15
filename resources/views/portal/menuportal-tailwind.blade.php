@@ -126,8 +126,8 @@
       min-width: 1700px;
     }
    
-    .halloween-decor {
-        position: fixed; /* อยู่กับหน้าจอ ไม่เลื่อนตาม content_area */
+ /*    .halloween-decor {
+        position: fixed;
         width: 60px;
         z-index: 999;
         pointer-events: none;
@@ -145,7 +145,7 @@
         animation-duration: 3s;
         animation-iteration-count: infinite;
         animation-timing-function: ease-in-out;
-    }
+    } */
 
   </style>
   <body>
@@ -346,7 +346,7 @@
 
 </div>
 
-  <script>
+{{--   <script>
 
       document.addEventListener('DOMContentLoaded', () => {
           const body = document.getElementById('content_area');
@@ -385,7 +385,7 @@
           }
       });
 
-  </script>
+  </script> --}}
 
 {{-- <footer class="bg-white rounded-lg shadow-sm m-4 dark:bg-gray-800">
   <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
