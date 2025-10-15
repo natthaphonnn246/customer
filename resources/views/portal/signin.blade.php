@@ -29,16 +29,16 @@
             border-radius: 2px;
             text-align: left;
 
-            background-image: 
+       /*      background-image:  */
                 /* url('/profile/pumpkin-1.png'), */
-                url('/profile/hallowen-1.png');
-                background-repeat: no-repeat, no-repeat;
+             /*    url('/profile/hallowen-1.png');
+                background-repeat: no-repeat, no-repeat; */
 
             /* ขนาดภาพแต่ละภาพ */
-            background-size: 700px auto, 600px auto;
+          /*   background-size: 700px auto, 600px auto; */
 
             /* ตำแหน่งภาพแต่ละภาพ */
-            background-position: right bottom, right bottom;
+   /*          background-position: right bottom, right bottom; */
         }
         .btn {
             background-color: #09A542;
