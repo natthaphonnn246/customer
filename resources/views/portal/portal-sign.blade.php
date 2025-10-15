@@ -188,8 +188,14 @@
                                 </li>
                                 <li class="mt-4">
                                     <span>ที่อยู่จัดส่ง</span>
-                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address" required>
-                                </li>                        
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control no-paste" name="address" required>
+                                </li> 
+                                <script>
+                                    document.querySelectorAll('input.no-paste').forEach(input => {
+                                        input.addEventListener('paste', e => e.preventDefault());
+                                    });
+        
+                                </script>                          
                             </ul>
                         </div>
                         <div class="col-sm-6">

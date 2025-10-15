@@ -1685,7 +1685,7 @@ class WebpanelCustomerController
                         'purchase'          => $purchase,
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
-                    
+                
                     ]);
 
                 // usleep(100000);

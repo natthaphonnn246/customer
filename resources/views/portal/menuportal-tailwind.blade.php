@@ -125,7 +125,27 @@
       border-radius: 2px;
       min-width: 1700px;
     }
+   
+    .halloween-decor {
+        position: fixed; /* อยู่กับหน้าจอ ไม่เลื่อนตาม content_area */
+        width: 60px;
+        z-index: 999;
+        pointer-events: none;
+    }
 
+
+    @keyframes float-up {
+        0% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(10deg); }
+        100% { transform: translateY(0) rotate(-10deg); }
+    }
+
+    .floating {
+        animation-name: float-up;
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+    }
 
   </style>
   <body>
@@ -325,6 +345,47 @@
   <p>@yield('content')</p>
 
 </div>
+
+  <script>
+
+      document.addEventListener('DOMContentLoaded', () => {
+          const body = document.getElementById('content_area');
+          const month = new Date().getMonth() + 1;
+
+          if (month === 10) {
+            body.classList.add('theme-halloween');
+
+            const positions = []; // เก็บตำแหน่งที่ใช้แล้ว
+            const minDistance = 10; // หน่วยเป็น vw (ระยะห่างขั้นต่ำ)
+
+            for (let i = 0; i < 5; i++) {
+              const decor = document.createElement('img');
+              decor.src = i % 2 === 0 ? '/profile/pumpkin-1.png' : '/profile/spider.gif';
+              decor.className = 'halloween-decor floating';
+
+              let left, top, tooClose;
+
+              // สุ่มจนกว่าจะเจอตำแหน่งที่ไม่ชนกับตัวอื่น
+              do {
+                left = Math.random() * 90; // 0–90vw
+                top = Math.random() * 12;  // 0–10vh (แถวบน)
+                tooClose = positions.some(
+                  (pos) => Math.abs(pos.left - left) < minDistance
+                );
+              } while (tooClose);
+
+              positions.push({ left, top });
+
+              decor.style.right = left + 'vw';
+              decor.style.top = top + 'vh';
+              decor.style.animationDuration = (3 + Math.random() * 3) + 's';
+
+              body.appendChild(decor);
+            }
+          }
+      });
+
+  </script>
 
 {{-- <footer class="bg-white rounded-lg shadow-sm m-4 dark:bg-gray-800">
   <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">

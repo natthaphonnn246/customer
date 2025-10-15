@@ -39,7 +39,7 @@
         }
 
 
-            #column-chart {
+        #column-chart {
             max-width: 80%;
             height: 100%;
             margin: 5px auto;
@@ -76,6 +76,7 @@
             z-index: 0;
             overflow: auto;
         } */
+
     </style>
 
 
@@ -287,7 +288,8 @@
                 }
 
         </script>
-    
+
+
 @endsection
 </body>
 </html>

@@ -1093,8 +1093,8 @@
                             ✕ ปิด
                     </button>
                         
-                    <div class="modal-body p-0 text-center">
-                    <img id="expandedImage" class="img-fluid rounded" alt="Expanded Preview">
+                    <div class="modal-body p-0 d-flex justify-content-center align-items-center">
+                        <img id="expandedImage" class="img-fluid rounded" alt="Expanded Preview">
                     </div>
                 </div>
             </div>
@@ -1168,8 +1168,9 @@
                             ✕ ปิด
                     </button>
                         
-                    <div class="modal-body p-0 text-center">
-                    <img id="expandedImageMedical" class="img-fluid rounded" alt="Expanded Preview">
+                    {{-- <div class="modal-body p-0 text-center"> --}}
+                    <div class="modal-body p-0 d-flex justify-content-center align-items-center">
+                        <img id="expandedImageMedical" class="img-fluid rounded" alt="Expanded Preview">
                     </div>
                 </div>
             </div>
@@ -1204,19 +1205,6 @@
                         const modal = new bootstrap.Modal(document.getElementById('imagePreviewMedical'));
                         modal.show();
                         });
-                    }
-                });
-
-                document.getElementById('imageMedical').addEventListener('change', function(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const img = document.getElementById('previewMedical');
-                            img.src = e.target.result;
-                            img.style.display = 'block';
-                        };
-                        reader.readAsDataURL(file);
                     }
                 });
 
@@ -1257,8 +1245,9 @@
                             ✕ ปิด
                     </button>
                         
-                    <div class="modal-body p-0 text-center">
-                    <img id="expandedImageCommerce" class="img-fluid rounded" alt="Expanded Preview">
+                    {{-- <div class="modal-body p-0 text-center"> --}}
+                    <div class="modal-body p-0 d-flex justify-content-center align-items-center">
+                        <img id="expandedImageCommerce" class="img-fluid rounded" alt="Expanded Preview">
                     </div>
                 </div>
             </div>
@@ -1291,19 +1280,6 @@
                         const modal = new bootstrap.Modal(document.getElementById('imagePreviewCommerce'));
                         modal.show();
                         });
-                    }
-                });
-
-                document.getElementById('imageCommerce').addEventListener('change', function(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const img = document.getElementById('previewCommerce');
-                            img.src = e.target.result;
-                            img.style.display = 'block';
-                        };
-                        reader.readAsDataURL(file);
                     }
                 });
 
@@ -1344,8 +1320,9 @@
                             ✕ ปิด
                     </button>
                         
-                    <div class="modal-body p-0 text-center">
-                    <img id="expandedImageVat" class="img-fluid rounded" alt="Expanded Preview">
+                    {{-- <div class="modal-body p-0 text-center"> --}}
+                    <div class="modal-body p-0 d-flex justify-content-center align-items-center">
+                        <img id="expandedImageVat" class="img-fluid rounded" alt="Expanded Preview">
                     </div>
                 </div>
             </div>
@@ -1378,19 +1355,6 @@
                         const modal = new bootstrap.Modal(document.getElementById('imagePreviewVat'));
                         modal.show();
                         });
-                    }
-                });
-
-                document.getElementById('imageVat').addEventListener('change', function(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const img = document.getElementById('previewVat');
-                            img.src = e.target.result;
-                            img.style.display = 'block';
-                        };
-                        reader.readAsDataURL(file);
                     }
                 });
 
@@ -1431,8 +1395,9 @@
                             ✕ ปิด
                     </button>
                         
-                    <div class="modal-body p-0 text-center">
-                    <img id="expandedImageId" class="img-fluid rounded" alt="Expanded Preview">
+                    {{-- <div class="modal-body p-0 text-center"> --}}
+                    <div class="modal-body p-0 d-flex justify-content-center align-items-center">
+                        <img id="expandedImageId" class="img-fluid rounded" alt="Expanded Preview">
                     </div>
                 </div>
             </div>
@@ -1466,19 +1431,6 @@
                         const modal = new bootstrap.Modal(document.getElementById('imagePreviewId'));
                         modal.show();
                         });
-                    }
-                });
-
-                document.getElementById('imageId').addEventListener('change', function(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const img = document.getElementById('previewId');
-                            img.src = e.target.result;
-                            img.style.display = 'block';
-                        };
-                        reader.readAsDataURL(file);
                     }
                 });
 

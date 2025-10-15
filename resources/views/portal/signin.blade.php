@@ -28,6 +28,17 @@
             background-color: #FFFFFF;
             border-radius: 2px;
             text-align: left;
+
+            background-image: 
+                /* url('/profile/pumpkin-1.png'), */
+                url('/profile/hallowen-1.png');
+                background-repeat: no-repeat, no-repeat;
+
+            /* ขนาดภาพแต่ละภาพ */
+            background-size: 700px auto, 600px auto;
+
+            /* ตำแหน่งภาพแต่ละภาพ */
+            background-position: right bottom, right bottom;
         }
         .btn {
             background-color: #09A542;
@@ -209,8 +220,14 @@
                                 </li>
                                 <li class="mt-4">
                                     <span>ที่อยู่จัดส่ง</span>
-                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="address" required>    
-                                </li>                          
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control no-paste" name="address" required>    
+                                </li>
+                                <script>
+                                    document.querySelectorAll('input.no-paste').forEach(input => {
+                                        input.addEventListener('paste', e => e.preventDefault());
+                                    });
+        
+                                </script>                            
                             </ul>
                         </div>
 

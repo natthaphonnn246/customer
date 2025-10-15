@@ -15,6 +15,7 @@
     <title>cms.vmdrug</title>
 </head>
 <body>
+    {{-- id="theme-body" class="bg-white text-gray-800 --}}
 
 <div id="bgs">
     @extends ('portal/menuportal-tailwind')
@@ -24,11 +25,23 @@
 
 
     <style>
+
         .contentArea {
             /* padding: 20px 30px 40px; */
-            background-color: #FFFFFF;
+            background-color: #FFFFFF; */
             border-radius: 2px;
             text-align: left;
+
+            background-image: 
+                /* url('/profile/pumpkin-1.png'), */
+                url('/profile/hallowen-1.png');
+                background-repeat: no-repeat, no-repeat;
+
+            /* ขนาดภาพแต่ละภาพ */
+            background-size: 700px auto, 600px auto;
+
+            /* ตำแหน่งภาพแต่ละภาพ */
+            background-position: right bottom, right bottom;
         }
         #admin {
             background-color: #007bff;
@@ -204,6 +217,7 @@
                     white-space: nowrap;
                     z-index: 9999; 
         } */
+
     </style>
     <div class="contentArea">
 
@@ -764,10 +778,17 @@
                                 </li>
                                 <li class="mt-4">
                                     <span>ที่อยู่</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="address" value="{{$customer_edit->address}}">
-                                </li>                              
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control no-paste" name="address" value="{{$customer_edit->address}}" required>
+                                </li>         
+                                <script>
+                                    document.querySelectorAll('input.no-paste').forEach(input => {
+                                        input.addEventListener('paste', e => e.preventDefault());
+                                    });
+        
+                                </script>                     
                             </ul>
                         </div>
+        
                         <div class="col-sm-6 py-3">
                             <ul style="width: 100%;">
                                 <span>จังหวัด</span>
@@ -1630,6 +1651,7 @@
     </div>
 </div>
 @endsection
+
 </body>
 </html>
 
