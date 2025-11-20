@@ -32,6 +32,8 @@ use Illuminate\Foundation\Configuration\Middleware;
                                     'confirmType'=> \App\Http\Middleware\CheckTypeStore::class,
                                     'allowedType'=> \App\Http\Middleware\CheckTypeUser::class,
                                     'checkMenu'=> \App\Http\Middleware\CheckMenuAdmin::class,
+                                    'block.ai' => \App\Http\Middleware\BlockAIAgents::class,
+
                                 ]);
                             })
                             ->withExceptions(function (Exceptions $exceptions) {

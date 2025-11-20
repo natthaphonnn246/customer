@@ -118,6 +118,9 @@ class AuthenticatedSessionController extends Controller
                 if (Auth::attempt($credentials) && Auth::user()->status_checked == 'active' || Auth::user()->is_blocked)
                 {
                     
+                        // เพิ่ม session สำหรับ BlockAIAgents middleware
+                        session(['user_logged_in' => true]);
+
                         //superadmin;
                         if(Auth::user()->user_id == '0000' || Auth::user()->user_id == '4494' || Auth::user()->user_id == '9000') {
 
@@ -978,6 +981,9 @@ class AuthenticatedSessionController extends Controller
                         // dd($check_email->email);
                         //table_log_status;
 
+                        // เพิ่ม session สำหรับ BlockAIAgents middleware
+                        session(['user_logged_in' => true]);
+                        
                         if((Auth::attempt($credentials))) {
                             LogStatus::create([
                                 'user_id' => Auth::user()->user_id,

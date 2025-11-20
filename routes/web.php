@@ -56,7 +56,7 @@
     // Route::post('/', [RecaptchaV2::class, 'reCaptcha']);
 
     //middleware statusOnline;
-Route::middleware('statusOnline')->group(function (){
+Route::middleware('statusOnline', 'block.ai')->group(function (){
     
     Route::get('/signin', function () {
         return view('portal/portal-sign');
