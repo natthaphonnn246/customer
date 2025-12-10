@@ -310,8 +310,10 @@
 
         @if(!empty($product_all))
 
-        <form action="/webpanel/report/product/importproduct/updated/{{ $product_all?->id }}" method="post" enctype="multipart/form-data">
+        <form action="/webpanel/report/product/importproduct/updated/{{ $product_all?->id }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
+
             <div class="ms-8 mr-8" style="">
                 <div class="row">
                     <div class="col-sm-6">

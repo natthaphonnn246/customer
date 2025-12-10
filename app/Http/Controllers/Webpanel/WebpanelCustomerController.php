@@ -3274,37 +3274,71 @@ class WebpanelCustomerController
 
     public function updateStatusWating(Request $request)
     {
-        $status = $request->input('status');
-
-        if ($status === 'waiting') {
-            $count_customer = Customer::count();
-
-            $updated = DB::table('customers')->update([
+        try {
+    
+            $status = $request->input('status');
+    
+            if ($status !== 'waiting') {
+                return response()->json([
+                    'status'  => 'ignored',
+                    'message' => 'ไม่ได้อัปเดต เพราะ status ไม่ตรงกับ waiting'
+                ]);
+            }
+    
+            DB::table('customers')->update([
                 'status' => 'รอดำเนินการ'
             ]);
-
-            if ($count_customer === $updated) {
-                return response()->json([
-                    'status'  => 'waiting',
-                    'message' => "อัปเดตครบทั้งหมด ($updated/$count_customer)"
-                ]);
-            } else {
-                return response()->json([
-                    'status'  => 'error',
-                    'message' => "อัปเดตไม่ครบ ($updated/$count_customer)"
-                ], 500);
+    
+            $customers = Customer::select([
+                'id',
+                'cert_store',
+                'cert_medical',
+                'cert_commerce',
+                'cert_vat',
+                'cert_id'
+            ])->get();
+    
+            foreach ($customers as $customer) {
+                $files = [
+                    $customer->cert_store,
+                    $customer->cert_medical,
+                    $customer->cert_commerce,
+                    $customer->cert_vat,
+                    $customer->cert_id,
+                ];
+    
+                foreach ($files as $file) {
+                    if ($file) {
+                        Storage::disk('cert_image')->delete($file);
+                    }
+                }
             }
+    
+            DB::table('customers')->update([
+                'cert_store'   => null,
+                'cert_medical' => null,
+                'cert_commerce'=> null,
+                'cert_vat'     => null,
+                'cert_id'      => null,
+            ]);
+    
+            return response()->json([
+                'status'  => 'waiting',
+                'message' => "ลบรูปทั้งหมด + reset ชื่อไฟล์สำเร็จ"
+            ]);
+    
+        } catch (\Exception $e) {
+    
+            // \Log::error("updateStatusWating ERROR: ".$e->getMessage());
+    
+            return response()->json([
+                'error'   => true,
+                'message' => $e->getMessage()
+            ], 500);
         }
-
-        // กรณีไม่ได้ส่ง waiting มา
-        return response()->json([
-            'status'  => 'ignored',
-            'message' => 'ไม่ได้อัปเดต เพราะ status ไม่ตรงกับ waiting'
-        ]);
-
-
-        
     }
+    
+    
 
     public function otherPurchase(Request $request)
     {

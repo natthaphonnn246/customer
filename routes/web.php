@@ -364,7 +364,7 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
         // Route::get('/webpanel/report/product', [ProductController::class, 'preload']);
         Route::get('webpanel/report/product/importproduct', [ProductController::class, 'import']);
         Route::get('webpanel/report/product/importproduct/{id}', [ProductController::class, 'productInfo']);
-        Route::post('webpanel/report/product/importproduct/updated/{id}', [ProductController::class, 'updateInfo']);
+        Route::put('webpanel/report/product/importproduct/updated/{id}', [ProductController::class, 'updateInfo']);
         //importcsv_product master;
         Route::post('/webpanel/report/product/importcsv', [ProductController::class, 'importFile']);
         Route::get('/webpanel/report/product/new-product', [ProductController::class, 'newInfo']);

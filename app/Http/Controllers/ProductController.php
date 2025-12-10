@@ -1354,6 +1354,7 @@ class ProductController extends Controller
         date_default_timezone_set("Asia/Bangkok");
 
         $id = $request->id;
+        // dd($id);
         
         if(!empty($id)) {
 
