@@ -38,7 +38,7 @@ class ImportCsvController extends Controller
         return back();
     }
 
-  /*   public function import (Request $request) 
+ /*    public function import (Request $request) 
     {
 
         $request->validate([
@@ -51,5 +51,5 @@ class ImportCsvController extends Controller
         $filePath = Storage::disk('importseller')->path($path);
 
         Excel::import(new import, $filePath);
-    } */
+    }  */
 }
