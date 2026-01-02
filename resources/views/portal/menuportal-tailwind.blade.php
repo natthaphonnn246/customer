@@ -329,11 +329,15 @@
            </button>
         </div>
         <p class="mb-3 text-sm dark:text-blue-400" style="color:white;">
-            <blockquote style="color:white; font-size:16px;">ลงทะเบียนร้านค้าสำเร็จ กรุณาติดต่อผู้ดูแลด้วยครับ</blockquote>
+            <blockquote style="color:white; font-size:16px;">ลงทะเบียนร้านค้าสำเร็จ กรุณาแจ้งกลับด้วย</blockquote>
             <br>
             <blockquote style="color:white; font-size:16px;">โปรดตรวจสอบร้านค้าที่รับผิดชอบได้ที่เมนู "แจ้งเตือน"</blockquote>
             <br>
-            <blockquote style="color:rgb(255, 255, 255); font-size:16px;"><i style="color:rgb(255, 200, 0);" class="fa-solid fa-triangle-exclamation"></i> ตรวจสอบสถานะการสั่งซื้อได้ที่เมนู "ร้านค้า ทั้งหมด"</blockquote>
+
+            @php
+              $year = date('Y') + 543; 
+            @endphp
+            <blockquote style="color:rgb(255, 255, 255); font-size:16px;"><i style="color:rgb(255, 200, 0);" class="fa-solid fa-triangle-exclamation"></i> เริ่มอัปเดตใบอนุญาตปี {{ $year }} ได้แล้ว โปรดระบุให้ถูกต้องด้วย</blockquote>
         </p>
         {{-- <a class="text-sm text-blue-800 underline font-medium hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300" href="#">Turn new navigation off</a> --}}
      </div>

@@ -716,7 +716,7 @@
                             <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$customer_edit->cert_number}}">
                         </li>
                         <li class="py-2">
-                            <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                            <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบที่ใบอนุญาตอีกรอบ</span>
                             <input class="form-control" style="margin-top:10px; color:rgb(171, 171, 171);" type="text" id="datepicker" name="cert_expire" value="{{$customer_edit->cert_expire}}">
                         </li>
                         <script>

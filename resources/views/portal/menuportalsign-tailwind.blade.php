@@ -117,7 +117,7 @@
            </button>
         </div>
         <p class="mb-3 text-sm dark:text-blue-400" style="color:white;">
-           <blockquote style="color:white; font-size:16px;">ลงทะเบียนร้านค้าสำเร็จ กรุณาติดต่อผู้ดูแลด้วยครับ</blockquote>
+           <blockquote style="color:white; font-size:16px;">ลงทะเบียนร้านค้าสำเร็จ กรุณาแจ้งกลับด้วย</blockquote>
         </p>
         {{-- <a class="text-sm text-blue-800 underline font-medium hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300" href="#">Turn new navigation off</a> --}}
      </div>

@@ -144,10 +144,12 @@
 
                         <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                         <input style="margin-top:10px; color:grey;" type="text" class="form-control" name="cert_number"><br>
-
-                        <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                        @php
+                             $year = date('Y') + 543; 
+                        @endphp
+                        <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบที่ใบอนุญาตอีกรอบ</span>
                         {{-- <input style="margin-top:10px; color:grey;" type="date" value="2024-01-01" class="form-control" name="cert_expire"><br> --}}
-                        <input class="form-control" style="margin-top:10px; color:grey;" type="text" id="datepicker" value="31/12/2025" name="cert_expire">
+                        <input class="form-control" style="margin-top:10px; color:grey;" type="text" id="datepicker" value="31/12/{{ $year }}" name="cert_expire">
 
                     </ul>
                     <script>

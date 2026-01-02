@@ -147,9 +147,11 @@
                             {{-- <input style="margin-top:10px; color:grey;" type="date" value="2024-01-01" class="form-control" name="cert_expire"><br> --}}
                             {{-- <input class="input_date" style="margin-top:10px; color:grey;" type="text" id="datepicker" value="31/12/2025" name="cert_expire"> --}}
                         </li>
-                        
+                        @php
+                            $year = date('Y') + 543; 
+                        @endphp
                         <div class="relative">
-                            <input class="input_date" style="margin-top:10px; color:grey; border-radius:6px;" type="text" id="datepicker" name="cert_expire" value="31/12/2025">
+                            <input class="input_date" style="margin-top:10px; color:grey; border-radius:6px;" type="text" id="datepicker" name="cert_expire" value="31/12/{{ $year }}">
 
                             {{-- <span style="background-color:#ea9191; color:#FFFFFF; padding:5px 10px; border-radius:5px; cursor: pointer;" id="datepickr">กรุณาเลือกวันที่</span> --}}
                         </div>
