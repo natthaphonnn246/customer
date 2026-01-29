@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\ProductType;
 use App\Models\Setting;
 use Illuminate\Pagination\LengthAwarePaginator;
-
+use App\Services\MessageApiService;
 
 class PortalCustomerController
 {
@@ -177,6 +177,23 @@ class PortalCustomerController
             return view('portal/portal-sign', compact('provinces', 'user_name', 'admin_area_list', 'sale_area'));
     }
 
+    public function registerByAdmin(Request $request)
+    {
+            $code = $request->user()->user_code;
+        
+            $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
+
+            // dd($user_name->name);
+            $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_id')->get();
+
+            $sale_area = Salearea::select('sale_area', 'sale_name')
+                        ->orderBy('sale_area', 'asc')
+                        ->get();
+
+            $provinces = Province::province();
+            return view('admin/register-new', compact('provinces', 'user_name', 'admin_area_list', 'sale_area'));
+    }
+
     //singin customer;
     public function signin(Request $request)
     {
@@ -186,16 +203,15 @@ class PortalCustomerController
         if($request->has('submit_form'))
         {
 
-            date_default_timezone_set("Asia/Bangkok");
-
-            $request->validate([
+          /*   $request->validate([
                 'customer_code' => 'required|max: 4',
-            ]);
+            ]); */
 
-            $customer_id = $request->customer_code;
-            $customer_code = $request->customer_code;
+            $userId = Auth::user()?->user_id;
+
             $customer_name = $request->customer_name;
-            $price_level = $request->price_level;
+            // $price_level = $request->price_level;
+            $price_level = '5';
 
             $email = $request->email;
             if($email == null) {
@@ -249,6 +265,11 @@ class PortalCustomerController
             $status = 'ลงทะเบียนใหม่';
             $purchase = $request->purchase;
         }   
+
+            $tempCode = 'TMP-' . now()->format('ymdHis') . rand(10,99);
+
+            $customer_id = $tempCode;
+            $customer_code = $tempCode;
 
             if($cert_store != '' && $customer_id != '')
             {
@@ -305,8 +326,8 @@ class PortalCustomerController
         {
             Customer::create([
 
-                        'customer_id' => $customer_id,
-                        'customer_code' => $customer_code,
+                        'customer_id' => $customer_id ?? '',
+                        'customer_code' => $customer_code ?? '',
                         'customer_name' => $customer_name,
                         'price_level' => $price_level,
                         'email' => $email,
@@ -339,7 +360,12 @@ class PortalCustomerController
                         'delivery_by' => $delivery_by,
                         'points' => '0',
                         'add_license' => 'ไม่ระบุ',
-                        'purchase'    => $purchase
+                        'purchase'    => $purchase,
+                        'status_vat'  => 0,
+                        'status_web'  => 0,
+                        'status_sap'  => 0,
+                        'user_id'     => $userId,
+
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
 
@@ -362,6 +388,13 @@ class PortalCustomerController
 
                //not queue;
                /* Mail::to('vmdrugcenter2019@gmail.com')->send(new StatusUpdatedMail($status->id)); */
+
+               $lineUserId = Auth::user()?->line_user_id;
+
+                if ($lineUserId) {
+                    app(MessageApiService::class)
+                        ->sendRegisterSuccess($lineUserId, $customer_name,  $register_by);
+                }
 
            }
 
@@ -1047,11 +1080,6 @@ class PortalCustomerController
 
         // dd($id);
 
-        date_default_timezone_set("Asia/Bangkok");
-/* 
-        if($request->has('submit_update'))
-        { */
-        
                 $phone = $request->phone;
                 if($phone == null) {
                     $phone = '';
@@ -1096,24 +1124,26 @@ class PortalCustomerController
 
                 $purchase = $request->purchase;
 
-     /*    } */
+                $update_by = Auth::user()?->user_id;
+
             Customer::where('id', $id)
                     ->update ([
 
-                            'email' => $email,
-                            'phone' => $phone,
-                            'telephone' => $telephone,
-                            'address' => $address,
-                            'province' =>  $province_row,
-                            'amphur' => $amphur,
-                            'district' => $district,
-                            'zip_code' => $zip_code,
-                            'geography' => $geography_name,
-                            'cert_number' => $cert_number,
-                            'cert_expire' => $cert_expire,
+                            'email'         => $email,
+                            'phone'         => $phone,
+                            'telephone'     => $telephone,
+                            'address'       => $address,
+                            'province'      => $province_row,
+                            'amphur'        => $amphur,
+                            'district'      => $district,
+                            'zip_code'      => $zip_code,
+                            'geography'     => $geography_name,
+                            'cert_number'   => $cert_number,
+                            'cert_expire'   => $cert_expire,
                             'status_update' => 'updated',
-                            'delivery_by' => $delivery_by,
-                            'purchase' => $purchase,
+                            'delivery_by'   => $delivery_by,
+                            'purchase'      => $purchase,
+                            'udate_by'      => $update_by,
                     
                     ]);
 

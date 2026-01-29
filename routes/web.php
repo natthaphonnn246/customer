@@ -41,8 +41,11 @@
     use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
     use App\Http\Controllers\ChooseBoxController;
     use App\Http\Controllers\FdaReporterController;
+    use App\Http\Controllers\OrderingController;
     use App\Http\Controllers\StatusUpdateController;
     use App\Http\Controllers\ProductTypeController;
+    use App\Http\Controllers\PurchaseController;
+    use App\Http\Controllers\LineController;
 
 
     // Route::get('/', function() { return view('auth.login-tailwind');})->name('login');
@@ -55,14 +58,22 @@
     //recaptcah v-2;
     // Route::post('/', [RecaptchaV2::class, 'reCaptcha']);
 
+    //messaging API LineOA
+    Route::post('/line/connect', [LineController::class, 'connectLine'])->name('portal.line.connect');
+
     //middleware statusOnline;
 Route::middleware('statusOnline', 'block.ai')->group(function (){
-    
+/*     
     Route::get('/signin', function () {
         return view('portal/portal-sign');
-    })->middleware('auth', 'status','maintenance');
+    })->middleware('auth', 'status','maintenance'); */
 
     Route::get('/signin', [PortalCustomerController::class, 'portalSign'])->middleware('auth', 'status','maintenance')->name('portal.sign');
+
+    //redirect LineOA
+    Route::get('/account/profile', [LineController::class, 'loginLine'])->middleware('auth', 'status','maintenance')->name('portal.account.profile');
+
+    // Route::post('/line/connect', [LineController::class, 'connectLine'])->middleware('status','maintenance')->name('portal.line.connect');
 
       //dashboard portal charts;
     Route::get('/portal/dashboard', function () {
@@ -82,9 +93,11 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
 
     //admin for reports;
     Route::middleware('auth', 'status','maintenance', 'adminRole', 'verified')->group(function () {
-        Route::get('/admin', [WebpanelAdminController::class, 'dashboard'])->name('admin.report');
-        Route::get('/admin/customer', [WebpanelAdminController::class, 'indexCustomer']);
-        Route::get('/admin/customer/{id}', [WebpanelAdminController::class, 'edit']);
+        Route::get('/admin/register', [PortalCustomerController::class, 'registerByAdmin'])->middleware('auth', 'status','maintenance')->name('admin.register');
+
+        Route::get('/admin', [WebpanelAdminController::class, 'newDashboard'])->name('admin.report');
+        Route::get('/admin/customer', [WebpanelAdminController::class, 'indexCustomer'])->name('admim.customer');
+        Route::get('/admin/customer/{slug}', [WebpanelAdminController::class, 'edit']);
         Route::get('/admin/customer/status/{status_check}', [WebpanelAdminController::class, 'indexStatus']);
         Route::get('/admin/customer/export/getcsv/{status}', [CustomerCsvExport::class, 'exportCustomerCsv']);
         Route::get('/admin/customer/export/getexcel/{status}', [CustomerExcelExport::class, 'exportCustomerExcel']);
@@ -94,6 +107,13 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
         Route::get('/admin/customer/export/getexcel/{status}/{admin_id}', [CustomerAreaExport::class, 'exportCustomerAreaExcel']);
         Route::get('/admin/customer/export/getcsv/{status}/{admin_id}', [CustomerAreaExport::class, 'exportCustomerAreaCsv']);
         Route::get('/admin/customer/adminarea/{admin_id}/{status}', [WebpanelAdminController::class, 'indexAdminArea']);
+        Route::get('/admin/customer-create/update-amphure', [ProvinceController::class, 'amphure']);
+        Route::get('/admin/customer-create/update-district', [ProvinceController::class, 'district']);
+        Route::get('/admin/customer-create/update-zipcode', [ProvinceController::class, 'zipcode']);
+        Route::get('/admin/customer-create/update-geography', [ProvinceController::class, 'geographies']);
+
+        //update
+        Route::put('/admin/customer-detail/update/{customer:slug}', [WebpanelAdminController::class, 'updateEdit'])->name('admin.customer.update');
     });
 
     //test;
@@ -149,26 +169,25 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
 
         //update cause;
         Route::post('/webpanel/customer/updatecsv/customer-cause', [WebpanelCustomerController::class, 'updateCause']);
-/*
-        Route::get('/webpanel/customer/customer-completed', function () {
-            return view('webpanel/customer-completed');
-        });
 
-        Route::get('/webpanel/customer/customer-waiting', function () {
-            return view('webpanel/customer-waiting');
-        });
-
-        Route::get('/webpanel/customer/customer-action', function () {
-            return view('webpanel/customer-action');
-        });
-
-        Route::get('/webpanel/customer/update-latest', function () {
-            return view('webpanel/update-latest');
-        });
-
-        Route::get('/webpanel/customer/customer-inactive', function () {
-            return view('webpanel/customer-inactive');
+        //purchase
+   /*      Route::get('/webpanel/purchase/ordering', function () {
+            return view('webpanel/ordering');
         }); */
+
+
+        // Route::get('/purchase/ordering/product/{code}', [PurchaseController::class, 'findProduct']);
+        Route::get('/purchase/ordering/product-search', [PurchaseController::class, 'productSearch']);
+        Route::get('/purchase/ordering/customer', [PurchaseController::class, 'searchCustomer']); 
+        Route::post('/purchase/ordering/save-po', [OrderingController::class, 'store']);
+        Route::post('/purchase/ordering/create-draft', [OrderingController::class, 'createDraft']);
+        Route::get('/purchase/ordering/latest-draft-po', [OrderingController::class, 'getLatestDraftPO']);
+        Route::post('/purchase/ordering/confirm', [OrderingController::class, 'confirm']);
+        Route::post('/purchase/ordering/save-item', [OrderingController::class, 'saveItem']);
+        Route::get('/webpanel/purchase/ordering', [OrderingController::class, 'edit']);
+        Route::get('/purchase/ordering/check-product', [OrderingController::class,'checkProduct']);
+
+
 
         Route::get('/webpanel/sale/importsale', function () {
             return view('webpanel/importsale');

@@ -1,278 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-    @section ('title', 'productmaster')
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" conten="{{ csrf_token() }}">
+@extends ('layouts.webpanel')
+@section('content')
+@csrf
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>CMS VMDRUG System</title>
-</head>
-<body>
+        <div class="py-2"></div>
+        <h5 class="!text-gray-600 font-semibold ms-6">ร้านค้า (Customer)</h5>
+        <hr class="my-3 !text-gray-400 !border">
 
-    @extends ('webpanel/menuwebpanel-tailwind')
-    @section('content')
-    @csrf
-
-
-    <style>
-        .contentArea {
-            padding: 0px;
-            background-color: #FFFFFF;
-            border-radius: 2px;
-            /* min-width: 100px; */
-            /* text-align: left; */
-        }
-        #admin {
-            background-color: #007bff;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #admin:hover {
-            background-color: #0b59f6;
-        }
-        #adminRole {
-            background-color: #007bff;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #adminRole:hover {
-            background-color: #0b59f6;
-        }
-        #edit {
-            background-color: #007bff;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .trash-admin {
-            background-color: #e12e49;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        /* toggle off */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 55px;
-            height: 28px;
-            
-        }
-
-        /* Hide default HTML checkbox */
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            
-        }
-
-        /* The slider */
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 1.5px;
-            right: 3px;
-            bottom: 3px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-
-        input:checked + .slider {
-            background-color: #03ae3f;
-    
-        }
-
-        .is_blocked:checked + .slider {
-            background-color: #f52e2e;
-        }
-
-        input:focus + .slider {
-            box-shadow: 0 0 1px #2196F3;
-        }
-
-        input:checked + .slider:before {
-            -webkit-transform: translateX(26px);
-            -ms-transform: translateX(26px);
-            transform: translateX(26px);
-        }
-
-        /* Rounded sliders */
-        .slider.round {
-            border-radius: 34px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-         /* toggle off */
-        .switchs {
-            position: relative;
-            display: inline-block;
-            width: 55px;
-            height: 28px;
-            
-        }
-
-        /* Hide default HTML checkbox */
-        .switchs input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            
-        }
-
-        .sliders {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-        .sliders:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 1.5px;
-            right: 3px;
-            bottom: 3px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-
-        input:checked + .sliders {
-            background-color: #f63d3d;
-    
-        }
-
-        input:focus + .sliders {
-            box-shadow: 0 0 1px #2196F3;
-        }
-
-        input:checked + .sliders:before {
-            -webkit-transform: translateX(26px);
-            -ms-transform: translateX(26px);
-            transform: translateX(26px);
-        }
-
-        /* Rounded sliders */
-        .sliders.round {
-            border-radius: 34px;
-        }
-
-        .sliders.round:before {
-            border-radius: 50%;
-        }
-    </style>
-
-        @if($user_id_admin == '0000')
-            @section('profile_img')
-            <img class="w-8 h-8 rounded-full me-3" src="/profile/profiles-2 copy.jpg" alt="user photo">
-            @endsection
-        @else
-            @section('profile_img')
-            <img class="w-8 h-8 rounded-full me-3" src="/profile/user.png" alt="user photo">
-            @endsection
-        @endif
-
-        @section('status_alert')
-            <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
-        @endsection
-
-        @section('status_waiting')
-            <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
-        @endsection
-
-        @section('status_registration')
-        <h6 class="justifiy-content:center;" style="">{{number_format($status_registration)}}</h6>
-        @endsection
-        
-        @section('status_updated')
-            <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
-        @endsection
-
-        @section('text_alert')
-        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
-        @endsection
-
-    <div class="contentArea w-full max-w-full break-words">
-        <div class="py-2">
-            {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
-        </div>
-        <span class="ms-6" style="color: #8E8E8E;">ข้อมูลแอดมิน (Admin)</span>
-        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
         <div class="ms-6 py-2" style="text-align: left;">
-            <a href="/webpanel/admin-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มแอดมิu</a>
-            {{-- <a href="/webpanel/admin-role"  id="adminRole" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดการสิทธิ์</a> --}}
+            <a href="/webpanel/admin-create"  id="" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg !no-underline" type="submit"  name="">เพิ่มแอดมิน</a>
     
         </div>
 
-        <hr class="my-4" style="color: #8E8E8E; width: 100%;">
+        <hr class="my-3 !text-gray-400">
         
-        <ul class="ms-4 mr-5 py-1">
+        <div class="grid mx-4 px-2">
         <table class="table table-striped">
             <thead>
               <tr>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">#</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">CODE</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">Admin area</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">อีเมล</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">ชื่อแอดมิน</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">สถานะอนุมัติ</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;"><span style="font-size: 12px; color:rgb(255, 78, 78); font-weight:400;">*ล็อกอินผิดเกิน 5 ครั้ง</span></br>ระงับบัญชี</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">วันที่สมัคร</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500;">จัดการ</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">#</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">CODE</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">Admin area</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">อีเมล</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">ชื่อแอดมิน</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">สถานะอนุมัติ</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-semibold"><span class="!text-red-500 text-left text-xs">*ล็อกอินผิดเกิน 5 ครั้ง</span></br>ระงับบัญชี</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">วันที่สมัคร</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">จัดการ</td>
               </tr>
             </thead>
             <tbody>
@@ -294,12 +47,12 @@
                         $created_at = $row->created_at;
                     ?>
                 
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;">{{$start++}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;">{{$user_code}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;">{{$admin_area}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;">{{$email}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;">{{$user_name}}</td>
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px;; width:8%;">
+                <td scope="row" class="!text-gray-500 text-left p-3">{{$start++}}</td>
+                <td scope="row" class="!text-gray-500 text-left p-3">{{$user_code}}</td>
+                <td scope="row" class="!text-gray-500 text-left p-3">{{$admin_area}}</td>
+                <td scope="row" class="!text-gray-500 text-left p-3">{{$email}}</td>
+                <td scope="row" class="!text-gray-500 text-left p-3">{{$user_name}}</td>
+                <td scope="row" class="!text-gray-500 text-left p-3">
                   
                     @if ($user_code === '0000' || $user_code === '4494')
                         <label class="switch" style="opacity:0.6;">
@@ -319,18 +72,11 @@
                             </span>
                         </label>
 
-  {{--                       <label class="switch">
-                            <input class="is_blocked" type="checkbox" name="is_blocked" id="status_onblocked{{$id}}" {{ $is_blocked == 1 ? 'checked' : ''}}>
-                            <span class="slider round" style="text-align: center;">
-                                <span style="color: white; font-size: 10px; text-align: center;">ON</span>
-                                <span style="color: white; font-size: 10px;">OFF</span>
-                            </span>
-                        </label> --}}
                     @endif
                   
                 </td>
 
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 25px 8px; width:8%;">
+                <td scope="row" class="!text-gray-500 text-left p-3">
                   
                     @if ($user_code == '0000' || $user_code == '4494')
                     <label class="switch">
@@ -352,28 +98,42 @@
                     @endif
                   
                 </td>
-                {{-- <td scope="row" style="color:#9C9C9C; text-align: left;">
-                  
-                    <label class="switchs">
-                        <input type="checkbox" name="check">
-                        <span class="sliders round" style="text-align: center;">
-                            <span style="color: white; font-size: 10px; text-align: center;">ON</span>
-                            <span style="color: white; font-size: 10px;">OFF</span>
-                        </span>
-                    </label> --}}
-              
-            </td>
-                <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;">{{$created_at}}</td>
+               
+                <td scope="row" class="!text-gray-500 text-left p-3">{{$created_at}}</td>
 
-                    <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px;"><a href="/webpanel/admin/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
-                    @if ($user_code == '0000')
-                    <button class="trash-admin" style="opacity: 0.6;" disabled><i class="fa-regular fa-trash-can"></i></button>
-                    @else
-                    <button class="trash-admin" type="submit" id="trash{{$id}}"><i class="fa-regular fa-trash-can"></i></button>
-                    @endif
+                <td class="px-4 py-3">
+                    <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
+                
+                        <!-- view -->
+                        <a href="/webpanel/admin/{{$id}}"
+                           class="inline-flex justify-center items-center
+                                  bg-blue-600 text-white px-3 py-2.5 rounded
+                                  hover:bg-blue-700 transition !no-underline">
+                            <i class="fa-regular fa-eye"></i>
+                        </a>
+                
+                        <!-- delete -->
+                        @if ($user_code == '0000')
+                            <button disabled
+                                class="inline-flex justify-center items-center
+                                       bg-red-400 text-white px-3 py-2.5 rounded opacity-60">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        @else
+                            <button id="trash{{$id}}"
+                                class="inline-flex justify-center items-center
+                                       bg-red-600 text-white px-3 py-2.5 rounded
+                                       hover:bg-red-700 transition">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        @endif
+                
+                    </div>
                 </td>
+                
               </tr>
 
+              @push('scripts')
                 <!-- delete users table -->
                 <script>
                         $(document).ready(function() {
@@ -435,10 +195,6 @@
                         
                         });
 
-                </script>
-
-                <!-- status_checked -->
-                <script text="type/javascript">
                         $(document).ready(function() {
                             // $('#status_on').prop('checked', false);
                             $('#status_on{{$id}}').change(function() {
@@ -518,10 +274,7 @@
                                 }
                             });
                         });
-                </script>
 
-                <!-- is_blocked -->
-                <script text="type/javascript">
                     $(document).ready(function() {
                         // $('#status_on').prop('checked', false);
                         $('#status_onblocked{{$id}}').change(function() {
@@ -598,93 +351,192 @@
                         });
                     });
                 </script>
+                @endpush
               @endforeach
               @endif
             </tbody>
           </table>
         </ul>
-<?php
-/* date_default_timezone_set('Asia/Bangkok');
-echo date("Y-m-d H:i:s"); */
-?>
-    </div>
 
 @endsection
+@push('styles')
+<style>
+    .contentArea {
+        padding: 0px;
+        background-color: #FFFFFF;
+        border-radius: 2px;
+        /* min-width: 100px; */
+        /* text-align: left; */
+    }
+    #admin {
+        background-color: #007bff;
+        color: #FFFFFF;
+        border: none;
+        cursor: pointer;
+        padding: 8px 16px;
+        font-size: 16px;
+        border-radius: 4px;
+        text-align: center;
+    }
+    #edit {
+        background-color: #007bff;
+        color: #FFFFFF;
+        border: none;
+        cursor: pointer;
+        padding: 8px 16px;
+        font-size: 16px;
+        border-radius: 4px;
+        text-align: center;
+    }
+    .trash-admin {
+        background-color: #e12e49;
+        color: #FFFFFF;
+        border: none;
+        cursor: pointer;
+        padding: 8px 16px;
+        font-size: 16px;
+        border-radius: 4px;
+        text-align: center;
+    }
+    /* toggle off */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 55px;
+        height: 28px;
+        
+    }
 
-    {{-- <script>
-        $(document).ready(function() {
-            // $('#status_on').prop('checked', false);
-            $('#status_on').change(function() {
+    /* Hide default HTML checkbox */
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        
+    }
 
-                if($(this).is(':checked')) 
-                {
-                    $('#status_on').prop('checked', true);
-                    console.log('ON');
-                    // var admin_code = $(this).val();
-                    let admin_code = 1;
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+        
+    }
 
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    $.ajax({
-                        url: '/webpanel/admin/status-check',
-                        type: 'POST',
-                        data: {
-                            id: 2,
-                            status: 'active',
-                            admin_code: admin_code,
-                            _token: "{{ csrf_token() }}",
-                        },
-                        success: function(response) {
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 1.5px;
+        right: 3px;
+        bottom: 3px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+        
+    }
 
-                            if(response == 'success') {
-                                console.log('success');
-                                // $('#status_on').prop('checked', true);
-                            }
-    
-                        },
-                        error: function(xhr, status, error) {
-                            console.log(xhr);
-                            console.log(status);
-                            console.log(error);
-                        }
-                    });
+    input:checked + .slider {
+        background-color: #03ae3f;
 
-                } else {
+    }
 
-                    console.log('OFF');
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    $.ajax({
-                        url: '/webpanel/admin/status-inactive',
-                        type: 'POST',
-                        data: {
-                            id: 1,
-                            status_in: 'inactive',
-                            _token: "{{ csrf_token() }}",
-                        },
-                        success: function(response) {
+    .is_blocked:checked + .slider {
+        background-color: #f52e2e;
+    }
 
-                            if(response == 'inactive') {
-                                console.log('inactive');
-                                // $('#status_on').prop('checked', true);
-                            }
-    
-                        },
-                        error: function(xhr, status, error) {
-                            console.log(xhr);
-                            console.log(status);
-                            console.log(error);
-                        }
-                    });
-                }
-            });
-        });
-    </script> --}}
-</body>
-</html>
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+     /* toggle off */
+    .switchs {
+        position: relative;
+        display: inline-block;
+        width: 55px;
+        height: 28px;
+        
+    }
+
+    /* Hide default HTML checkbox */
+    .switchs input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        
+    }
+
+    .sliders {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+        
+    }
+    .sliders:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 1.5px;
+        right: 3px;
+        bottom: 3px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+        
+    }
+
+    input:checked + .sliders {
+        background-color: #f63d3d;
+
+    }
+
+    input:focus + .sliders {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .sliders:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .sliders.round {
+        border-radius: 34px;
+    }
+
+    .sliders.round:before {
+        border-radius: 50%;
+    }
+</style>
+@endpush
+

@@ -350,6 +350,24 @@
                     </li>
 
               </ul>
+
+              <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group" id="reportMenu" aria-controls="dropdown-ordering" data-collapse-toggle="dropdown-ordering">
+                <i class="fa-solid fa-basket-shopping"></i>
+                {{-- <svg class="w-6 h-6 text-gray-800" style="color:white;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                   <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5"/>
+                 </svg> --}}
+                 
+               
+                  <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px;">สั่งสินค้า</span>
+                <i class="fa-solid fa-plus m-2"></i>
+               </button>
+               <ul id="dropdown-ordering" class="hidden py-2 space-y-2">
+                    <li style="margin-left: 35px;">
+                      <a href="/webpanel/purchase/ordering" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group" id="seller_all" style="font-size:14px;">คีย์ออเดอร์</a>
+                    </li>
+
+              </ul>
+              
                 <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group" id="alertMenu" aria-controls="dropdown-alert" data-collapse-toggle="dropdown-alert">
                   <i class="fa-regular fa-bell" style="font-size:18px; color:white"></i>
                      <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap" style="font-size:15px; color:white;">แจ้งเตือน</span>

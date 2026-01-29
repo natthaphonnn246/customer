@@ -40,6 +40,13 @@ return [
     'secret_key' => env('RECAPTCHA_SECRET_KEY'),
     ],
 
+    'line' => [
+        'liff_id' => env('LINE_LIFF_ID'),
+        'channel_id'     => env('LINE_CHANNEL_ID'),
+        'channel_token' => env('LINE_CHANNEL_ACCESS_TOKEN'),
+    ],
+
+
 
 
 ];

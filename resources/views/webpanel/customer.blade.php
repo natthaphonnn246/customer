@@ -1,425 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-    @section ('title', 'customer')
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{-- <meta name="csrf-token" conten="{{ csrf_token() }}"> --}}
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+@extends ('layouts.webpanel')
+@section('content')
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    {{-- <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script> --}}
-
-    <title>CMS VMDRUG System</title>
-</head>
-<body>
-
-    @extends ('webpanel/menuwebpanel-tailwind')
-    @section('content')
-    @csrf
-
-
-    <style>
-        .contentArea {
-            /* padding: 10px; */
-            background-color: #FFFFFF;
-            border-radius: 2px;
-            min-width: 1500px;
-            /* text-align: left; */
-        }
-        #admin {
-            background-color: #007bff;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #admin:hover {
-            background-color: #0b59f6;
-        }
-        #importMaster {
-            background-color: #4e5dff;
-            color: #ffffff;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #importMaster:hover {
-            background-color: #3848fb;
-            color: #ffffff;
-        }
-        #updateMaster {
-            background-color: #f86060;
-            color: #ffffff;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #updateMaster:hover {
-            background-color: #ff4242;
-            color: #ffffff;
-        }
-        #groupsCustomer {
-            background-color: #ffd500;
-            color: #272727;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #groupsCustomer:hover {
-            background-color: #ffc800;
-            color: #272727;
-        }
-        #edit {
-            background-color: #007bff;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .trash-customer {
-            background-color: #e12e49;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        /* toggle off */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 55px;
-            height: 28px;
-            
-        }
-
-        /* Hide default HTML checkbox */
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            
-        }
-
-        /* The slider */
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 1.5px;
-            right: 3px;
-            bottom: 3px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-
-        input:checked + .slider {
-            background-color: #03ae3f;
+    <div class="py-2"></div>
+    <h5 class="!text-gray-600 font-semibold ms-6"><a href="/webpanel/sale" class="!no-underline">ย้อนกลับ</a> | ร้านค้า</h5>
+    <hr class="my-3 !text-gray-400 !border">
     
-        }
+    <div class="grid grid-cols-1 mx-4 px-2 text-gray-500">
 
-        input:focus + .slider {
-            box-shadow: 0 0 1px #2196F3;
-        }
-
-        input:checked + .slider:before {
-            -webkit-transform: translateX(26px);
-            -ms-transform: translateX(26px);
-            transform: translateX(26px);
-        }
-        #exportcsv {
-            background-color: #dddddd;
-            color: #3d3d3d;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #exportcsv:hover {
-            background-color: #cccccc;
-            color: #3c3c3c;
-        }
-        #exportstatus {
-            background-color: #0fc843;
-            color: #ffffff;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #exportstatus:hover {
-            background-color: #05b136;
-            color: #ffffff;
-        }
-        #cache {
-            background-color: #ffdb49;
-            color: #383729;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #cache:hover {
-            background-color: #ffd000;
-            color: #2e2d1d;
-        }
-        #statuswating {
-            background-color: #ee2a18;
-            color: #ffffff;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #statuswating:hover {
-            background-color: #f33d3d;
-            color: #ffffff;
-        }
-        #exportexcel {
-            background-color: #dddddd;
-            color: #3d3d3d;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #exportexcel:hover {
-            background-color: #cccccc;
-            color: #3c3c3c;
-        }
-
-        /* Rounded sliders */
-        .slider.round {
-            border-radius: 34px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-         /* toggle off */
-        .switchs {
-            position: relative;
-            display: inline-block;
-            width: 55px;
-            height: 28px;
-            
-        }
-
-        /* Hide default HTML checkbox */
-        .switchs input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            
-        }
-
-        .sliders {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-        .sliders:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 1.5px;
-            right: 3px;
-            bottom: 3px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-
-        input:checked + .sliders {
-            background-color: #f63d3d;
-    
-        }
-
-        input:focus + .sliders {
-            box-shadow: 0 0 1px #2196F3;
-        }
-
-        input:checked + .sliders:before {
-            -webkit-transform: translateX(26px);
-            -ms-transform: translateX(26px);
-            transform: translateX(26px);
-        }
-
-        /* Rounded sliders */
-        .sliders.round {
-            border-radius: 34px;
-        }
-
-        .sliders.round:before {
-            border-radius: 50%;
-        }
-        #dropdownDivider {
-            background-color: rgb(67, 68, 68);
-            color: white;
-            border-radius: 5px;
-            
-        }
-        #dropdownlist:hover {
-            background-color: rgba(8, 123, 110, 0.544);
-            color: white;
-            border-radius: 5px;
-            
-        }
-        #dropdownDividerExport {
-            background-color: rgb(67, 68, 68);
-            color: white;
-            border-radius: 5px;
-            
-        }
-        #listCsv {
-            background-color: rgb(67, 68, 68);
-            color: white;
-            border-radius: 5px;
-            
-        }
-        #listCsv:hover {
-            background-color: rgb(8, 123, 110);
-            color: white;
-            border-radius: 5px;
-            
-        }
-        #listExcel {
-            background-color: rgb(67, 68, 68);
-            color: white;
-            border-radius: 5px;
-            
-        }
-        #listExcel:hover {
-            background-color: rgb(8, 123, 110);
-            color: white;
-            border-radius: 5px;
-            
-        }
-/*         #protected {
-                    position: relative;
-                    }
-
-                    #protected::after {
-                    content: "© ห้ามบันทึกภาพหน้าจอ";
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    font-size: 120px;
-                    color: rgba(234, 43, 43, 0.111);
-                    pointer-events: none;
-                    transform: translate(-50%, -50%) rotate(-45deg);
-                    white-space: nowrap;
-                }
- */
-
-
-    </style>
-    
-        @if($user_id_admin == '0000')
-            @section('profile_img')
-            <img class="w-8 h-8 rounded-full me-3" src="/profile/profiles-2 copy.jpg" alt="user photo">
-            @endsection
-        @else
-            @section('profile_img')
-            <img class="w-8 h-8 rounded-full me-3" src="/profile/user.png" alt="user photo">
-            @endsection
-        @endif
-
-        @section('status_alert')
-        <h6 class="justifiy-content:center;" style="">{{number_format($status_alert)}}</h6>
-        @endsection
-
-        @section('status_waiting')
-        <h6 class="justifiy-content:center;" style="">{{number_format($status_waiting)}}</h6>
-        @endsection
-
-        @section('status_registration')
-        <h6 class="justifiy-content:center;" style="">{{number_format($status_registration)}}</h6>
-        @endsection
-
-        @section('status_updated')
-        <h6 class="justifiy-content:center;" style="">{{$status_updated}}</h6>
-        @endsection
-
-        @section('text_alert')
-        <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
-        @endsection
-        {{-- <img src="{{ url('/') }}/storage/certificates/img_certstore/1dcV3LQvU5DbAW2hVAMAwHyYLLng85K9aGq4TX47.jpg"> --}}
-
-        {{-- {{$_SERVER['REMOTE_ADDR'];}} --}}
-
-    
-
-
-    <div class="contentArea w-full max-w-full break-words">
-
-        <div class="py-2">
-            {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
-        </div>
-        <span class="ms-6" style="color: #8E8E8E;">ข้อมูลลูกค้า (Customer)</span>
-        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 3px;">
-
-        <div class="ms-6" style="text-align: left;">
+        <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
             <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">เพิ่มลูกค้าใหม่</a>
             <a href="/webpanel/customer/importcustomer"  id="importMaster" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">import CSV</a>
             <a href="/webpanel/customer/updatecsv"  id="updateMaster" class="btn" type="submit"  name="" style="width: 150px; padding: 8px;">Update</a>
@@ -431,7 +19,7 @@
     
         </div>
 
-        <hr class="my-4" style="color: #8E8E8E; width: 100%;">
+        <hr class="my-3 !text-gray-400">
 
         @php
             $year = (int) date('Y');
@@ -441,16 +29,16 @@
 
         @endphp
 
-        <div class="ms-6 text-left">
+        <div>
             <button 
                 id="statuswating" 
                 type="submit"
-                class="btn btn-warning"
+                class="btn btn-warning mt-2"
                 {{ $expireDate->toDateString() < $checkDate->toDateString() ? 'disabled' : '' }}>
                 อัปเดตสถานะใบอนุญาตเป็น : รอดำเนินการ
             </button>
         
-            <p class="text-sm text-gray-500 mt-2">
+            <p class="text-sm text-gray-500 mt-2 mb-1">
                 *ปุ่มนี้ทำงานทุกวันที่ <span class="font-semibold">31/12/{{ $year }}</span>
             </p>
         </div>
@@ -516,17 +104,17 @@
                     });
         </script>
 
-        <hr class="my-4" style="color: #8E8E8E; width: 100%;">
+        <hr class="my-3 !text-gray-400">
 
-        <div class="ms-6 text-left">
+        <div>
             <a href="/webpanel/customer/check/cache"  id="cache" class="btn" type="submit"  name="" style="width: 220px; padding: 8px;"><i class="fa-solid fa-trash"></i> เคลียร์แคลช</a>
 
-            <p class="text-sm text-gray-500 mt-2" style="font-weight:400">
+            <p class="text-sm text-gray-500 mt-2 mb-1" style="font-weight:400">
                 *เคลียร์หลัง import csv รายงานขาย
             </p>
         </div>
 
-        <hr class="my-4" style="color: #8E8E8E; width: 100%;">
+        <hr class="my-3 !text-gray-400">
 
         @if (session('success_cache') == 'cache_clear')
             <script> 
@@ -547,42 +135,36 @@
             </script>
         @endif
 
-        <div class="ms-6" style="text-align: left;">
-
-
-    
-        </div>
-
         <div class="ms-6">
-            <ul class="ms-2 my-2">
+            <div class="my-2">
                 <span>ส่งออกไฟล์ : </span>
-            </ul>
+            </div>
         
             {{-- Export CSV --}}
             <div class="relative inline-block mr-4">
-                <button id="dropdownCsvBtn" data-dropdown-toggle="dropdownCsv" style="background-color: rgb(22, 175, 98); width: 220px; border-radius:5px; color:#ffffff; height:40px;">
+                <button data-dropdown-toggle="dropdownCsv" class="bg-green-500 hover:bg-green-600 text-white !rounded-sm px-4 py-2">
                     Export CSV
                 </button>
         
                 <div id="dropdownCsv" class="z-10 hidden divide-y divide-gray-100 rounded-lg shadow w-44 absolute">
-                    <a href="/webpanel/customer/export/purchase/getcsv/morethan" class="block px-4 py-2 text-sm" id="listCsv"">ไม่สั่งสินค้าเกิน 7 วัน</a>
-                    <a href="/webpanel/customer/export/purchase/getcsv/coming" class="block px-4 py-2 text-sm" id="listCsv">ใกล้ครบกำหนด</a>
-                    <a href="/webpanel/customer/export/purchase/getcsv/normal" class="block px-4 py-2 text-sm" id="listCsv">สั่งสินค้าปกติ</a>
-                    <a href="/webpanel/customer/export/purchase/getcsv/no-purchase" class="block px-4 py-2 text-sm" id="listCsv">ไม่มีการสั่งสินค้า</a>
+                    <a href="/webpanel/customer/export/purchase/getcsv/morethan" class="block px-4 py-2 text-sm !no-underline" id="listCsv"">ไม่สั่งสินค้าเกิน 7 วัน</a>
+                    <a href="/webpanel/customer/export/purchase/getcsv/coming" class="block px-4 py-2 text-sm !no-underline" id="listCsv">ใกล้ครบกำหนด</a>
+                    <a href="/webpanel/customer/export/purchase/getcsv/normal" class="block px-4 py-2 text-sm !no-underline" id="listCsv">สั่งสินค้าปกติ</a>
+                    <a href="/webpanel/customer/export/purchase/getcsv/no-purchase" class="block px-4 py-2 text-sm !no-underline" id="listCsv">ไม่มีการสั่งสินค้า</a>
                 </div>
             </div>
         
             {{-- Export Excel --}}
             <div class="relative inline-block">
-                <button id="dropdownExcelBtn" data-dropdown-toggle="dropdownExcel" style="background-color: rgb(22, 175, 98); width: 220px; border-radius:5px; color:#ffffff; height:40px;">
+                <button data-dropdown-toggle="dropdownExcel" class="bg-blue-500 hover:bg-blue-600 text-white !rounded-sm px-4 py-2">
                     Export Excel
                 </button>
         
                 <div id="dropdownExcel" class="z-10 hidden divide-y divide-gray-100 rounded-lg shadow w-44 absolute">
-                    <a href="/webpanel/customer/export/purchase/getexcel/morethan" class="block px-4 py-2 text-sm" id="listExcel">ไม่สั่งสินค้าเกิน 7 วัน</a>
-                    <a href="/webpanel/customer/export/purchase/getexcel/coming" class="block px-4 py-2 text-sm" id="listExcel">ใกล้ครบกำหนด</a>
-                    <a href="/webpanel/customer/export/purchase/getexcel/normal" class="block px-4 py-2 text-sm" id="listExcel">สั่งสินค้าปกติ</a>
-                    <a href="/webpanel/customer/export/purchase/getexcel/no-purchase" class="block px-4 py-2 text-sm" id="listExcel">ไม่มีการสั่งสินค้า</a>
+                    <a href="/webpanel/customer/export/purchase/getexcel/morethan" class="block px-4 py-2 text-sm !no-underline" id="listExcel">ไม่สั่งสินค้าเกิน 7 วัน</a>
+                    <a href="/webpanel/customer/export/purchase/getexcel/coming" class="block px-4 py-2 text-sm !no-underline" id="listExcel">ใกล้ครบกำหนด</a>
+                    <a href="/webpanel/customer/export/purchase/getexcel/normal" class="block px-4 py-2 text-sm !no-underline" id="listExcel">สั่งสินค้าปกติ</a>
+                    <a href="/webpanel/customer/export/purchase/getexcel/no-purchase" class="block px-4 py-2 text-sm !no-underline" id="listExcel">ไม่มีการสั่งสินค้า</a>
                 </div>
             </div>
         </div>
@@ -608,218 +190,187 @@
                 $other_purchase             = $stats->other_purchase;
 
             @endphp
-            
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    ร้านค้าทั้งหมด<br/>
-                    @if (isset($total_customer))
-                    <span>{{$total_customer != '' ? $total_customer : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/new_registration">ลงทะเบียนใหม่</a><br/>
-                    @if (isset($total_status_registration))
-                    <span>{{$total_status_registration != '' ? $total_status_registration : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
-              
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/completed" style="text-decoration: none; color:white;">ดำเนินการแล้ว</a><br/>
-                    @if (isset($total_status_completed))
-                    <span>{{$total_status_completed != '' ? $total_status_completed : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+    
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/waiting" style="text-decoration: none; color:white;">รอดำเนินการ</a><br/>
-                    @if (isset($total_status_waiting))
-                    <span>{{$total_status_waiting != '' ? $total_status_waiting : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+                <!-- ร้านค้าทั้งหมด -->
+                <div class="bg-blue-500 rounded-xl p-5 text-white">
+                    <div class="text-base opacity-90">ร้านค้าทั้งหมด</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($total_customer) ? ($total_customer != '' ? $total_customer : '0') : 'error' }}
+                    </div>
+                </div>
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/action" style="text-decoration: none; color:white;">ต้องดำเนินการ</a><br/>
-                    @if (isset($total_status_action))
-                    <span>{{$total_status_action != '' ? $total_status_action : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+                <!-- ลงทะเบียนใหม่ -->
+                <a href="/webpanel/customer/status/new_registration"
+                class="bg-sky-500 rounded-xl p-5 text-white hover:bg-sky-600 !no-underline transition block">
+                    <div class="text-base opacity-90">ลงทะเบียนใหม่</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($total_status_registration) ? ($total_status_registration != '' ? $total_status_registration : '0') : 'error' }}
+                    </div>
+                </a>
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/latest_update" style="text-decoration: none; color:white;">UPDATE</a> <sup style="background-color:#80bdf3; padding:5px; width: 10px; color:#ffffff; border-radius: 20px;">New</sup><br/>
-                    @if (isset($total_status_updated))
-                    <span>{{$total_status_updated != '' ? $total_status_updated : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+                <!-- ดำเนินการแล้ว -->
+                <a href="/webpanel/customer/status/completed"
+                class="bg-green-500 rounded-xl p-5 text-white hover:bg-green-600 !no-underline transition block">
+                    <div class="text-base opacity-90">ดำเนินการแล้ว</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($total_status_completed) ? ($total_status_completed != '' ? $total_status_completed : '0') : 'error' }}
+                    </div>
+                </a>
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/inactive" style="text-decoration: none; color:white;">ปิดบัญชี</a><br/>
-                    @if (isset($customer_status_inactive))
-                    <span>{{$customer_status_inactive != '' ? $customer_status_inactive : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+                <!-- รอดำเนินการ -->
+                <a href="/webpanel/customer/status/waiting"
+                class="bg-red-500 rounded-xl p-5 text-white hover:bg-red-600 !no-underline transition block">
+                    <div class="text-base opacity-90">รอดำเนินการ</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($total_status_waiting) ? ($total_status_waiting != '' ? $total_status_waiting : '0') : 'error' }}
+                    </div>
+                </a>
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/check-license" style="text-decoration: none; color:white;">ขายส่ง</a><br/>
-                    @if (isset($add_license_status))
-                    <span>{{$add_license_status != '' ? $add_license_status : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+                <!-- ต้องดำเนินการ -->
+                <a href="/webpanel/customer/status/action"
+                class="bg-yellow-500 rounded-xl p-5 text-white hover:bg-yellow-600 !no-underline transition block">
+                    <div class="text-base opacity-90">ต้องดำเนินการ</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($total_status_action) ? ($total_status_action != '' ? $total_status_action : '0') : 'error' }}
+                    </div>
+                </a>
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/checktype-1" style="text-decoration: none; color:white;">ข.ย.1</a><br/>
-                    @if (isset($type_status_1))
-                    <span>{{$type_status_1 != '' ? $type_status_1 : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+                <!-- UPDATE -->
+                <a href="/webpanel/customer/status/latest_update"
+                class="relative bg-gray-400 rounded-xl p-5 text-white hover:bg-gray-500 !no-underline transition block">
+                    <span class="absolute top-2 right-2 bg-sky-500 text-xs px-2 py-0.5 rounded-full">
+                        NEW
+                    </span>
+                    <div class="text-base opacity-90">UPDATE</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($total_status_updated) ? ($total_status_updated != '' ? $total_status_updated : '0') : 'error' }}
+                    </div>
+                </a>
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/checktype-2" style="text-decoration: none; color:white;">ข.ย.2</a><br/>
-                    @if (isset($type_status_2))
-                    <span>{{$type_status_2 != '' ? $type_status_2 : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+                <!-- ปิดบัญชี -->
+                <a href="/webpanel/customer/status/inactive"
+                class="bg-gray-400 rounded-xl p-5 text-white hover:bg-gray-500 !no-underline transition block">
+                    <div class="text-base opacity-90">ปิดบัญชี</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($customer_status_inactive) ? ($customer_status_inactive != '' ? $customer_status_inactive : '0') : 'error' }}
+                    </div>
+                </a>
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/checktype-3" style="text-decoration: none; color:white;">สมพ.2</a><br/>
-                    @if (isset($type_status_3))
-                    <span>{{$type_status_3 != '' ? $type_status_3 : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+                <!-- ขายส่ง -->
+                <a href="/webpanel/customer/status/check-license"
+                class="bg-violet-500 rounded-xl p-5 text-white hover:bg-violet-600 !no-underline transition block">
+                    <div class="text-base opacity-90">ขายส่ง</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($add_license_status) ? ($add_license_status != '' ? $add_license_status : '0') : 'error' }}
+                    </div>
+                </a>
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/checktype-4" style="text-decoration: none; color:white;">คลินิกยา/สถานพยาบาล</a><br/>
-                    @if (isset($type_status_4))
-                    <span>{{$type_status_4 != '' ? $type_status_4 : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+                <!-- ข.ย.1 -->
+                <a href="/webpanel/customer/status/checktype-1"
+                class="bg-orange-400 rounded-xl p-5 text-white hover:bg-orange-500 !no-underline transition block">
+                    <div class="text-base opacity-90">ข.ย.1</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($type_status_1) ? ($type_status_1 != '' ? $type_status_1 : '0') : 'error' }}
+                    </div>
+                </a>
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/status/checktype-5" style="text-decoration: none; color:white;">ไม่ระบุแบบอนุญาต</a><br/>
-                    @if (isset($type_status_5))
-                    <span>{{$type_status_5 != '' ? $type_status_5 : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+                <!-- ข.ย.2 -->
+                <a href="/webpanel/customer/status/checktype-2"
+                class="bg-orange-400 rounded-xl p-5 text-white hover:bg-orange-500 !no-underline transition block">
+                    <div class="text-base opacity-90">ข.ย.2</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($type_status_2) ? ($type_status_2 != '' ? $type_status_2 : '0') : 'error' }}
+                    </div>
+                </a>
 
-            <div class="textbox" style="width: 240px; height: 80px; background-color: #3399ff; border-radius: 10px; text-align: center; margin: 20px 10px; padding: 20px;">
-                <span style="color: white; text-align: center;">
-                    <a href="/webpanel/customer/order/other-purchase" style="text-decoration: none; color:white;">สั่งซื้อ​ (Line, โทรศัพท์)</a><br/>
-                    @if (isset($other_purchase))
-                    <span>{{$other_purchase != '' ? $other_purchase : '0'}}</span>
-                    @else
-                    <span>error</span>
-                    @endif
-                </span>
-            </div>
+                <!-- สมพ.2 -->
+                <a href="/webpanel/customer/status/checktype-3"
+                class="bg-orange-400 rounded-xl p-5 text-white hover:bg-orange-500 !no-underline transition block">
+                    <div class="text-base opacity-90">สมพ.2</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($type_status_3) ? ($type_status_3 != '' ? $type_status_3 : '0') : 'error' }}
+                    </div>
+                </a>
 
+                <!-- คลินิกยา -->
+                <a href="/webpanel/customer/status/checktype-4"
+                class="bg-orange-400 rounded-xl p-5 text-white hover:bg-orange-500 !no-underline transition block">
+                    <div class="text-base opacity-90">คลินิกยา / สถานพยาบาล</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($type_status_4) ? ($type_status_4 != '' ? $type_status_4 : '0') : 'error' }}
+                    </div>
+                </a>
+
+                <!-- ไม่ระบุแบบอนุญาต -->
+                <a href="/webpanel/customer/status/checktype-5"
+                class="bg-gray-400 rounded-xl p-5 text-white hover:bg-gray-500 !no-underline transition block">
+                    <div class="text-base opacity-90">ไม่ระบุแบบอนุญาต</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($type_status_5) ? ($type_status_5 != '' ? $type_status_5 : '0') : 'error' }}
+                    </div>
+                </a>
+
+                <!-- สั่งซื้ออื่น ๆ -->
+                <a href="/webpanel/customer/order/other-purchase"
+                class="bg-gray-400 rounded-xl p-5 text-white hover:bg-gray-500 !no-underline transition block">
+                    <div class="text-base opacity-90">สั่งซื้อ (Line, โทรศัพท์)</div>
+                    <div class="text-2xl font-bold">
+                        {{ isset($other_purchase) ? ($other_purchase != '' ? $other_purchase : '0') : 'error' }}
+                    </div>
+                </a>
+
+            </div>
 
         </div>
-        <hr class="my-3" style="color: #8E8E8E; width: 100%;">
+        <hr class="my-3 !text-gray-400">
         <!--- search --->
   
-        <div class="row ms-6 mr-6">
-            <div class="col-sm-2">
-                <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/customer">
-                    <ul class="ms-2 my-2">
-                        <span>เลือกผลลัพธ์ : </span>
-                    </ul>
-                    {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
+        <div class="grid md:grid-cols-12 grid-cols-1 gap-3 mb-4">
+            <div class="col-span-3">
+                <form class="w-full mt-2 text-left" method="get" action="/webpanel/customer">
+                    <span class="block mb-2">เลือกผลลัพธ์ : </span>
+                    <button
+                        id="dropdownDividerButton"
+                        data-dropdown-toggle="dropdownDivider"
+                        class="bg-green-600 py-2 w-full !rounded-lg text-white text-center px-4"
+                        type="button"
+                    >
+                        เขตรับผิดชอบ
+                    </button>
         
-                <button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="" style="background-color: rgb(22, 175, 98); width: 100%; border-radius:8px; color:#ffffff; height:70px;" type="button">
-                    
-                    เขตรับผิดชอบ
-                      
-                </button> 
-
-                <!-- Dropdown menu -->
-                <div id="dropdownDivider" class="z-10 hidden divide-y divide-gray-100 shadow-sm w-44" style="text-align: left;">
-
-                    @if(isset($admin_area))
-
-                        @foreach($admin_area as $row_area)
-                        <div class="">
-                            <a href="/webpanel/customer/adminarea/{{$row_area->admin_area}}" class="block px-4 py-2 text-sm" id="dropdownlist">{{$row_area->admin_area}} ({{$row_area->name}})</a>
-                        </div>
-                        @endforeach
-                        @else
-                        <div class="py-2">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Separated link</a>
-                        </div>
-                    @endif
-                </div>
-                
-    
-                    <p class="py-2" id="keyword_search"></p>
-                    @csrf   
+                    <div id="dropdownDivider" class="z-10 hidden divide-y divide-gray-100 shadow-sm text-left">
+                        @if(isset($admin_area))
+                            @foreach($admin_area as $row_area)
+                                <a href="/webpanel/customer/adminarea/{{$row_area->admin_area}}"
+                                   class="block px-4 py-2 text-sm hover:!bg-green-700 !no-underline text-white">
+                                    {{$row_area->admin_area}} ({{$row_area->name}})
+                                </a>
+                            @endforeach
+                        @endif
+                    </div>
                 </form>
             </div>
-            <div class="col-sm-10">
-                <form class="max-w-100 mx-auto mt-2" method="get" action="/webpanel/customer">
-                    <ul class="ms-2 my-2">
-                        <span>ค้นหาร้านค้า : </span>
-                    </ul>
-                    {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <!---icon -->
-                        </div>
-                        <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" />
-                        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
-                    
+        
+            <div class="col-span-9">
+                <form class="w-full mt-2 text-left" method="get" action="/webpanel/customer">
+                    <span class="block mb-2">ค้นหาร้านค้า : </span>
+                    <div class="flex items-center gap-2">
+                        <input
+                            type="search"
+                            name="keyword"
+                            class="block w-full p-2 text-sm text-gray-900 border rounded-lg bg-gray-50 placeholder-gray-400"
+                            placeholder="CODE | ชื่อร้านค้า"
+                        />
+                        <button
+                            type="submit"
+                            class="right-2 bottom-2 bg-blue-700 text-white rounded-lg px-3 py-2 !rounded-lg"
+                        >
+                            ค้นหา
+                        </button>
                     </div>
-                    <p class="py-2" id="keyword_search"></p>
-                    @csrf   
                 </form>
             </div>
         </div>
@@ -849,22 +400,23 @@
             });
         </script>
 
-        <div class="ms-6 mr-6 mb-2" id="protected">
+        <div id="protected">
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
             <table class="table table-striped">
                 <thead>
 
                 <tr>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">#</td>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">CODE</td>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">อีเมล</td>
-                    <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">ชื่อร้านค้า</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">STATUS</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">UPDATE</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">สถานะสั่งซื้อ</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">วันที่สมัคร</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">สถานะ</td>
-                    <td scope="col" style="color:#838383; text-align: center; font-weight: 500;">จัดการ</td>
+                    <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">#</td>
+                    <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">CODE</td>
+                    {{-- <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">อีเมล</td> --}}
+                    <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">ชื่อร้านค้า</td>
+                    <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">Admin Area</td>
+                    <td scope="col" class="!text-gray-500 text-center p-3 font-semibold">STATUS</td>
+                    <td scope="col" class="!text-gray-500 text-center p-3 font-semibold">UPDATE</td>
+                    <td scope="col" class="!text-gray-500 text-center p-3 font-semibold">สถานะสั่งซื้อ</td>
+                    <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">วันที่สมัคร</td>
+                    <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">สถานะ</td>
+                    <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">จัดการ</td>
                 </tr>
                 </thead>
                 <tbody>
@@ -884,35 +436,55 @@
                             $email = $row->email;
                             $customer_status = $row->customer_status;
                             $created_at = $row->created_at;
+                            $adminArea = $row->admin_area;
                         ?>
                     
-                    <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$start++}}</td>
-                    <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$user_code}}</td>
-                    <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px;">{{$email}}</td>
-                    <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px; width: 20%;">{{$user_name}}</td>
+                    <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">{{$start++}}</td>
+                    <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">{{$user_code}}</td>
+                    {{-- <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">{{$email}}</td> --}}
+                    <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">{{$user_name}}</td>
+                    <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">{{$adminArea}}</td>
 
+                    <td class="text-center px-3 py-4 w-full md:w-1/5">
                         @if ($status == 'ลงทะเบียนใหม่')
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(59, 195, 237);">ลงทะเบียนใหม่</span></td>
-
+                            <span class="inline-block border-2 border-sky-400 text-sky-400 px-3 py-2 rounded-lg text-sm">
+                                ลงทะเบียนใหม่
+                            </span>
+                    
                         @elseif ($status == 'รอดำเนินการ')
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(237, 59, 59);">รอดำเนินการ</span></td>
-                        {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(255, 70, 70);"></i> รอดำเนินการ</td> --}}
+                            <span class="inline-block border-2 border-red-400 text-red-400 px-3 py-2 rounded-lg text-sm">
+                                รอดำเนินการ
+                            </span>
+                    
                         @elseif ($status == 'ต้องดำเนินการ')
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"><span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(251, 169, 46);">ต้องดำเนินการ</span></td>
-                        {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(251, 183, 23);"></i> ต้องดำเนินการ</td> --}}
+                            <span class="inline-block border-2 border-amber-400 text-amber-400 px-3 py-2 rounded-lg text-sm">
+                                ต้องดำเนินการ
+                            </span>
+                    
                         @elseif ($status == 'ดำเนินการแล้ว')
-                        {{-- <td scope="row" style="color:#9C9C9C; text-align: left;"><i class="fa-solid fa-circle" style="color: rgb(4, 181, 30);"></i> ดำเนินการแล้ว</td> --}}
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;"> <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(58, 174, 19);">ดำเนินการแล้ว</span></td>
+                            <span class="inline-block border-2 border-green-500 text-green-500 px-3 py-2 rounded-lg text-sm">
+                                ดำเนินการแล้ว
+                            </span>
+                    
                         @else
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width: 20%;">  <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(171, 171, 171);">ปิดบัญชี</span></td>
+                            <span class="inline-block border-2 border-gray-400 text-gray-400 px-3 py-2 rounded-lg text-sm">
+                                ปิดบัญชี
+                            </span>
                         @endif
+                    </td>
 
+                    <td class="text-center px-3 py-4 w-full md:w-1/5">
                         @if ($status_update == 'updated')
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(255, 70, 70);">UPDATE</span></td>
+                            <span class="inline-block border-2 border-gray-400 text-gray-400 px-3 py-2 rounded-lg text-sm">
+                                UPDATE
+                            </span>
                         @else
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px;"><span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(184, 184, 184);">NULL</span></td>
+                            <span class="inline-block border-2 border-gray-400 text-gray-400 px-3 py-2 rounded-lg text-sm">
+                                NULL
+                            </span>
                         @endif
-
+                    </td>
+                    
                         @if(isset($user_code) && $user_code != '')
                         
                             @if(!empty($check_purchase))
@@ -943,9 +515,9 @@
 
                                         @endphp
                                     {{-- {{ $check_over_7 }} --}}
-                                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
+                                        <td class="text-center px-3 py-4 w-full md:w-1/5">
                                             @if ($check_over_7)
-                                            <span id="less{{ $user_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(236, 59, 59);">
+                                            <span id="less{{ $user_code }}" class="inline-block border-2 border-red-500 text-red-500 px-3 py-2 rounded-lg text-sm cursor-pointer">
                                                 ไม่สั่งเกิน 7 วัน
                                             </span>
                                             
@@ -987,7 +559,7 @@
 
                                                 
                                             @elseif ($check_over_5)
-                                                <span id="less{{ $user_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:#ffa51d;">
+                                                <span id="less{{ $user_code }}" class="inline-block border-2 border-yellow-500 text-yellow-500 px-3 py-2 rounded-lg text-sm cursor-pointer">
                                                     ใกล้ครบกำหนด
                                                 </span>
 
@@ -1028,7 +600,7 @@
                                                 </div>
                                             @else
 
-                                                <span id="less{{ $user_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(51, 197, 14);">
+                                                <span id="less{{ $user_code }}" class="inline-block border-2 border-green-500 text-green-500 px-3 py-2 rounded-lg text-sm cursor-pointer">
                                                     สั่งตามปกติ
                                                 </span>
 
@@ -1151,8 +723,8 @@
                                         });
                                     </script>
                                 @else
-                                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
-                                        <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(144, 209, 245);">
+                                    <td class="text-center px-3 py-4 w-full md:w-1/5">
+                                        <span class="inline-block border-2 border-sky-500 text-sky-500 px-3 py-2 rounded-lg text-sm">
                                             ไม่พบการสั่ง
                                         </span>
                                     </td>
@@ -1161,8 +733,8 @@
                             @endif
 
                         @else
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
-                            <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(146, 146, 146);">
+                        <td class="text-center px-3 py-4 w-full md:w-1/5">
+                            <span class="inline-block border-2 border-gray-500 text-gray-500 px-3 py-2 rounded-lg text-sm">
                                 ไม่ระบุ CODE
                             </span>
                         </td>
@@ -1170,9 +742,9 @@
                         
                      
 
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">{{$created_at}}</td>
+                        <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">{{$created_at}}</td>
 
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;">
+                        <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">
                     
                             <label class="switch">
                                 <input type="checkbox" name="check" id="status_on{{$id}}" {{$customer_status == 'active' ? 'checked' : ''}}>
@@ -1185,11 +757,12 @@
                     
                         </td>
 
-                        <td scope="row" style="color:#9C9C9C; text-align: center;  padding:20px; width: 20%;">
-                            <a href="/webpanel/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
-                            {{-- <a href="/webpanel/customer/delete/{{$user_code}}" id="trash"><i class="fa-regular fa-trash-can"></i></a> --}}
-                            <button class="trash-customer" type="submit" id="trash{{$id}}"><i class="fa-regular fa-trash-can"></i></button>
-
+                        <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">
+                            <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
+                                <a href="/webpanel/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                                {{-- <a href="/webpanel/customer/delete/{{$user_code}}" id="trash"><i class="fa-regular fa-trash-can"></i></a> --}}
+                                <button class="trash-customer" type="submit" id="trash{{$id}}"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
                         </td>
                 </tr>
 
@@ -1353,7 +926,7 @@
 
         {{-- {{$total_page}} --}}
         @if(!isset($check_keyword))
-        <div class="ms-6">
+        <div class="mt-3">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
                 <li class="page-item">
@@ -1401,9 +974,9 @@
                 </ul>
             </nav>
         </div>
-        <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
-        <div class="py-3">
-            <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
+        <hr class="my-3 !text-gray-400">
+        <div class="py-2">
+            <p class="text-sm"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
         </div>
         @else
         <div class="ms-6">
@@ -1454,13 +1027,354 @@
                 </ul>
             </nav>
         </div>
-        <hr class="mt-3" style="color: #8E8E8E; width: 100%;">
-        <div class="py-3">
-            <p class="ms-8 text-sm" style="color:#898989;"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
+        <hr class="my-3 !text-gray-400">
+        <div class="py-2">
+            <p class="text-sm"> ทั้งหมด {{$total_page}} : จาก {{$page}} - {{$total_page}} </p>
         </div>
         @endif
 
     </div>
 @endsection
-</body>
-</html>
+@push('styles')
+    <style>
+        #admin {
+            background-color: #007bff;
+            color: #FFFFFF;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #admin:hover {
+            background-color: #0b59f6;
+        }
+        #importMaster {
+            background-color: #4e5dff;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #importMaster:hover {
+            background-color: #3848fb;
+            color: #ffffff;
+        }
+        #updateMaster {
+            background-color: #f86060;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #updateMaster:hover {
+            background-color: #ff4242;
+            color: #ffffff;
+        }
+        #groupsCustomer {
+            background-color: #ffd500;
+            color: #272727;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #groupsCustomer:hover {
+            background-color: #ffc800;
+            color: #272727;
+        }
+        #edit {
+            background-color: #007bff;
+            color: #FFFFFF;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .trash-customer {
+            background-color: #e12e49;
+            color: #FFFFFF;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        /* toggle off */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 55px;
+            height: 28px;
+            
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 1.5px;
+            right: 3px;
+            bottom: 3px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            
+        }
+
+        input:checked + .slider {
+            background-color: #03ae3f;
+
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+        #exportcsv {
+            background-color: #dddddd;
+            color: #3d3d3d;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #exportcsv:hover {
+            background-color: #cccccc;
+            color: #3c3c3c;
+        }
+        #exportstatus {
+            background-color: #0fc843;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #exportstatus:hover {
+            background-color: #05b136;
+            color: #ffffff;
+        }
+        #cache {
+            background-color: #ffdb49;
+            color: #383729;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #cache:hover {
+            background-color: #ffd000;
+            color: #2e2d1d;
+        }
+        #statuswating {
+            background-color: #ee2a18;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #statuswating:hover {
+            background-color: #f33d3d;
+            color: #ffffff;
+        }
+        #exportexcel {
+            background-color: #dddddd;
+            color: #3d3d3d;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        #exportexcel:hover {
+            background-color: #cccccc;
+            color: #3c3c3c;
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        /* toggle off */
+        .switchs {
+            position: relative;
+            display: inline-block;
+            width: 55px;
+            height: 28px;
+            
+        }
+
+        /* Hide default HTML checkbox */
+        .switchs input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            
+        }
+
+        .sliders {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            
+        }
+        .sliders:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 1.5px;
+            right: 3px;
+            bottom: 3px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            
+        }
+
+        input:checked + .sliders {
+            background-color: #f63d3d;
+
+        }
+
+        input:focus + .sliders {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .sliders:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .sliders.round {
+            border-radius: 34px;
+        }
+
+        .sliders.round:before {
+            border-radius: 50%;
+        }
+        #dropdownDivider {
+            background-color: rgb(67, 68, 68);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #dropdownlist:hover {
+            background-color: rgba(8, 123, 110, 0.544);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #dropdownDividerExport {
+            background-color: rgb(67, 68, 68);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #listCsv {
+            background-color: rgb(67, 68, 68);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #listCsv:hover {
+            background-color: rgb(8, 123, 110);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #listExcel {
+            background-color: rgb(67, 68, 68);
+            color: white;
+            border-radius: 5px;
+            
+        }
+        #listExcel:hover {
+            background-color: rgb(8, 123, 110);
+            color: white;
+            border-radius: 5px;
+            
+        }
+    /*         #protected {
+                    position: relative;
+                    }
+
+                    #protected::after {
+                    content: "© ห้ามบันทึกภาพหน้าจอ";
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    font-size: 120px;
+                    color: rgba(234, 43, 43, 0.111);
+                    pointer-events: none;
+                    transform: translate(-50%, -50%) rotate(-45deg);
+                    white-space: nowrap;
+                }
+    */
+
+    </style>
+@endpush

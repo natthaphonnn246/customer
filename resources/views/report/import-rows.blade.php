@@ -12,15 +12,14 @@
                     <td scope="row" style="color:#9C9C9C; text-align: left;  padding:20px; width: 20%;">{{ $import->created_at->format('Y-m-d H:i') }}</td>
                     <td scope="row" style="color:#9C9C9C; text-align: center;  padding:20px; width: 20%;">
                         @if($import->status === 'completed')
-                            <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(58, 174, 19);">ดำเนินการแล้ว</span>
+                            <span class="inline-block border-2 border-green-600 text-green-600 px-3 py-2 rounded-lg text-base">ดำเนินการแล้ว</span>
                         @elseif($import->status === 'processing')
-                        <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(251, 169, 46);">กำลังดำเนินการ</span>
+                        <span class="inline-block border-2 border-yellow-500 text-yellow-500 px-3 py-2 rounded-lg text-base">กำลังดำเนินการ</span>
                         @else
-                        <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(113, 113, 113);">รอดำเนินการ</span>
+                        <span class="inline-block border-2 border-red-500 text-red-500 px-3 py-2 rounded-lg text-base">รอดำเนินการ</span>
                         @endif
                     </td>
                     <td scope="row" style="color:#9C9C9C; text-align: center;  padding:20px; width: 20%;">{{ $import->success_count }}</td>
-
                 </tr>
             @endforeach
         </tbody>

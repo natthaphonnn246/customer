@@ -68,10 +68,10 @@ class AuthenticatedSessionController extends Controller
                 // return redirect()->back()->with('message', 'ส่งข้อมูลเรียบร้อยแล้ว!');
             // }
 
-                //recaptcha;
-                $request->validate([
-                    'g-recaptcha-response' => ['required', new \App\Rules\Recaptcha],
-                ]);
+                //recaptcha;//เอา
+                // $request->validate([
+                //     'g-recaptcha-response' => ['required', new \App\Rules\Recaptcha],
+                // ]);
             
                 //login;
                 $credentials = $request->validate([

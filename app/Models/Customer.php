@@ -46,6 +46,11 @@ class Customer extends Model
         'points',
         'add_license',
         'purchase',
+        'user_id',
+        'status_sap',
+        'status_web',
+        'slug',
+        'update_by',
         // 'maintenance_status',
         // 'allowed_maintenance',
 
@@ -62,6 +67,8 @@ class Customer extends Model
         // dd($code_notin);
         $pagination = DB::table('customers')->select(DB::raw('customer_id'))
                         // ->whereNotIn('customer_code',['0000', '4494'])
+                        ->where('status', 'ลงทะเบียนใหม่')
+                        ->orWhere('status_web', 1)
                         ->whereNotIn('customer_code',$code_notin)
                         ->get();
 
@@ -71,8 +78,38 @@ class Customer extends Model
         $total_page = ceil($count_page / $perpage);
         $start = ($perpage * $page) - $perpage;
 
-        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'purchase', 'created_at')
-                    // ->whereNotIn('customer_code',['0000', '4494'])
+        $customer = DB::table('customers')->select('id', 'slug', 'customer_code', 'customer_name', 'email', 'status', 'status_sap', 'status_web', 'status_update', 'status_vat', 'customer_status', 'purchase', 'created_at')
+                    ->where('status', 'ลงทะเบียนใหม่')
+                    ->orWhere('status_web', 1)
+                    ->whereNotIn('customer_code',$code_notin)
+                    ->orderBy('id','asc')
+                    ->offset($start)
+                    ->limit($perpage)
+                    ->get();
+
+        return [$customer, $start, $total_page, $page];
+    }
+    public static function webpanelCustomer($page)
+    {
+        //notin code;
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+        // dd($code_notin);
+        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
+                        // ->whereNotIn('customer_code',['0000', '4494'])
+                      /*   ->where('status', 'ลงทะเบียนใหม่')
+                        ->orWhere('status_web', 1) */
+                        ->whereNotIn('customer_code',$code_notin)
+                        ->get();
+
+        $count_page = count($pagination);
+
+        $perpage = 10;
+        $total_page = ceil($count_page / $perpage);
+        $start = ($perpage * $page) - $perpage;
+
+        $customer = DB::table('customers')->select('id', 'slug', 'customer_code', 'customer_name', 'admin_area', 'email', 'status', 'status_sap', 'status_web', 'status_update', 'status_vat', 'customer_status', 'purchase', 'created_at')
+              /*       ->where('status', 'ลงทะเบียนใหม่')
+                    ->orWhere('status_web', 1) */
                     ->whereNotIn('customer_code',$code_notin)
                     ->orderBy('id','asc')
                     ->offset($start)
@@ -424,11 +461,18 @@ class Customer extends Model
         return [$customer, $start, $total_page, $page];
     }
 
-    public static function customerEdit($id)
+    public static function customerEdit($slug)
     {
-        $customer_edit = DB::table('customers')->where('id', $id)->first();
+        $customer_edit = DB::table('customers')->where('slug', $slug)->first();
 
         return [$customer_edit];
+    }
+
+    public static function customerWebpanelEdit($id)
+    {
+        $customerWebpanelEdit = DB::table('customers')->where('id', $id)->first();
+
+        return [$customerWebpanelEdit];
     }
 
     public static function viewCustomerAdminArea($page, $admin_id)

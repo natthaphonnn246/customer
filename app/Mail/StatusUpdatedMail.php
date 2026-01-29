@@ -47,8 +47,8 @@ class StatusUpdatedMail extends Mailable
             }
         
             return $this->subject(
-                            'รหัสลูกค้า | '.$this->status->customer_id.
-                            ' ชื่อลูกค้า | '.$this->status->customer_name.
+                            ' รหัสลูกค้า | '.$this->status->customer_id.
+                            ' | ชื่อลูกค้า | '.$this->status->customer_name.
                             ' | ใบอนุญาตขายยา'
                         )
                         ->view('emails.status_updated_store')
@@ -91,7 +91,7 @@ class StatusUpdatedMail extends Mailable
 
             return $this->subject(
                             'รหัสลูกค้า' .' | '. $this->status->customer_id .
-                            'ชื่อลูกค้า'.' | '. $this->status->customer_name.
+                            ' | '. 'ชื่อลูกค้า'.' | '. $this->status->customer_name.
                             ' | '. 'อัปเดตทั้งหมด'
                         )
                         ->view('emails.status_updated')

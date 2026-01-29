@@ -14,7 +14,7 @@ class RegisterUpdatedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public int $statusCode;
+    public string $statusCode;
     public ?Customer $status = null;
     public string $checkUpdate;
     public $cidImage;
@@ -34,8 +34,8 @@ class RegisterUpdatedMail extends Mailable
         }
 
             return $this->subject(
-                            'รหัสลูกค้า | '.$this->status->customer_id.
-                            ' ชื่อลูกค้า | '.$this->status->customer_name.
+                            ' รหัสลูกค้า | '.$this->status->customer_id.
+                            ' | ชื่อลูกค้า | '.$this->status->customer_name.
                             ' | ลงทะเบียนใหม่'
                         )
                         ->view('emails.status_register')

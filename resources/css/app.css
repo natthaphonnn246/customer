@@ -1,11 +1,21 @@
-@tailwind base;
+/*tailwind3
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
-@import "tailwindcss";
-@source "../views";
-/* 
-@import "flowbite/src/themes/default";
-@plugin "flowbite/plugin";
-@source "../node_modules/flowbite"; */
+@tailwind utilities; */
 
-/* @import 'flowbite'; */
+@import "tailwindcss";
+
+/* sidebar offset */
+@media (min-width: 768px) {
+    .content-wrapper {
+        margin-left: 260px;   /* เว้น sidebar */
+        margin-top: 64px;     /* เว้น navbar */
+
+        padding: 16px;        /* ระยะเท่ากัน บนล่างซ้ายขวา */
+    }
+
+    .content-webpanel {
+        margin-left: 260px;   /* เว้น sidebar */   /* เว้น navbar */
+        padding: 16px;        /* ระยะเท่ากัน บนล่างซ้ายขวา */
+    }
+}

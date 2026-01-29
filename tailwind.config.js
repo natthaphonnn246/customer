@@ -4,6 +4,8 @@ import forms from '@tailwindcss/forms';
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
+        './resources/views/**/*.blade.php',
+        './resources/js/**/*.js',
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
@@ -12,15 +14,13 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Prompt', ...defaultTheme.fontFamily.sans],
             },
         },
     },
 
-/*     // plugins: [forms],
     plugins: [
-        tailwindcss(),
-    ], */
+        forms,
+    ],
 };
-
 

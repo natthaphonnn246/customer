@@ -44,6 +44,10 @@ class User extends Authenticatable
         'is_blocked',
         'purchase_status',
         'allowed_check_type',
+        'line_user_id',
+        'status_vat',
+        'status_web',
+        'status_sap',
     ];
     protected $table = 'users';
     protected $connection = 'mysql';

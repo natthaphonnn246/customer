@@ -242,12 +242,14 @@
                         <!-- Google reCAPTCHA -->
                         <ul class="ms-10">
                             {{-- <div class="g-recaptcha" data-sitekey="6LfCCxkrAAAAAFupTbUe6slwpcWBXUdWLx30dztX" data-callback="enableSubmitbtn"></div> --}}
-                           <!--เอา--><div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"  data-callback="enableSubmitbtn"></div>
+                           {{-- <!--เอา--><div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"  data-callback="enableSubmitbtn"></div> --}}
 
                         </ul>
 
                         <ul class="text-center">
-                            <button type="submit" id="submitBtn" style="width:125px; font-size:16px;" disabled>Login</button>
+                            <button type="submit" id="submitBtn" style="width:125px; font-size:16px;">Login</button>
+
+                            {{--เอา <button type="submit" id="submitBtn" style="width:125px; font-size:16px;" disabled>Login</button> --}}
                             {{-- <button type="submit" id="submitBtn" style="width:125px; font-size:16px;" >Login</button> --}}
                         </ul>
                  

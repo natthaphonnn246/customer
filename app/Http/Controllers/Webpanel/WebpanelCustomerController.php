@@ -32,6 +32,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Days;
 use App\Enums\CustomerStatusEnum;
 use Illuminate\Support\Facades\Cache;
 use App\Jobs\RebuildCheckPurchaseCache;
+use App\Services\MessageApiService;
 
 
 class WebpanelCustomerController
@@ -55,7 +56,7 @@ class WebpanelCustomerController
         }
 
         //แสดงข้อมูลลูกค้า;
-        $row_customer = Customer::viewCustomer($page);
+        $row_customer = Customer::webpanelCustomer($page);
         $customer = $row_customer[0];
         $start = $row_customer[1];
         $total_page = $row_customer[2];
@@ -1506,7 +1507,7 @@ class WebpanelCustomerController
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $customer_edit = Customer::customerEdit($id);
+        $customer_edit = Customer::customerWebpanelEdit($id);
         $customer_view = $customer_edit[0];
 
         // dd($customer_view->admin_area);
@@ -1690,11 +1691,20 @@ class WebpanelCustomerController
 
                 // usleep(100000);
                 // check user id;
-                $check_customer_id = Customer::select('id')->where('id', $id)->first();
+                $check_customer_id = Customer::select('id', 'user_id', 'customer_code')->where('id', $id)->first();
                 $customer_id =  $check_customer_id->id;
+                $customer_code = $check_customer_id->customer_code;
 
                 if ($customer_id == $id)
                 {
+                    $checkUserId = $check_customer_id?->user_id;
+                    // dd($checkUserId);
+                    $lineUserId = User::where('user_id', $checkUserId)->value('line_user_id');
+
+                    if ($lineUserId) {
+                        app(MessageApiService::class)
+                            ->sendWebSuccess($lineUserId, $customer_name, $customer_code, $password, $sale_area);
+                    }
                     // echo 'success';
                     return redirect('/webpanel/customer/'.$id)->with('status', 'updated_success');
                 
@@ -2660,36 +2670,20 @@ class WebpanelCustomerController
                                 $start = ($perpage * $page) - $perpage;
 
                                 $subLatest = DB::table('report_sellers')
-                                            ->select('customer_id', DB::raw('MAX(date_purchase) as latest_purchase'))
+                                            ->select('customer_id', DB::raw('MAX(id) as latest_id'))
                                             ->groupBy('customer_id');
                             
-                                $customer_list = DB::table('customers as c')
-                                                ->joinSub($subLatest, 'latest', function ($join) {
-                                                    $join->on('c.customer_id', '=', 'latest.customer_id');
-                                                })
-                                                ->join('report_sellers as r', function ($join) {
-                                                    $join->on('c.customer_id', '=', 'r.customer_id')
-                                                        ->on('latest.latest_purchase', '=', 'r.date_purchase');
-                                                })
-                                                ->select(
-                                                    'c.id',
-                                                    'c.customer_id',
-                                                    'c.customer_name',
-                                                    'c.status',
-                                                    'c.admin_area',
-                                                    'c.sale_area',
-                                                    'c.email',
-                                                    'c.customer_status',
-                                                    'c.status_update',
-                                                    'c.created_at',
-                                                    'r.date_purchase'
-                                                )
-                                                ->where('c.admin_area', $admin_id)
-                                                ->where('r.date_purchase', '<=', $past7)
-                                                ->orderByDesc('r.date_purchase')
-                                                ->offset($start)
-                                                ->limit($perpage)
-                                                ->get();
+                                $customer_list = DB::table('report_sellers as r')
+                                            ->joinSub($subLatest, 'latest', function ($join) {
+                                                $join->on('r.id', '=', 'latest.latest_id');
+                                            })
+                                            ->join('customers as c', 'c.customer_id', '=', 'r.customer_id')
+                                            ->where('c.admin_area', $admin_id)
+                                            ->where('r.date_purchase', '<=', $past7)
+                                            ->orderByDesc('r.date_purchase')
+                                            ->offset($start)
+                                            ->limit($perpage)
+                                            ->get();
                             
                                 $sub_p = DB::table('report_sellers')
                                         ->select('customer_id', DB::raw('MAX(date_purchase) as last_purchase'))
@@ -2757,7 +2751,7 @@ class WebpanelCustomerController
 
                                      
                                         $subLatest = DB::table('report_sellers')
-                                                    ->select('customer_id', DB::raw('MAX(date_purchase) as latest_purchase'))
+                                                    ->select('customer_id', DB::raw('MAX(id) as latest_id'))
                                                     ->groupBy('customer_id');
                                                 
                                         $customer_list = DB::table('customers as c')
@@ -2766,7 +2760,7 @@ class WebpanelCustomerController
                                                         })
                                                         ->join('report_sellers as r', function ($join) {
                                                             $join->on('c.customer_id', '=', 'r.customer_id')
-                                                                ->on('latest.latest_purchase', '=', 'r.date_purchase');
+                                                                ->on('latest.latest_id', '=', 'r.id');
                                                         })
                                                         ->select(
                                                             'c.id',
@@ -2783,6 +2777,7 @@ class WebpanelCustomerController
                                                         )
                                                         ->where('c.admin_area', $admin_id)
                                                         ->whereBetween('r.date_purchase', [$past7, $past5])
+                                                        // ->where('r.date_purchase', '<=', $past7)
                                                         ->orderByDesc('r.date_purchase')
                                                         ->offset($start)
                                                         ->limit($perpage)
@@ -2853,7 +2848,7 @@ class WebpanelCustomerController
                                         $start = ($perpage * $page) - $perpage;
 
                                         $subLatest = DB::table('report_sellers')
-                                                    ->select('customer_id', DB::raw('MAX(date_purchase) as latest_purchase'))
+                                                    ->select('customer_id', DB::raw('MAX(id) as latest_id'))
                                                     ->groupBy('customer_id');
                                         
                                         $customer_list = DB::table('customers as c')
@@ -2862,7 +2857,7 @@ class WebpanelCustomerController
                                                         })
                                                         ->join('report_sellers as r', function ($join) {
                                                             $join->on('c.customer_id', '=', 'r.customer_id')
-                                                                ->on('latest.latest_purchase', '=', 'r.date_purchase');
+                                                                ->on('latest.latest_id', '=', 'r.id');
                                                         })
                                                         ->select(
                                                             'c.id',
@@ -3338,8 +3333,6 @@ class WebpanelCustomerController
         }
     }
     
-    
-
     public function otherPurchase(Request $request)
     {
         $code_notin = ['0000', '4494', '7787', '8118', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
@@ -3381,255 +3374,3 @@ class WebpanelCustomerController
     }
 
 }
-
-
-/* @else
-                            <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
-                                @if ($check_over_7)
-                                    <span data-bs-toggle="modal" data-bs-target="#staticBackdrop_seven" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(255, 70, 70);">
-                                        เกิน 7 วัน
-                                    </span>
-
-                                    @php
-                                        $po_last = $report_seller->firstWhere('customer_id', $user_code)?->purchase_order;
-                                        $date_pur = $report_seller->firstWhere('customer_id', $user_code)?->date_purchase;
-                                    @endphp
-                                    <div class="modal fade" id="staticBackdrop_seven" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                            <div class="modal-header">
-                                                <span class="modal-title" style="font-size:16px;" id="staticBackdropLabel">ร้านค้า : {{ $user_code.' '.'|'.' '.$user_name.'' }}</span>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="py-2 mt-2" style="text-align: left;">
-                                                <span class="ms-3 py-2" style="text-align: start;">เลขที่ : {{ $po_last }}</span> |
-                                                <span style="background-color: #e04b30; color:white; border-radius:5px; padding:3px;">{{ $date_pur }}</span>
-                                            </div>
-                                            {{-- <hr style="color:#a5a5a5;"> --}}
-                                                <div class="modal-body">
-
-                                                    <div class="relative overflow-x-auto">
-                                                        <table class="w-full text-left">
-                                                            <thead class="" style="background-color:#222222; color:rgb(255, 255, 255);">
-                                                                <tr>
-                                                                    <td scope="col" class="px-6 py-3 text-center">
-                                                                        รหัสสินค้า
-                                                                    </td>
-                                                                    <td scope="col" class="px-6 py-3">
-                                                                        ชื่อสินค้า
-                                                                    </td>
-                                                                    <td scope="col" class="px-6 py-3 text-center">
-                                                                        หน่วย
-                                                                    </td>
-                                                                    <td scope="col" class="px-6 py-3 text-center">
-                                                                        จำนวน
-                                                                    </td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @php
-                                                                    $total = 0;
-                                                                @endphp
-                                                                @foreach ($report_seller as $row_seller )
-                                                                @php
-                                                                    $product_id   =  $row_seller?->product_id;
-                                                                    $product_name =  $row_seller?->product_name;
-                                                                    $unit         =  $row_seller?->unit;
-                                                                    $qty          =  $row_seller?->quantity;
-                                                                    $total        += $row_seller?->total_sale;
-                                                                @endphp
-                                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"">
-                                                
-                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
-                                                                        {{ $product_id }}
-                                                                    </td>
-                                                                    <td class="border border-gray-300 px-4 py-2">
-                                                                        {{ $product_name}}
-                                                                    </td>
-                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
-                                                                        {{ $unit }}
-                                                                    </td>
-                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
-                                                                        {{ $qty}}
-                                                                    </td>
-                                                                </tr>
-                                                                @endforeach
-
-                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">รวมเป็นเงิน</td>
-                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">฿{{ number_format($total,2) }}</td>
-                                                                
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-
-                                                </div>
-                                        
-                                            </div>
-                                        </div>
-                                    </div>
-                                @elseif ($check_over_5)
-                                    <span data-bs-toggle="modal" data-bs-target="#staticBackdrop_five" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:#ffa51d;">
-                                        ใกล้ครบกำหนด
-                                    </span>
-
-                                    @php
-                                        $po_last = $report_seller->firstWhere('customer_id', $user_code)?->purchase_order;
-                                        $date_pur = $report_seller->firstWhere('customer_id', $user_code)?->date_purchase;
-                                    @endphp
-                                    <div class="modal fade" id="staticBackdrop_five" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                            <div class="modal-header">
-                                                <span class="modal-title" style="font-size:16px;" id="staticBackdropLabel">ร้านค้า : {{ $user_code.' '.'|'.' '.$user_name.'' }}</span>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="py-2 mt-2" style="text-align: left;">
-                                                <span class="ms-3 py-2" style="text-align: start;">เลขที่ : {{ $po_last }}</span> |
-                                                <span style="background-color: #ffa51d; color:white; border-radius:5px; padding:3px;">{{ $date_pur }}</span>
-                                            </div>
-                                            {{-- <hr style="color:#a5a5a5;"> --}}
-                                                <div class="modal-body">
-
-                                                    <div class="relative overflow-x-auto">
-                                                        <table class="w-full text-left">
-                                                            <thead class="" style="background-color:#222222; color:rgb(255, 255, 255);">
-                                                                <tr>
-                                                                    <td scope="col" class="px-6 py-3 text-center">
-                                                                        รหัสสินค้า
-                                                                    </td>
-                                                                    <td scope="col" class="px-6 py-3">
-                                                                        ชื่อสินค้า
-                                                                    </td>
-                                                                    <td scope="col" class="px-6 py-3 text-center">
-                                                                        หน่วย
-                                                                    </td>
-                                                                    <td scope="col" class="px-6 py-3 text-center">
-                                                                        จำนวน
-                                                                    </td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @php
-                                                                    $total = 0;
-                                                                @endphp
-                                                                @foreach ($report_seller as $row_seller )
-                                                                @php
-                                                                    $product_id   = $row_seller?->product_id;
-                                                                    $product_name = $row_seller?->product_name;
-                                                                    $unit         = $row_seller?->unit;
-                                                                    $qty          = $row_seller?->quantity;
-                                                                    $total        += $row_seller?->total_sale;
-                                                                @endphp
-                                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                                                
-                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
-                                                                        {{ $product_id }}
-                                                                    </td>
-                                                                    <td class="border border-gray-300 px-4 py-2">
-                                                                        {{ $product_name}}
-                                                                    </td>
-                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
-                                                                        {{ $unit }}
-                                                                    </td>
-                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
-                                                                        {{ $qty}}
-                                                                    </td>
-                                                                </tr>
-                                                                @endforeach
-
-                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">รวมเป็นเงิน</td>
-                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">฿{{ number_format($total,2) }}</td>
-
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-
-                                                </div>
-                                        
-                                            </div>
-                                        </div>
-                                    </div>
-                                @else
-                                
-                                    <span data-bs-toggle="modal" data-bs-target="#staticBackdrop_normal" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(51, 197, 14);">
-                                        ปกติ
-                                    </span>
-
-                                    @php
-                                        $po_last = $report_seller->firstWhere('customer_id', $user_code)?->purchase_order;
-                                        $date_pur = $report_seller->firstWhere('customer_id', $user_code)?->date_purchase;
-                                    @endphp
-                                    <div class="modal fade" id="staticBackdrop_normal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                            <div class="modal-header">
-                                                <span class="modal-title" style="font-size:16px;" id="staticBackdropLabel">ร้านค้า : {{ $user_code.' '.'|'.' '.$user_name.'' }}</span>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="py-2 mt-2" style="text-align: left;">
-                                                <span class="ms-3 py-2" style="text-align: start;">เลขที่ : {{ $po_last }}</span> |
-                                                <span style="background-color: #09be0f; color:white; border-radius:5px; padding:3px;">{{ $date_pur }}</span>
-                                            </div>
-                                            {{-- <hr style="color:#a5a5a5;"> --}}
-                                                <div class="modal-body">
-
-                                                    <div class="relative overflow-x-auto">
-                                                        <table class="w-full text-left">
-                                                            <thead class="" style="background-color:#222222; color:rgb(255, 255, 255);">
-                                                                <tr>
-                                                                    <td scope="col" class="px-6 py-3 text-center">
-                                                                        รหัสสินค้า
-                                                                    </td>
-                                                                    <td scope="col" class="px-6 py-3">
-                                                                        ชื่อสินค้า
-                                                                    </td>
-                                                                    <td scope="col" class="px-6 py-3 text-center">
-                                                                        หน่วย
-                                                                    </td>
-                                                                    <td scope="col" class="px-6 py-3 text-center">
-                                                                        จำนวน
-                                                                    </td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @php
-                                                                    $total = 0;
-                                                                @endphp
-                                                                @foreach ($report_seller as $row_seller )
-                                                                @php
-                                                                    $product_id   = $row_seller?->product_id;
-                                                                    $product_name = $row_seller?->product_name;
-                                                                    $unit         = $row_seller?->unit;
-                                                                    $qty          = $row_seller?->quantity;
-                                                                    $total        += $row_seller?->total_sale;
-                                                                @endphp
-                                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                                                
-                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
-                                                                        {{ $product_id }}
-                                                                    </td>
-                                                                    <td class="border border-gray-300 px-4 py-2">
-                                                                        {{ $product_name}}
-                                                                    </td>
-                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
-                                                                        {{ $unit }}
-                                                                    </td>
-                                                                    <td class="border border-gray-300 px-4 py-2 text-center">
-                                                                        {{ $qty}}
-                                                                    </td>
-                                                                </tr>
-                                                                @endforeach
-
-                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">รวมเป็นเงิน</td>
-                                                                <td class="border border-gray-300 px-4 py-2 text-center" colspan="2">฿{{ number_format($total,2) }}</td>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-
-                                                </div>
-                                        
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                            </td> */

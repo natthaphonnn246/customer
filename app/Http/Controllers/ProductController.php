@@ -1522,8 +1522,6 @@ class ProductController extends Controller
 
    public function importUpdateProduct(Request $request)
    {
-        // dd('import');
-        date_default_timezone_set("Asia/Bangkok");
 
         if($request->has('submit_csv') == true) 
         {
@@ -1599,7 +1597,8 @@ class ProductController extends Controller
                 }
 
         }
-        $count_batch = count($dataBatch);
+    
+        $count_batch = count($dataBatch ?? []);
         // dd($count_batch);
         // $count = Product::all()->count();
         

@@ -9,6 +9,11 @@ use App\Models\user;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Mail\StatusUpdatedMail;
+use Illuminate\Support\Facades\Mail;
+use App\Services\MessageApiService;
+use App\Mail\RegisterUpdatedMail;
+use Illuminate\Support\Facades\Auth;
 
 class WebpanelAdminController extends Controller
 {
@@ -172,7 +177,8 @@ class WebpanelAdminController extends Controller
                 'status_waiting', 'status_updated', 'status_alert', 'user_name'
 
 
-                ));
+                )
+            );
         // dd($customer_north);
     }
     public function indexCustomer(Request $request): View
@@ -200,11 +206,11 @@ class WebpanelAdminController extends Controller
         //Dashborad;
         // $total_customer = Customer::whereNotIn('customer_code', ['0000','4494'])->count();
         $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
-        $total_status_waiting = Customer::where('status', 'รอดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
-        $total_status_action = Customer::where('status', 'ต้องดำเนินการ')->whereNotIn('customer_code', $code_notin)->count();
-        $total_status_completed = Customer::where('status', 'ดำเนินการแล้ว')->whereNotIn('customer_code', $code_notin)->count();
-        $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
-        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_register = Customer::where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_action = Customer::where('status_sap', 1)->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_completed = Customer::where('status_web', 1)->whereNotIn('customer_code', $code_notin)->count();
+/*         $total_status_updated = Customer::where('status_update', 'updated')->whereNotIn('customer_code', $code_notin)->count();
+        $customer_status_inactive = Customer::where('customer_status', 'inactive')->whereNotIn('customer_code', $code_notin)->count(); */
 
         //เพิ่มลูกค้า;
         // $admin_area_list = User::select('admin_area', 'name', 'rights_area', 'user_code')->get();
@@ -242,25 +248,58 @@ class WebpanelAdminController extends Controller
             $start = ($perpage * $page) - $perpage;
 
             // $customer = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-            $customer = Customer::whereNotIn('customer_id', $code_notin)
+       /*      $customer = Customer::whereNotIn('customer_id', $code_notin)
                                     ->where('customer_id', 'Like', "%{$keyword_search}%")
                                     ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
                                     ->offset($start)
                                     ->limit($perpage)
-                                    ->get();
+                                    ->get(); */
 
+            $customer = Customer::query()
+                        ->where(function ($q) {
+                            $q->where('status', '!=', 'ลงทะเบียนใหม่')
+                            ->where('customer_status','!=', 'inactive');
+                        })
+                        ->when(
+                            !empty($code_notin),
+                            fn ($q) => $q->whereNotIn('customer_id', $code_notin)
+                        )
+                        ->where(function ($q) use ($keyword_search) {
+                            $q->where('customer_id', 'like', "%{$keyword_search}%")
+                                ->orWhere('customer_name', 'like', "%{$keyword_search}%");
+                        })
+                        ->offset($start)
+                        ->limit($perpage)
+                        ->get();
+        
             // $check_keyword = Customer::whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
-            $check_keyword = Customer::whereNotIn('customer_id', $code_notin)
+      /*       $check_keyword = Customer::whereNotIn('customer_id', $code_notin)
+                                        ->whereNotIn('status_user', 'ลงทะเบีนยใหม่')
                                         ->where('customer_id', 'Like', "%{$keyword_search}%")
                                         ->orWhere('customer_name', 'Like', "%{$keyword_search}%")
-                                        ->get();
+                                        ->get(); */
+
+            $check_keyword = Customer::query()
+                            ->where(function ($q) {
+                                $q->where('status', '!=', 'ลงทะเบียนใหม่')
+                                ->where('customer_status','!=', 'inactive');
+                            })
+                            ->when(
+                                !empty($code_notin),
+                                fn ($q) => $q->whereNotIn('customer_id', $code_notin)
+                            )
+                            ->where(function ($q) use ($keyword_search) {
+                                $q->where('customer_id', 'like', "%{$keyword_search}%")
+                                    ->orWhere('customer_name', 'like', "%{$keyword_search}%");
+                            })
+                            ->get();
 
             // dd($check_customer_code);
 
             // dd($check_search->admin_area);
             if (!empty($check_keyword)) {
-                return view('admin/customer', compact('count_page', 'check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                            'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated', 'user_name'));
+                return view('admin/customer', compact('count_page', 'check_keyword', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_register',
+                            'total_status_action', 'total_status_completed', 'status_alert', 'status_waiting', 'status_updated', 'user_name'));
 
             }
 
@@ -269,23 +308,23 @@ class WebpanelAdminController extends Controller
         }
 
         $count_page = 1;
-        return view('admin/customer', compact('count_page', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_waiting',
-                'total_status_action', 'total_status_completed', 'total_status_updated', 'customer_status_inactive', 'status_alert', 'status_waiting', 'status_updated', 'user_name'));
+        return view('admin/customer', compact('count_page', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_register',
+                'total_status_action', 'total_status_completed', 'status_alert', 'status_waiting', 'status_updated', 'user_name'));
 
     }
 
-    public function edit(Request $request, $id)
+    public function edit(Request $request, $slug)
     {
 
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $customer_edit = Customer::customerEdit($id);
+        $customer_edit = Customer::customerEdit($slug);
         $customer_view = $customer_edit[0];
 
         $admin_area_list  = User::select('admin_area', 'name', 'rights_area')->get();
 
-        $admin_area_check = Customer::select('admin_area', 'customer_id')->where('id', $id)->first();
+        $admin_area_check = Customer::select('admin_area', 'customer_id')->where('slug', $slug)->first();
         // dd($admin_area_check->customer_id);
 
         $sale_area = Salearea::select('sale_area', 'sale_name')
@@ -727,5 +766,137 @@ class WebpanelAdminController extends Controller
                 return view('admin/adminarea-detail',compact('user_name', 'admin_name','count_page', 'customer', 'start', 'total_page', 'page', 'total_customer_adminarea', 'total_status_waiting', 'total_status_action', 'total_status_completed' ,'status_waiting', 'status_updated', 'status_alert'));
         }
 
+    }
+
+    public function newDashboard()
+    {
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        // $total_customer = Customer::whereNotIn('customer_code', $code_notin)->count();
+        $total_status_register = Customer::where('status', 'ลงทะเบียนใหม่')->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_action = Customer::where('status_sap', 1)->whereNotIn('customer_code', $code_notin)->count();
+        $total_status_completed = Customer::where('status_web', 1)->whereNotIn('customer_code', $code_notin)->count();
+
+        return view ('admin/new-dashboard', compact(
+                                                        'total_status_register',
+                                                        'total_status_action',
+                                                        'total_status_completed'
+                                                    ));
+    }
+    public function updateEdit(Request $request, $slug)
+    {
+        $customer = Customer::where('slug', $slug)->firstOrFail();
+    
+        if (! $customer) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'ไม่พบข้อมูลลูกค้า'
+            ], 404);
+        }
+
+        $exists = Customer::where('customer_code', $request->customer_code)
+                ->where('id', '!=', $customer->id)
+                ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'รหัสร้านค้านี้ถูกใช้งานแล้ว'
+            ], 422);
+        }
+    
+        // ===== เตรียมข้อมูล =====
+        $customer_name = $request->customer_name ?? '';
+        $customer_code = $request->customer_code ?? '';
+        $price_level   = $request->price_level ?? 5;
+        $phone         = $request->phone ?? '';
+        $telephone     = $request->telephone ?? '';
+        $email         = $request->email ?? '';
+        $cert_number   = $request->cert_number ?? '';
+        $cert_expire   = $request->cert_expire ?? '';
+        $saleArea      = $request->sale_area;
+        $purchase      = $request->purchase;
+        $delivery_by   = $request->delivery_by;
+    
+        // ===== จังหวัด / ภูมิภาค =====
+        $province_row = '';
+        $geography_name = $request->geography;
+    
+        if ($request->province) {
+            $province = DB::table('provinces')
+                ->select('name_th', 'geography_id')
+                ->where('id', $request->province)
+                ->first();
+    
+            if ($province) {
+                $province_row = $province->name_th;
+    
+                $geography = DB::table('geographies')
+                    ->select('name')
+                    ->where('id', $province->geography_id)
+                    ->first();
+    
+                $geography_name = $geography?->name;
+            }
+        }
+    
+        $update_by = Auth::user()?->user_id;
+        // ===== UPDATE รอบเดียวพอ =====
+        $customer->update([
+            'customer_name' => $customer_name,
+            'customer_code' => $customer_code,
+            'customer_id'   => $customer_code,
+            'price_level'   => $price_level,
+            'email'         => $email,
+            'phone'         => $phone,
+            'telephone'     => $telephone,
+            'cert_number'   => $cert_number,
+            'cert_expire'   => $cert_expire,
+            'delivery_by'   => $delivery_by,
+            'address'       => $request->address,
+            'province'      => $province_row,
+            'amphur'        => $request->amphur,
+            'district'      => $request->district,
+            'zip_code'      => $request->zip_code,
+            'geography'     => $geography_name,
+            'admin_area'    => $request->admin_area,
+            'sale_area'     => $saleArea,
+            'status_vat'    => $request->status_vat,
+            'status_sap'    => $request->status_sap,
+            'status_web'    => 0,
+            'purchase'      => $purchase,
+            'status_update' => 'updated',
+            'update_by'     => $update_by,
+        ]);
+    
+        $statusCode = Customer::where('customer_code', $customer_code)->first();
+        // ===== ส่งแจ้งเตือน =====
+        if ($statusCode->status_update == 'updated') {
+                    
+            $checkUpdate = 'submit';
+                Mail::to('vmdrugcenter2019@gmail.com')->queue(new StatusUpdatedMail($statusCode->id,$checkUpdate));
+
+            //not queue;
+            /* Mail::to('vmdrugcenter2019@gmail.com')->send(new StatusUpdatedMail($status->id)); */
+
+        }
+    
+        if ($statusCode?->status_web === 0)
+        {
+            app(MessageApiService::class)
+            ->sendSapSuccess(
+                ['U77a9c2b47bacb0cdc75aa35952ae45d0'],
+                $customer_name,
+                $customer_code,
+                $saleArea
+            );
+        }
+
+    
+        // ===== Response สำหรับ AJAX =====
+        return response()->json([
+            'status' => 'success',
+            'message' => 'อัปเดตข้อมูลเรียบร้อยแล้ว'
+        ]);
     }
 }
