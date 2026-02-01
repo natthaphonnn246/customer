@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Sleep;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\View\Component;
 
 Class UserController
 {
@@ -472,7 +472,6 @@ Class UserController
       //delete admin;
    public function deleteAdmin(Request $request,  $id)
    {
-
         if(!empty($request->id)) {
 
             // echo json_encode(array('checkcode'=> $request->user_code));
@@ -484,8 +483,65 @@ Class UserController
             echo json_encode(array('checkcode'=> $request->id));
 
         }
-    
    }
+   public function groupLine(Request $request)
+   {
+
+    $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+    $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
+
+    $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
+
+    $status_updated = Customer::where('status_update', 'updated')
+                                ->whereNotIn('customer_id', $code_notin)
+                                ->count();
+    
+    $userId = User::whereNotNull('admin_area')
+                ->where('admin_area', '!=', '')
+                ->get(['id','user_id', 'admin_area', 'name']);
+    
+    $customerMap = Customer::whereNotNull('admin_area')
+                ->where('admin_area', '!=', '')
+                ->pluck('user_id', 'admin_area');
+            
+    // dd($userId);
+
+    $status_alert = $status_waiting + $status_updated;
+
+    return view('webpanel/group-line', Compact(
+                                                'status_waiting',
+                                                'status_registration',
+                                                'status_updated',
+                                                'status_alert',
+                                                'userId',
+                                                'customerMap'
+
+                                            ));
+   }
+   public function updateLine(Request $request)
+   {
+       $request->validate([
+           'admin_area' => 'required|string',
+           'user_id'    => 'required|string',
+       ]);
+   
+       Customer::where('admin_area', $request->admin_area)
+           ->update([
+               'user_id' => $request->user_id,
+           ]);
+   
+       return response()->json([
+           'status' => 'success',
+           'message' => 'บันทึกข้อมูลเรียบร้อยแล้ว',
+       ]);
+   }
+   
+
 
 }
 

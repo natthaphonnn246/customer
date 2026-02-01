@@ -7,7 +7,7 @@
         <h5 class="!text-gray-600 font-semibold ms-6">รายงานขาย</h5>
         <hr class="my-3 !text-gray-400 !border">
 
-        <div class="mx-10">
+        <div class="flex flex-col sm:flex-row justify-start items-stretch gap-4 mx-10">
             {{-- <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a> --}}
             <a href="/webpanel/report/seller/importseller" class="bg-blue-500 hover:bg-blue-600 text-white !no-underline px-4 py-2 !rounded-md" type="submit"  name="">นำเข้าไฟล์</a>
             {{-- @php
@@ -346,7 +346,7 @@
     </script>
 
         <hr class="mt-8" style="color: #8E8E8E; width: 100%;">
-        <div class="ms-6 mr-6 mb-2 mt-4">
+        <div class="mx-8 mb-2 mt-4">
 
             <span class="ms-2" style="font-size:18px; color:#202020;">แสดงใบสั่งซื้อ :</span>
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
@@ -764,8 +764,8 @@
                 {{-- <hr class="mt-3" style="color: #8E8E8E; width: 100%;"> --}}
             @endif
         @else
-            <div class="text-center py-8">
-                <span style="background-color: #ffc637; padding:15px;">
+            <div class="text-center mx-8 py-2">
+                <span class="block w-full py-2 bg-yellow-500">
                     ไม่พบข้อมูล
                 </span>
             </div>

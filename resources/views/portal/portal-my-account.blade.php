@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.portal')
 @section('content')
 @csrf
 
@@ -154,7 +154,6 @@
                         }
             
                         const idToken = liff.getIDToken();
-                   
                         if (!idToken) {
                             Swal.fire({ title: 'เกิดข้อผิดพลาด', text: 'ไม่พบ LINE ID token', icon: 'error' });
                             return;

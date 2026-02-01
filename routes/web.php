@@ -59,9 +59,12 @@
     // Route::post('/', [RecaptchaV2::class, 'reCaptcha']);
 
     //messaging API LineOA
-    Route::post('/line/connect', [LineController::class, 'connectLine'])->name('portal.line.connect');
-
-    //middleware statusOnline;
+    Route::post('/line/connect', [LineController::class, 'connectLine'])
+    ->name('portal.line.connect');
+    //logout line revoktoken
+    Route::post('/webpanel/line/revoke-token/user',[LineController::class, 'revokeLineToken'])->name('line.revoktoken.admin');
+    
+//middleware statusOnline;
 Route::middleware('statusOnline', 'block.ai')->group(function (){
 /*     
     Route::get('/signin', function () {
@@ -220,6 +223,10 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
 
          //user create;
         Route::post('/webpanel/admin-create/insert', [UserController::class, 'create']);
+
+        //จัดกลุ่มแอดมินกับไลน์;
+        Route::get('/webpanel/admin-group', [UserController::class, 'groupLine']);
+        Route::post('webpanel/admin-group/update', [UserController::class, 'updateLine'])->name('admin.groupline.update');
 
         //user update;
         Route::post('/webpanel/admin-detail/update/{id}', [UserController::class, 'update']);

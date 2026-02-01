@@ -9,7 +9,7 @@
 @media (min-width: 768px) {
     .content-wrapper {
         margin-left: 260px;   /* เว้น sidebar */
-        margin-top: 64px;     /* เว้น navbar */
+        margin-top: 55px;     /* เว้น navbar */
 
         padding: 16px;        /* ระยะเท่ากัน บนล่างซ้ายขวา */
     }

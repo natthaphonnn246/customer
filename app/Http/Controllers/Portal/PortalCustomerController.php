@@ -33,6 +33,7 @@ use App\Models\ProductType;
 use App\Models\Setting;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Services\MessageApiService;
+use Illuminate\Support\Str;
 
 class PortalCustomerController
 {
@@ -78,7 +79,7 @@ class PortalCustomerController
         $status_alert = $status_waiting + $status_action;
 
         $check_modal_waiting = DB::table('customers')
-                                ->select('id', 'customer_id', 'customer_name')
+                                ->select('id','slug', 'customer_id', 'customer_name')
                                 ->where('admin_area', $id)
                                 ->whereNotIn('customer_id', $code_notin)
                                 ->where('customer_status', '!=', 'inactive')
@@ -87,6 +88,10 @@ class PortalCustomerController
 
         $count_modal_waiting = count($check_modal_waiting);
         $check_edit = DB::table('settings')->where('setting_id', '=', 'WS01')->first()?->check_edit;
+/* 
+        $code = $request->user()->user_code;
+        
+        $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first(); */
 
         return view('portal/dashboard', compact(
                                                 'user_name', 
@@ -245,10 +250,10 @@ class PortalCustomerController
                 $cert_number = '';
             }
 
-            $register_by = $request->register_by;
+          /*   $register_by = $request->register_by;
             if($register_by == null) {
                 $register_by = '';
-            }
+            } */
 
             $admin_area = $request->admin_area;
             if($admin_area == null) {
@@ -266,11 +271,15 @@ class PortalCustomerController
             $purchase = $request->purchase;
         }   
 
-            $tempCode = 'TMP-' . now()->format('ymdHis') . rand(10,99);
-
-            $customer_id = $tempCode;
-            $customer_code = $tempCode;
-
+            if (!empty($request->customer_code)) {
+                $customer_code = $request->customer_code;
+                $customer_id   = $request->customer_code;
+            } else {
+                $tempCode = 'TMP-' . now()->format('ymdHis') . rand(10, 99);
+                $customer_code = $tempCode;
+                $customer_id   = $tempCode;
+            }
+        
             if($cert_store != '' && $customer_id != '')
             {
                 // $image_cert_store = $request->file('cert_store')->storeAs('img_certstore', $customer_id.'_certstore.jpg');
@@ -315,6 +324,8 @@ class PortalCustomerController
 
             $delivery_by = $request->delivery_by;
 
+            $register_by = Auth::user()->name;
+
        /*  $customer = new Customer;
         $customer->customer_code = $request->customer_code;
         $customer->save(); */
@@ -322,12 +333,14 @@ class PortalCustomerController
         $customer = Customer::where('customer_code', $customer_code)->first();
         // dd($customer);
 
+        $baseSlug = 'customer-' . Str::uuid();
+
         if($customer == null)
         {
             Customer::create([
 
-                        'customer_id' => $customer_id ?? '',
-                        'customer_code' => $customer_code ?? '',
+                        'customer_id' => $customer_id,
+                        'customer_code' => $customer_code,
                         'customer_name' => $customer_name,
                         'price_level' => $price_level,
                         'email' => $email,
@@ -361,10 +374,13 @@ class PortalCustomerController
                         'points' => '0',
                         'add_license' => 'ไม่ระบุ',
                         'purchase'    => $purchase,
-                        'status_vat'  => 0,
+                        'status_vat'  => $request->status_vat,
                         'status_web'  => 0,
                         'status_sap'  => 0,
                         'user_id'     => $userId,
+                        'slug'        => $baseSlug,
+                        'sap_send_line' => 0,
+                        'web_send_line' => 0,
 
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
@@ -431,7 +447,7 @@ class PortalCustomerController
 
         //check modal;
         $check_modal_waiting = DB::table('customers')
-                                ->select('id', 'customer_id', 'customer_name')
+                                ->select('id', 'slug', 'customer_id', 'customer_name')
                                 ->where('admin_area', $id)
                                 ->whereNotIn('customer_id', $code_notin)
                                 ->where('customer_status', '!=', 'inactive')
@@ -446,22 +462,26 @@ class PortalCustomerController
                                 ->count();
                                 // dd($count_page);
    
-        $perpage = 10;
+        //ปิดการแสดงผล
+  /*       $perpage = 10;
         $total_page = ceil($count_page / $perpage);
-        $start = ($perpage * $page) - $perpage;
+        $start = ($perpage * $page) - $perpage; */
+
+        //ปิดการแสดงผล ให้ total_page = 0
+        $total_page = 0;
         
         $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
         $pur_report = User::select('purchase_status')->where('user_code', $code)->first();
         // dd($pur_report->admin_role);
 
-        $customer_list = DB::table('customers')->select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+        //ปิดการแสดงผลชั่วคราว
+      /*   $customer_list = DB::table('customers')->select('id','slug', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
                                     ->whereNotIn('customer_status', ['inactive'])
-                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
                                     ->whereNotIn('customer_id', $code_notin)
                                     ->offset($start)
                                     ->limit($perpage)
-                                    ->get();
+                                    ->get(); */
 
         $status_all = DB::table('customers')->select('status')
                                 ->where('admin_area', $id)
@@ -577,11 +597,11 @@ class PortalCustomerController
         // dd($customer_list);
         return view('portal/customer', array_merge(
                                         compact(
-                                            'customer_list', 
+                                            // 'customer_list', 
                                             'user_name', 
-                                            'page', 
+                                        /*     'page', 
+                                            'start',  */
                                             'total_page', 
-                                            'start', 
                                             'status_waiting', 
                                             'status_action', 
                                             'status_completed', 
@@ -636,7 +656,7 @@ class PortalCustomerController
             $start = ($perpage * $page) - $perpage;
             
             $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
-            $customer_list = DB::table('customers')->select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+            $customer_list = DB::table('customers')->select('id','slug', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
                                     ->where('status', 'รอดำเนินการ')
                                     ->whereNotIn('customer_status', ['inactive'])
@@ -675,7 +695,36 @@ class PortalCustomerController
                                         ->count();
     
             $count_alert = $count_waiting + $count_action;
-            
+
+            $status_all = DB::table('customers')->select('status')
+                        ->where('admin_area', $id)
+                        ->whereNotIn('customer_status', ['inactive'])
+                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        ->whereNotIn('customer_id', $code_notin)
+                        ->count();
+    
+            $status_waiting = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'รอดำเนินการ')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+                            // dd($count_waiting);
+            $status_action = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'ต้องดำเนินการ')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+    
+            $status_completed = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'ดำเนินการแล้ว')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+
+            $status_alert = $status_waiting + $status_action;
               //keyword;
 
          /*    $check_customer_codes = Customer::where('status', '0')->where('customer_id',  'Like', "%{$keyword_code}%")
@@ -735,7 +784,12 @@ class PortalCustomerController
                                                                     'count_completed', 
                                                                     'count_alert', 
                                                                     'status_customer',
-                                                                    'check_edit'
+                                                                    'check_edit',
+                                                                    'status_all',
+                                                                    'status_waiting',
+                                                                    'status_completed',
+                                                                    'status_action',
+                                                                    'status_alert',
                                                                 ),
                                                                 ['json_edit' => json_encode($check_edit)]
                                                             ));
@@ -758,7 +812,12 @@ class PortalCustomerController
                                                             'count_completed', 
                                                             'count_alert', 
                                                             'status_customer',
-                                                            'check_edit'
+                                                            'check_edit',
+                                                            'status_all',
+                                                            'status_waiting',
+                                                            'status_completed',
+                                                            'status_action',
+                                                            'status_alert',
                                                         ),
                                                         ['json_edit' => json_encode($check_edit)]
                                                     ));
@@ -777,7 +836,7 @@ class PortalCustomerController
             $start = ($perpage * $page) - $perpage;
             
             $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
-            $customer_list = DB::table('customers')->select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+            $customer_list = DB::table('customers')->select('id','slug', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
                                     ->where('status', 'ต้องดำเนินการ')
                                     ->whereNotIn('customer_status', ['inactive'])
@@ -816,6 +875,36 @@ class PortalCustomerController
                                             ->count();
 
             $count_alert = $count_waiting + $count_action;
+
+            $status_all = DB::table('customers')->select('status')
+                        ->where('admin_area', $id)
+                        ->whereNotIn('customer_status', ['inactive'])
+                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        ->whereNotIn('customer_id', $code_notin)
+                        ->count();
+
+            $status_waiting = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'รอดำเนินการ')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+                            // dd($count_waiting);
+            $status_action = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'ต้องดำเนินการ')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+
+            $status_completed = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'ดำเนินการแล้ว')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+
+            $status_alert = $status_waiting + $status_action;
 
             //search;
             if($keyword_code != '') {
@@ -863,7 +952,12 @@ class PortalCustomerController
                                                                     'count_completed',
                                                                     'count_alert',  
                                                                     'status_customer',
-                                                                    'check_edit'
+                                                                    'check_edit',
+                                                                    'status_all',
+                                                                    'status_waiting',
+                                                                    'status_completed',
+                                                                    'status_action',
+                                                                    'status_alert',
                                                                 ), ['json_edit' => json_encode($check_edit)]
                                                             ));
                 }
@@ -883,7 +977,12 @@ class PortalCustomerController
                                                             'count_completed',
                                                             'count_alert',  
                                                             'status_customer',
-                                                            'check_edit'
+                                                            'check_edit',
+                                                            'status_all',
+                                                            'status_waiting',
+                                                            'status_completed',
+                                                            'status_action',
+                                                            'status_alert',
                                                         ), ['json_edit' => json_encode($check_edit)]
                                                     ));
         
@@ -901,7 +1000,7 @@ class PortalCustomerController
             $start = ($perpage * $page) - $perpage;
             
             $user_name = User::select('name', 'admin_area','user_code', 'rights_area')->where('user_code', $code)->first();
-            $customer_list = DB::table('customers')->select('id', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
+            $customer_list = DB::table('customers')->select('id', 'slug', 'admin_area', 'customer_code', 'customer_name', 'sale_area', 'status', 'email', 'created_at', 'customer_status')
                                     ->where('admin_area', $id)
                                     ->where('status', "ดำเนินการแล้ว")
                                     ->whereNotIn('customer_status', ['inactive'])
@@ -940,6 +1039,36 @@ class PortalCustomerController
                                             ->count();
 
             $count_alert = $count_waiting + $count_action;
+
+            $status_all = DB::table('customers')->select('status')
+                        ->where('admin_area', $id)
+                        ->whereNotIn('customer_status', ['inactive'])
+                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        ->whereNotIn('customer_id', $code_notin)
+                        ->count();
+
+            $status_waiting = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'รอดำเนินการ')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+                            // dd($count_waiting);
+            $status_action = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'ต้องดำเนินการ')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+
+            $status_completed = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'ดำเนินการแล้ว')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+
+            $status_alert = $status_waiting + $status_action;
 
             //search;
             if($keyword_code != '') {
@@ -988,7 +1117,12 @@ class PortalCustomerController
                                                                         'count_completed',
                                                                         'count_alert', 
                                                                         'status_customer',
-                                                                        'check_edit'
+                                                                        'check_edit',
+                                                                        'status_all',
+                                                                        'status_waiting',
+                                                                        'status_completed',
+                                                                        'status_action',
+                                                                        'status_alert',
                                                                     ), ['json_edit' => json_encode($check_edit)]
                                                                 ));
                 }
@@ -1008,7 +1142,12 @@ class PortalCustomerController
                                                                 'count_completed',
                                                                 'count_alert', 
                                                                 'status_customer',
-                                                                'check_edit'
+                                                                'check_edit',
+                                                                'status_all',
+                                                                'status_waiting',
+                                                                'status_completed',
+                                                                'status_action',
+                                                                'status_alert',
                                                             ), ['json_edit' => json_encode($check_edit)]
                                                             ));
         }
@@ -1017,8 +1156,37 @@ class PortalCustomerController
     public function customerEdit(Request $request, $id) 
     {
 
+        $adminArea = Auth::user()->admin_area;
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+        $status_all = DB::table('customers')->select('status')
+                    ->where('admin_area', $adminArea)
+                    ->whereNotIn('customer_status', ['inactive'])
+                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                    ->whereNotIn('customer_id', $code_notin)
+                    ->count();
+
+        $status_waiting = DB::table('customers')->where('admin_area', $adminArea)
+                        ->where('status', 'รอดำเนินการ')
+                        ->whereNotIn('customer_status', ['inactive'])
+                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        ->whereNotIn('customer_id', $code_notin)
+                        ->count();
+                        // dd($count_waiting);
+        $status_action = DB::table('customers')->where('admin_area', $adminArea)
+                        ->where('status', 'ต้องดำเนินการ')
+                        ->whereNotIn('customer_status', ['inactive'])
+                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        ->whereNotIn('customer_id', $code_notin)
+                        ->count();
+
+        $status_completed = DB::table('customers')->where('admin_area', $adminArea)
+                        ->where('status', 'ดำเนินการแล้ว')
+                        ->whereNotIn('customer_status', ['inactive'])
+                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        ->whereNotIn('customer_id', $code_notin)
+                        ->count();
 
         // dd($id);
         $customer_edit = Customer::customerEdit($id);
@@ -1064,6 +1232,7 @@ class PortalCustomerController
                                 ->count();
 
         $count_alert = $count_waiting + $count_action;
+        $status_alert = $status_waiting + $status_action;
 
         $sale_name = Salearea::select('sale_name')->where('sale_area', $customer_edit->sale_area)->first();
         if($sale_name == null) {
@@ -1072,13 +1241,29 @@ class PortalCustomerController
 
         }
         
-        return view('portal/customer-detail', compact('customer_edit', 'province', 'amphur', 'district', 'user_name', 'sale_name', 'count_all', 'count_waiting', 'count_action', 'count_completed', 'count_alert'));
+        return view('portal/customer-detail', compact(
+                                                        'customer_edit', 
+                                                        'province', 
+                                                        'amphur', 
+                                                        'district', 
+                                                        'user_name', 
+                                                        'sale_name', 
+                                                        'count_all', 
+                                                        'count_waiting', 
+                                                        'count_action', 
+                                                        'count_completed', 
+                                                        'count_alert',
+                                                        'status_all',
+                                                        'status_waiting',
+                                                        'status_completed',
+                                                        'status_action',
+                                                        'status_alert',
+                                                    ));
     }
     //update customer;
     public function updateEdit(Request $request, $id)
     {
 
-        // dd($id);
 
                 $phone = $request->phone;
                 if($phone == null) {
@@ -1143,7 +1328,7 @@ class PortalCustomerController
                             'status_update' => 'updated',
                             'delivery_by'   => $delivery_by,
                             'purchase'      => $purchase,
-                            'udate_by'      => $update_by,
+                            'update_by'      => $update_by,
                     
                     ]);
 
@@ -1168,17 +1353,19 @@ class PortalCustomerController
 
                 // usleep(100000);
                 // check user id;
-                $check_customer_id = Customer::select('id')->where('id', $id)->first();
+                $check_customer_id = Customer::select('id', 'slug')->where('id', $id)->first();
                 $customer_id =  $check_customer_id->id;
+
+                $slug = $check_customer_id->slug;
 
                 if ($customer_id == $id)
                 {
                     // echo 'success';
-                    return redirect('/portal/customer/'.$id)->with('status', 'updated_success');
+                    return redirect('/portal/customer/'.$slug)->with('status', 'updated_success');
                 }
                 else {
                     // echo 'fail';
-                    return redirect('/portal/customer/'.$id)->with('status', 'updated_fail');
+                    return redirect('/portal/customer/'.$slug)->with('status', 'updated_fail');
                 }
             
     }
@@ -1588,6 +1775,7 @@ class PortalCustomerController
     
                 $customer_list =  DB::table('customers')->select(
                                                 'customers.id',
+                                                'customers.slug',
                                                 'customers.customer_id',
                                                 'customers.customer_name',
                                                 'customers.status',
@@ -1602,6 +1790,7 @@ class PortalCustomerController
                                             ->where('customers.admin_area', $id)
                                             ->groupBy(
                                                 'customers.id',
+                                                'customers.slug',
                                                 'customers.customer_id',
                                                 'customers.customer_name',
                                                 'customers.status',
@@ -1679,6 +1868,7 @@ class PortalCustomerController
 
                         $customer_list = DB::table('customers')->select(
                                                         'customers.id',
+                                                        'customers.slug',
                                                         'customers.customer_id',
                                                         'customers.customer_name',
                                                         'customers.status',
@@ -1693,6 +1883,7 @@ class PortalCustomerController
                                                     ->where('customers.admin_area', $id)
                                                     ->groupBy(
                                                         'customers.id',
+                                                        'customers.slug',
                                                         'customers.customer_id',
                                                         'customers.customer_name',
                                                         'customers.status',
@@ -1778,6 +1969,7 @@ class PortalCustomerController
 
                         $customer_list = DB::table('customers')->select(
                                                                         'customers.id',
+                                                                        'customers.slug',
                                                                         'customers.customer_id',
                                                                         'customers.customer_name',
                                                                         'customers.status',
@@ -1792,6 +1984,7 @@ class PortalCustomerController
                                                     ->where('customers.admin_area', $id)
                                                     ->groupBy(
                                                                 'customers.id',
+                                                                'customers.slug',
                                                                 'customers.customer_id',
                                                                 'customers.customer_name',
                                                                 'customers.status',
@@ -1871,6 +2064,7 @@ class PortalCustomerController
 
                         $customer_list = DB::table('customers')->select(
                                                             'customers.id',
+                                                            'customers.slug',
                                                             'customers.customer_id',
                                                             'customers.customer_name',
                                                             'customers.status',
@@ -1885,6 +2079,7 @@ class PortalCustomerController
                                                         ->where('customers.admin_area', $id)
                                                         ->groupBy(
                                                             'customers.id',
+                                                            'customers.slug',
                                                             'customers.customer_id',
                                                             'customers.customer_name',
                                                             'customers.status',

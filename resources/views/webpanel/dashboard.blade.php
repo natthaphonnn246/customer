@@ -2,14 +2,14 @@
 @section('content')
 {{-- @csrf --}}
         <div class="py-2"></div>
-        <h5 class="!text-gray-600 font-semibold ms-6">ร้านค้า (Customer)</h5>
+        <h5 class="!text-gray-600 font-semibold ms-6">Dashboard: CMS</h5>
         <hr class="my-3 !text-gray-400 !border">
     
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mx-4 px-2">
 
             {{-- ร้านค้าทั้งหมด --}}
             <div class="bg-blue-600 text-white rounded-xl p-5 hover:shadow-lg transition">
-                <div class="text-sm opacity-90">ร้านค้าทั้งหมด</div>
+                <div class="text-base opacity-90">ร้านค้าทั้งหมด</div>
                 <div class="text-3xl font-bold mt-2">
                     {{ $customer_all ?? 0 }}
                 </div>
@@ -17,8 +17,8 @@
         
             {{-- ลงทะเบียนใหม่ --}}
             <a href="/webpanel/customer/status/new_registration"
-               class="block bg-cyan-600 text-white rounded-xl p-5 hover:bg-cyan-700 transition">
-                <div class="text-sm opacity-90">ลงทะเบียนใหม่</div>
+               class="block bg-cyan-600 text-white rounded-xl p-5 hover:bg-cyan-700 !no-underline transition">
+                <div class="text-base opacity-90">ลงทะเบียนใหม่</div>
                 <div class="text-3xl font-bold mt-2">
                     {{ $status_registration ?? 0 }}
                 </div>
@@ -26,7 +26,7 @@
         
             {{-- บัญชีปกติ --}}
             <div class="bg-emerald-600 text-white rounded-xl p-5 transition">
-                <div class="text-sm opacity-90">บัญชีปกติ</div>
+                <div class="text-base opacity-90">บัญชีปกติ</div>
                 <div class="text-3xl font-bold mt-2">
                     {{ $count_status_normal ?? 0 }}
                 </div>
@@ -34,8 +34,8 @@
         
             {{-- กำลังติดตาม --}}
             <a href="/webpanel/customer/status/following"
-               class="block bg-amber-500 text-white rounded-xl p-5 hover:bg-amber-600 transition">
-                <div class="text-sm opacity-90">กำลังติดตาม</div>
+               class="block bg-amber-500 text-white rounded-xl p-5 hover:bg-amber-600 !no-underline transition">
+                <div class="text-base opacity-90">กำลังติดตาม</div>
                 <div class="text-3xl font-bold mt-2">
                     {{ $count_status_follow ?? 0 }}
                 </div>
@@ -43,7 +43,7 @@
         
             {{-- ระงับบัญชี --}}
             <div class="bg-rose-600 text-white rounded-xl p-5 transition">
-                <div class="text-sm opacity-90">ระงับบัญชี (ไม่เคลื่อนไหว)</div>
+                <div class="text-base opacity-90">ระงับบัญชี (ไม่เคลื่อนไหว)</div>
                 <div class="text-3xl font-bold mt-2">
                     {{ $count_status_suspend ?? 0 }}
                 </div>
@@ -51,7 +51,7 @@
         
             {{-- ปิดบัญชี --}}
             <div class="bg-slate-700 text-white rounded-xl p-5 transition">
-                <div class="text-sm opacity-90">ปิดบัญชี</div>
+                <div class="text-base opacity-90">ปิดบัญชี</div>
                 <div class="text-3xl font-bold mt-2">
                     {{ $count_status_closed ?? 0 }}
                 </div>

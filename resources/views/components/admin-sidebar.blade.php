@@ -1,3 +1,11 @@
+@props([
+/*     'statusAll' => 0,
+    'statusAlert' => 0,
+    'statusWaiting' => 0,
+    'statusAction' => 0,
+    'statusCompleted' => 0, */
+    'userName' => 'ไม่ระบุ'
+])
 <div x-data="{ open: false }">
 
     <!-- ================= NAVBAR ================= -->
@@ -25,9 +33,15 @@
             cms.vmdrug
         </span>
         
+       {{--  <div class="ml-auto flex items-center text-white gap-3">
+            {{ $userName }}
+            <img src="/profile/user.png"
+                 class="w-8 h-8 rounded-full">
+        </div> --}}
+
         {{-- /admin/customer --}}
         <div class="ml-auto flex items-center text-white gap-3">
-            @yield('col-2')
+            {{ $userName }}
             <img src="/profile/user.png"
                  class="w-8 h-8 rounded-full">
         </div>

@@ -1,136 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-    @section ('title', 'productmaster')
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <title>cms.vmdrug</title>
-</head>
-<body>
-
-    @extends ('portal/menuportal-tailwind')
-    @section('content')
-    @csrf
-
-
-    <style>
-        .contentArea {
-            /* padding: 20px 40px 40px; */
-            /* padding: 12px; */
-            background-color: #FFFFFF;
-            border-radius: 2px;
-            text-align: left;
-
-       /*      background-image:  */
-                /* url('/profile/pumpkin-1.png'), */
-             /*    url('/profile/hallowen-1.png');
-                background-repeat: no-repeat, no-repeat; */
-
-            /* ขนาดภาพแต่ละภาพ */
-          /*   background-size: 700px auto, 600px auto; */
-
-            /* ตำแหน่งภาพแต่ละภาพ */
-   /*          background-position: right bottom, right bottom; */
-        }
-        .btn {
-            background-color: #09A542;
-            color:white;
-        }
-        .btn:hover {
-            width: auto;
-            height: auto;
-            background-color: #118C3E;
-        }
-       /*  .input_date {
-            border-radius: 3px;
-            border: 1px solid #D3D3D3;
-            padding: 5px;
-            margin-bottom: 15px;
-            width: auto;
-            
-        }
-        #datepicker {
-            width: 100%;
-        } */
-    </style>
+@extends ('layouts.portal')
+@section('content')
     
-    <div class="contentArea">
-
-        @section('col-2')
-
-        @if(isset($user_name))
-            <h6 class="mt-1" style="">{{$user_name->name}}</h6>
-            @endif
-        @endsection
-
-        @section('status_alert')
-        @if($admin_area_list->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_alert}}</h6>
-            @endif
-        @endsection
-
-        @section('status_all')
-        @if($admin_area_list->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_all}}</h6>
-            @endif
-        @endsection
-
-        @section('status_waiting')
-        @if($admin_area_list->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_waiting}}</h6>
-            @endif
-        @endsection
-
-        @section('status_action')
-        @if($admin_area_list->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_action}}</h6>
-            @endif
-        @endsection
-
-        @section('status_completed')
-        @if($admin_area_list->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_completed}}</h6>
-            @endif
-        @endsection
+    <div class="py-2"></div>
+    <h5 class="ms-6 !text-gray-600">ลงทะเบียนร้านค้า</h5>
+    <hr class="my-3">
 
         <form action="/portal/signin/create" method="post" enctype="multipart/form-data">
- 
-            @csrf
-
-            <!--- เก็บชื่อแอดมินที่ลงทะเบียน-->
-            @if(isset($user_name))
-                <input type="hidden" name="register_by" value="{{$user_name->admin_area.' '.'('.$user_name->name.')'}}">
-            @else
-                <input type="hidden" name="register_by" value="ไม่ระบุ">
-            @endif
-
-            <div class="py-2">
-                {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
-                {{-- <span class="ms-6" style="color: #8E8E8E;">ลงทะเบียนร้านค้า (Register)</span> --}}
-            </div>
-            <span class="ms-6" style="color: #8E8E8E;">ลงทะเบียน (Register)</span>
-            <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 2px;">
-
-            <div class="row ms-6 mr-6">
-                <div class="col-sm-6 mt-2">
-                    <ul class="text-title" style="text-align: start;">
-                        <span style="font-size: 18px; font-weight: 500;">ลงทะเบียนลูกค้าใหม่</span>
+        @csrf
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mx-8">
+                <div>
+                        <h4 class=" block mt-4 !text-gray-600">เอกสารใบอนุญาต</h4>
                         <hr style="color: #8E8E8E; width: 100%; margin-top: 10px">
-                    </ul>
-                    <ul class="text-muted py-3" style="padding-top: 10px;">
-                        <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span></br>
+
+                        <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span class="text-xs text-red-500">*จำเป็นต้องระบุ</span>
                         {{-- <input class="btn btn-primary my-2" style="width:100%; border:none;" id="cert_store" value="ใบอนุญาตขายยา/สถานพยาบาล"> --}}
                         <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_store" id="cert_store" accept="image/png, image/jpg, image/jpeg" required><br>
 
-                        <span>ใบประกอบวิชาชีพ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                        <span>ใบประกอบวิชาชีพ</span> <span class="text-xs text-red-500">*จำเป็นต้องระบุ</span>
                         <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_medical" id="cert_medical" accept="image/png, image/jpg, image/jpeg" required><br>
 
                         <span>ใบทะเบียนพาณิชย์</span>
@@ -142,103 +28,112 @@
                         <span>สำเนาบัตรประชาชน</span>
                         <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" id="cert_id" accept="image/png, image/jpg, image/jpeg"><br>
 
-                        <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                        <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span class="text-xs text-red-500">*จำเป็นต้องระบุ</span>
                         <input style="margin-top:10px; color:grey;" type="text" class="form-control" name="cert_number"><br>
+             
                         @php
-                             $year = date('Y') + 543; 
+                            $year = date('Y') + 543; 
                         @endphp
-                        <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบที่ใบอนุญาตอีกรอบ</span>
-                        {{-- <input style="margin-top:10px; color:grey;" type="date" value="2024-01-01" class="form-control" name="cert_expire"><br> --}}
-                        <input class="form-control" style="margin-top:10px; color:grey;" type="text" id="datepicker" value="31/12/{{ $year }}" name="cert_expire">
+                            <label class="mb-2">
+                                วันหมดอายุ
+                                <span class="text-base text-red-500">
+                                    *กรุณาระบุวันที่ให้ถูกต้อง
+                                </span>
+                            </label>
+                        
+                            <div class="relative">
+                                <input
+                                    type="text"
+                                    id="datepicker"
+                                    name="cert_expire"
+                                    value="31/12/{{ $year }}"
+                                    class="w-full rounded-md border !border-gray-300
+                                        px-3 py-2 pr-10 text-gray-700
+                                        focus:outline-none focus:ring-2 focus:ring-blue-500
+                                        focus:border-blue-500 bg-white"
+                                >
+                        
+                                <!-- calendar icon (right) -->
+                                <button
+                                    type="button"
+                                    id="openDatepicker"
+                                    class="absolute inset-y-0 right-0 flex items-center px-3
+                                        border-l !border-gray-300
+                                        text-gray-600 hover:text-gray-600
+                                        bg-gray-50 border !rounded-r-md">
+                                    <i class="fa-regular fa-calendar"></i>
+                                </button>
+                            </div>
 
-                    </ul>
-                    <script>
-                        $(document).ready(function () {
-                            // Datepicker
-                                $("#datepicker" ).datepicker({
+                        <script>
+                            $(function () {
+                                $("#datepicker").datepicker({
                                     dateFormat: 'dd/mm/yy',
                                     changeMonth: true,
                                     changeYear: true,
-                                    yearRange: "2025:2029",
-                                 /*    showOn: "button",
-                                    buttonImage: "/icons/icons9-calendar.gif",
-                                    showButtonPanel: true, */
-                                    // showAnim: "fold"
-                                   
-                                    
+                                    yearRange: "2569:2574"
                                 });
-
+                            
+                                $("#openDatepicker").on("click", function () {
+                                    $("#datepicker").focus();
+                                });
                             });
-                    </script>
-                    <ul class="text-title" style="text-align: start; margin-top: 5px;">
-                        <span style="font-size: 18px; font-weight: 500;">ข้อมูลลูกค้า</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุให้ครบทุกช่อง</span>
-                        <hr style="color: #8E8E8E; width: 100%; margin-top: 10px">
-                    </ul>
-                    <div class="row text-muted">
-                        <div class="col-sm-12 py-3">
-                            <ul style="width: 100%;">
-                                <span>ชื่อร้านค้า/สถานพยาบาล</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="customer_name" required>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul style="width: 100%;">
-                                <span>CODE</span><span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="customer_code" required>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul style="width: 100%;">
-                                <span>ระดับราคา</span><span style="font-size: 12px; color:red;">*ลูกค้า 6 เท่ากับ 1</span>
+                        </script>
+                        
+                        <div class="py-2"></div>
+                        <h4 class=" block mt-4 !text-gray-600">ข้อมูลร้านค้า</h4>
+                        <hr class="mb-4" style="color: #8E8E8E; width: 100%; margin-top: 10px">
+        
+                        <span>ชื่อร้านค้า/สถานพยาบาล</span>
+                        <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="customer_name" required>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                            <div>
+                                <span>CODE <span class="text-xs text-red-500">*หากเป็นร้านใหม่ให้เว้นไว้</span></span>
+                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="customer_code">
+                            </div>
+                            <div>
+                                <span>ระดับราคา <span class="text-xs text-red-500">*หากไม่ทราบให้เลือก 5</span></span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="price_level">
-                                <option name="price_level" value="5">5</option>
+             {{--                    <option name="price_level" value="5">5</option>
                                 <option name="price_level" value="1">1</option>
                                 <option name="price_level" value="2">2</option>
-                                <option name="price_level" value="3">3</option>
-                                <option name="price_level" value="4">4</option>
+                                <option name="price_level" value="3">3</option> --}}
+                                    <option name="price_level" value="5">5</option>
+                                    <option name="price_level" value="4">4</option>
                                 </select>
-                            </ul>
+                            </div>
                         </div>
-                        <div class="col-sm-12 py-3">
-                            <ul style="width: 100%;">
-                                <li class="mt-2">
-                                    <span>อีเมล</span>
-                                    <input style="margin-top:10px; color: grey;" name="email" type="email" class="form-control" name="email">
-                                </li>
-                                <li class="mt-4">
-                                    <span>เบอร์ร้านค้า</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 021234567)</span>
-                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="phone">
-                                </li>
-                                <li class="mt-4">
-                                    <span>เบอร์มือถือ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0812345678)</span>
-                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="telephone" required>
-                                </li>
-                                <li class="mt-4">
-                                    <span>การจัดส่งสินค้า</span><span style="font-size: 12px; color:red;"> *ไม่ระบุ คือ จัดส่งตามรอบขนส่งทางร้าน</span>
-                                    <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="delivery_by">
-                                    <option value="standard">ไม่ระบุ</option>
-                                    <option value="owner">ขนส่งเอกชน (พัสดุ)</option>
-                                    </select>
-                                </li>
-                                <li class="mt-4">
-                                    <span>ที่อยู่จัดส่ง</span>
-                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control no-paste" name="address" required>    
-                                </li>
-                                <script>
-                                    document.querySelectorAll('input.no-paste').forEach(input => {
-                                        input.addEventListener('paste', e => e.preventDefault());
-                                    });
-        
-                                </script>                            
-                            </ul>
-                        </div>
+                         
+                        <span class="block mt-3">อีเมล</span>
+                        <input style="margin-top:10px; color: grey;" name="email" type="email" class="form-control" name="email">
+            
+                        <span class="block mt-3">เบอร์ร้านค้า <span class="text-xs text-red-500">(ตัวอย่าง: 021234567)</span></span>
+                        <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="phone">
+            
+                        <span class="block mt-3">เบอร์มือถือ <span class="text-xs text-red-500">*จำเป็นต้องระบุ (ตัวอย่าง: 0881234568)</span></span> 
+                        <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="telephone" required>
 
-                        <div class="col-sm-6">
-                            <ul class="mt-2" style="width: 100%;">
-                                <span>จังหวัด</span>
-                                {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
+                        <span class="block mt-3">การจัดส่งสินค้า <span class="text-xs text-red-500">ไม่ระบุเท่ากับ จัดส่งตามรอบทางร้าน</span></span>
+                        <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="delivery_by">
+                            <option value="standard">ไม่ระบุ</option>
+                            <option value="owner">ขนส่งเอกชน (พัสดุ)</option>
+                        </select>
 
-                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="province" id="province">
+                        <span class="block mt-3">ที่อยู่จัดส่ง</span>
+                        <input style="margin-top:10px; color: grey;" type="text" class="form-control no-paste" name="address" required>    
+
+                        <script>
+                            document.querySelectorAll('input.no-paste').forEach(input => {
+                                input.addEventListener('paste', e => e.preventDefault());
+                            });
+
+                        </script>                            
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <span class="block mt-3">จังหวัด</span>
+                                <select class="form-select mt-1" style="color: grey;" aria-label="Default select example" name="province" id="province">
                                     @if(isset($provinces))
                                         @foreach($provinces as $row)
                                         
@@ -247,12 +142,10 @@
                                         @endforeach
                                     @endif
                                 </select>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul class="mt-2" style="width: 100%;">
-                                <span>อำเภอ/แขวง</span>
-                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="amphur" id="amphures" required>
+                            </div>
+                            <div>
+                                <span class="block mt-3">อำเภอ/เขต</span>
+                                <select class="form-select mt-1" style="color: grey;" aria-label="Default select example" name="amphur" id="amphures" required>
                                     
                                     @if(isset($ampures))
                                         @foreach($ampures as $row)
@@ -261,12 +154,13 @@
                                     @endif
 
                                 </select>
-                            </ul>
+                            </div>
                         </div>
-                        <div class="col-sm-6 py-3">
-                            <ul class="mb-8" style="width: 100%;">
-                                <span>ตำบล/เขต</span>
-                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts" required>
+                    
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <span class="block mt-4">ตำบล/แขวง</span>
+                                <select class="form-select mt-1" style="color: grey;" aria-label="Default select example" name="district" id="districts" required>
 
                                     @if(isset($district))
                                         @foreach($district as $row)
@@ -275,86 +169,85 @@
                                     @endif
 
                                 </select>
-                            </ul>
+                            </div>
+                            <div>
+                                <span class="block mt-4" class="block mt-4">รหัสไปรษณีย์ <span class="text-xs text-red-500">*ถ้าข้อมูลไม่ตรง แก้ไขได้</span></span>
+                                <input style="color: grey;" type="text" class="form-control mt-1" name="zip_code" id="zipcode" required>
+
+                            </div>
                         </div>
-                        <div class="col-sm-6 py-3">
-                            <ul class="mb-8" style="width: 100%;">
-                                <span>รหัสไปรษณีย์</span>
-                                <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="zip_code" id="zipcode" required>
-                            </ul>
-                        </div>
+                        <div class="py-4"></div>
                     </div>
-                </div>
                 
                 <!--form login-->
-                    <div class="col-sm-6 mt-2">
-                        <div class="form-control">
-                            <ul class="text-title" style="text-align: start; margin-top: 10px;">
-                                <span style="font-size: 18px; font-weight: 500;">ข้อมูลผู้รับผิดชอบ</span>
-                                <hr style="color: #8E8E8E; width: 100%; margin-top: 10px">
-                            </ul>
-                            <ul class="text-muted py-3" style="padding-top: 10px;">
-                           
-                                <span>แอดมินผู้ดูแล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                {{-- <input style="margin-top:10px;" type="text" class="form-control" name="admins"><br> --}}
-                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="admin_area">
-                                    @if(isset($admin_area_list))
-                                    {{-- @foreach($admin_area_list as $row) --}}
+                <div>
+                    <div class="form-control p-4">
+                        <h6 class="!text-gray-600"">ข้อมูลผู้รับผิดชอบ</h6>
+                        <hr style="color: #8E8E8E; width: 100%; margin-top: 10px">
+                        
+                            <span>แอดมินผู้ดูแล <span class="text-xs text-red-500">*จำเป็นต้องระบุ</span></span>
+                            {{-- <input style="margin-top:10px;" type="text" class="form-control" name="admins"><br> --}}
+                            <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="admin_area">
+                                @if(isset($admin_area_list))
+                                {{-- @foreach($admin_area_list as $row) --}}
 
-                                        @if($admin_area_list->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
-                                        <option value="{{$admin_area_list->admin_area}}">{{$admin_area_list->admin_area.' '.'('. $admin_area_list->name.')'}}</option>
-                                        @endif
-
-                                    {{-- @endforeach --}}
+                                    @if($admin_area_list->rights_area != '0') <!-- 0 == ไม่มีสิทธิ์ดูแลลูกค้า -->
+                                    <option value="{{$admin_area_list->admin_area}}">{{$admin_area_list->admin_area.' '.'('. $admin_area_list->name.')'}}</option>
                                     @endif
-                                    </select><br>
-                                
-                                <span>พนักงานขาย/เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                    <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="sale_area">
-                                    <option selected value="ไม่ระบุ"> ไม่ระบุ </option>
-                                    
-                                    @if (isset($sale_area))
-                                        @foreach($sale_area as $row_sale_area)
-                                        <option value="{{$row_sale_area->sale_area}}">{{$row_sale_area->sale_area.' '.'(' .$row_sale_area->sale_name.')'}}</option>
-                                        @endforeach
-                                    @endif
-                                    </select><br>
 
-                            </ul>
-                
-                        </div>
-                    
-                        <div class="mb-3 my-4">
-                            <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 18px; font-weight: 500;">เพิ่มเติม</label></label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="text_add"></textarea>
-                        </div>
-
-                        <div class="mb-4 my-4">
-                            <ul class="mt-4" style="width: 100%;  margin-top:15px;">
-                                <span style="font-size:18px; font-weight:500;">ช่องทางการสั่งสินค้า</span><span style="font-size: 14px; color:red;"> *เลือกช่องทางที่สั่งมากสุด</span>
-                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="purchase">
-                                    <option value="1">สั่งซื้อผ่านทางเว็บไซต์</option>
-                                    <option value="0">สั่งซื้อผ่านช่องทางอื่น ๆ (เช่น LINE หรือทางโทรศัพท์)</option>
-                                </select>
-                            </ul>
-                        </div>
-
-                            <button type="submit" name="submit_form" class="btn py-3" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>   
-                            <hr style="color:rgb(157, 157, 157);">
-
-                            <ul class="mt-4">
-                                @if(Session::get('error_code'))
-                                <div class="alert alert-danger"><i class="fa-solid fa-circle-xmark" style="color: rgb(172, 27, 27);"></i> {{ Session::get('error_code') }}</div>
-                                @elseif (Session::get('success'))
-                                <div class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success') }}</div>
-                                @else
-                                <p class="textrow py-3" style="text-align: center; font-weight:500; font-size: 16px; color:rgb(72, 72, 72);"><span>ลงทะเบียนแล้ว กรุณาติดต่อผู้ดูแล</span></p>
+                                {{-- @endforeach --}}
                                 @endif
-                            </ul>
-                        </div>
+                                </select><br>
+                            
+                          {{--   <span>พนักงานขาย/เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="sale_area">
+                                <option selected value="ไม่ระบุ"> ไม่ระบุ </option>
+                                
+                                @if (isset($sale_area))
+                                    @foreach($sale_area as $row_sale_area)
+                                    <option value="{{$row_sale_area->sale_area}}">{{$row_sale_area->sale_area.' '.'(' .$row_sale_area->sale_name.')'}}</option>
+                                    @endforeach
+                                @endif
+                                </select> --}}
+
                     </div>
+                
+                    <div class="mb-3 my-4">
+                        <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 18px; font-weight: 500;">เพิ่มเติม</label></label>
+                        {{-- <span class="text-sm text-red-500">*ฝากข้อความถึงผู้เปิดบัญชีลูกค้าใหม่ได้</span> --}}
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="text_add"></textarea>
+                    </div>
+
+                    <div class="mb-4 my-4">
+                        <p class="!text-gray-700 font-medium mt-3 mb-1">ช่องทางการสั่งสินค้า <span class="text-xs text-red-500">*เลือกช่องทางที่สั่งมากสุด</span></p>
+                        <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="purchase">
+                            <option value="1">สั่งซื้อผ่านทางเว็บไซต์</option>
+                            <option value="0">สั่งซื้อผ่านช่องทางอื่น ๆ (เช่น LINE หรือทางโทรศัพท์)</option>
+                        </select>
+                       
+                        <p class="!text-gray-700 font-medium mt-4 mb-1">รับใบกำกับภาษีด้วยไหม <span class="text-red-500 text-xs">*จำเป็นต้องระบุ</span></p>
+                        <select class="form-control !border-gray-300 p-2 rounded-lg mt-2 hover:!border-red-500 !text-red-500" aria-label="Default select example" name="status_vat">
+                            <option value="0">ไม่ต้องการ</option>
+                            <option value="1">ต้องการ</option>
+                        </select>
+
+                    </div>
+
+                        <button type="submit" name="submit_form" class="btn py-3" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>   
+                        <hr style="color:rgb(157, 157, 157);">
+
+                        <ul class="mt-4">
+                            @if(Session::get('error_code'))
+                            <div class="alert alert-danger"><i class="fa-solid fa-circle-xmark" style="color: rgb(172, 27, 27);"></i> {{ Session::get('error_code') }}</div>
+                            @elseif (Session::get('success'))
+                            <div class="alert alert-success"><i class="fa-solid fa-circle-check" style="color:green;"></i> {{ Session::get('success') }}</div>
+                            @else
+                            <p class="textrow py-3" style="text-align: center; font-weight:500; font-size: 16px; color:rgb(72, 72, 72);"><span>ลงทะเบียนแล้ว กรุณาติดต่อผู้ดูแล</span></p>
+                            @endif
+                        </ul>
+                </div>
+            </div>
         </form>
-    </div>
 
         @if (session('error_code') == 'ลงทะเบียนไม่สำเร็จ กรุณาตรวจสอบอีกรอบครับ')
         <script> 
@@ -628,5 +521,16 @@
         </script>
 
 @endsection
-</body>
-</html>
+@push('styles')
+<style>
+    .btn {
+        background-color: #09A542;
+        color:white;
+    }
+    .btn:hover {
+        width: auto;
+        height: auto;
+        background-color: #118C3E;
+    }
+</style>
+@endpush

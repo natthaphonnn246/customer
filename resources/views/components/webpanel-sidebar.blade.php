@@ -250,9 +250,9 @@
                     >
                         <i class="fa-regular fa-bell"></i>
                         <span class="flex-1 text-left">แจ้งเตือน</span>
-                        <span class="text-xs bg-red-600 px-2 rounded-full">
+                        <p class="text-xs bg-red-600 px-2 rounded-full items-center">
                             {{ $statusAlert }}
-                        </span>
+                        </p>
                     </button>
                 
                     <ul
@@ -266,9 +266,9 @@
                             <a href="/webpanel/customer/status/waiting"
                                class="flex justify-between px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
                                 <span>รอดำเนินการ</span>
-                                <span class="text-xs bg-blue-600 px-2 rounded-full">
+                                <p class="text-center text-xs bg-blue-600 px-2 rounded-full">
                                     {{ $statusWaiting }}
-                                </span>
+                                </p>
                             </a>
                         </li>
                 
@@ -276,9 +276,9 @@
                             <a href="/webpanel/customer/status/new_registration"
                                class="flex justify-between px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
                                 <span>ลงทะเบียนใหม่</span>
-                                <span class="text-xs bg-cyan-600 px-2 rounded-full">
+                                <p class="text-xs bg-cyan-600 px-2 rounded-full">
                                     {{ $statusRegistration }}
-                                </span>
+                                </p>
                             </a>
                         </li>
                 
@@ -286,9 +286,9 @@
                             <a href="/webpanel/customer/status/latest_update"
                                class="flex justify-between px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
                                 <span>อัปเดตข้อมูล</span>
-                                <span class="text-xs bg-rose-600 px-2 rounded-full">
+                                <p class="text-xs bg-rose-600 px-2 rounded-full">
                                     {{ $statusUpdated }}
-                                </span>
+                                </p>
                             </a>
                         </li>
                     </ul>

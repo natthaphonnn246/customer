@@ -1,134 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-    @section ('title', 'customer')
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" conten="{{ csrf_token() }}">
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <title>cms.vmdrug</title>
-</head>
-<body>
-
-    @extends ('portal/menuportal-tailwind')
-    @section('content')
-    @csrf
-
-
-    <style>
-
-        body{
-            font-family: 'Prompt', sans-serif;
-        }
-        li {
-            font-size: 15px;
-        }
-        .contentArea {
-            /* padding: 10px; */
-            /* padding: 20px 40px 40px; */
-            background-color: #FFFFFF;
-            border-radius: 2px;
-            /* text-align: left; */
-        }
-
-
-        #column-chart {
-            max-width: 80%;
-            height: 100%;
-            margin: 5px auto;
-            /* overflow: auto; */
-            }
-
-        #protected {
-                position: relative;
-                }
-
-                #protected::after {
-                content: "© cms.vmdrug";
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                font-size: 145px;
-                /* color: rgba(234, 43, 43, 0.111); */
-                color: rgba(170, 170, 170, 0.111);
-                pointer-events: none;
-                transform: translate(-50%, -50%); /* เอียงซ้าย 45 องศา */
-                white-space: nowrap; /* ป้องกันตัดบรรทัด */
-        }
-        .modal-body {
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-
-     /*    #dashPortal {
-            position:fixed;
-            height: 100%;
-            width:100%;
-            left: 0;
-            right: 0;
-            z-index: 0;
-            overflow: auto;
-        } */
-
-    </style>
-
+@extends ('layouts.portal')
+@section('content')
 
     <div class="contentArea" id="protected">
        
-        @section('col-2')
-
-        @if(isset($user_name))
-            <h6 class="mt-1" style="">{{$user_name->name}}</h6>
-            @endif
-        @endsection
-
-        @section('status_alert')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_alert}}</h6>
-            @endif
-        @endsection
-
-        @section('status_all')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_all}}</h6>
-            @endif
-        @endsection
-
-        @section('status_waiting')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_waiting}}</h6>
-            @endif
-        @endsection
-
-        @section('status_action')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_action}}</h6>
-            @endif
-        @endsection
-
-        @section('status_completed')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_completed}}</h6>
-            @endif
-        @endsection
-        
         <!-- charts --->
         <div class="py-2"></div>
-        <p class="ms-6" style="color: #8E8E8E;">หน้าแรก (Dashboard)</p>
-        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 2px;">
+        <h5 class="ms-6 !text-gray-600">หน้าหลัก</h5>
+        <hr class="my-3">
     
-            <div class="bg-white rounded-sm dark:bg-gray-800 text-center">
-                <span class="ms-8" style="color:#4a4a4a; font-weight:500; font-size:16px;">All customers</span>
-                <div class="py-2" id="column-chart" style="color:#8E8E8E;"></div>
+            <div class="text-start">
+                {{-- <h5 class="ms-8 !text-gray-600 !font-[400]">สถานะร้านค้า</h5> --}}
+                <div class="py-2" id="column-chart"></div>
             </div>
-        
     </div>
 
         @if(isset($count_modal_waiting) && $count_modal_waiting > 0 && $check_edit === 0)
@@ -136,9 +19,9 @@
                 <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header text-center">
-                    <h5 class="modal-title w-100 text-center" style="font-size: 20px; font-weight:500; color: rgb(255, 156, 7);">
-                        กรุณาอัปเดตข้อมูลให้ครบ : 
-                        <span style="border: solid 2px; padding:5px; font-weight:500; border-radius: 10px; color:rgb(255, 182, 11);">ต้องดำเนินการ</span>
+                    <h5 class="modal-title w-100 text-center !text-orange-400">
+                        {{-- กรุณาอัปเดตข้อมูลให้ครบ :  --}}
+                        <span class="inline-block border-2 border-amber-400 text-amber-400 px-3 py-2 rounded-lg text-base">ต้องดำเนินการ</span>
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
                     </div>
@@ -146,8 +29,8 @@
                         <table class="table table-bordered table-striped table-hover align-middle">
                             <thead class="table-warning">
                                 <tr>
-                                    <td style="width: 30%; text-align:center; font-weight:500; color:#464646;">รหัสร้านค้า</td>
-                                    <td style="width: 70%; text-align:center; font-weight:500; color:#464646;">
+                                    <td class="!text-center font-medium !text-gray-600">รหัสร้านค้า</td>
+                                    <td class="!text-center font-medium !text-gray-600">
                                         ชื่อร้านค้า
                                     </td>
                             
@@ -156,9 +39,9 @@
                             <tbody>
                                 @foreach ($check_modal_waiting as $row_modal)
                                     <tr>
-                                        <td style="text-align:center; font-weight:400; color:#838383;">{{ $row_modal->customer_id }}</td>
-                                        <td style="text-align:left; font-weight:400; color:#838383;">
-                                            <a href="{{ asset('/portal/customer/'.$row_modal->id) }}">
+                                        <td class="!text-center !text-gray-500">{{ $row_modal->customer_id }}</td>
+                                        <td>
+                                            <a href="{{ asset('/portal/customer/'.$row_modal->slug) }}" class="!no-underline !text-gray-500">
                                                 {{ $row_modal->customer_name }}
                                                 {{-- <sup style="background-color:#e04b30; color:white; border-radius:5px; padding:3px;">Edit</sup> --}}
                                             </a>
@@ -291,5 +174,36 @@
 
 
 @endsection
-</body>
-</html>
+@push('styles')
+<style>
+
+    #column-chart {
+        max-width: 80%;
+        height: 100%;
+        margin: 5px auto;
+        /* overflow: auto; */
+        }
+
+    #protected {
+            position: relative;
+            }
+
+            #protected::after {
+            content: "© cms.vmdrug";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 145px;
+            /* color: rgba(234, 43, 43, 0.111); */
+            color: rgba(170, 170, 170, 0.111);
+            pointer-events: none;
+            transform: translate(-50%, -50%); /* เอียงซ้าย 45 องศา */
+            white-space: nowrap; /* ป้องกันตัดบรรทัด */
+    }
+    .modal-body {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+</style>
+@endpush

@@ -23,7 +23,8 @@ class CustomerDetailCheck
 
         $id = $request->route('id'); 
 
-        $check_status = Customer::where('id', $id)->first()->customer_status;
+        // $check_status = Customer::where('id', $id)->first()->customer_status;
+        $check_status = Customer::where('slug', $id)->first()->customer_status;
 
         if($check_edit === 1) {
 

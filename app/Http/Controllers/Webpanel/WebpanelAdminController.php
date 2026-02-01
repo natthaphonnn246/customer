@@ -191,7 +191,9 @@ class WebpanelAdminController extends Controller
             $page = 1;
         }
 
-        $user_name = $request->user()->name;
+        $code = Auth::user()->id;
+        $user_name = User::find($code);
+        // $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
 
         //แสดงข้อมูลลูกค้า;
         $row_customer = Customer::viewCustomer($page);
@@ -233,8 +235,6 @@ class WebpanelAdminController extends Controller
 
         $keyword_search = $request->keyword;
         // dd($keyword);
-
-        $user_name = $request->user()->name;
 
         if($keyword_search != '') {
 
@@ -307,6 +307,7 @@ class WebpanelAdminController extends Controller
 
         }
 
+        // dd($user_name->name);
         $count_page = 1;
         return view('admin/customer', compact('count_page', 'admin_area', 'customer', 'start', 'total_page', 'page', 'total_customer', 'total_status_register',
                 'total_status_action', 'total_status_completed', 'status_alert', 'status_waiting', 'status_updated', 'user_name'));
@@ -315,7 +316,6 @@ class WebpanelAdminController extends Controller
 
     public function edit(Request $request, $slug)
     {
-
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
@@ -348,8 +348,9 @@ class WebpanelAdminController extends Controller
         $status_alert = $status_waiting + $status_updated;
 
 
-        //user_name admin;
-        $user_name = $request->user()->name;
+        
+        $code = Auth::user()->id;
+        $user_name = User::find($code);
 
         return view('admin/customer-detail', compact('customer_view', 'province', 'amphur', 'district', 'admin_area_list', 'admin_area_check', 'sale_area', 'status_waiting', 'status_alert', 'status_updated', 'user_name'));
     }
@@ -368,7 +369,8 @@ class WebpanelAdminController extends Controller
         }
 
         //user_name admin;
-        $user_name = $request->user()->name;
+        $code = Auth::user()->user_code;
+        $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
 
         //menu alert;
         $status_waiting = Customer::where('status', 'รอดำเนินการ')
@@ -768,7 +770,7 @@ class WebpanelAdminController extends Controller
 
     }
 
-    public function newDashboard()
+    public function newDashboard(Request $request)
     {
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
@@ -777,10 +779,16 @@ class WebpanelAdminController extends Controller
         $total_status_action = Customer::where('status_sap', 1)->whereNotIn('customer_code', $code_notin)->count();
         $total_status_completed = Customer::where('status_web', 1)->whereNotIn('customer_code', $code_notin)->count();
 
+        $code = Auth::user()->user_code;
+        
+        $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
+
         return view ('admin/new-dashboard', compact(
                                                         'total_status_register',
                                                         'total_status_action',
-                                                        'total_status_completed'
+                                                        'total_status_completed',
+                                                        'user_name',
+                                                        
                                                     ));
     }
     public function updateEdit(Request $request, $slug)
@@ -839,36 +847,36 @@ class WebpanelAdminController extends Controller
                 $geography_name = $geography?->name;
             }
         }
-    
+        $adminArea = $request->admin_area;
         $update_by = Auth::user()?->user_id;
         // ===== UPDATE รอบเดียวพอ =====
         $customer->update([
-            'customer_name' => $customer_name,
-            'customer_code' => $customer_code,
-            'customer_id'   => $customer_code,
-            'price_level'   => $price_level,
-            'email'         => $email,
-            'phone'         => $phone,
-            'telephone'     => $telephone,
-            'cert_number'   => $cert_number,
-            'cert_expire'   => $cert_expire,
-            'delivery_by'   => $delivery_by,
-            'address'       => $request->address,
-            'province'      => $province_row,
-            'amphur'        => $request->amphur,
-            'district'      => $request->district,
-            'zip_code'      => $request->zip_code,
-            'geography'     => $geography_name,
-            'admin_area'    => $request->admin_area,
-            'sale_area'     => $saleArea,
-            'status_vat'    => $request->status_vat,
-            'status_sap'    => $request->status_sap,
-            'status_web'    => 0,
-            'purchase'      => $purchase,
-            'status_update' => 'updated',
-            'update_by'     => $update_by,
-        ]);
-    
+                            'customer_name' => $customer_name,
+                            'customer_code' => $customer_code,
+                            'customer_id'   => $customer_code,
+                            'price_level'   => $price_level,
+                            'email'         => $email,
+                            'phone'         => $phone,
+                            'telephone'     => $telephone,
+                            'cert_number'   => $cert_number,
+                            'cert_expire'   => $cert_expire,
+                            'delivery_by'   => $delivery_by,
+                            'address'       => $request->address,
+                            'province'      => $province_row,
+                            'amphur'        => $request->amphur,
+                            'district'      => $request->district,
+                            'zip_code'      => $request->zip_code,
+                            'geography'     => $geography_name,
+                            'admin_area'    => $request->admin_area,
+                            'sale_area'     => $saleArea,
+                            'status_vat'    => $request->status_vat,
+                            'status_sap'    => $request->status_sap,
+                            // 'status_web'    => 0,
+                            'purchase'      => $purchase,
+                            'status_update' => 'updated',
+                            'update_by'     => $update_by,
+                        ]);
+                    
         $statusCode = Customer::where('customer_code', $customer_code)->first();
         // ===== ส่งแจ้งเตือน =====
         if ($statusCode->status_update == 'updated') {
@@ -881,18 +889,36 @@ class WebpanelAdminController extends Controller
 
         }
     
-        if ($statusCode?->status_web === 0)
-        {
-            app(MessageApiService::class)
-            ->sendSapSuccess(
-                ['U77a9c2b47bacb0cdc75aa35952ae45d0'],
+        $adminId = Customer::where('id', $customer->id)
+                    ->value('user_id');
+
+        $lineUserId = User::where('user_id', $adminId)
+                    ->value('line_user_id');
+
+        //เช็กสถานะการส่ง Line sap
+        $customerModel = Customer::find($customer->id);
+
+        if ($customerModel?->sap_send_line === 1) {
+            // ส่งไปแล้ว ไม่ต้องส่ง LINE ซ้ำ
+            return response()->json([
+                'status' => 'warning',
+                'message' => 'คุณได้แก้ไขข้อมูลอีกครั้ง'
+            ]);
+        }
+
+        if (!empty($lineUserId) && $statusCode?->sap_send_line === 0) {
+            app(MessageApiService::class)->sendSapSuccess(
+                $lineUserId,
                 $customer_name,
                 $customer_code,
                 $saleArea
             );
+
+            $customerModel?->update([
+                'sap_send_line' => 1,
+            ]);
         }
 
-    
         // ===== Response สำหรับ AJAX =====
         return response()->json([
             'status' => 'success',

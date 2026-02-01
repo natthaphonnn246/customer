@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 class LineAccount extends Authenticatable
 {
     use HasApiTokens;
+    
     protected $table = 'line_users_tb';
     protected $fillable = [
 

@@ -27,7 +27,7 @@
         
 
         <div class="ml-auto flex items-center text-white gap-3">
-            @yield('col-2')
+            {{ $userName }}
             <img src="/profile/user.png"
                  class="w-8 h-8 rounded-full">
         </div>

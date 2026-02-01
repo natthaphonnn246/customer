@@ -1,12 +1,6 @@
 @extends('layouts.sign')
 @section('content')
-@csrf
-        @section('col-2')
-            @if(isset($user_name->name) != 'Natthaphon')
-            <h6 class="mt-1" style=" padding-top: 5px;">{{$user_name->name}}</h6>
-            @endif
-        @endsection
-        
+
         <div class="py-2"></div>
         <h4 class="text-gray-500 font-semibold ms-6">ลงทะเบียนใหม่ (Register)</h4>
 
@@ -23,7 +17,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
                 <div class="mx-3">
-                    <p class="text-xl">ข้อมูลร้านค้า <span class="text-red-500 text-xs">*จำเป็นต้องระบุ</span></p>
+                    <p class="text-xl">เอกสารใบอนุญาต <span class="text-red-500 text-xs">*จำเป็นต้องระบุ</span></p>
                     <hr class="mt-1 text-gray-400">
                     <ul class="text-muted p-3">
                         <li class="mt-1">
@@ -111,7 +105,7 @@
                         });
                         </script>
                         
-                    <p class="text-xl mt-4">ข้อมูลลูกค้า <span class="text-red-500 text-xs">*จำเป็นต้องระบุ</span></p>
+                    <p class="text-xl mt-4">ข้อมูลร้านค้า <span class="text-red-500 text-xs">*จำเป็นต้องระบุ</span></p>
                    
                     <hr class="mt-2 border-gray-400">
                     <div class="grid grid-cols-1 md:grid-cols-2 text-gray-600 p-3">

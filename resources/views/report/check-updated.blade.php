@@ -26,10 +26,10 @@
                 </button>
         
                 <div id="dropdownCsv" class="z-10 hidden divide-y divide-gray-100 rounded-lg shadow w-44 absolute">
-                    <a href="/webpanel/check-updated/export/license/getcsv/customerall" class="block px-4 py-2 text-sm" id="listCsv"">ทั้งหมด</a>
-                    <a href="/webpanel/check-updated/export/license/getcsv/ดำเนินการแล้ว" class="block px-4 py-2 text-sm" id="listCsv">ดำเนินการแล้ว</a>
-                    <a href="/webpanel/check-updated/export/license/getcsv/ต้องดำเนินการ" class="block px-4 py-2 text-sm" id="listCsv">ต้องดำเนินการ</a>
-                    <a href="/webpanel/check-updated/export/license/getcsv/รอดำเนินการ" class="block px-4 py-2 text-sm" id="listCsv">รอดำเนินการ</a>
+                    <a href="/webpanel/check-updated/export/license/getcsv/customerall" class="block px-4 py-2 text-sm !no-underline" id="listCsv">ทั้งหมด</a>
+                    <a href="/webpanel/check-updated/export/license/getcsv/ดำเนินการแล้ว" class="block px-4 py-2 text-sm !no-underline" id="listCsv">ดำเนินการแล้ว</a>
+                    <a href="/webpanel/check-updated/export/license/getcsv/ต้องดำเนินการ" class="block px-4 py-2 text-sm !no-underline" id="listCsv">ต้องดำเนินการ</a>
+                    <a href="/webpanel/check-updated/export/license/getcsv/รอดำเนินการ" class="block px-4 py-2 text-sm !no-underline" id="listCsv">รอดำเนินการ</a>
                 </div>
             </div>
         
@@ -40,10 +40,10 @@
                 </button>
         
                 <div id="dropdownExcel" class="z-10 hidden divide-y divide-gray-100 rounded-lg shadow w-44 absolute">
-                    <a href="/webpanel/check-updated/export/license/getexcel/customerall" class="block px-4 py-2 text-sm" id="listExcel">ทั้งหมด</a>
-                    <a href="/webpanel/check-updated/export/license/getexcel/ดำเนินการแล้ว" class="block px-4 py-2 text-sm" id="listExcel">ดำเนินการแล้ว</a>
-                    <a href="/webpanel/check-updated/export/license/getexcel/ต้องดำเนินการ" class="block px-4 py-2 text-sm" id="listExcel">ต้องดำเนินการ</a>
-                    <a href="/webpanel/check-updated/export/license/getexcel/รอดำเนินการ" class="block px-4 py-2 text-sm" id="listExcel">รอดำเนินการ</a>
+                    <a href="/webpanel/check-updated/export/license/getexcel/customerall" class="block px-4 py-2 text-sm !no-underline" id="listExcel">ทั้งหมด</a>
+                    <a href="/webpanel/check-updated/export/license/getexcel/ดำเนินการแล้ว" class="block px-4 py-2 text-sm !no-underline" id="listExcel">ดำเนินการแล้ว</a>
+                    <a href="/webpanel/check-updated/export/license/getexcel/ต้องดำเนินการ" class="block px-4 py-2 text-sm !no-underline" id="listExcel">ต้องดำเนินการ</a>
+                    <a href="/webpanel/check-updated/export/license/getexcel/รอดำเนินการ" class="block px-4 py-2 text-sm !no-underline" id="listExcel">รอดำเนินการ</a>
                 </div>
             </div>
         </div>
@@ -277,12 +277,12 @@
                     
                     </tbody>
                 </table>
-
-          
             </div>
             
         </div>
 
+        <div class="py-2"></div>
+        
             @if($total_page != 0)
                 <div class="ms-6">
                     <nav aria-label="Page navigation example">

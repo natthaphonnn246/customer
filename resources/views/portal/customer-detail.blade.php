@@ -1,286 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-    @section ('title', 'admin-create')
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends ('layouts.portal')
+@section('content')
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <title>cms.vmdrug</title>
-</head>
-<body>
-    {{-- id="theme-body" class="bg-white text-gray-800 --}}
-
-<div id="bgs">
-    @extends ('portal/menuportal-tailwind')
-    <div>
-    @section('content')
-    @csrf
-
-
-    <style>
-
-        .contentArea {
-            /* padding: 20px 30px 40px; */
-            background-color: #FFFFFF; */
-            border-radius: 2px;
-            text-align: left;
-/* 
-            background-image:  */
-                /* url('/profile/pumpkin-1.png'), */
-               /*  url('/profile/hallowen-1.png');
-                background-repeat: no-repeat, no-repeat; */
-
-            /* ขนาดภาพแต่ละภาพ */
-         /*    background-size: 700px auto, 600px auto; */
-
-            /* ตำแหน่งภาพแต่ละภาพ */
-        /*     background-position: right bottom, right bottom; */
-        }
-        #admin {
-            background-color: #007bff;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-            #admin:hover {
-                background-color: #0b59f6;
-        }
-        #updateForm {
-            background-color: #4355ff;
-            color:white;
-        }
-        #updateForm:hover {
-            width: auto;
-            height: auto;
-            background-color: #0f21cb;
-        }
-        #exportCsv {
-            background-color: #c9c9c9;
-            color:white;
-        }
-        #exportCsv:hover {
-            width: auto;
-            height: auto;
-            background-color: #b9b9b9;
-        }
-
-        #reset {
-            background-color: #4355ff;
-            color:white;
-        }
-        #reset:hover {
-            width: auto;
-            height: auto;
-            background-color: #0f21cb;
-        }
-        #certStore {
-            background-color: #e7e7e7;
-            color: rgb(161, 161, 161);
-            height: 40px;
-            padding: 9px;
-        }
-        #certStore:hover {
-            width: auto;
-            height: auto;
-            height: 40px;
-            color: rgb(161, 161, 161);
-            background-color: #dadada;
-        }
-        #certMedical {
-            background-color: #e7e7e7;
-            color: rgb(161, 161, 161);
-            height: 40px;
-            padding: 9px;
-        }
-        #certMedical:hover {
-            width: auto;
-            height: auto;
-            height: 40px;
-            color: rgb(161, 161, 161);
-            background-color: #dadada;
-        }
-        #certCommerce {
-            background-color: #e7e7e7;
-            color: rgb(161, 161, 161);
-            height: 40px;
-            padding: 9px;
-        }
-        #certCommerce:hover {
-            width: auto;
-            height: auto;
-            height: 40px;
-            color: rgb(161, 161, 161);
-            background-color: #dadada;
-        }
-        #certVat {
-            background-color: #e7e7e7;
-            color: rgb(161, 161, 161);
-            height: 40px;
-            padding: 9px;
-        }
-        #certVat:hover {
-            width: auto;
-            height: auto;
-            height: 40px;
-            color: rgb(161, 161, 161);
-            background-color: #dadada;
-        }
-        #certId {
-            background-color: #e7e7e7;
-            color: rgb(161, 161, 161);
-            height: 40px;
-            padding: 9px;
-        }
-        #certId:hover {
-            width: auto;
-            height: auto;
-            height: 40px;
-            color: rgb(161, 161, 161);
-            background-color: #dadada;
-        }
-        #submitUpload {
-            background-color: #4355ff;
-            color:white;
-            width: 90px;
-            height: 40px;
-        }
-        #submitUpload:hover {
-            width: 90px;
-            height: 40px;
-            background-color: #0f21cb;
-        }
-        #cancelUpload {
-            background-color: #ebebeb;
-            color:rgb(103, 103, 103);
-            width: 80px;
-            height: 40px;
-        }
-        #cancelUpload:hover {
-            width: 80px;
-            height: 40px;
-            color:rgb(103, 103, 103);
-            background-color: #cbcbcb;
-        }
-        #backLink {
-            color: #3b25ff;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        #backLink:hover {
-            color: #3b25ff;
-            text-decoration: underline;
-        }
-        #protected {
-        position: relative;
-        }
-
-        #protected::after {
-                    content: "© cms.vmdrug";
-                    position: fixed; /* เปลี่ยนจาก absolute → fixed */
-                    top: 50%;
-                    left: 50%;
-                    font-size: 120px;
-                    /* color: rgba(234, 43, 43, 0.111); */
-                    color: rgba(170, 170, 170, 0.111);
-                    pointer-events: none;
-                    padding-top: 30px;
-                    /* transform: translate(-50%, -50%) rotate(-35deg); */
-                    transform: translate(-50%, -50%);
-                    white-space: nowrap;
-                    z-index: 9999; /* กันโดนซ่อนโดย content อื่น */
-        }
-   /*      #protected_image {
-        position: relative;
-        }
-
-        #protected_image::after {
-                    content: "© ห้ามบันทึกภาพหน้าจอ";
-                    position: fixed; 
-                    top: 50%;
-                    left: 50%;
-                    font-size: 40px;
-                    color: rgba(213, 10, 10, 0.428);
-                    pointer-events: none;
-                    padding-top: 30px;
-                    transform: translate(-50%, -50%);
-                    white-space: nowrap;
-                    z-index: 9999; 
-        } */
-
-    </style>
-    <div class="contentArea">
-
-        @section('col-2')
-
-        @if(isset($user_name))
-            <h6 class="mt-1" style="">{{$user_name->name}}</h6>
-            @endif
-        @endsection
-
-        @section('status_alert')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$count_alert}}</h6>
-            @endif
-        @endsection
-
-        @section('status_all')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$count_all}}</h6>
-            @endif
-        @endsection
-
-        @section('status_waiting')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$count_waiting}}</h6>
-            @endif
-        @endsection
-
-        @section('status_action')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$count_action}}</h6>
-            @endif
-        @endsection
-
-        @section('status_completed')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$count_completed}}</h6>
-            @endif
-        @endsection
+        <div class="py-2"></div>
+        <h5 class="ms-6 !text-gray-600"><a href="/portal/customer" id="backLink">ย้อนกลับ</a> | รายละเอียด</h5>
+        <hr class="my-3">
 
         @php
             $year = date('Y') + 543; 
         @endphp
-  {{--       <script>
-       Swal.fire({
-                    title: 'กรุณาตรวจสอบ',
-                    html: `
-                        <p style="color: red;">CODE</p>
-                        <p style="color: blue;">ชื่อร้าน (ถ้าเปลี่ยนแปลงกรุณาแจ้งด้วย)*</p>
-                            <p style="color: red;">ใบอนุญาตขายยาปี {{ $year }}</p>
-                        <p style="color: green;">เลขที่ใบอนุญาต</p>
-                        <p style="color: orange;">วันหมดอายุ</p>
-                    `,
-                    icon: "warning",
-                    confirmButtonColor: "#3085d6",
-                    confirmButtonText: "ตกลง"
-               /*      }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.reload();
-                    } */
-                });
-
-        </script> --}}
 
     <!-- Modal -->
     <div class="modal fade" id="checkModal" tabindex="-1" aria-labelledby="checkModalLabel" aria-hidden="true">
@@ -337,26 +64,18 @@
             });
     </script>
     
-        <div class="py-2">
-        </div>
-        <span class="ms-6" style="color: #8E8E8E;"><a href="/portal/customer" id="backLink">ลูกค้าทั้งหมด (Customer)</a> / รายละเอียด</span>
-        <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 2px;">
     @if (isset($customer_edit) != '')
 
-    <div class="ms-6 mr-6" id="protected">
+    <div id="protected">
             {{-- action="/webpanel/admin-detail/update/{{$row_edit->user_code}}" enctype="multipart/form-data" --}}
             {{-- @csrf --}}
-            <div class="row">
-                <div class="col-sm-6">
-                    <ul class="text-title" style="margin-top: 20px;">
-                        <span style="font-size: 18px; font-weight: 500; color:#303030;">ข้อมูลลูกค้า</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mx-8">
+                <div class="">
+                        <h4 class="!text-gray-600">เอกสารใบอนุญาต</h4>
                         <hr style="color: #8E8E8E; width: 100%; margin-top: 15px;">
-                    </ul>
-                    <ul class="text-muted py-3" style="padding-top: 10px;">
-
                         <!-- Button trigger modal -->
-                        <li class="mt-4">
-                            <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                        <div class="mt-4">
+                            <span>ใบอนุญาตขายยา/สถานพยาบาล</span> <span class="text-red-500 text-xs">*จำเป็นต้องระบุ</span>
                             <button type="button" class="btn mt-2" id="certStore" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_store">
                                 ใบบอนุญาตขายยา/สถานพยาบาล
                             </button>
@@ -406,7 +125,7 @@
                                 </div>
                             </div>
                             </div>
-                        </li>
+                        </div>
 
                         <script>
 
@@ -422,8 +141,8 @@
 
                         </script>
 
-                        <li class="mt-4">
-                            <span>ใบประกอบวิชาชีพ</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                        <div class="mt-4">
+                            <span>ใบประกอบวิชาชีพ</span> <span class="text-red-500 text-xs">*จำเป็นต้องระบุ</span>
                             <button type="button" class="btn mt-2" id="certMedical" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_medical">
                                 ใบประกอบวิชาชีพ
                             </button>
@@ -470,7 +189,7 @@
                                 </div>
                             </div>
                             </div>
-                        </li>
+                        </div>
 
                         <script>
                             
@@ -485,8 +204,8 @@
 
                         </script>
 
-                        <li class="mt-4">
-                            <span>ใบทะเบียนพาณิชย์</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                        <div class="mt-4">
+                            <span>ใบทะเบียนพาณิชย์</span>
                             <button type="button" class="btn mt-2" id="certCommerce" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_commerce">
                                 ใบทะเบียนพาณิชย์
                             </button>
@@ -533,7 +252,7 @@
                                 </div>
                             </div>
                             </div>
-                        </li>
+                        </div>
 
                         <script>
                             const staticBackdropCommerce = document.getElementById('staticBackdrop_commerce');
@@ -546,8 +265,8 @@
                             }
                         </script>
 
-                        <li class="mt-4">
-                            <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                        <div class="mt-4">
+                            <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span>
                             <button type="button" class="btn mt-2" id="certVat" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_vat">
                                 ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)
                             </button>
@@ -594,7 +313,7 @@
                                 </div>
                             </div>
                             </div>
-                        </li>
+                        </div>
 
                         <script>
                             const staticBackdropVat = document.getElementById('staticBackdrop_vat');
@@ -607,8 +326,8 @@
                             }
                         </script>
 
-                        <li class="mt-4">
-                            <span>สำเนาบัตรประชาชน</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                        <div class="mt-4">
+                            <span>สำเนาบัตรประชาชน</span>
                             <button type="button" class="btn mt-2" id="certId" style="width:100%; border:none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop_id">
                                 สำเนาบัตรประชาชน
                             </button>
@@ -655,7 +374,7 @@
                                 </div>
                             </div>
                             </div>
-                        </li>
+                        </div>
 
                         <script>
                             const staticBackdropId = document.getElementById('staticBackdrop_id');
@@ -667,241 +386,204 @@
                                 });
                             }
                         </script>
-
-                        {{-- <span>ใบอนุญาตขายยา/สถานพยาบาล</span>
-                        <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certStore" >ใบอนุญาตขายยา/สถานพยาบาล</div>
-                        @if ($customer_edit->cert_store == '')
-                        <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
-                        @endif
-                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;"> --}}
-
-                        {{-- <span>ใบประกอบวิชาชีพ</span>
-                        <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certMedical" >ใบประกอบวิชาชีพ</div>
-                        @if ($customer_edit->cert_medical == '')
-                        <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
-                        @endif
-                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;"> --}}
-                        {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_medical" accept="image/png, image/jpg, image/jpeg"><br> --}}
-
-                       {{--  <span>ใบทะเบียนพาณิชย์</span>
-                        <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certCommerce" >ใบทะเบียนพาณิชย์</div>
-                        @if ($customer_edit->cert_commerce == '')
-                        <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
-                        @endif
-                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;"> --}}
-                        {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_commerce" accept="image/png, image/jpg, image/jpeg"><br> --}}
-
-                        {{-- <span>ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</span>
-                        <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certVat" >ใบทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.20)</div>
-                        @if ($customer_edit->cert_vat == '')
-                        <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
-                        @endif
-                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;"> --}}
-                        {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_vat" accept="image/png, image/jpg, image/jpeg"><br> --}}
-
-                       {{--  <span>สำเนาบัตรประชาชน</span>
-                        <div class="btn btn-primary my-2" style="width:100%; border:none;" id="certId" >สำเนาบัตรประชาชน</div>
-                        @if ($customer_edit->cert_id == '')
-                        <span style="font-size: 14px; color:red; background-color:#f6ff94; padding:5px; font-weight:500;">**ไม่พบเอกสาร กรุณาตรวจสอบด้วยครับ</span>
-                        @endif
-                        <hr class="py-2" style="color: #8E8E8E; width: 100%; margin-top: 15px;"> --}}
-                        {{-- <input style="margin-top:10px;" type="file" class="form-control text-muted" name="cert_id" accept="image/png, image/jpg, image/jpeg"><br> --}}
-                    </ul>
-            <form action="/portal/customer-detail/update/{{$customer_edit->id}}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    {{-- @method('PUT') --}}
-                    <ul class="text-muted py-3" style="padding-top: 10px;">
-                        <li class="py-2">
-                            <span>เลขใบอนุญาตขายยา/สถานพยาพยาล</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                    <form action="/portal/customer-detail/update/{{$customer_edit->id}}" method="post" enctype="multipart/form-data">
+                        @csrf
+                            {{-- @method('PUT') --}}
+                            <span class="block mt-4">เลขใบอนุญาตขายยา/สถานพยาพยาล <span class="text-red-500 text-sm">*จำเป็นต้องระบุ</span></span>
                             <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="cert_number" value="{{$customer_edit->cert_number}}">
-                        </li>
-                        <li class="py-2">
-                            <span>วันหมดอายุ</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบที่ใบอนุญาตอีกรอบ</span>
-                            <input class="form-control" style="margin-top:10px; color:rgb(171, 171, 171);" type="text" id="datepicker" name="cert_expire" value="{{$customer_edit->cert_expire}}">
-                        </li>
-                        <script>
-                            $(document).ready(function () {
-                                // Datepicker
-                                    $("#datepicker" ).datepicker({
+
+                            @php
+                                $year = date('Y') + 543; 
+                            @endphp
+                                <label class="mb-2 mt-4">
+                                    วันหมดอายุ
+                                    <span class="text-base text-red-500">
+                                        *กรุณาระบุวันที่ให้ถูกต้อง
+                                    </span>
+                                </label>
+                            
+                                <div class="relative">
+                                    <input
+                                        type="text"
+                                        id="datepicker"
+                                        name="cert_expire"
+                                        value="{{ $customer_edit?->cert_expire }}"
+                                        class="w-full rounded-md border !border-gray-300
+                                            px-3 py-2 pr-10 text-gray-400
+                                            focus:outline-none focus:ring-2 focus:ring-blue-500
+                                            focus:border-blue-500 bg-white"
+                                    >
+                            
+                                    <!-- calendar icon (right) -->
+                                    <button
+                                        type="button"
+                                        id="openDatepicker"
+                                        class="absolute inset-y-0 right-0 flex items-center px-3
+                                            border-l !border-gray-300
+                                            text-gray-600 hover:text-gray-600
+                                            bg-gray-50 border !rounded-r-md">
+                                        <i class="fa-regular fa-calendar"></i>
+                                    </button>
+                                </div>
+
+                            <script>
+                                $(function () {
+                                    $("#datepicker").datepicker({
+                                        dateFormat: 'dd/mm/yy',
                                         changeMonth: true,
                                         changeYear: true,
-                                        yearRange: "2024:2029",
-                                        dateFormat: "dd/mm/yy",
-                                       
-                                        
+                                        yearRange: "2569:2574"
                                     });
-    
-                                });
-                        </script>
-                    </ul>
-                    <div class="row text-muted">
-                        <div class="col-sm-12">
-                            <ul class="py-2" style="width: 100%;">
-                                <span>ชื่อร้านค้า</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="customer_name" value="{{$customer_edit->customer_name}}" disabled>
-                            </ul>
-                            <ul class="py-2" style="width: 100%;">
-                                <span>CODE</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="code" value="{{$customer_edit->customer_code;}}" disabled>
-                            </ul>
-                            <ul class="py-2" style="width: 100%;">
-                                <span>ระดับราคา</span><span style="font-size: 12px; color:red;">*ลูกค้า 6 เท่ากับ 1</span>
-                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="price_level" disabled>
                                 
-                                    <option name="price_level">{{$customer_edit->price_level}}</option>
+                                    $("#openDatepicker").on("click", function () {
+                                        $("#datepicker").focus();
+                                    });
+                                });
+                            </script>
 
-                                </select>
-                            </ul>
-                           {{-- {{dd($customer_edit->cert_expire);}} --}}
-                        </div>
-                 
-                        <div class="col-sm-12">
-                            <ul class="py-3" style="width: 100%;">
-                                <li class="py-2">
-                                    <span>อีเมล</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" name="email" type="email" class="form-control" name="email" value="{{$customer_edit->email}}">
-                                </li>
-                                <li class="py-2">
-                                    <span>เบอร์ติดต่อ</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 027534702)</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="phone" value="{{$customer_edit->phone}}">
-                                </li>
-                                <li class="py-2">
-                                    <span>เบอร์โทรศัพท์</span> <span style="font-size: 12px; color:gery;">(ตัวอย่าง: 0904545555)</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$customer_edit->telephone}}">
-                                </li>
-                                <li class="mt-3">
-                                    <span>การจัดส่งสินค้า</span><span style="font-size: 12px; color:red;"> *ไม่ระบุ คือ จัดส่งตามรอบขนส่งทางร้าน</span>
-                                    <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="delivery_by">
+                            <h4 class="!text-gray-600 mt-4">ข้อมูลร้านค้า</h4>
+                            <hr style="color: #8E8E8E; width: 100%; margin-top: 15px;">
+
+                            <span class="block mt-4">ชื่อร้านค้า</span>
+                            <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="customer_name" value="{{$customer_edit->customer_name}}" disabled>
+
+                            <span class="block mt-4">CODE <span class="text-red-500 text-xs">*จำเป็นต้องระบุ</span></span>
+                            <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="code" value="{{$customer_edit->customer_code;}}" disabled>
+
+                            <span class="block mt-4">ระดับราคา</span>
+                            <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="price_level" disabled>
+                            
+                                <option name="price_level">{{$customer_edit->price_level}}</option>
+
+                            </select>
+                                {{-- {{dd($customer_edit->cert_expire);}} --}}
+
+                            <span class="block mt-4">อีเมล</span>
+                            <input style="margin-top:10px; color: rgb(171, 171, 171);" name="email" type="email" class="form-control" name="email" value="{{$customer_edit->email}}">
+            
+                            <span class="block mt-4">เบอร์ติดต่อ <span class="text-red-500 text-xs">(ตัวอย่าง: 027534702)</span></span>
+                            <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="phone" value="{{$customer_edit->phone}}">
+                
+                            <span class="block mt-4">เบอร์โทรศัพท์ <span class="text-red-500 text-xs">(ตัวอย่าง: 0904545555)</span></span>
+                            <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="telephone" value="{{$customer_edit->telephone}}">
+                
+                            <span class="block mt-4">การจัดส่งสินค้า <span class="text-red-500 text-xs"> *ไม่ระบุ คือ จัดส่งตามรอบขนส่งทางร้าน</span></span>
+                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="delivery_by">
                                     <option {{$customer_edit->delivery_by == 'standard' ? 'selected': ''}} value="standard">ไม่ระบุ</option>
                                     <option {{$customer_edit->delivery_by == 'owner' ? 'selected': ''}} value="owner">ขนส่งเอกชน (พัสดุ)</option>
+                                </select>
+            
+                            <span class="block mt-4">ที่อยู่จัดส่ง</span>
+                            <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control no-paste" name="address" value="{{$customer_edit->address}}" required>
+                                
+                            <script>
+                                document.querySelectorAll('input.no-paste').forEach(input => {
+                                    input.addEventListener('paste', e => e.preventDefault());
+                                });
+    
+                            </script>                     
+                 
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                                <div>
+                                    <span>จังหวัด</span>
+ 
+                                    <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="province" id="province">
+                                        @if(isset($province))
+                                            @foreach($province as $row)
+                            
+                                                <option value="{{$row->id}}" {{$row->name_th == $customer_edit->province ? 'selected' : ''}}>{{$row->name_th}}</option>
+                                            
+                                            @endforeach
+                                        @endif
                                     </select>
-                                </li>
-                                <li class="mt-4">
-                                    <span>ที่อยู่</span>
-                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control no-paste" name="address" value="{{$customer_edit->address}}" required>
-                                </li>         
-                                <script>
-                                    document.querySelectorAll('input.no-paste').forEach(input => {
-                                        input.addEventListener('paste', e => e.preventDefault());
-                                    });
-        
-                                </script>                     
-                            </ul>
-                        </div>
-        
-                        <div class="col-sm-6 py-3">
-                            <ul style="width: 100%;">
-                                <span>จังหวัด</span>
-                                {{-- <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="province"> --}}
+                                </div>
 
-                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="province" id="province">
-                                    @if(isset($province))
-                                        @foreach($province as $row)
+                                <div>
+                                    <span>อำเภอ/เขต</span>
+                                    <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" id="amphures" name="amphur">
+
+                                        @if(isset($amphur) && $amphur == '')
+                                            @foreach($amphur as $row)
+                                                <option value="{{$row->province_id}}" {{$row->name_th == $customer_edit->amphur ? 'selected' : ''}}>{{$row->name_th}}</option>
+                                            @endforeach
+
+                                        @else
+                                        <option>{{$customer_edit->amphur}}</option>
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 mb-8">
+                                <div>
+                                    <span>ตำบล/แขวง</span>
+                                    <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="district" id="districts">
+                                        @if(isset($district) && $district == '')
+                                            @foreach($district as $row)
+                                                <option value="{{$row->amphure_id}}" {{$row->name_th == $customer_edit->district ? 'selected' : ''}}>{{$row->name_th}}</option>
+                                            @endforeach
+
+                                        @else
+                                        <option>{{$customer_edit->district}}</option>
+                                        @endif
+                                    </select>
+                                </div>
                         
-                                            <option value="{{$row->id}}" {{$row->name_th == $customer_edit->province ? 'selected' : ''}}>{{$row->name_th}}</option>
-                                        
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6 py-3">
-                            <ul style="width: 100%;">
-                                <span>อำเภอ/เขต</span>
-                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" id="amphures" name="amphur">
+                                <div>
+                                    <span>รหัสไปรษณีย์</span> <span class="text-xs text-red-500">*กรุณาตรวจสอบ</span>
+                                    <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="zip_code" id="zipcode" value="{{$customer_edit->zip_code}}">
+                                </div>
+                            </div>
+                    </div>
+                    <!--form login-->
+                    <div class="">
+                    
+                            <div class="form-control p-4">
+                                <h5 class="!text-gray-600">ผู้รับผิดชอบ</h5>
+                                <hr style="color: #8E8E8E; width: 100%; margin-top: 15px;">
 
-                                    @if(isset($amphur) && $amphur == '')
-                                        @foreach($amphur as $row)
-                                            <option value="{{$row->province_id}}" {{$row->name_th == $customer_edit->amphur ? 'selected' : ''}}>{{$row->name_th}}</option>
-                                        @endforeach
+                                    <div class="py-2">
+                                    <span>แอดมินผู้ดูแล</span>
+                                        <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="admin_area" disabled>
 
-                                    @else
-                                    <option>{{$customer_edit->amphur}}</option>
-                                    @endif
-                                </select>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul class="mb-8" style="width: 100%;">
-                                <span>ตำบล/แขวง</span>
-                                <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="district" id="districts">
-                                    @if(isset($district) && $district == '')
-                                        @foreach($district as $row)
-                                            <option value="{{$row->amphure_id}}" {{$row->name_th == $customer_edit->district ? 'selected' : ''}}>{{$row->name_th}}</option>
-                                        @endforeach
+                                            <option>{{$customer_edit->admin_area.' '.'('.$user_name->name.')'}}</option>
 
-                                    @else
-                                    <option>{{$customer_edit->district}}</option>
-                                    @endif
-                                </select>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul class="mb-6" style="width: 100%;">
-                                <span>รหัสไปรษณีย์</span> <span style="font-size: 12px; color:red;">*กรุณาตรวจสอบ</span>
-                                <input style="margin-top:10px; color: rgb(171, 171, 171);" type="text" class="form-control" name="zip_code" id="zipcode" value="{{$customer_edit->zip_code}}">
-                            </ul>
-                        </div>
+                                        </select>
+                                    </div>
+                                    <div class="py-2">
+                                    <span>เขตการขาย</span>
+                                        <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="sale_area" disabled>
+
+                                            @if(isset($sale_name))
+                                            <option>{{$customer_edit->sale_area.' '.'('.$sale_name->sale_name.')'}}</option>
+                                            @else
+                                            <option>{{$customer_edit->sale_area.' '.'('.'ไม่พบชื่อ'.')'}}</option>
+                                            @endif
+                                        </select>
+                                    </div>
+    
+                            </div>
+
+                                <div class="mb-3 my-4">
+                                    <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 400; color:#fe505b;">*ข้อความถึงแอดมินผู้ดูแล</label></label>
+                                    <textarea class="form-control" style="color: rgb(255, 86, 56);" id="exampleFormControlTextarea1" rows="3" name="text_admin" disabled>{{$customer_edit->text_admin}}</textarea>
+                                </div>
+                        
+                                <div class="mb-4 my-4">
+                                    <span style="font-size:18px; font-weight:500;">ช่องทางการสั่งสินค้า</span><span class="text-red-500 text-sm"> *เลือกช่องทางที่สั่งมากสุด</span>
+                                    <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="purchase">
+                                    <option {{ $customer_edit->purchase === 1 ? 'selected': '' }} value="1">สั่งซื้อผ่านทางเว็บไซต์</option>
+                                    <option  {{ $customer_edit->purchase === 0 ? 'selected': '' }} value="0">สั่งซื้อผ่านช่องทางอื่น ๆ (เช่น LINE หรือทางโทรศัพท์)</option>
+                                    </select>
+                                </div>
+
+                            <div style="text-align:right; margin-top: 20px;">
+                                <button type="submit" id="updateForm" name="submit_update" class="btn my-2" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
+                            </div>
+
                     </div>
                 </div>
-                <!--form login-->
-                        <div class="col-sm-6" style="padding-top:40px;">
-                        
-                                <div class="form-control">
-                                    <ul class="text-title" style="text-align: start; margin-top: 10px;">
-                                        <span style="font-size: 16px; font-weight: 500; color:#545454;">ข้อมูลผู้รับผิดชอบ</span>
-                                        <hr style="color: #8E8E8E; width: 100%; margin-top: 15px;">
-                                    </ul>
-                                    <ul class="text-muted" style="padding-top: 10px;">
-
-                                        <li class="py-2">
-                                        <span>แอดมินผู้ดูแล</span>
-                                            <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="admin_area" disabled>
-
-                                                <option>{{$customer_edit->admin_area.' '.'('.$user_name->name.')'}}</option>
-
-                                            </select>
-                                        </li>
-                                        <li class="py-2">
-                                        <span>เขตการขาย</span>
-                                            <select class="form-select" style="margin-top:10px;  color: rgb(171, 171, 171);" aria-label="Default select example" name="sale_area" disabled>
-
-                                                @if(isset($sale_name))
-                                                <option>{{$customer_edit->sale_area.' '.'('.$sale_name->sale_name.')'}}</option>
-                                                @else
-                                                <option>{{$customer_edit->sale_area.' '.'('.'ไม่พบชื่อ'.')'}}</option>
-                                                @endif
-                                            </select>
-                                        </li>
-                
-                                    </ul>
-                        
-                                </div>
-
-                                    <div class="mb-3 my-4">
-                                        <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 400; color:#fe505b;">*ข้อความถึงแอดมินผู้ดูแล</label></label>
-                                        <textarea class="form-control" style="color: rgb(255, 86, 56);" id="exampleFormControlTextarea1" rows="3" name="text_admin" disabled>{{$customer_edit->text_admin}}</textarea>
-                                    </div>
-                               
-                                    <div class="mb-4 my-4">
-                                        <ul class="mt-4" style="width: 100%;  margin-top:15px;">
-                                            <span style="font-size:18px; font-weight:500;">ช่องทางการสั่งสินค้า</span><span style="font-size: 14px; color:red;"> *เลือกช่องทางที่สั่งมากสุด</span>
-                                            <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="purchase">
-                                            <option {{ $customer_edit->purchase === 1 ? 'selected': '' }} value="1">สั่งซื้อผ่านทางเว็บไซต์</option>
-                                            <option  {{ $customer_edit->purchase === 0 ? 'selected': '' }} value="0">สั่งซื้อผ่านช่องทางอื่น ๆ (เช่น LINE หรือทางโทรศัพท์)</option>
-                                            </select>
-                                        </ul>
-                                    </div>
-
-                                <div style="text-align:right; margin-top: 20px;">
-                                    <button type="submit" id="updateForm" name="submit_update" class="btn my-2" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>
-                                </div>
-
-                        </div>
-                    </div>
             </form>
     </div>
-</div>
 
                     @if (session('status') == 'updated_success')
                        {{--  <script> 
@@ -1649,11 +1331,139 @@
                     </script>
         @endif
     </div>
-</div>
-@endsection
 
-</body>
-</html>
+@endsection
+@push('styles')
+<style>
+
+    #updateForm {
+        background-color: #4355ff;
+        color:white;
+    }
+    #updateForm:hover {
+        width: auto;
+        height: auto;
+        background-color: #0f21cb;
+    }
+    #certStore {
+        background-color: #e7e7e7;
+        color: rgb(161, 161, 161);
+        height: 40px;
+        padding: 9px;
+    }
+    #certStore:hover {
+        width: auto;
+        height: auto;
+        height: 40px;
+        color: rgb(161, 161, 161);
+        background-color: #dadada;
+    }
+    #certMedical {
+        background-color: #e7e7e7;
+        color: rgb(161, 161, 161);
+        height: 40px;
+        padding: 9px;
+    }
+    #certMedical:hover {
+        width: auto;
+        height: auto;
+        height: 40px;
+        color: rgb(161, 161, 161);
+        background-color: #dadada;
+    }
+    #certCommerce {
+        background-color: #e7e7e7;
+        color: rgb(161, 161, 161);
+        height: 40px;
+        padding: 9px;
+    }
+    #certCommerce:hover {
+        width: auto;
+        height: auto;
+        height: 40px;
+        color: rgb(161, 161, 161);
+        background-color: #dadada;
+    }
+    #certVat {
+        background-color: #e7e7e7;
+        color: rgb(161, 161, 161);
+        height: 40px;
+        padding: 9px;
+    }
+    #certVat:hover {
+        width: auto;
+        height: auto;
+        height: 40px;
+        color: rgb(161, 161, 161);
+        background-color: #dadada;
+    }
+    #certId {
+        background-color: #e7e7e7;
+        color: rgb(161, 161, 161);
+        height: 40px;
+        padding: 9px;
+    }
+    #certId:hover {
+        width: auto;
+        height: auto;
+        height: 40px;
+        color: rgb(161, 161, 161);
+        background-color: #dadada;
+    }
+    #submitUpload {
+        background-color: #4355ff;
+        color:white;
+        width: 90px;
+        height: 40px;
+    }
+    #submitUpload:hover {
+        width: 90px;
+        height: 40px;
+        background-color: #0f21cb;
+    }
+    #cancelUpload {
+        background-color: #ebebeb;
+        color:rgb(103, 103, 103);
+        width: 80px;
+        height: 40px;
+    }
+    #cancelUpload:hover {
+        width: 80px;
+        height: 40px;
+        color:rgb(103, 103, 103);
+        background-color: #cbcbcb;
+    }
+    #backLink {
+        color: #3b25ff;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    #backLink:hover {
+        color: #3b25ff;
+        text-decoration: underline;
+    }
+    #protected {
+    position: relative;
+    }
+
+    #protected::after {
+                content: "© cms.vmdrug";
+                position: fixed; /* เปลี่ยนจาก absolute → fixed */
+                top: 50%;
+                left: 50%;
+                font-size: 120px;
+                /* color: rgba(234, 43, 43, 0.111); */
+                color: rgba(170, 170, 170, 0.111);
+                pointer-events: none;
+                padding-top: 30px;
+                /* transform: translate(-50%, -50%) rotate(-35deg); */
+                transform: translate(-50%, -50%);
+                white-space: nowrap;
+                z-index: 9999; /* กันโดนซ่อนโดย content อื่น */
+    }
+
+</style>
+@endpush
 
 
 {{-- $image_store = $_FILES['certStore']['name']; //image from upload;

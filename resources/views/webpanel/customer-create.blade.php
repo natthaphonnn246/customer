@@ -10,11 +10,11 @@
                 @csrf
                 <!--- เก็บชื่อแอดมินที่ลงทะเบียน-->
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mx-4 px-2 text-gray-500">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mx-4 px-2 text-gray-500">
             
                     <input type="hidden" name="register_by" value="{{'Admin'}}">
                     <div>
-                        <p class="text-lg font-bold text-gray-700">ลงทะเบียนลูกค้าใหม่</p>
+                        <p class="text-lg font-bold text-gray-700">เอกสารใบอนุญาต</p>
          
                         <p class="mb-1">ใบอนุญาตขายยา/สถานพยาบาล <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span></p>
                         {{-- <input class="btn btn-primary my-2" style="width:100%; border:none;" id="cert_store" value="ใบอนุญาตขายยา/สถานพยาบาล"> --}}
@@ -73,7 +73,7 @@
                                 // });
                     </script>
 
-                        <p class="text-lg font-bold text-gray-700">ข้อมูลลูกค้า <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุให้ครบทุกช่อง</span></p>
+                        <p class="text-lg font-bold text-gray-700 mt-4">ข้อมูลร้านค้า <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุให้ครบทุกช่อง</span></p>
                         <hr class="my-3" style="color: #8E8E8E; width: 100%;">
                        
                         <div>
@@ -83,7 +83,7 @@
                             <div class="grid gird-cols-1 md:grid-cols-2 gap-3 mt-4">
                                 <div>
                                     <p class="mb-1">CODE <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span></p>
-                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="customer_code" required>
+                                    <input style="margin-top:10px; color: grey;" type="text" class="form-control" name="customer_code">
                                 </div>
                                 <div>
                                     <p class="mb-1">ระดับราคา <span style="font-size: 12px; color:red;">*ลูกค้า 6 เท่ากับ 1</span></p>
@@ -130,11 +130,12 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <p class="mb-1">ตำบล/เขต</p>
-                                    <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts" required>
-                                        @if(isset($district) != '')
-                                            @foreach($district as $row)
-                                                <option value="{{$row->amphure_id}}">{{$row->name_th}}</option>
+                                    <p class="mb-1">อำเภอ/เขต</p>
+                                    <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="amphur" id="amphures" required>
+                                        
+                                        @if(isset($ampures) != '')
+                                            @foreach($ampures as $row)
+                                                <option value="{{$row->province_id}}">{{$row->name_th}}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -142,12 +143,11 @@
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 mb-4">
                                 <div>
-                                    <p class="mb-1">อำเภอ/แขวง</p>
-                                    <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="amphur" id="amphures" required>
-                                        
-                                        @if(isset($ampures) != '')
-                                            @foreach($ampures as $row)
-                                                <option value="{{$row->province_id}}">{{$row->name_th}}</option>
+                                    <p class="mb-1">ตำบล/แขวด</p>
+                                    <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="district" id="districts" required>
+                                        @if(isset($district) != '')
+                                            @foreach($district as $row)
+                                                <option value="{{$row->amphure_id}}">{{$row->name_th}}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -207,12 +207,18 @@
                         </div>
 
                         <div class="mb-4 my-4">
-                            <span style="font-size:18px; font-weight:500; color:#545454">ช่องทางการสั่งสินค้า</span><span style="font-size: 14px; color:red;"> *เลือกช่องทางที่สั่งมากสุด</span>
-                            <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="purchase">
-                            <option value="1">สั่งซื้อผ่านทางเว็บไซต์</option>
-                            <option value="0">สั่งซื้อผ่านช่องทางอื่น ๆ (เช่น LINE หรือทางโทรศัพท์)</option>
+                            <p class="mb-1 mt-3 font-bold text-gray-600">ช่องทางการสั่งสินค้า <span class="text-red-500 text-xs"> *เลือกช่องทางที่สั่งมากสุด</span></p>
+                                <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="purchase">
+                                <option value="1">สั่งซื้อผ่านทางเว็บไซต์</option>
+                                <option value="0">สั่งซื้อผ่านช่องทางอื่น ๆ (เช่น LINE หรือทางโทรศัพท์)</option>
                             </select>
                          
+                            <p class="mb-1 mt-3 font-bold text-gray-600">รับใบกำกับภาษีด้วยไหม <span class="text-red-500 text-xs">*จำเป็นต้องระบุ</span></p>
+                            <select class="form-control !border-gray-300 p-2 rounded-lg mt-2 hover:!border-red-500 !text-red-500" aria-label="Default select example" name="status_vat">
+                                <option value="0">ไม่ต้องการ</option>
+                                <option value="1">ต้องการ</option>
+                            </select>
+
                         </div>
 
                             <button type="submit" id="submitForm" name="submit_form" class="btn py-3 ms-1" style="border:none; width: 100%; color: white; padding: 10px;">บันทึกข้อมูล</button>

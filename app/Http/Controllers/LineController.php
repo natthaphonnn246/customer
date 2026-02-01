@@ -49,7 +49,6 @@ class LineController extends Controller
 
     public function connectLine(Request $request)
     {
-
         //ตรวจสอบก่อนว่า login ยัง
         if (!Auth::check()) {
             return response()->json([
@@ -57,7 +56,6 @@ class LineController extends Controller
                 'message' => 'กรุณาล็อกอินก่อนเชื่อมบัญชี LINE'
             ], 401);
         }
-        
 
         $idToken = $request->input('idToken');
 
@@ -94,7 +92,13 @@ class LineController extends Controller
         //
         $data = $response->json();
 
+        /** @var \App\Models\User $user */
         $user = Auth::user();
+
+        $user->update([
+            'line_logout_user' => 0,
+            'status_line'      => 1,
+        ]);
 
         // prevent LINE duplicated use
         $exists = User::where('line_user_id', $data['sub'])
@@ -168,64 +172,102 @@ class LineController extends Controller
     public function logoutLine(Request $request)
     {
         /** @var \App\Models\User $user */
-        
         $user = Auth::user();
 
         if (!$user) {
-            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized'
+            ], 401);
         }
 
+        // line_account
         $line = LineAccount::where('line_user_id', $user->line_user_id)->first();
+        $userCheck = User::where('line_user_id', $user->line_user_id)->first();
+
         if ($line) {
             $line->update([
-                'liff_token' => null,
-                'status_line' => 'logout_own',
+                'line_user_id' => null,
+                'liff_token'   => null,
+                'status_line'  => 1,
             ]);
         }
 
-        return response()->json(['status' => 'success', 'message' => 'Logged out successfully']);
+        // user
+        $userCheck->update([
+            'line_user_id'       => null,
+            'status_line'        => 0,
+            'line_logout_user'   => 1,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Logged out successfully'
+        ]);
     }
     public function logoutLineNoToken(Request $request)
     {
         $lineUserId = $request->input('line_user_id');
+
         if (!$lineUserId) {
-            return response()->json(['status' => 'error', 'message' => 'line_user_id required'], 400);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'line_user_id required'
+            ], 400);
+        }
+
+        // /** @var \App\Models\User $user */
+        $user = User::where('line_user_id', $lineUserId)->first();
+
+        if ($user) {
+            $user->update([
+                'line_user_id'     => null,
+                'status_line'      => 0,
+                'line_logout_user' => 1,
+            ]);
         }
 
         $line = LineAccount::where('line_user_id', $lineUserId)->first();
+
         if ($line) {
             $line->update([
-                'liff_token' => null,
-                'status_line' => 'logout_own',
-            ]);          
+                'line_user_id' => null,
+                'liff_token'   => null,
+                'status_line'  => 0,
+            ]);
         }
 
-        return response()->json(['status' => 'success', 'message' => 'Logged out successfully']);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Logged out successfully'
+        ]);
     }
     
     //แอดมินลบ Token ทีละลูกค้า
     public function revokeLineToken(Request $request)
     {
-
-        $id = $request->input('id');
-        // ลบ token จาก table line_accounts_tb
-        $line = LineAccount::where('id', $id)->first();
-
-        $name = $line?->display_name;
-
+        // $user = User::findOrFail($request->id);
+    
+        $user = User::findOrFail($request->id);
+        
+        $line = LineAccount::where('line_user_id', $user->line_user_id)->first();
+    
         if ($line) {
             $line->update([
-                'liff_token'    => null,
-                'status_line'   => 'revokeToken_by_admin'
-            ]); 
-        }
-
-        return response()->json([
-                'status' => 'del_token',
-                'message' => $name
+                'line_user_id' => null,
+                'liff_token'   => null,
+                'status_line'  => 0,
             ]);
+        }
+    
+        $user->update([
+            'line_user_id' => null,
+            'status_line'  => 0,
+            'line_logout_admin'  => 0,
+        ]);
+    
+        return redirect()->back()->with('status_line', 'ยกเลิกการเชื่อมต่อ LINE แล้ว');
     }
-
     //แอดมินลบ Tokens ทั้งหมด
     public function revokeAllLineTokens()
     {
@@ -237,7 +279,7 @@ class LineController extends Controller
         ]);
 
         return response()->json([
-            'status' => 'del_token_all',
+            'status_line' => 'del_token_all',
             'message' => 'revoke token successfully'
         ]);
     }
@@ -554,7 +596,8 @@ class LineController extends Controller
         $userId = LineAccount::where('line_cookie_id', $guestIdDb)->first(['line_user_id', 'liff_token']); */
         if(Auth::check()) {
 
-            $code = $request->user()->user_code;
+            $code = Auth::user()->user_id;
+            // dd($code);
             $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
     
             $lineUserId = Auth::user()?->line_user_id;
@@ -569,6 +612,40 @@ class LineController extends Controller
             }
 
             $user = Auth::user();
+
+            $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+            $id = $request->user()->admin_area;
+
+            $status_all = DB::table('customers')->select('status')
+                        ->where('admin_area', $id)
+                        ->whereNotIn('customer_status', ['inactive'])
+                        // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                        ->whereNotIn('customer_id', $code_notin)
+                        ->count();
+
+            $status_waiting = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'รอดำเนินการ')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+                            // dd($count_waiting);
+            $status_action = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'ต้องดำเนินการ')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+
+            $status_completed = DB::table('customers')->where('admin_area', $id)
+                            ->where('status', 'ดำเนินการแล้ว')
+                            ->whereNotIn('customer_status', ['inactive'])
+                            // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                            ->whereNotIn('customer_id', $code_notin)
+                            ->count();
+
+            $status_alert = $status_waiting + $status_action;
 
           return match ($user->role) {
             
@@ -586,11 +663,17 @@ class LineController extends Controller
                     'user_name'
                 )),
 
-                0 => view('portal.my-account', compact(
+                0 => view('portal.portal-my-account', compact(
                     'lineAccount',
                     'user',
                     'code',
-                    'user_name'
+                    'user_name',
+                    'status_alert',
+                    'status_all',
+                    'status_waiting',
+                    'status_action',
+                    'status_completed'
+                    
                 )),
 
                 default => view('portal.my-account', compact(

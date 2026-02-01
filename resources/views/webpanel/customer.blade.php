@@ -400,7 +400,7 @@
             });
         </script>
 
-        <div id="protected">
+        <div class="overflow-x-auto" id="protected">
             <hr class="my-3" style="color: #8E8E8E; width: 100%;">
             <table class="table table-striped">
                 <thead>

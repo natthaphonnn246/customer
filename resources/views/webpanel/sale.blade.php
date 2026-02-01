@@ -9,8 +9,8 @@
         <div class="grid grid-cols-1 gap-4 mx-4 px-2 text-gray-500">
 
         <div class="mt-3">
-            <a href="/webpanel/sale-create" class="bg-blue-500 hover:bg-blue-600 !rounded-lg py-2 px-3 text-white !no-underline" type="submit"  name="">เพิ่มเขตการขาย</a>
-            <a href="/webpanel/sale/importsale" class="bg-gray-200 hover:bg-gray-300 !rounded-lg py-2 px-3 !text-gray-600 !no-underline text-center" type="submit"  name="">import Sale CSV</a>
+            <a href="/webpanel/sale-create" class="bg-blue-500 hover:bg-blue-600 !rounded-md py-2 px-3 text-white !no-underline" type="submit"  name="">เพิ่มเขตการขาย</a>
+            <a href="/webpanel/sale/importsale" class="bg-gray-200 hover:bg-gray-300 !rounded-md py-2 px-3 !text-gray-600 !no-underline text-center" type="submit"  name="">import Sale CSV</a>
             {{-- <a href="/webpanel/admin-role"  id="adminRole" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดการสิทธิ์</a> --}}
     
         </div>

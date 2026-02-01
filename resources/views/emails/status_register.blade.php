@@ -5,6 +5,7 @@
 </head>
 <body>
     <h1>ลงทะเบียนใหม่</h1>
+    <p>Admin Id: {{ $status?->user_id }}</p>
     <p>Admin Area: {{ $status?->admin_area }}</p>
     <p>Sale Area: {{ $status?->sale_area }}</p>
     <p>Status: {{ $status->status }}</p>

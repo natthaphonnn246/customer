@@ -56,7 +56,7 @@
 
         <hr class="my-3" style="color: #8E8E8E; width: 100%;">
 
-        <div class="ms-6 mr-6 mb-2">
+        <div class="ms-6 mr-6 mb-2 overflow-x-auto">
             {{-- <hr class="my-3" style="color: #8E8E8E; width: 100%;"> --}}
             <table class="table table-striped">
                 <thead>

@@ -31,7 +31,19 @@
 
 <body class="bg-light" style="font-family: 'prompt';">
 
-@include('components.sign-sidebar')
+{{-- @include('components.sign-sidebar')
+
+<main class="content-wrapper p-3 p-md-4 bg-gray-100">
+    <div class="bg-white mt-14 md:mt-1">
+        @yield('content')
+    </div>
+   
+</main> --}}
+
+<x-sign-sidebar
+    :user-name="$user_name->name ?? 'ไม่ระบุ'"
+>
+</x-sign-sidebar>
 
 <main class="content-wrapper p-3 p-md-4 bg-gray-100">
     <div class="bg-white mt-14 md:mt-1">
@@ -39,7 +51,6 @@
     </div>
    
 </main>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

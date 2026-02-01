@@ -347,8 +347,8 @@
                     </div>
                 @endif
         @else
-            <div class="text-center py-8">
-                <span style="background-color: #ffc637; padding:15px;">
+            <div class="text-center py-8 mx-8">
+                <span class="block bg-yellow-500 w-full py-2">
                     ไม่พบข้อมูล
                 </span>
             </div>

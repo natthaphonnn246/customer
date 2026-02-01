@@ -97,14 +97,14 @@
                         
                             <nav class="space-y-2">
                                 <a href="{{ url('/webpanel/report/product-type/khor-yor-2') }}" 
-                                   class="block px-4 py-2 rounded-lg font-medium !no-underline" id="alertMenu">
+                                class="!no-underline block px-4 py-2 rounded-md font-medium hover:bg-green-600 !text-gray-600 hover:!text-white">
                                     สินค้าทั้งหมด
                                 </a>
                                 <hr style="color:#838383;">
                                 @if(isset($category) && count($category) > 0)
                                     @foreach($category as $row_cat)
                                         <a href="{{ url('/webpanel/report/product-type/khor-yor-2/' . $row_cat->categories_id) }}" 
-                                           class="block !no-underline px-4 py-2 rounded-lg font-medium duration-75 transition" id="alertMenu">
+                                            class="!no-underline block px-4 py-2 rounded-md font-medium hover:bg-green-600 !text-gray-600 hover:!text-white">
                                             {{ $row_cat->categories_name }}
                                         </a>
                                         <hr style="color:#838383;">
@@ -164,7 +164,7 @@
 
     </div>
 
-    <div class="ms-12 mb-6">
+    <div class="ms-12 mb-6 overflow-x-auto">
         @if($total_page > 1)
             <nav aria-label="Page navigation example">
             <ul class="pagination py-4">
@@ -181,22 +181,22 @@
             @endif
             </li>
 
-            @if($total_page > 14)
+                @if($total_page > 14)
 
-                @for ($i= 1; $i <= 10 ; $i++)
-                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
-                @endfor
-                <li class="page-item"><a class="page-link">...</a></li>
-                @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
-                @endfor
+                    @for ($i= 1; $i <= 3 ; $i++)
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
+                    @endfor
+                    <li class="page-item"><a class="page-link">...</a></li>
+                    @for ($i= $total_page-1; $i <= $total_page ; $i++)
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
+                    @endfor
 
-            @else
-                @for ($i= 1; $i <= $total_page ; $i++)
-                <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
-                @endfor
-            
-            @endif
+                @else
+                    @for ($i= 1; $i <= $total_page ; $i++)
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
+                    @endfor
+                
+                @endif
 
             <li class="page-item">
             
@@ -256,14 +256,6 @@
     #exportexcel:hover {
         background-color: #cccccc;
         color: #3c3c3c;
-    }
-    #alertMenu {
-        background-color: none;
-        color: rgb(102, 102, 102);
-    }
-    #alertMenu:hover {
-        background-color: rgb(16, 100, 89);
-        color: white;
     }
     .tr-hover:hover {
         background-color: rgb(8, 123, 110);

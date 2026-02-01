@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -18,6 +19,7 @@ class RegisterUpdatedMail extends Mailable
     public ?Customer $status = null;
     public string $checkUpdate;
     public $cidImage;
+    public ?User $admin = null;
 
     public function __construct(string $statusCode)
     {
@@ -27,7 +29,9 @@ class RegisterUpdatedMail extends Mailable
 
     public function build()
     {
-        $this->status = Customer::where('customer_id',$this->statusCode)->first();
+        $this->status = Customer::where('customer_id', $this->statusCode)->first();
+
+        // $this->admin = User::where('user_id', $this->status->user_id)->first();
 
         if (!$this->status) {
             throw new \Exception("Customer not found for ID: " . $this->statusCode);
@@ -41,6 +45,7 @@ class RegisterUpdatedMail extends Mailable
                         ->view('emails.status_register')
                         ->with([
                             'status' => $this->status,
+                            // 'admin'  => $this->admin ,
                         ]);
         
        

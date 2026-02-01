@@ -136,28 +136,32 @@
                 </form>
             </div> --}}
 
-            <div class="w-full md:w-1/2 px-4 md:px-0 mb-4">
-                <p class="text-lg text-gray-500 mt-4 mb-1">ค้นหาผู้ใช้ :</p>
-                <form method="get" action="/admin/customer"
-                        class="flex items-center gap-2 max-w-xl mx-auto mt-2">
-                
-                    <input
-                        type="search"
-                        name="keyword"
-                        value="{{ request('keyword') }}"
-                        placeholder="CODE / ชื่อร้านค้า"
-                        class="flex-1 px-3 py-2.5 border rounded-lg focus:ring-red-500"
-                    >
-                
-                    <button
-                        type="submit"
-                        class="bg-gray-600 hover:bg-gray-700
-                            text-white px-4 py-2.5 !rounded-lg transition">
-                        ค้นหา
-                    </button>
-                
-                </form>
-            </div>
+            <div class="w-full md:w-1/2 px-4 ms-4 md:px-0 mb-4">
+                <div class="max-w-xl mx-auto">
+                    <p class="text-lg text-gray-500 mt-4 mb-1">
+                        ค้นหาผู้ใช้ :
+                    </p>
+            
+                    <form method="get" action="/admin/customer"
+                          class="flex items-center gap-2 mt-2">
+                        
+                        <input
+                            type="search"
+                            name="keyword"
+                            value="{{ request('keyword') }}"
+                            placeholder="CODE | ชื่อร้านค้า"
+                            class="flex-1 px-3 py-2.5 border rounded-lg focus:ring-red-500"
+                        >
+            
+                        <button
+                            type="submit"
+                            class="bg-gray-600 hover:bg-gray-700
+                                   text-white px-4 py-2.5 !rounded-md transition">
+                            ค้นหา
+                        </button>
+                    </form>
+                </div>
+            </div>            
 
             <script>
                 $(document).ready(function() {
@@ -184,9 +188,10 @@
                 });
             </script>
 
-        <div class="grid grid-cols-1 md:grid-cols-1 gap-4 px-4 md:px-6 mb-2">
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-4 px-4 md:px-6 mx-4 mb-2">
             <hr class="!text-gray-500 mb-1">
             <h4 class="!text-gray-600 mx-2">{{ $customer->count() > 0 ? 'ลงทะเบียนใหม่' : '' }}</h4>
+            <div class="overflow-x-auto">
             <table class="table table-striped">
                 <thead>
 
@@ -217,6 +222,11 @@
                         </td>
 
                         <td scope="col"
+                            class="!text-gray-700 text-left font-medium p-3">
+                            วันที่ลงทะเบียน
+                        </td>
+
+                        <td scope="col"
                             class="!text-gray-700 text-center font-medium p-3">
                             จัดการ
                         </td>
@@ -232,8 +242,8 @@
                         <?php
                             
                             $id = $row->id;
-                            $user_name = $row->customer_name;
-                            $user_code = $row->customer_code;
+                            $customer_name = $row->customer_name;
+                            $customer_code = $row->customer_code;
                             $status_sap = $row->status_sap;
                             $status_web = $row->status_web;
                             $status_update = $row->status_update;
@@ -247,11 +257,11 @@
                     </td>
                     
                     <td scope="row" class="!text-gray-500 text-left p-3">
-                        {{ $user_code }}
+                        {{ $customer_code }}
                     </td>
                     
                     <td scope="row" class="!text-gray-500 text-left p-3 w-1/5">
-                        {{ $user_name }}
+                        {{ $customer_name }}
                     </td>
 
                     {{-- STATUS SAP --}}
@@ -295,6 +305,10 @@
                         <td scope="row" class="p-7 w-1/5"></td>
                     @endif
 
+                    <td scope="row" class="!text-gray-500 text-left p-3">
+                        {{ $created_at }}
+                    </td>
+
                     {{-- ACTION --}}
                     <td scope="row" class="text-center p-3 w-1/5">
                         <a href="/admin/customer/{{ $slug }}"
@@ -311,15 +325,14 @@
 
                                     $('#trash{{$id}}').click(function(e) {
                                         e.preventDefault();
-                                        // console.log('delete{{$user_code}}');
+                           
                                         let code_del = '{{$id}}';
-                                        // console.log('{{$user_code}}');
+                     
 
                                             swal.fire({
                                                 icon: "warning",
                                                 title: "คุณต้องการลบข้อมูลหรือไม่",
-                                                // text: '<?= $user_code .' '.'('. $user_name.')' ; ?>',
-                                                text: '{{$user_code.' '.'('. $user_name.')'}}',
+                                                text: '{{$customer_code.' '.'('. $customer_name.')'}}',
                                                 showCancelButton: true,
                                                 confirmButtonText: "ลบข้อมูล",
                                                 cancelButtonText: "ยกเลิก"
@@ -349,7 +362,7 @@
                                                         Swal.fire({
                                                             icon: "error",
                                                             title: "เกิดข้อผิดพลาด",
-                                                            text: 'ไม่พบข้อมูล {{$user_code.' '.'('. $user_name.')'}}',
+                                                            text: 'ไม่พบข้อมูล {{$customer_code.' '.'('. $customer_name.')'}}',
                                                             showConfirmButton: true,
                                                         });
                                                     }
@@ -466,7 +479,7 @@
                 @endif
                 </tbody>
             </table>
- 
+        </div>
         </div>
         @if(!isset($check_keyword) && $total_page > 1)
         <div class="ms-6">

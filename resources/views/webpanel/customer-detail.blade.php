@@ -395,6 +395,14 @@
                         <option {{$customer_view->delivery_by == 'owner' ? 'selected': ''}} value="owner">ขนส่งเอกชน (พัสดุ)</option>
                     </select>
                 
+                    <p class="mt-3 mb-1">ต้องการใบกำกับหรือไม่</p>
+                    <select class="form-select !text-red-500 !border-gray-300 p-2 rounded-lg mt-2 hover:!border-red-500" aria-label="Default select example" name="status_vat">
+
+                        <option {{$customer_view->status_vat === 0 ? 'selected': ''}} value="0">ไม่รับ</option>
+                        <option {{$customer_view->status_vat === 1 ? 'selected': ''}} value="1">รับ</option>
+
+                    </select>
+
                     <p class="mt-3 mb-1">ที่อยู่จัดส่ง</p>
                     <input type="text" class="form-control mt-2 !text-gray-400" name="address" value="{{$customer_view->address}}">                              
                 </div>
@@ -455,7 +463,18 @@
                     <p class="mt-3 mb-1">ภูมิศาสตร์</p>
                     <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="geography" name="geography" value="{{$customer_view->geography}}">
                 </div>
-               
+
+                <div class="mb-3 my-4 ms-2 mr-2">
+                    <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 500; color:#545454;">เพิ่มเติม</label></label>
+                    <textarea class="form-control" style="color: rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_add">{{$customer_view->text_area}}</textarea>
+
+                </div>
+
+                <div class="mb-3 my-4 ms-2 mr-2">
+                    <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 500; color:#545454;">ข้อความส่งถึงแอดมินผู้ดูแล</label></label>
+                    <textarea class="form-control" style="color: rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_admin">{{$customer_view->text_admin}}</textarea>
+                </div>
+
             </div>
             <!--form login-->
             <div>
@@ -593,16 +612,49 @@
             
                     </div>
 
-                            
-                    <div class="mb-3 my-4 ms-2 mr-2">
-                        <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 500; color:#545454;">เพิ่มเติม</label></label>
-                        <textarea class="form-control" style="color: rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_add">{{$customer_view->text_area}}</textarea>
+                    <!-- Line OA -->
+                    <div class="form-control my-4">
+                        <ul class="text-title mr-6" style="text-align: start; margin-top: 10px;">
+                            <span style="font-size: 16px; font-weight: 500; color:#545454;">สถานะการส่งข้อมูลผ่าน Line OA</span>
+                            <hr class="my-3" style="color: #8E8E8E; width: 100%;">
+                        </ul>
+                        <!-- sap -->
+                        <h4 class="ms-8">SAP</h4>
+                        
+                        <ul class="text-muted mr-6" style="padding-top: 10px;">
+                     
+                            <span class="block !text-gray-600 font-bold">เปิดบัญชี SAP</span>
+                            <select class="form-select mt-2 !text-gray-400" aria-label="Default select example" name="status_sap">
+                                    <option {{$customer_view->status_sap === 0 ? 'selected': ''}} value="0">ยังไม่ดำเนินการ</option>
+                                    <option {{$customer_view->status_sap === 1 ? 'selected': ''}} value="1">ดำเนินการแล้ว</option>
+                            </select><br>
 
-                    </div>
+                            <span class="block !text-gray-600 font-bold">ส่งข้อความ SAP</span>
+                            <select class="form-select mt-2 !text-gray-400" aria-label="Default select example" name="sap_send_line">
+                                <option {{$customer_view->sap_send_line === 0 ? 'selected': ''}} value="0">ยังไม่ดำเนินการ</option>
+                                <option {{$customer_view->sap_send_line === 1 ? 'selected': ''}} value="1">ดำเนินการแล้ว</option>
+                            </select><br>
 
-                    <div class="mb-3 my-4 ms-2 mr-2">
-                        <label for="exampleFormControlTextarea1" class="form-label" style="font-size: 16px; font-weight: 500; color:#545454;">ข้อความส่งถึงแอดมินผู้ดูแล</label></label>
-                        <textarea class="form-control" style="color: rgb(171, 171, 171);" id="exampleFormControlTextarea1" rows="3" name="text_admin">{{$customer_view->text_admin}}</textarea>
+                        </ul>
+                        <hr>
+                        <!-- web -->
+                        <h4 class="ms-8">WEB</h4>
+                        
+                        <ul class="text-muted mr-6" style="padding-top: 10px;">
+                     
+                            <span class="block !text-gray-600 font-bold">เปิดบัญชี WEB <span class="text-red-500 font-medium">*จำเป็นต้องระบุ</span></span>
+                            <select class="form-select mt-2 !text-gray-400" aria-label="Default select example" name="status_web">
+                                    <option {{$customer_view->status_web === 0 ? 'selected': ''}} value="0">ยังไม่ดำเนินการ</option>
+                                    <option {{$customer_view->status_web === 1 ? 'selected': ''}} value="1">ดำเนินการแล้ว</option>
+                            </select><br>
+
+                            <span class="block !text-gray-600 font-bold">ส่งข้อความ SAP</span>
+                            <select class="form-select mt-2 !text-gray-400" aria-label="Default select example" name="web_send_line">
+                                <option {{$customer_view->web_send_line === 0 ? 'selected': ''}} value="0">ยังไม่ดำเนินการ</option>
+                                <option {{$customer_view->web_send_line === 1 ? 'selected': ''}} value="1">ดำเนินการแล้ว</option>
+                            </select><br>
+
+                        </ul>
                     </div>
 
                     <div class="mb-3 my-4 ms-2 mr-2">

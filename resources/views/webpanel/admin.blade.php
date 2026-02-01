@@ -3,17 +3,18 @@
 @csrf
 
         <div class="py-2"></div>
-        <h5 class="!text-gray-600 font-semibold ms-6">ร้านค้า (Customer)</h5>
+        <h5 class="!text-gray-600 font-semibold ms-6">แอดมิน (Admin)</h5>
         <hr class="my-3 !text-gray-400 !border">
 
-        <div class="ms-6 py-2" style="text-align: left;">
-            <a href="/webpanel/admin-create"  id="" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg !no-underline" type="submit"  name="">เพิ่มแอดมิน</a>
+        <div class="ms-6 py-2">
+            <a href="/webpanel/admin-create"  id="" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md !no-underline" type="submit"  name="">เพิ่มแอดมิน</a>
+            <a href="/webpanel/admin-group"  id="" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md !no-underline" type="submit"  name="">จัดกลุ่มไลน์</a>
     
         </div>
 
         <hr class="my-3 !text-gray-400">
-        
-        <div class="grid mx-4 px-2">
+
+        <div class="grid mx-4 px-2 overflow-x-auto">
         <table class="table table-striped">
             <thead>
               <tr>
@@ -22,8 +23,8 @@
                 <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">Admin area</td>
                 <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">อีเมล</td>
                 <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">ชื่อแอดมิน</td>
-                <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">สถานะอนุมัติ</td>
-                <td scope="col" class="!text-gray-500 text-left p-3 font-semibold"><span class="!text-red-500 text-left text-xs">*ล็อกอินผิดเกิน 5 ครั้ง</span></br>ระงับบัญชี</td>
+                <td scope="col" class="!text-gray-500 text-center p-3 font-semibold">สถานะอนุมัติ</td>
+                <td scope="col" class="!text-gray-500 text-center p-3 font-semibold"><span class="!text-red-500 text-left text-xs">*ล็อกอินผิดเกิน 5 ครั้ง</span></br>ระงับบัญชี</td>
                 <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">วันที่สมัคร</td>
                 <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">จัดการ</td>
               </tr>
@@ -52,7 +53,7 @@
                 <td scope="row" class="!text-gray-500 text-left p-3">{{$admin_area}}</td>
                 <td scope="row" class="!text-gray-500 text-left p-3">{{$email}}</td>
                 <td scope="row" class="!text-gray-500 text-left p-3">{{$user_name}}</td>
-                <td scope="row" class="!text-gray-500 text-left p-3">
+                <td scope="row" class="!text-gray-500 text-center p-3">
                   
                     @if ($user_code === '0000' || $user_code === '4494')
                         <label class="switch" style="opacity:0.6;">
@@ -76,7 +77,7 @@
                   
                 </td>
 
-                <td scope="row" class="!text-gray-500 text-left p-3">
+                <td scope="row" class="!text-gray-500 text-center p-3">
                   
                     @if ($user_code == '0000' || $user_code == '4494')
                     <label class="switch">

@@ -6,7 +6,7 @@
         <h5 class="!text-gray-600 font-semibold ms-6">สถานะการใช้งาน (Admin Status)</h5>
         <hr class="my-3 !text-gray-400 !border">
 
-        <div class="grid grid-cols-1 gap-4 mx-4 px-2 text-gray-500">
+        <div class="grid grid-cols-1 gap-4 mx-4 px-2 text-gray-500 overflow-x-auto">
 
             <table class="table table-striped" id="user-table">
                 <thead>

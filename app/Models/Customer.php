@@ -47,10 +47,13 @@ class Customer extends Model
         'add_license',
         'purchase',
         'user_id',
+        'status_vat',
         'status_sap',
         'status_web',
         'slug',
         'update_by',
+        'sap_send_line',
+        'web_send_line',
         // 'maintenance_status',
         // 'allowed_maintenance',
 
@@ -80,9 +83,9 @@ class Customer extends Model
 
         $customer = DB::table('customers')->select('id', 'slug', 'customer_code', 'customer_name', 'email', 'status', 'status_sap', 'status_web', 'status_update', 'status_vat', 'customer_status', 'purchase', 'created_at')
                     ->where('status', 'ลงทะเบียนใหม่')
-                    ->orWhere('status_web', 1)
+                    ->orWhere('status_web', 0)
                     ->whereNotIn('customer_code',$code_notin)
-                    ->orderBy('id','asc')
+                    ->orderBy('id','desc')
                     ->offset($start)
                     ->limit($perpage)
                     ->get();

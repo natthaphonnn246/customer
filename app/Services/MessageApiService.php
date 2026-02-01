@@ -27,19 +27,19 @@ class MessageApiService
     {
         return [
             'type' => 'flex',
-            'altText' => 'ลงทะเบียนสำเร็จ',
+            'altText' => "ลงทะเบียนสำเร็จ โดย: {$register_by}",
             'contents' => [
                 'type' => 'bubble',
                 'size' => 'mega',
                 'header' => [
                     'type' => 'box',
                     'layout' => 'vertical',
-                    'backgroundColor' => '#1DB446',
+                    'backgroundColor' => '#E33939',
                     'paddingAll' => '20px',
                     'contents' => [
                         [
                             'type' => 'text',
-                            'text' => 'ลงทะเบียนสำเร็จ 🎉',
+                            'text' => 'ลงทะเบียนสำเร็จ',
                             'weight' => 'bold',
                             'size' => 'lg',
                             'color' => '#FFFFFF',
@@ -48,7 +48,7 @@ class MessageApiService
                             'type' => 'text',
                             'text' => 'กรุณารอตรวจสอบเอกสาร',
                             'size' => 'sm',
-                            'color' => '#E0FFE7',
+                            'color' => '#FFFFFF',
                             'margin' => 'sm',
                         ],
                     ],
@@ -72,9 +72,16 @@ class MessageApiService
                         ],
                         [
                             'type' => 'text',
-                            'text' => "สถานะเอกสาร : 🔴 รอดำเนินการ",
+                            'text' => "สถานะเอกสาร :",
                             'weight' => 'bold',
                             'size' => 'md',
+                        ],
+                        [
+                            'type' => 'text',
+                            'text' => ' รอดำเนินการ',
+                            'weight' => 'bold',
+                            'size' => 'md',
+                            'color' => '#E33939',
                         ],
                         [
                             'type' => 'text',
@@ -113,7 +120,7 @@ class MessageApiService
     {
         return [
             'type' => 'flex',
-            'altText' => 'เปิดโค้ดร้านยา: '.$customer_code.' '. $customer_name . ' เรียบร้อย 🎉',
+            'altText' => 'WEB เปิดโค้ดร้านยา: '.$customer_code.' '. $customer_name . ' เรียบร้อย',
             'contents' => [
                 'type' => 'bubble',
                 'size' => 'mega',
@@ -125,7 +132,7 @@ class MessageApiService
                     'contents' => [
                         [
                             'type' => 'text',
-                            'text' => 'เปิดโค้ดเรียบร้อย 🎉',
+                            'text' => 'เปิดโค้ดเรียบร้อย',
                             'weight' => 'bold',
                             'size' => 'lg',
                             'color' => '#FFFFFF',
@@ -134,7 +141,7 @@ class MessageApiService
                             'type' => 'text',
                             'text' => 'แจ้งรหัสเข้าใช้งานตามรายละเอียดได้เลยครับ',
                             'size' => 'sm',
-                            'color' => '#E0FFE7',
+                            'color' => '#FFFFFF',
                             'margin' => 'sm',
                         ],
                     ],
@@ -152,15 +159,22 @@ class MessageApiService
                         ],
                         [
                             'type' => 'text',
-                            'text' => "User : {$customer_code}\n Pass : {$password}\n เขตการขาย : {$sale_area}",
+                            'text' => "User : {$customer_code}\nPass : {$password}\n เขตการขาย : {$sale_area}",
                             'wrap' => true,
                             'size' => 'sm',
                         ],
                         [
                             'type' => 'text',
-                            'text' => "สถานะเอกสาร : 🟢 ดำเนินการแล้ว",
+                            'text' => "สถานะเอกสาร :",
                             'weight' => 'bold',
                             'size' => 'md',
+                        ],
+                        [
+                            'type' => 'text',
+                            'text' => 'ดำเนินการแล้ว',
+                            'weight' => 'bold',
+                            'size' => 'md',
+                            'color' => '#1DB446',
                         ],
                         [
                             'type' => 'text',
@@ -185,9 +199,10 @@ class MessageApiService
         ];
     }
 
-    public function sendSapSuccess(array $lineUserIds, string $customer_name, string $customer_code, string $saleArea): void
+    public function sendSapSuccess(string $lineUserId, string $customer_name, string $customer_code, string $saleArea): void
     {
-        foreach ($lineUserIds as $lineUserId) {
+            // array $lineUserIds
+ /*        foreach ($lineUserIds as $lineUserId) {
 
             try {
                 Http::withToken(config('services.line.channel_token'))
@@ -208,15 +223,15 @@ class MessageApiService
                     'error' => $e->getMessage(),
                 ]);
             }
-        }
+        } */
             // 1 user
-  /*       Http::withToken(config('services.line.channel_token'))
+        Http::withToken(config('services.line.channel_token'))
             ->post($this->endpoint, [
                 'to' => $lineUserId,
                 'messages' => [
                     $this->sapSuccessFlex($customer_name, $customer_code, $saleArea),
                 ],
-            ]); */
+            ]);
     }
 
     private function sapSuccessFlex(string $customer_name, string $customer_code, string $saleArea): array
@@ -230,7 +245,7 @@ class MessageApiService
                 'header' => [
                     'type' => 'box',
                     'layout' => 'vertical',
-                    'backgroundColor' => '#1DB446',
+                    'backgroundColor' => '#F5AD27',
                     'paddingAll' => '20px',
                     'contents' => [
                         [
@@ -244,7 +259,7 @@ class MessageApiService
                             'type' => 'text',
                             'text' => 'กำลังดำเนินการเปิดบัญชี WEB',
                             'size' => 'sm',
-                            'color' => '#E0FFE7',
+                            'color' => '#FFFFFF',
                             'margin' => 'sm',
                         ],
                     ],
@@ -268,9 +283,16 @@ class MessageApiService
                         ],
                         [
                             'type' => 'text',
-                            'text' => "สถานะเอกสาร : 🟡 กำลังดำเนินการ",
+                            'text' => "สถานะเอกสาร :",
                             'weight' => 'bold',
                             'size' => 'md',
+                        ],
+                        [
+                            'type' => 'text',
+                            'text' => ' กำลังดำเนินการ',
+                            'weight' => 'bold',
+                            'size' => 'md',
+                            'color' => '#F5AD27',
                         ],
                         [
                             'type' => 'text',

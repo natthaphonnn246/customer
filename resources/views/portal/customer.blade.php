@@ -1,320 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-    @section ('title', 'customer')
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" conten="{{ csrf_token() }}">
+@extends ('layouts.portal')
+@section('content')
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <title>cms.vmdrug</title>
-</head>
-<body>
-
-    @extends ('portal/menuportal-tailwind')
-    @section('content')
-    @csrf
-
-
-    <style>
-        .contentArea {
-            /* padding: 12px; */
-            background-color: #FFFFFF;
-            border-radius: 2px;
-            min-width: 1600px;
-            /* text-align: left; */
-        }
-        #admin {
-            background-color: #007bff;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #admin:hover {
-            background-color: #0b59f6;
-        }
-        #adminRole {
-            background-color: #007bff;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #adminRole:hover {
-            background-color: #0b59f6;
-        }
-        #edit {
-            background-color: #007bff;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        #trash {
-            background-color: #e12e49;
-            color: #FFFFFF;
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        /* toggle off */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 55px;
-            height: 28px;
-            
-        }
-
-        /* Hide default HTML checkbox */
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            
-        }
-
-        /* The slider */
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 1.5px;
-            right: 3px;
-            bottom: 3px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-
-        input:checked + .slider {
-            background-color: #03ae3f;
-    
-        }
-
-        input:focus + .slider {
-            box-shadow: 0 0 1px #2196F3;
-        }
-
-        input:checked + .slider:before {
-            -webkit-transform: translateX(26px);
-            -ms-transform: translateX(26px);
-            transform: translateX(26px);
-        }
-
-        /* Rounded sliders */
-        .slider.round {
-            border-radius: 34px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-         /* toggle off */
-        .switchs {
-            position: relative;
-            display: inline-block;
-            width: 55px;
-            height: 28px;
-            
-        }
-
-        /* Hide default HTML checkbox */
-        .switchs input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            
-        }
-
-        .sliders {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-        .sliders:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 1.5px;
-            right: 3px;
-            bottom: 3px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
-            
-        }
-
-        input:checked + .sliders {
-            background-color: #f63d3d;
-    
-        }
-
-        input:focus + .sliders {
-            box-shadow: 0 0 1px #2196F3;
-        }
-
-        input:checked + .sliders:before {
-            -webkit-transform: translateX(26px);
-            -ms-transform: translateX(26px);
-            transform: translateX(26px);
-        }
-
-        /* Rounded sliders */
-        .sliders.round {
-            border-radius: 34px;
-        }
-
-        .sliders.round:before {
-            border-radius: 50%;
-        }
-        #dropdownDivider {
-            background-color: rgb(67, 68, 68);
-            color: white;
-            border-radius: 5px;
-            
-        }
-        #dropdownlist:hover {
-            background-color: rgba(8, 123, 110, 0.544);
-            color: white;
-            border-radius: 5px;
-            
-        }
-        #protected {
-        position: relative;
-        }
-
-        #protected::after {
-                    content: "© cms.vmdrug";
-                    position: fixed; /* เปลี่ยนจาก absolute → fixed */
-                    top: 50%;
-                    left: 50%;
-                    font-size: 120px;
-                    color: rgba(170, 170, 170, 0.111);
-                    pointer-events: none;
-                    padding-top: 30px;
-                    /* transform: translate(-50%, -50%) rotate(-45deg); */
-                    transform: translate(-50%, -50%);
-                    white-space: nowrap;
-                    z-index: 9999; /* กันโดนซ่อนโดย content อื่น */
-        }
-        .disabled-link {
-            pointer-events: none;   /* กดไม่ได้ */
-            opacity: 0.4;           /* ทำให้ปุ่มจางลง */
-            cursor: not-allowed;    /* เมาส์เป็นรูปห้าม */
-            text-decoration: none;  /* เอาเส้นใต้ลิงก์ออก (ถ้าอยากให้ดูเหมือนปุ่ม) */
-        }
-        .modal-body {
-        max-height: 60vh;
-        overflow-y: auto;
-        }
-
-
-     /*    .alert-icon {
-            animation: shake 1s infinite;
-            display: inline-block;
-                } */
-
-        /* animation shake */
-   /*      @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            50% { transform: translateX(3px); }
-            75% { transform: translateX(-3px); }
-            100% { transform: translateX(0); }
-        } */
-
-
-
-    </style>
-
-    <div class="contentArea">
-       
-        @section('col-2')
-
-        @if(isset($user_name))
-            <h6 class="mt-1" style="">{{$user_name->name}}</h6>
-            @endif
-        @endsection
-
-        @section('status_alert')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_alert}}</h6>
-            @endif
-        @endsection
-
-        @section('status_all')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_all}}</h6>
-            @endif
-        @endsection
-
-        @section('status_waiting')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_waiting}}</h6>
-            @endif
-        @endsection
-
-        @section('status_action')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_action}}</h6>
-            @endif
-        @endsection
-
-        @section('status_completed')
-        @if($user_name->rights_area != '0')
-            <h6 class="justifiy-content:center;" style="">{{$status_completed}}</h6>
-            @endif
-        @endsection
-
-
-
-    
-            {{-- <span style="color: #8E8E8E;"><a href="/webpanel/admin" id="backLink">ข้อมูลแอดมิน (Admin)</a> / แบบฟอร์ม</span> --}}
-
+        <div class="py-2"></div>
+        <h5 class="ms-6 !text-gray-600">ร้านค้า</h5>
+        <hr class="my-3">
 
             <!-- check modal --->
             <div class="modal fade" id="checkModal" tabindex="-1" aria-labelledby="checkModalLabel" aria-hidden="true">
@@ -339,20 +28,6 @@
                   </div>
                 </div>
             </div>
- 
-            <script>
-         /*        let checkEdit = @json($check_edit); // จะได้ boolean จริง ๆ
-                if(checkEdit) {
-                    var myModal = new bootstrap.Modal(document.getElementById('checkModal'));
-                    myModal.show();
-
-                    document.getElementById('acknowledgeBtn').addEventListener('click', function () {
-                        var modal = bootstrap.Modal.getInstance(document.getElementById('checkModal'));
-                        modal.hide();
-                    });
-
-                } */
-            </script>
 
              <!-- check modal waiting --->
              @if(isset($count_modal_waiting) && $count_modal_waiting > 0)
@@ -360,9 +35,9 @@
                     <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header text-center">
-                        <h5 class="modal-title w-100 text-center" style="font-size: 20px; font-weight:500; color: rgb(255, 156, 7);">
-                            กรุณาอัปเดตข้อมูลให้ครบ : 
-                            <span style="border: solid 2px; padding:5px; font-weight:500; border-radius: 10px; color:rgb(255, 182, 11);">ต้องดำเนินการ</span>
+                        <h5 class="modal-title w-100 text-center !text-orange-400">
+                            {{-- กรุณาอัปเดตข้อมูลให้ครบ :  --}}
+                            <span class="inline-block border-2 border-amber-400 text-amber-400 px-3 py-2 rounded-lg text-base">ต้องดำเนินการ</span>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
                         </div>
@@ -370,8 +45,8 @@
                             <table class="table table-bordered table-striped table-hover align-middle">
                                 <thead class="table-warning">
                                     <tr>
-                                        <td style="width: 30%; text-align:center; font-weight:500; color:#464646;">รหัสร้านค้า</td>
-                                        <td style="width: 70%; text-align:center; font-weight:500; color:#464646;">
+                                        <td class="!text-center font-medium !text-gray-600">รหัสร้านค้า</td>
+                                        <td class="!text-center font-medium !text-gray-600">
                                             ชื่อร้านค้า
                                         </td>
                                  
@@ -380,9 +55,9 @@
                                 <tbody>
                                     @foreach ($check_modal_waiting as $row_modal)
                                         <tr>
-                                            <td style="text-align:center; font-weight:400; color:#838383;">{{ $row_modal->customer_id }}</td>
-                                            <td style="text-align:left; font-weight:400; color:#838383;">
-                                                <a href="{{ asset('/portal/customer/'.$row_modal->id) }}">
+                                            <td class="!text-center !text-gray-500">{{ $row_modal->customer_id }}</td>
+                                            <td>
+                                                <a href="{{ asset('/portal/customer/'.$row_modal->slug) }}" class="!no-underline !text-gray-500">
                                                     {{ $row_modal->customer_name }}
                                                     {{-- <sup style="background-color:#e04b30; color:white; border-radius:5px; padding:3px;">Edit</sup> --}}
                                                 </a>
@@ -401,21 +76,6 @@
                     </div>
                 </div>
             @endif
-
-                <script> 
-
-         /*            let checkEdit = @json($check_edit); // จะได้ boolean จริง ๆ
-
-                    if(checkEdit == 0) {
-                        var myModal = new bootstrap.Modal(document.getElementById('checkModalWaiting')); 
-                        myModal.show(); 
-                        document.getElementById('acknowledgeBtnWaiting').addEventListener('click', function () { 
-                            var modal = bootstrap.Modal.getInstance(document.getElementById('checkModalWaiting')); modal.hide(); 
-                        }); 
-                    } */
-                    // console.log('log'); 
-                </script>
-                
             <!-- ต้องการเปิด 2 modal พร้อมกัน -->
             <script>
                     document.addEventListener("DOMContentLoaded", function () {
@@ -454,24 +114,17 @@
                 });
 
             </script>
-
-            <div class="py-2">
-                {{-- <span style="color: #8E8E8E;">ข้อมูลลูกค้า (Customer)</span> --}}
-            </div>
-        
-            <span class="ms-6" style="color: #8E8E8E;">ข้อมูลลูกค้า (Customer)</span>
-            <hr class="my-3" style="color: #8E8E8E; width: 100%; border:solid 2px;">
             
             <div class="ms-6 mr-6" id="protected">
                 @if(!empty($pur_report) && $pur_report->purchase_status === 1)
-                <div class="row">
-                  
-                  
-                    <div class="col-sm-2 py-3">
+
+                <div class="grid md:grid-cols-12 grid-cols-1 gap-3 mb-4 items-center">
+
+                    <div class="col-span-3">
 
                                 {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
                     
-                            <button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="" style="background-color: rgb(1, 183, 52); width: 100%; border-radius:8px; color:#ffffff; height:70px;" type="button">
+                            <button id="dropdownDividerButton" data-dropdown-toggle="dropdownDivider" class="bg-green-600 hover:bg-green-700 text-white py-4 w-full !rounded-md" type="button">
                                 
                                 เลือกวันสั่งซื้อ
                                   
@@ -481,23 +134,23 @@
                             <div id="dropdownDivider" class="z-10 hidden divide-y divide-gray-100 shadow-sm w-44" style="text-align: left;">
             
                                 <div class="py-2">
-                                    <a href="/portal/customer/purchase/morethan" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">ไม่สั่งเกิน 7 วัน</a>
+                                    <a href="/portal/customer/purchase/morethan" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-white !no-underline text-center">ไม่สั่งเกิน 7 วัน</a>
                                 </div>
                                 <div class="py-2">
-                                    <a href="/portal/customer/purchase/coming" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">ใกล้ครบกำหนด</a>
+                                    <a href="/portal/customer/purchase/coming" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-white !no-underline text-center">ใกล้ครบกำหนด</a>
                                 </div>
                                 <div class="py-2">
-                                    <a href="/portal/customer/purchase/normal" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">สั่งซื้อตามปกติ</a>
+                                    <a href="/portal/customer/purchase/normal" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-white !no-underline text-center">สั่งซื้อตามปกติ</a>
                                 </div>
                                 <div class="py-2">
-                                    <a href="/portal/customer/purchase/no-purchase" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white text-center">ไม่มีการสั่งซื้อ</a>
+                                    <a href="/portal/customer/purchase/no-purchase" id="dropdownlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-white !no-underline text-center">ไม่มีการสั่งซื้อ</a>
                                 </div>
                               
                             </div>
 
                     </div>
 
-                    <div class="col-sm-10">
+                    <div class="col-span-9">
                           <!--- search --->
                           <form class="py-3" style="width:80%;" method="get" action="/portal/customer">
                             {{-- <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Search</label> --}}
@@ -505,8 +158,8 @@
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                 <!---icon -->
                                 </div>
-                                <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" />
-                                <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
+                                <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE | ชื่อร้านค้า" />
+                                <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium !rounded-md text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
                             
                             </div>
                             {{-- <p class="py-2" id="keyword_search"></p> --}}
@@ -552,11 +205,10 @@
                           <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                           <!---icon -->
                           </div>
-                          <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE /ชื่อร้านค้า" />
-                          <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
+                          <input type="search" id="default-search" name="keyword" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CODE | ชื่อร้านค้า" />
+                          <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium !rounded-md text-sm px-4 py-2 my-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">ค้นหา</button>
                       
                       </div>
-                      <p class="py-2" id="keyword_search"></p>
                       @csrf   
                   </form>
 
@@ -587,70 +239,28 @@
                 </div>
                 @endif
 
-     {{--    <script>
-                $(document).ready(function () {
-
-                    $("#noti_status").change(function () {
-
-                        let all = $(this).val();
-                        
-                        switch ($(this).val())
-                        {
-                            case "1":
-                                window.location.href ="/portal/customer";
-                                console.log('ทั้งหมด');
-                                break;
-                            case "2":
-                                window.location.href ="/portal/customer/status/waiting";
-                                console.log('รอดำเนินการ');
-                                break;
-                            case "3":
-                                window.location.href ="/portal/customer/status/action";
-                                console.log('ต้องดำเนินการ');
-                                break;
-                            case "4":
-                                window.location.href ="/portal/customer/status/completed";
-                                console.log('ดำเนินการแล้ว');
-                                break;
-                            default:
-                                window.location.href ="/portal/customer";
-                                console.log('ไม่ระบุ');
-                                break;
-                        }
-                    
-                        // alert("Change Status");
-                    });
-                });
-        </script> --}}
-        
-       {{--  <hr style="color: #8E8E8E; width: 100%;">
-
-        <div style="text-align: left;">
-            <a href="/webpanel/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a>
-            <a href="/webpanel/admin-role"  id="adminRole" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">จัดการสิทธิ์</a>
-    
-        </div> --}}
         <hr class="my-1" style="color: #8E8E8E; width: 100%;">
 
-        <div class="py-2">
+        <div class="overflow-x-auto">
         <table class="table table-striped">
             <thead>
               <tr>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">#</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">CODE</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">อีเมล</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">Sale area</td>
-                <td scope="col" style="color:#838383; text-align: left; font-weight:500; padding:20px;">ชื่อร้านค้า</td>
-                <td scope="col" style="color:#838383; text-align: center; font-weight:500; padding:20px;">สถานะ</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-medium">#</td>
+                <td scope="col" class="!text-gray-500 text-center p-3 font-medium">CODE</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-medium">อีเมล</td>
+                <td scope="col" class="!text-gray-500 text-center p-3 font-medium">เขตการขาย</td>
+                <td scope="col" class="!text-gray-500 text-left p-3 font-medium">ชื่อร้านค้า</td>
+                <td scope="col" class="!text-gray-500 text-center p-3 font-medium">สถานะ</td>
                 @if(!empty($pur_report) && $pur_report->purchase_status === 1)
-                    <td scope="col" style="color:#838383; text-align: center; font-weight:500; padding:20px;">การสั่งซื้อ</td>
+                    <td scope="col" class="!text-gray-500 text-center p-3 font-medium">การสั่งซื้อ</td>
                 @endif
-                <td scope="col" style="color:#838383; text-align: center; font-weight:500; padding:20px;">วันที่ลงทะเบียน</td>
-                <td scope="col" style="color:#838383; text-align: center; font-weight:500; padding:20px;">จัดการ</td>
+                {{-- <td scope="col" class="!text-gray-500 text-left p-3 font-medium">วันที่ลงทะเบียน</td> --}}
+                <td scope="col" class="!text-gray-500 text-left p-3 font-medium">จัดการ</td>
               </tr>
             </thead>
             <tbody>
-                @if(!empty($customer_list))
+
+        @if(!empty($customer_list)) <!-- ปิดลูกค้าทั้งหมด !empty = เปิด -->
                 <?php 
                     $start += 1;
                 ?>
@@ -667,28 +277,32 @@
                         $status = $row_list->status;
                         $created_at = $row_list->created_at;
                         $customer_status = $row_list->customer_status;
+                        $slug = $row_list?->slug;
                     ?>
                 
                 @if($customer_status == 'active')
-                    <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px; ">{{$start++}}</td>
-                    <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px; ">{{$customer_code}}</td>
-                    <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px; ">{{$email}}</td>
-                    <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px; ">{{$sale_area}}</td>
-                    <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px; width: 20%;">{{$customer_name}}</td>
-
+                    <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">{{$start++}}</td>
+                    <td scope="row" class="text-gray-400 text-center px-3 py-4 !text-gray-500">{{$customer_code}}</td>
+                    <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">{{$email}}</td>
+                    <td scope="row" class="text-gray-400 text-center px-3 py-4 !text-gray-500">{{$sale_area}}</td>
+                    <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">{{$customer_name}}</td>
+                    <td class="text-center px-3 py-4 w-full md:w-1/5">
                         @if ($status == 'รอดำเนินการ')
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(255, 70, 70);">รอดำเนินการ</span></td>
-                        {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(255, 70, 70);"></i> รอดำเนินการ</td> --}}
+                        <span class="inline-block border-2 border-red-400 text-red-400 px-3 py-2 rounded-lg text-sm">
+                            รอดำเนินการ
+                        </span>
+                
                         @elseif ($status == 'ต้องดำเนินการ')
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"><span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(255, 182, 11);">ต้องดำเนินการ</span></td>
-                        {{-- <td scope="row" style="color:#9C9C9C; text-align: left; padding:20px;"><i class="fa-solid fa-circle" style="color: rgb(251, 183, 23);"></i> ต้องดำเนินการ</td> --}}
-                        @elseif ($status == 'ดำเนินการแล้ว')
-                        {{-- <td scope="row" style="color:#9C9C9C; text-align: left;"><i class="fa-solid fa-circle" style="color: rgb(4, 181, 30);"></i> ดำเนินการแล้ว</td> --}}
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> <span style="border: solid 2px; padding:10px; border-radius: 10px; color:rgb(58, 174, 19);">ดำเนินการแล้ว</span></td>
-                        @else
-                        <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px;"> </td>
+                            <span class="inline-block border-2 border-amber-400 text-amber-400 px-3 py-2 rounded-lg text-sm">
+                                ต้องดำเนินการ
+                            </span>
+                    
+                        @else ($status == 'ดำเนินการแล้ว')
+                            <span class="inline-block border-2 border-green-500 text-green-500 px-3 py-2 rounded-lg text-sm">
+                                ดำเนินการแล้ว
+                            </span>
                         @endif
-
+                    </td>
                     @if(!empty($pur_report) && $pur_report->purchase_status === 1)
 
                             @if(!empty($check_id))
@@ -708,9 +322,9 @@
                                         $check_over_7 = \Carbon\Carbon::parse($item->date_purchase)->addDays(7)->lessThan(now());
                                     @endphp
                                 
-                                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px; width:20%;">
+                                    <td scope="row" class="text-gray-400 text-center px-3 py-4 !text-gray-500">
                                         @if ($check_over_7)
-                                        <span id="less{{ $customer_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(255, 70, 70);">
+                                        <span id="less{{ $customer_code }}" class="inline-block border-2 border-red-500 text-red-500 px-3 py-2 rounded-lg text-sm cursor-pointer">
                                             ไม่สั่งเกิน 7 วัน
                                         </span>
                                         
@@ -752,7 +366,7 @@
 
                                             
                                         @elseif ($check_over_5)
-                                            <span id="less{{ $customer_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:#ffa51d;">
+                                            <span id="less{{ $customer_code }}" class="inline-block border-2 border-yellow-500 text-yellow-500 px-3 py-2 rounded-lg text-sm cursor-pointer">
                                                 ใกล้ครบกำหนด
                                             </span>
 
@@ -793,7 +407,7 @@
                                             </div>
                                         @else
 
-                                            <span id="less{{ $customer_code }}" style="cursor: pointer; border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(51, 197, 14);">
+                                            <span id="less{{ $customer_code }}" class="inline-block border-2 border-green-500 text-green-500 px-3 py-2 rounded-lg text-sm cursor-pointer">
                                                 สั่งซื้อตามปกติ
                                             </span>
 
@@ -836,7 +450,6 @@
                                     </td>
                                 @endif
                           
-
                             <!-- แสดงรายการสินค้าสุดท้าย -->
                             <script>
                                 $(document).ready(function() {
@@ -917,42 +530,52 @@
                                 });
                             </script>
                         @else
-                            <td scope="row" style="color:#9C9C9C; text-align: center; padding:30px; width:20%;">
-                                <span style="border: solid 2px; padding: 10px; border-radius: 10px; color:rgb(144, 209, 245);">
-                                    ไม่มีการสั่งซื้อ
+                            <td class="text-center px-3 py-4 w-full md:w-1/5">
+                                <span class="inline-block border-2 border-sky-500 text-sky-500 px-3 py-2 rounded-lg text-sm">
+                                    ไม่พบการสั่ง
                                 </span>
                             </td>
                         @endif
                         @endif
                     @endif
-                    <td scope="row" style="color:#9C9C9C; text-align: center; padding:20px; ">{{$created_at}}</td>
+                    {{-- <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">{{$created_at}}</td> --}}
 
                     @php
                         $dis_check =  $check_edit;
                         $dis_check = $dis_check > 0;
                     @endphp
                     {{-- <td scope="row" style="color:#9C9C9C; text-align: center; padding:15px;"><a href="/portal/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a> --}}
-                    <td scope="row" style="color:#9C9C9C; text-align:center; padding:15px;">
-                        <a href="{{ $dis_check ? 'javascript:void(0)' : '/portal/customer/'.$id }}"
-                            id="edit"
-                            class="{{ $dis_check ? 'disabled-link' : '' }}">
-                            <i class="fa-regular fa-eye"></i>
-                        </a>
+                    <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">
+                        <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
+                            <a href="{{ $dis_check ? 'javascript:void(0)' : '/portal/customer/'.$slug }}"
+                                id="edit"
+                                class="{{ $dis_check ? 'disabled-link' : '' }}">
+                                <i class="fa-regular fa-eye"></i>
+                            </a>
+                        </div>
                     </td>
-                        
                     
                     {{-- <button id="trash"><i class="fa-regular fa-trash-can"></i></button> --}}
-                    </td>
+
                 @endif
               </tr>
     
               @endforeach
-              @endif
+
+        @else
+        <tr>
+            <td colspan="8" class="text-gray-400 text-center px-3 py-4 !text-gray-500">
+                ไม่พบการค้นหา
+            </td>
+        </tr>
+        @endif
+        
+
             </tbody>
           </table>
         </div>
-{{-- {{dd($total_page);}} --}}
-          @if($total_page > 1)
+
+          @if($total_page > 1) <!-- ปิดลูกค้าทั้งหมด น้อยกว่า 1 -->
           <nav aria-label="Page navigation example">
             <ul class="pagination py-4">
             <li class="page-item">
@@ -1000,30 +623,79 @@
             </ul>
         </nav>
         @else
-        <hr>
+        
         @endif
 
     </div>
-</div>
 
-@endsection
+    <script>
+            $(document).ready(function () {
 
-        <script>
-
-                $(document).ready(function () {
-
-                    $("#reports").click(function () {
-                        console.log("Report");
-                        $(this).next('.sub-menus').slideToggle();
-                        $(this).find('.dropdown').toggleClass('rotate');
-                        $(this).toggleClass("submenu"); // toggle เปิดปิดแถบสีเมนู;
-                        // $('.sub-menus').css("background-color", "black", "text-align", "left");
-                    
-
-                    });
+                $("#reports").click(function () {
+                    console.log("Report");
+                    $(this).next('.sub-menus').slideToggle();
+                    $(this).find('.dropdown').toggleClass('rotate');
+                    $(this).toggleClass("submenu"); // toggle เปิดปิดแถบสีเมนู;
+                    // $('.sub-menus').css("background-color", "black", "text-align", "left");
                 
-                });
 
-        </script>
-</body>
-</html>
+                });
+            
+            });
+
+    </script>
+@endsection
+@push('styles')
+<style>
+    #edit {
+        background-color: #007bff;
+        color: #FFFFFF;
+        border: none;
+        cursor: pointer;
+        padding: 8px 16px;
+        font-size: 16px;
+        border-radius: 4px;
+        text-align: center;
+    }
+    #dropdownDivider {
+        background-color: rgb(67, 68, 68);
+        color: white;
+        border-radius: 5px;
+        
+    }
+    #dropdownlist:hover {
+        background-color: rgba(8, 123, 110, 0.544);
+        color: white;
+        border-radius: 5px;
+        
+    }
+    #protected {
+    position: relative;
+    }
+
+    #protected::after {
+                content: "© cms.vmdrug";
+                position: fixed; /* เปลี่ยนจาก absolute → fixed */
+                top: 50%;
+                left: 50%;
+                font-size: 120px;
+                color: rgba(170, 170, 170, 0.111);
+                pointer-events: none;
+                padding-top: 30px;
+                /* transform: translate(-50%, -50%) rotate(-45deg); */
+                transform: translate(-50%, -50%);
+                white-space: nowrap;
+                z-index: 9999; /* กันโดนซ่อนโดย content อื่น */
+    }
+    .disabled-link {
+        pointer-events: none;   /* กดไม่ได้ */
+        opacity: 0.4;           /* ทำให้ปุ่มจางลง */
+        cursor: not-allowed;    /* เมาส์เป็นรูปห้าม */
+        text-decoration: none;  /* เอาเส้นใต้ลิงก์ออก (ถ้าอยากให้ดูเหมือนปุ่ม) */
+    }
+    .modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+    }
+</style>
+@endpush

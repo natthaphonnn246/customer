@@ -1,6 +1,5 @@
 @extends ('layouts.webpanel')
 @section('content')
-@csrf
 
         <div class="py-2"></div>
         <h5 class="!text-gray-600 font-semibold ms-6"><a href="/webpanel/admin" class="!no-underline">ย้อนกลับ</a> | รายละเอียด</h5>
@@ -26,16 +25,16 @@
                             <div>
              
                                 <p class="mt-2 mb-1">ชื่อแอดมิน</p>
-                                <input type="text" class="form-control !text-gray-600l" name="admin_name" value="{{$admin_master->name}}">
+                                <input type="text" class="form-control !text-gray-500" name="admin_name" value="{{$admin_master->name}}">
     
                                 <p class="mt-4 mb-1">CODE <span class="text-red-500 text-xs">*จำเป็นต้องระบุ</span></p>
-                                <input type="text" class="form-control !text-gray-600" name="code" value="{{$admin_master->user_code}}">
+                                <input type="text" class="form-control !text-gray-500" name="code" value="{{$admin_master->user_code}}">
                         
                                 <p class="mt-4 mb-1">Admin area <span class="text-red-500 text-xs">*เขตรับผิดชอบ</span></p>
-                                <input type="text" class="form-control !text-gray-600" id="adminarea" name="admin_area" value="{{$admin_master->admin_area}}">
+                                <input type="text" class="form-control !text-gray-500" id="adminarea" name="admin_area" value="{{$admin_master->admin_area}}">
             
                                 <p class="mt-4 mb-1">สิทธิ์แสดงสถานะการสั่งซื้อ <span class="text-red-500 text-xs">*มี = เห็นสถานะการสั่งซื้อ</span></p>
-                                <select class="form-select !text-gray-600" aria-label="Default select example" name="purchase_status" id="rolemain">
+                                <select class="form-select !text-gray-500" aria-label="Default select example" name="purchase_status" id="rolemain">
                         
                                     <option {{$admin_master->purchase_status == 0 ? 'selected': '' }} value="0">ไม่มี</option>
                                     <option {{$admin_master->purchase_status == 1 ? 'selected': '' }} value="1">มี</option>
@@ -43,7 +42,7 @@
                                 </select>
             
                                 <p class="mt-4 mb-1">สิทธิ์เข้าถึงประเภทร้านค้า (ข.ย.2 / สมพ.2) <span class="text-red-500 text-xs">*มี = มีสิทธิ์ใช้งานเมื่อปิดการเข้าถึงในหน้าตั้งค่า</span></p>
-                                <select class="form-select !text-gray-600" aria-label="Default select example" name="allowed_check_type" id="rolemain">
+                                <select class="form-select !text-gray-500" aria-label="Default select example" name="allowed_check_type" id="rolemain">
 
                                     <option {{$admin_master->allowed_check_type == 0 ? 'selected': '' }} value="0">ไม่มี</option>
                                     <option {{$admin_master->allowed_check_type == 1 ? 'selected': '' }} value="1">มี</option>
@@ -51,7 +50,7 @@
                                 </select>
                 
                                 <p class="mt-4 mb-1">สิทธิ์แอดมิน <span class="text-red-500 text-xs">*มีสิทธิ์ = ทดสอบได้ทุกประเภทแอดมิน</span></p>
-                                <select class="form-select !text-gray-600" aria-label="Default select example" name="admin_role" id="rolemain">
+                                <select class="form-select !text-gray-500" aria-label="Default select example" name="admin_role" id="rolemain">
 
                                     <option {{$admin_master->admin_role == 0 ? 'selected': '' }} value="0">ไม่มีสิทธิ์</option>
                                     <option {{$admin_master->admin_role == 1 ? 'selected': '' }} value="1">มีสิทธิ์</option>
@@ -62,7 +61,7 @@
                                 <div class="grid md:grid-cols-2 gap-3">
                                     <div>
                                         <p class="mt-4 mb-1">ประเภทแอดมิน</p>
-                                        <select class="form-select !text-gray-600" aria-label="Default select example" name="role" id="rightsrole">
+                                        <select class="form-select !text-gray-500" aria-label="Default select example" name="role" id="rightsrole">
 
                                             <option {{$admin_master->role == 0 ? 'selected': '' }} value="0">ไม่ระบุ</option>
                                             <option {{$admin_master->role == 1 ? 'selected': '' }} value="1">ดูรายงาน</option>
@@ -75,7 +74,7 @@
 
                                     <div>
                                         <p class="mt-4 mb-1">สิทธิ์รับผิดชอบ</p>
-                                        <select class="form-select !text-gray-600" aria-label="Default select example" name="rights_area" id="rights_area_role">
+                                        <select class="form-select !text-gray-500" aria-label="Default select example" name="rights_area" id="rights_area_role">
 
                                             <option {{$admin_master->rights_area == 0 ? 'selected' : '' }} value="0">ไม่ระบุ</option>
                                             <option {{$admin_master->rights_area == 1 ? 'selected' : '' }} value="1">ระบุ</option>
@@ -155,7 +154,7 @@
                                 <div>
           
                                     <p class="mt-4 mb-1">สิทธิ์ในการทดสอบระบบ <span style="font-size: 12px; color:red;">*เมื่ออยู่ระหว่างปรับปรุงระบบ</span></p>
-                                    <select class="form-select !text-gray-600" aria-label="Default select example" name="allowed_user_status">
+                                    <select class="form-select !text-gray-500" aria-label="Default select example" name="allowed_user_status">
 
                                         <option {{$admin_master->allowed_user_status == 0 ? 'selected' : '' }} value="0">ไม่ระบุ</option>
                                         <option  {{$admin_master->allowed_user_status == 1 ? 'selected' : '' }} value="1">ระบุ</option>
@@ -166,16 +165,16 @@
                                     <input type="email" class="form-control !text-gray-600" name="email" value="{{$admin_master->email}}" disabled>
                     
                                     <p class="mt-4 mb-1">เบอร์ติดต่อ <span class="text-xs text-red-500">(ตัวอย่าง: 0904545555)</span></p>
-                                    <input type="text" class="form-control !text-gray-600" name="telephone" value="{{$admin_master->telephone}}">
+                                    <input type="text" class="form-control !text-gray-500" name="telephone" value="{{$admin_master->telephone}}">
                     
                                     <p class="mt-4 mb-1">ที่อยู่</p>
-                                    <input type="text" class="form-control !text-gray-600" name="address" value="{{$admin_master->address}}">   
+                                    <input type="text" class="form-control !text-gray-500" name="address" value="{{$admin_master->address}}">   
                 
                                 </div>
                                 <div class="grid md:grid-cols-2 gap-3">
                                     <div>
                                         <p class="mt-4 mb-1">จังหวัด</p>
-                                        <select class="form-select !text-gray-600" aria-label="Default select example" name="province" id="province">
+                                        <select class="form-select !text-gray-500" aria-label="Default select example" name="province" id="province">
                                             @if(isset($province))
                                                 @foreach($province as $row)
                                 
@@ -186,7 +185,7 @@
                                         </select>
 
                                         <p class="mt-4 mb-1">ตำบล/แขวง</p>
-                                        <select class="form-select !text-gray-600" aria-label="Default select example" name="district" id="districts">
+                                        <select class="form-select !text-gray-500" aria-label="Default select example" name="district" id="districts">
                                             @if(isset($district) && $district == '')
                                                 @foreach($district as $row)
                                                     <option value="{{$row->amphure_id}}" {{$row->name_th == $admin_master->district ? 'selected' : '' }}>{{$row->name_th}}</option>
@@ -200,7 +199,7 @@
 
                                     <div>
                                         <p class="mt-4 mb-1">อำเภอ/เขต</p>
-                                        <select class="form-select !text-gray-600" aria-label="Default select example" id="amphures" name="amphur">
+                                        <select class="form-select !text-gray-500" aria-label="Default select example" id="amphures" name="amphur">
 
                                             @if(isset($amphur) && $amphur == '')
                                                 @foreach($amphur as $row)
@@ -213,7 +212,7 @@
                                         </select>
 
                                         <p class="mt-4 mb-1">รหัสไปรษณีย์ <span class="text-xs text-red-500">*กรุณาตรวจสอบ</span></p>
-                                        <input type="text" class="form-control !text-gray-600" name="zipcode" id="zipcode" value="{{$admin_master->zipcode}}">
+                                        <input type="text" class="form-control !text-gray-500" name="zipcode" id="zipcode" value="{{$admin_master->zipcode}}">
                                     </div>
                                 </div>
                       
@@ -223,11 +222,14 @@
                             <div>
                                 <div class="form-control p-4">
                               
-                                    <span class="font-bold">ข้อมูล Login</span>
+                                    <span class="font-medium text-lg">ข้อมูล Login</span>
                                     <hr class="my-3 !text-gray-400">
                                   
-                                    <p class="mt-3 mb-1">อีเมล <span class="text-xs text-red-500">*จำเป็นต้องระบุ</span></p>
-                                    <input type="text" class="form-control mb-3 !text-gray-600" name="email_login" value="{{$admin_master->email}}">
+                                    <p class="mt-3 mb-1 !text-gray-600">อีเมล <span class="text-xs text-red-500">*จำเป็นต้องระบุ</span></p>
+                                    <input type="text" class="form-control mb-3 !text-gray-500" name="email_login" value="{{$admin_master->email}}">
+
+                                    <p class="mt-3 mb-1 !text-gray-600">สถานะเชื่อมต่อไลน์ <span class="text-xs text-red-500"></span></p>
+                                    <input type="text" class="form-control mb-3 !text-gray-500" value="{{$admin_master->line_user_id ? 'เชื่อมต่อไลน์สำเร็จ' : 'ยังไม่เชื่อมต่อไลน์'}}">
                     {{-- 
                                     <p clas="mt-3 mb-1">รหัสผ่าน</p>
                                     <input type="text" class="form-control" name="password" disabled> --}}
@@ -248,6 +250,39 @@
                         </div>
                             
                     </form>
+
+                    <hr class="my-4 !text-gray-400">
+
+                    <div class="mx-12">
+                        <p class="mt-4 mb-1 !text-green-600 font-medium">สถานะเชื่อมต่อไลน์ <span class="text-xs text-red-500"></span></p>
+                        <input type="text" class="form-control mb-1 mt-2 !text-gray-500" value="{{$admin_master->line_user_id ? 'เชื่อมต่อไลน์สำเร็จ' : 'ยังไม่เชื่อมต่อไลน์'}}">
+    
+                        <p class="mt-3 mb-2 text-gray-600 font-medium">สถานะยกเลิกการเชื่อมต่อโดย: 
+                            @if($admin_master->status_line === 0)
+                            <span class="text-red-500">ยังไม่ได้เชื่อมต่อ</span>
+                            @elseif ($admin_master->line_logout_user === 1)
+                            <span class="text-blue-500">ยกเลิกโดยแอดมิน</span>
+                            @elseif ($admin_master->line_logout_admin === 1)
+                            <span class="text-sky-500">ยกเลิกโดยผู้ใช้</span>
+                            @else
+                            <span class="text-green-500">กำลังเชื่อมต่อไลน์</span>
+                            @endif
+                        </p>
+                        <form action="{{ route('line.revoktoken.admin') }}" method="POST" class="inline">
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $admin_master->id }}">
+                            <button type="submit"
+                                class="bg-red-500 hover:bg-red-600 text-white !no-underline !rounded-md py-2 px-4 mt-1"
+                                onclick="return confirm('คุณต้องการยกเลิกการเชื่อมต่อ LINE ใช่หรือไม่?')">
+                                ยกเลิกเชื่อมต่อไลน์
+                            </button>
+                        </form>
+                    </div>
+                    <div class="mx-12">
+                        @if (Session::has('status_line'))
+                        <div class="alert alert-success mt-2"><i class="fa-solid fa-circle-check text-green-600"></i> {{ Session::get('status_line') }}</div>
+                        @endif
+                    </div>
 
                     @if (session('status') == 'updated_success')
                         <script> 

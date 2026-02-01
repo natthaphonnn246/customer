@@ -33,6 +33,7 @@ use App\Enums\CustomerStatusEnum;
 use Illuminate\Support\Facades\Cache;
 use App\Jobs\RebuildCheckPurchaseCache;
 use App\Services\MessageApiService;
+use Illuminate\Support\Str;
 
 
 class WebpanelCustomerController
@@ -1324,16 +1325,13 @@ class WebpanelCustomerController
     }
     public function create(Request $request)
     {
-        // dd($request->customer_code);
-        date_default_timezone_set("Asia/Bangkok");
-
         if($request->has('submit_form') == true)
         {
 
-            $request->validate([
+     /*        $request->validate([
                 'customer_code' => 'required|max: 4',
         
-            ]);
+            ]); */
 
             $customer_id = $request->customer_code;
             $customer_code = $request->customer_code;
@@ -1401,6 +1399,8 @@ class WebpanelCustomerController
             $status = 'ลงทะเบียนใหม่';
             $purchase = $request->purchase;
 
+            
+
         }   
 
             if($cert_store != '' && $customer_id != '')
@@ -1446,6 +1446,20 @@ class WebpanelCustomerController
             }
 
             $delivery_by = $request->delivery_by;
+            $userId = Auth::user()?->user_id;
+            $baseSlug = 'customer-' . Str::uuid();
+
+            $tempCode = 'TMP-' . now()->format('ymdHis') . rand(10,99);
+            $customer_id = $tempCode;
+
+            if (!empty($request->customer_code)) {
+                $customer_code = $request->customer_code;
+                $customer_id   = $request->customer_code;
+            } else {
+                $tempCode = 'TMP-' . now()->format('ymdHis') . rand(10, 99);
+                $customer_code = $tempCode;
+                $customer_id   = $tempCode;
+            }
 
        /*  $customer = new Customer;
         $customer->customer_code = $request->customer_code;
@@ -1488,7 +1502,14 @@ class WebpanelCustomerController
                     'delivery_by' => $delivery_by,
                     'points' => '0',
                     'add_license' => 'ไม่ระบุ',
-                    'purchase' => $purchase
+                    'purchase' => $purchase,
+                    'status_vat'  => $request->status_vat,
+                    'status_web'  => 0,
+                    'status_sap'  => 0,
+                    'user_id'     => $userId,
+                    'slug'        => $baseSlug,
+                    'sap_send_line' => 0,
+                    'web_send_line' => 0,
                     // 'maintenance_status' => '',
                     // 'allowed_maintenance' => '',
 
@@ -1557,7 +1578,7 @@ class WebpanelCustomerController
             return response()->noContent(); // หรือ 200 OK โดยไม่ทำอะไร
         }
  */
-        date_default_timezone_set("Asia/Bangkok");
+        // date_default_timezone_set("Asia/Bangkok");
 /* 
         if($request->has('submit_update'))
         { */
@@ -1684,6 +1705,11 @@ class WebpanelCustomerController
                         'points'            => $points,
                         'add_license'       => $add_license,
                         'purchase'          => $purchase,
+                        'status_vat'        => $request->status_vat,
+                        'sap_send_line'     => $request->sap_send_line,
+                        'web_send_line'     => $request->web_send_line,
+                        'status_sap'        => $request->status_sap,
+                        'status_web'        => $request->status_web,
                         // 'maintenance_status' => '',
                         // 'allowed_maintenance' => '',
                 
@@ -1691,7 +1717,7 @@ class WebpanelCustomerController
 
                 // usleep(100000);
                 // check user id;
-                $check_customer_id = Customer::select('id', 'user_id', 'customer_code')->where('id', $id)->first();
+                $check_customer_id = Customer::select('id', 'user_id', 'customer_code', 'web_send_line')->where('id', $id)->first();
                 $customer_id =  $check_customer_id->id;
                 $customer_code = $check_customer_id->customer_code;
 
@@ -1701,9 +1727,26 @@ class WebpanelCustomerController
                     // dd($checkUserId);
                     $lineUserId = User::where('user_id', $checkUserId)->value('line_user_id');
 
-                    if ($lineUserId) {
+                    $customerModel = Customer::find($id);
+
+                    if($customerModel?->web_send_line === 1) {
+                     
+                        return redirect('/webpanel/customer/'.$id)->with('status', 'updated_success');
+                    }
+
+                    if (!empty($lineUserId) && $check_customer_id?->web_send_line === 0 ) {
                         app(MessageApiService::class)
-                            ->sendWebSuccess($lineUserId, $customer_name, $customer_code, $password, $sale_area);
+                            ->sendWebSuccess(
+                                $lineUserId, 
+                                $customer_name, 
+                                $customer_code, 
+                                $password, 
+                                $sale_area
+                            );
+
+                            $customerModel?->update([
+                                'web_send_line' => 1,
+                            ]);
                     }
                     // echo 'success';
                     return redirect('/webpanel/customer/'.$id)->with('status', 'updated_success');

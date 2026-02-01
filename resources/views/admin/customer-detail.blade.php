@@ -18,10 +18,7 @@
         @section('text_alert')
         <h6 class="justifiy-content:center; mt-2 ms-4 mr-6" style="background-color:#cb4d4d; border-radius:20px; padding: 5px; color:#ffffff; font-weight:500;">{{$status_updated}}</h6>
         @endsection
-
-        @section('username')
-        <h6 class="color:#ffffff; font-weight:300;">{{$user_name}}</h6>
-        @endsection --}}
+--}}
 
         <div class="py-2"></div>
         <h5 class="!text-gray-600 font-semibold ms-6"><a href="/admin/customer" class="!no-underline">ย้อนกลับ</a> | รายละเอียด</h5>
@@ -570,7 +567,7 @@
                                     <p class="mb-1 mt-4 text-xm text-gray-600">การจัดส่งสินค้า</p>
                                         <select class="form-select !text-red-500 !border-gray-300 p-2 rounded-lg mt-2 hover:!border-red-500" aria-label="Default select example" name="delivery_by">
         
-                                            <option {{$customer_view->delivery_by === 'standard' ? 'selected': ''}} value="standard">ไม่่ระบุ</option>
+                                            <option {{$customer_view->delivery_by === 'standard' ? 'selected': ''}} value="standard">ไม่ระบุ</option>
                                             <option {{$customer_view->delivery_by === 'owner' ? 'selected': ''}} value="owner">ขนส่งเอกชน</option>
         
                                         </select>
@@ -608,7 +605,14 @@
                                     </select>
 
                                     <p class="mb-2 mt-4 text-xm text-gray-600">สถานะเปิดบัญชี WEB</p>
-                                    <input class="form-control !text-gray-500 p-2 rounded-lg"type="text" id="" name="status_web" value="{{$customer_view->status_sap === 0 ? 'รอดำเนินการ' : 'กำลังดำเนินการ'}}">
+
+                                    @if($customer_view->status_sap === 1 && $customer_view->status_web === 0)
+                                    <p class="form-control !text-gray-500 p-2 rounded-lg">กำลังดำเนินการ</p>
+                                    @elseif ($customer_view->status_sap === 0 && $customer_view->status_web === 0)
+                                    <p class="form-control !text-gray-500 p-2 rounded-lg">รอดำเนินการ</p>
+                                    @else
+                                    <p class="form-control !text-gray-500 p-2 rounded-lg">ดำเนินการแล้ว</p>
+                                    @endif
                                     
                                 </div>
                     
@@ -810,8 +814,8 @@
                 })
                 .then(result => {
                     Swal.fire({
-                        icon: result.status === 'success' ? 'success' : 'error',
-                        title: result.status === 'success' ? 'สำเร็จ' : 'ล้มเหลว',
+                        icon: result.status === 'success' ? 'success' : 'warning',
+                        title: result.status === 'success' ? 'สำเร็จ' : 'แจ้งเตือน',
                         text: result.message,
                     }).then(() => {
                         location.reload();
