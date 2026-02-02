@@ -69,9 +69,9 @@ class AuthenticatedSessionController extends Controller
             // }
 
                 //recaptcha;//เอา
-                // $request->validate([
-                //     'g-recaptcha-response' => ['required', new \App\Rules\Recaptcha],
-                // ]);
+                $request->validate([
+                    'g-recaptcha-response' => ['required', new \App\Rules\Recaptcha],
+                    ]);
             
                 //login;
                 $credentials = $request->validate([

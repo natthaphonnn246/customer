@@ -68,6 +68,7 @@
                     <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">อีเมล</td>
                     <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">ชื่อร้านค้า</td>
                     <td scope="col" class="!text-gray-500 text-center p-3 font-semibold">STATUS</td>
+                    <td scope="col" class="!text-gray-500 text-center p-3 font-semibold">SAP CODE</td>
                     <td scope="col" class="!text-gray-500 text-center p-3 font-semibold">UPDATE</td>
                     <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">วันที่สมัคร</td>
                     <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">สถานะ</td>
@@ -109,6 +110,14 @@
                         @else
                         <td scope="row" class="text-center px-3 py-4 w-full md:w-1/5"> </td>
                         @endif
+
+                        <td scope="row" class="text-gray-400 text-center px-3 py-4 !text-gray-500">
+                            @if($row?->status_sap === 0)
+                            <i class="fa-solid fa-circle text-rose-500 text-lg"></i>
+                            @else
+                            <i class="fa-solid fa-circle text-green-500 text-lg"></i>
+                            @endif
+                        </td>
 
                         @if ($status_update == 'updated')
                         <td scope="row" class="text-center px-3 py-4 w-full md:w-1/5"> <span class="inline-block border-2 border-red-500 text-red-500 px-3 py-2 rounded-lg text-sm">UPDATE</span></td>

@@ -38,8 +38,9 @@
             </svg>
         </button>
 
-        <span class="flex items-center text-white font-semibold text-xl">
-            <i class="fa-solid fa-gear p-2 text-blue-400"></i>
+        <span class="flex items-center text-white font-semibold text-xl gap-1">
+            {{-- <i class="fa-solid fa-gear p-2 text-blue-400"></i> --}}
+            <img src="{{ asset('cms-v1.ico') }}" alt="icon" class="w-5 h-5">
             cms.vmdrug
         </span>
         
@@ -235,6 +236,8 @@
         </div>
         <hr class="mt-2 mb-2">
         @endif
+
+        @if($connectLine && $connectLine == 1)
         <li>
             <a href="/account/profile"
                class="flex items-center gap-2 px-3 py-2 rounded
@@ -243,7 +246,9 @@
                 ตั้งค่าบัญชี
             </a>
         </li>
+
         <hr>
+        @endif
         <li>
             <a href="/logout"
                class="flex items-center gap-2 px-3 py-2 rounded

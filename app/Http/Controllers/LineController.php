@@ -263,7 +263,7 @@ class LineController extends Controller
         $user->update([
             'line_user_id' => null,
             'status_line'  => 0,
-            'line_logout_admin'  => 0,
+            'line_logout_admin'  => 1,
         ]);
     
         return redirect()->back()->with('status_line', 'ยกเลิกการเชื่อมต่อ LINE แล้ว');
@@ -273,15 +273,19 @@ class LineController extends Controller
     {
         // ลบ token ของทุก account
         LineAccount::query()->update([
-            'liff_token' => null,
-            'status_line'   => 'revokeTokensAll_by_admin'
+            'line_user_id' => null,
+            'liff_token'   => null,
+            'status_line'  => 0,
         
         ]);
 
-        return response()->json([
-            'status_line' => 'del_token_all',
-            'message' => 'revoke token successfully'
+        User::query()->update([
+            'line_user_id' => null,
+            'status_line'  => 0,
+            'line_logout_admin'  => 1,
         ]);
+
+        return redirect()->back()->with('status_line', 'ยกเลิกการเชื่อมต่อ LINE ทั้งหมด');
     }
 
     protected $accessToken;

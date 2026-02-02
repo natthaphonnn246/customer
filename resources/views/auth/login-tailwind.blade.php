@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
- {{--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script> --}}
+    
+    <link rel="icon" type="image/x-icon" href="{{ asset('cms-v1.ico') }}">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- recaptcha -->
@@ -22,7 +23,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> --}}
 
     @vite('resources/css/app.css')
-    <title>cms.vmdrug</title>
+    <title>CMS</title>
 </head>
 
 <style>
@@ -224,7 +225,7 @@
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-center dark:text-white" style="font-weight:500;">
                          <div style="margin-right:60px; margin-left:60px;">
-                            <img style="width:100%;" src="/profile/cmsvmdrugpng copy.png">
+                            <img style="width:100%;" src="/profile/cmsvmdrugpng-v2 copy.png">
                          </div>
                     
                     </h1>
@@ -242,14 +243,14 @@
                         <!-- Google reCAPTCHA -->
                         <ul class="ms-10">
                             {{-- <div class="g-recaptcha" data-sitekey="6LfCCxkrAAAAAFupTbUe6slwpcWBXUdWLx30dztX" data-callback="enableSubmitbtn"></div> --}}
-                           {{-- <!--เอา--><div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"  data-callback="enableSubmitbtn"></div> --}}
+                           <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"  data-callback="enableSubmitbtn"></div>
 
                         </ul>
 
                         <ul class="text-center">
-                            <button type="submit" id="submitBtn" style="width:125px; font-size:16px;">Login</button>
+                            {{-- <button type="submit" id="submitBtn" style="width:125px; font-size:16px;">Login</button> --}}
 
-                            {{--เอา <button type="submit" id="submitBtn" style="width:125px; font-size:16px;" disabled>Login</button> --}}
+                            <button type="submit" id="submitBtn" style="width:125px; font-size:16px;" disabled>Login</button>
                             {{-- <button type="submit" id="submitBtn" style="width:125px; font-size:16px;" >Login</button> --}}
                         </ul>
                  
@@ -524,21 +525,14 @@
                         });
                         </script>
                         @endif
-
-
                         
-                        <p class="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
-                            &copy; 2025 cms.vmdrug.co.th All rights reserved
+                        <p class="text-sm font-light !text-gray-600 text-center">
+                            &copy; 2025-2026 All rights reserved
                         </p>
                     </form>
                 </div>
             </div>
         </div>
-
-
-
-
-   
 </body>
 </html>
   

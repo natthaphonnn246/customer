@@ -34,7 +34,7 @@
     
         </div> --}}
 
-        <div class="grid grid-cols-1 md:grid-cols-2 max-w-6xl mx-auto py-8 px-4 gap-8 bg-white rounded-2xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 max-w-6xl py-4 px-4 ms-4 gap-8 bg-white rounded-2xl">
 
             <!-- ร้านค้าทั้งหมด -->
     {{--         <div>
@@ -80,15 +80,13 @@
             </div>
         
             <!-- กำลังดำเนินการ -->
-            <div>
+     {{--        <div>
                 <div
-                {{-- <a href="/admin/customer/status/completed" --}}
                    class="w-full h-[90px]
                           bg-yellow-500 rounded-lg
                           flex flex-col justify-between
                           px-4 py-3
                           text-white !no-underline
-                          {{-- hover:bg-yellow-600 hover:shadow-lg --}}
                           transition"
                 >
                     <h6 class="text-sm">
@@ -99,18 +97,15 @@
                         {{ $total_status_action ?? '0' }}
                     </span>
                 </div>
-                {{-- </a> --}}
-            </div>
+            </div> --}}
         
             <!-- ดำเนินการแล้ว -->
-            <div
-                {{-- <a href="/admin/customer/status/completed" --}}
+          {{--   <div
                    class="w-full h-[90px]
                           bg-green-500 rounded-lg
                           flex flex-col justify-between
                           px-4 py-3
                           text-white !no-underline
-                          {{-- hover:bg-green-600 hover:shadow-lg --}}
                           transition"
                 >
                     <h6 class="text-sm">
@@ -120,8 +115,7 @@
                     <span class="text-2xl font-bold text-right leading-none">
                         {{ $total_status_completed ?? '0' }}
                     </span>
-                {{-- </a> --}}
-            </div>
+            </div> --}}
         
         </div>
         
@@ -137,7 +131,7 @@
             </div> --}}
 
             <div class="w-full md:w-1/2 px-4 ms-4 md:px-0 mb-4">
-                <div class="max-w-xl mx-auto">
+                <div class="w-full mx-auto">
                     <p class="text-lg text-gray-500 mt-4 mb-1">
                         ค้นหาผู้ใช้ :
                     </p>

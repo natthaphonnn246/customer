@@ -1,5 +1,4 @@
 @extends ('layouts.admin')
-<div id="bg">
     @section('content')
     {{-- @csrf --}}
 {{-- 
@@ -813,6 +812,9 @@
                     return res.json();
                 })
                 .then(result => {
+                    $('#bgs').css({
+                            display: 'flex',
+                        });
                     Swal.fire({
                         icon: result.status === 'success' ? 'success' : 'warning',
                         title: result.status === 'success' ? 'สำเร็จ' : 'แจ้งเตือน',
@@ -833,5 +835,4 @@
     </script>
 
         @endif
-</div>
 @endsection

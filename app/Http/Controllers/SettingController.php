@@ -18,6 +18,7 @@ class SettingController extends Controller
                 'del_reportseller'           => 'required|in:0,1',
                 'check_edit'                 => 'required|in:0,1',
                 'check_type'                 => 'required|in:0,1',
+                'connect_line'               => 'required|in:0,1',
             ]);
 
             $maintenance_status         = $request->maintenance_status;
@@ -26,7 +27,9 @@ class SettingController extends Controller
             $check_edit                 = $request->check_edit;
             $check_type                 = $request->check_type;
             $check_time_type            = $request->check_time_type;
+            $connect_line               = $request->connect_line;
 
+            // dd($connect_line);
             Setting::where('setting_id', 'WS01')->update([
                 'web_status'         => $maintenance_status,
                 'allowed_web_status' => $allowed_maintenance_status,
@@ -34,6 +37,7 @@ class SettingController extends Controller
                 'check_edit'         => $check_edit,
                 'check_type'         => $check_type,
                 'check_time_type'    => $check_time_type,
+                'connect_line'       => $connect_line,
             ]);
 
             return redirect('/webpanel/setting')->with('settings', 'Successfully updated');
@@ -44,7 +48,7 @@ class SettingController extends Controller
     {
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-        $setting_view = Setting::select('web_status', 'allowed_web_status', 'del_reportseller', 'check_edit', 'check_type', 'check_time_type')
+        $setting_view = Setting::select('web_status', 'allowed_web_status', 'del_reportseller', 'check_edit', 'check_type', 'check_time_type', 'connect_line')
             ->where('setting_id', 'WS01')
             ->first();
 

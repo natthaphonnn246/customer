@@ -190,7 +190,7 @@ class Customer extends Model
         $total_page = ceil($count_page / $perpage);
         $start = ($perpage * $page) - $perpage;
 
-        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update','customer_status', 'created_at')
+        $customer = DB::table('customers')->select('id', 'customer_code', 'customer_name', 'email', 'status','status_update', 'status_sap', 'customer_status', 'created_at')
                     ->where('status','ลงทะเบียนใหม่')
                     // ->whereNotIn('customer_code',['0000', '4494'])
                     ->whereNotIn('customer_code', $code_notin)

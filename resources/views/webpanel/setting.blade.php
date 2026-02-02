@@ -78,6 +78,19 @@
                     </div>
                 </div>
                 <hr class="!text-gray-500">
+                <p class="mx-4 text-lg font-medium text-gray-600">ปิดเมนูเชื่อมต่อไลน์</p>
+                <div class="mx-4 grid grid-cols-2">
+                    <div>
+                        <p class="text-gray-500">สถานะเมนูเชื่อมต่อไลน์ <span class="text-xs text-red-500">*แต่ถ้าจะปิดไม่ให้ใช้ ต้องไปลบ token ในหน้าแอดมิน เมนูยกเลิกเชื่อมต่อไลน์</span></p>
+                        <select class="form-select" style="margin-top:10px; color: rgb(171, 171, 171);" aria-label="Default select example" name="connect_line">
+
+                            <option {{$setting_view->connect_line === 0 ? 'selected': ''}} value="0">ปิด</option>
+                            <option {{$setting_view->connect_line === 1 ? 'selected': ''}} value="1">เปิด</option>                           
+                        
+                        </select>
+                    </div>
+                </div>
+                <hr class="!text-gray-500">
             @endif
             <div class="mx-4">
                 <button type="submit" id="updateForm" name="submit_setting" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>

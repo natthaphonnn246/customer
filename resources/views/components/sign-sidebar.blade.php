@@ -20,8 +20,9 @@
             </svg>
         </button>
 
-        <span class="flex items-center text-white font-semibold text-xl">
-            <i class="fa-solid fa-gear p-2 text-blue-400"></i>
+        <span class="flex items-center text-white font-semibold text-xl gap-1">
+            {{-- <i class="fa-solid fa-gear p-2 text-blue-400"></i> --}}
+            <img src="{{ asset('cms-v1.ico') }}" alt="icon" class="w-5 h-5">
             cms.vmdrug
         </span>
         

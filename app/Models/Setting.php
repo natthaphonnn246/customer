@@ -14,6 +14,7 @@ class Setting extends Model
         'check_edit',
         'check_type',
         'check_time_type',
+        'connect_line',
   
     ];
     protected $table = 'settings';

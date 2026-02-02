@@ -1,10 +1,11 @@
 @extends ('layouts.portal')
 @section('content')
 
+    <div>
         <div class="py-2"></div>
         <h5 class="ms-6 !text-gray-600"><a href="/portal/customer" id="backLink">ย้อนกลับ</a> | รายละเอียด</h5>
         <hr class="my-3">
-
+   
         @php
             $year = date('Y') + 543; 
         @endphp
@@ -386,6 +387,7 @@
                                 });
                             }
                         </script>
+
                     <form action="/portal/customer-detail/update/{{$customer_edit->id}}" method="post" enctype="multipart/form-data">
                         @csrf
                             {{-- @method('PUT') --}}
@@ -584,25 +586,16 @@
                 </div>
             </form>
     </div>
-
+</div>
+    <script>
+        $(document).ready(function () {
+            $('#updateForm').on('submit', function () {
+                $('#bgs').css('display', 'block');
+            });
+        });
+    </script>
+        
                     @if (session('status') == 'updated_success')
-                       {{--  <script> 
-                                $('#bgs').css('display', 'none');
-                                Swal.fire({
-                                    title: 'กรุณาติดต่อผู้ดูแล',
-                                    text: 'บันทึกเรียบร้อย',
-                                    icon: "success",
-                                    // showCancelButton: true,
-                                    confirmButtonColor: "#3085d6",
-                                    // cancelButtonColor: "#d33",
-                                    confirmButtonText: "ตกลง"
-                                    }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.reload();
-                                    }
-                                });
-                        </script> --}}
-
                         <script>
                                     $('#bgs').css('display', 'none');
                                     Swal.fire({
@@ -624,7 +617,12 @@
 
                     @if (session('status') == 'updated_fail')
                         <script> 
-                                $('#bgs').css('display', 'none');
+                                // $('#bgs').css('display', 'none');
+                                $('#bgs').css({
+                                    display: 'flex',
+                                    background: 'rgba(0,0,0,0.6)'
+                                });
+
                                 Swal.fire({
                                     title: "ล้มเหลว",
                                     text: "เกิดข้อผิดพลาด",
@@ -640,6 +638,7 @@
                                 });
                         </script>
                     @endif
+
                     <!--- update user information-->
                    {{--  <script>
                             $('#updateForm').click(function() {

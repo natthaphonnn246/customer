@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>@yield('title', 'VMdrug')</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('cms-v1.ico') }}">
+    
+    <title>@yield('title', 'CMS')</title>
 
     {{-- Fonts --}}
     {{-- <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet"> --}}
@@ -43,7 +44,7 @@
 >
 </x-portal-sidebar>
 
-<main class="content-wrapper p-3 p-md-4 bg-gray-100">
+<main class="content-wrapper p-3 p-md-4 bg-gray-100" id="bgs">
     <div class="bg-white mt-14 md:mt-1">
         @yield('content')
     </div>

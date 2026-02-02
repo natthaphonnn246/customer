@@ -63,6 +63,9 @@
     ->name('portal.line.connect');
     //logout line revoktoken
     Route::post('/webpanel/line/revoke-token/user',[LineController::class, 'revokeLineToken'])->name('line.revoktoken.admin');
+
+    //logout line revoktoken ออกจากระบบทั้งหมด
+    Route::post('/webpanel/line/revoke-token/all',[LineController::class, 'revokeAllLineTokens'])->name('line.revoktoken.all');
     
 //middleware statusOnline;
 Route::middleware('statusOnline', 'block.ai')->group(function (){
@@ -79,11 +82,9 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
     // Route::post('/line/connect', [LineController::class, 'connectLine'])->middleware('status','maintenance')->name('portal.line.connect');
 
       //dashboard portal charts;
-    Route::get('/portal/dashboard', function () {
+/*     Route::get('/portal/dashboard', function () {
         return view('/portal/dashboard');
-    })->middleware('auth', 'status','maintenance', 'checkMenu');
-
-    Route::get('/portal/dashboard',[PortalCustomerController::class , 'dashboardCharts'])->middleware('auth', 'status','maintenance');
+    })->middleware('auth', 'status','maintenance', 'checkMenu', 'adminRole'); */
 
     Route::get('/portal/portal-sign/update-amphure', [ProvinceController::class, 'amphure']);
     Route::get('/portal/portal-sign/update-district', [ProvinceController::class, 'district']);
@@ -579,20 +580,33 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
         Route::get('/portal/portal-sign/update-zipcode', [ProvinceController::class, 'zipcode']);
  */
 
+        Route::get('/portal/dashboard',[PortalCustomerController::class , 'dashboardCharts']);
+
         //not right_area;
         // Route::get('/portal', [CustomerController::class, 'portalSign'])->name('portal.sign');
 
         //portal uploade image;
-        Route::post('/portal/customer-detail/upload-store/{id}', [PortalCustomerController::class, 'certStore']);
+     /*    Route::post('/portal/customer-detail/upload-store/{id}', [PortalCustomerController::class, 'certStore']);
         Route::post('/portal/customer-detail/upload-medical/{id}', [PortalCustomerController::class, 'certMedical']);
         Route::post('/portal/customer-detail/upload-commerce/{id}', [PortalCustomerController::class, 'certCommerce']);
         Route::post('/portal/customer-detail/upload-vat/{id}', [PortalCustomerController::class, 'certVat']);
-        Route::post('/portal/customer-detail/upload-id/{id}', [PortalCustomerController::class, 'certId']);
+        Route::post('/portal/customer-detail/upload-id/{id}', [PortalCustomerController::class, 'certId']); */
 
         //customer update customer-detail;
-        Route::post('/portal/customer-detail/update/{id}', [PortalCustomerController::class, 'updateEdit']);
+        // Route::post('/portal/customer-detail/update/{id}', [PortalCustomerController::class, 'updateEdit']);
     });
 
+    Route::name('portal.')->prefix('portal')->middleware('auth', 'userRole', 'status', 'verified', 'maintenance', 'rights_area')->group(function () {
+        Route::name('customer-detail.')->prefix('customer-detail')->group(function () {
+                     Route::post('/upload-store/{id}', [PortalCustomerController::class, 'certStore']);
+                     Route::post('/upload-medical/{id}', [PortalCustomerController::class, 'certMedical']);
+                     Route::post('/upload-commerce/{id}', [PortalCustomerController::class, 'certCommerce']);
+                     Route::post('/upload-vat/{id}', [PortalCustomerController::class, 'certVat']);
+                     Route::post('/upload-id/{id}', [PortalCustomerController::class, 'certId']);
+                     Route::post('/update/{id}', [PortalCustomerController::class, 'updateEdit']);
+                 });
+
+    });
 
     // โค้ดนี้จะเหมือนกับโค้ดข้างบนเลยครับ ตั้งแต่บรรทัดที่ 462-483
     //  - name('portal.') คือ ชื่อตอนเราใช้ {{ route('portal.')}}

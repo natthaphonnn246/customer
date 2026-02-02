@@ -48,6 +48,16 @@ class AppServiceProvider extends ServiceProvider
             $view->with(compact('check_type_pass', 'code_pass'));
         });
 
+        View::composer('*', function ($view) {
+            $connectLine = null;
+            
+            if (Auth::check()) {
+                $connectLine = Setting::where('setting_id', 'WS01')->value('connect_line');
+
+            }
+            $view->with(compact('connectLine'));
+        });
+
         if (request()->header('x-forwarded-proto') === 'https') {
             URL::forceScheme('https');
         }

@@ -8,8 +8,23 @@
 
         <div class="ms-6 py-2">
             <a href="/webpanel/admin-create"  id="" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md !no-underline" type="submit"  name="">เพิ่มแอดมิน</a>
-            <a href="/webpanel/admin-group"  id="" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md !no-underline" type="submit"  name="">จัดกลุ่มไลน์</a>
+            <a href="/webpanel/admin-group"  id="" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md !no-underline" type="submit"  name="">จัดกลุ่มไลน์</a>
     
+            <form action="{{ route('line.revoktoken.all') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit"
+                    class="bg-red-500 hover:bg-red-600 text-white !no-underline !rounded-md py-2 px-4 mt-1"
+                    onclick="return confirm('คุณต้องการยกเลิกการเชื่อมต่อ LINE ใช่หรือไม่?')">
+                    ยกเลิกเชื่อมต่อไลน์
+                </button>
+            </form>
+
+        </div>
+
+        <div class="mx-12">
+            @if (Session::has('status_line'))
+            <div class="alert alert-success mt-2"><i class="fa-solid fa-circle-check text-green-600"></i> {{ Session::get('status_line') }}</div>
+            @endif
         </div>
 
         <hr class="my-3 !text-gray-400">

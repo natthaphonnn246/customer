@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>@yield('title', 'VMdrug')</title>
-
+    <title>@yield('title', 'CMS')</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('cms-v1.ico') }}">
     {{-- Fonts --}}
     {{-- <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet"> --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,11 +30,33 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <style>
+        #bgs {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(78, 78, 78, 0.6);
+            display: none;
+            z-index: 800;
+            align-items: center;
+            justify-content: center;
+        }
+        .swal2-container {
+            z-index: 1050;
+        }
+        #ui-datepicker-div {
+            z-index: 900 !important;
+        }
+
+    </style>
     @stack('styles')
 </head>
 
 <body class="bg-light" style="font-family: 'prompt';">
-
+    <div id="bgs">
+        {{-- <div class="loading">Loading...</div> --}}
+    </div>
 {{-- @include('components.admin-sidebar')
 
 <main class="content-wrapper p-3 p-md-4 bg-gray-100">
