@@ -9,7 +9,7 @@
     <title>@yield('title', 'CMS')</title>
 
     {{-- Fonts --}}
-    {{-- <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet"> --}}
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
     {{-- Bootstrap --}}

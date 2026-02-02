@@ -7,7 +7,7 @@
     <title>@yield('title', 'CMS')</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('cms-v1.ico') }}">
     {{-- Fonts --}}
-    {{-- <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet"> --}}
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     
     {{-- Bootstrap --}}
