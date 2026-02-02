@@ -11,19 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('line_users_tb', function (Blueprint $table) {
-            $table->string('status_line', 50)
-                  ->default('active')
-                  ->change();
-        });
+        if (Schema::hasTable('line_users_tb') && Schema::hasColumn('line_users_tb', 'status_line')) {
+            Schema::table('line_users_tb', function (Blueprint $table) {
+                try {
+                     $table->string('status_line', 50)->default('active')->change();
+                } catch (\Exception $e) {
+                }
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('line_users_tb', function (Blueprint $table) {
-            $table->boolean('status_line')
-                  ->default(true)
-                  ->change();
-        });
+        if (Schema::hasTable('line_users_tb') && Schema::hasColumn('line_users_tb', 'status_line')) {
+            Schema::table('line_users_tb', function (Blueprint $table) {
+                try {
+                    $table->boolean('status_line')->default(true)->change();
+                } catch (\Exception $e) {
+                }
+            });
+        }
     }
 };

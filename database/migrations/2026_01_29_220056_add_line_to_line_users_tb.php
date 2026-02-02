@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('line_users_tb', function (Blueprint $table) {
-            $table->string('line_user_id')->nullable()->change();
-        });
+        if (Schema::hasTable('line_users_tb') && Schema::hasColumn('line_users_tb', 'line_user_id')) {
+            Schema::table('line_users_tb', function (Blueprint $table) {
+                try {
+                     $table->string('line_user_id')->nullable()->change();
+                } catch (\Exception $e) {
+                }
+            });
+        }
     }
 
     /**
@@ -21,8 +26,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('line_users_tb', function (Blueprint $table) {
-            $table->string('line_user_id')->nullable(false)->change();
-        });
+        if (Schema::hasTable('line_users_tb') && Schema::hasColumn('line_users_tb', 'line_user_id')) {
+            Schema::table('line_users_tb', function (Blueprint $table) {
+                try {
+                    $table->string('line_user_id')->nullable(false)->change();
+                } catch (\Exception $e) {
+                }
+            });
+        }
     }
 };
