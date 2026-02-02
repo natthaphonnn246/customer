@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="{{ asset('cms-v1.ico') }}">
     
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'CMS')</title>
 
     {{-- Fonts --}}
