@@ -22,7 +22,7 @@ class ProductTypeController extends Controller
         public function checkLiceseType(Request $request)
         {
 
-            date_default_timezone_set('Asia/Bangkok');
+            // date_default_timezone_set('Asia/Bangkok');
 
             $password = $request->input('password');
 

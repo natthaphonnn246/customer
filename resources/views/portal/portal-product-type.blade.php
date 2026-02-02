@@ -52,6 +52,7 @@
                         <script>
                             document.addEventListener("DOMContentLoaded", function() {
                                 const checkpassBtn = document.getElementById('khoryorCheck');
+                              
                             
                                 // ป้องกันกรณีไม่พบปุ่ม (เช่น HTML ยังไม่โหลด)
                                 if (!checkpassBtn) return;
@@ -185,7 +186,7 @@
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const checkpassBtn = document.getElementById('khoryorCheck');
-            
+
                 // ป้องกันกรณีไม่พบปุ่ม (เช่น HTML ยังไม่โหลด)
                 if (!checkpassBtn) return;
             

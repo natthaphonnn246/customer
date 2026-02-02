@@ -225,7 +225,7 @@
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-center dark:text-white" style="font-weight:500;">
                          <div style="margin-right:60px; margin-left:60px;">
-                            <img style="width:100%;" src="/profile/cmsvmdrugpng-v2 copy.png">
+                            <img style="width:100%;" src="/profile/cmsvmdrugpng-v8.png">
                          </div>
                     
                     </h1>
@@ -525,7 +525,7 @@
                         });
                         </script>
                         @endif
-                        
+
                         <p class="text-sm font-light !text-gray-600 text-center">
                             &copy; 2025-2026 All rights reserved
                         </p>
