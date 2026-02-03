@@ -65,7 +65,7 @@
     }
     #submitBtn {
           padding: 10px 20px;
-          background-color: rgb(0, 94, 255);
+          background-color: rgb(0, 136, 255);
           color: white;
           border: none;
           border-radius: 10px;
@@ -75,12 +75,12 @@
         }
       
         #submitBtn:hover:not(:disabled) {
-          background-color:rgb(2, 81, 219);
+          background-color: rgb(3, 121, 223);
           color: white;
         }
       
         #submitBtn:disabled {
-          background-color: rgb(92, 152, 255);/* Gray */
+          background-color:  rgb(59, 159, 246);/* Gray */
           color: #ffffff; /* Darker gray text */
           cursor: not-allowed;
         }
@@ -225,10 +225,11 @@
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-center dark:text-white" style="font-weight:500;">
                          <div style="margin-right:60px; margin-left:60px;">
-                            <img style="width:100%;" src="/profile/cmsvmdrugpng-v8.png">
+                            <img style="width:100%;" src="/profile/cmsvmdrugpng-v2-95.png">
                          </div>
-                    
                     </h1>
+                    <hr class="w-full">
+                    {{-- <p class="text-center text-gray-500">Version: 2.1</p> --}}
                     <form class="space-y-4 md:space-y-6" method="POST" action="{{ route('login') }}">
                         @csrf
                         <div>
@@ -526,8 +527,8 @@
                         </script>
                         @endif
 
-                        <p class="text-sm font-light !text-gray-600 text-center">
-                            &copy; 2025-2026 All rights reserved
+                        <p class="text-xs font-light !text-gray-500 text-center">
+                            &copy; 2025-2026 cms All rights reserved
                         </p>
                     </form>
                 </div>

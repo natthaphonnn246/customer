@@ -23,7 +23,7 @@
         
                 <p class="text-gray-600 mt-4">
                     *สำคัญ❗️กรุณาแอดไลน์ก่อนการเชื่อมต่อระบบ
-                    <a href="https://lin.ee/YGbfj8s" target="_blank" class="!text-red-500 hover:text-green-400 !no-underline">@vmcenter</a>
+                    <a href="https://lin.ee/ydpJfTB" target="_blank" class="!text-red-500 hover:text-green-400 !no-underline">@541ctaye</a>
                 </p>
         
                 <p class="text-gray-600">

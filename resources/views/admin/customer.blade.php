@@ -466,7 +466,7 @@
                 @endforeach
                 @else
                 <tr>
-                    <td colspan="6" class="text-center text-muted">
+                    <td colspan="7" class="text-center text-muted">
                     ไม่พบข้อมูล
                     </td>
                 </tr>
@@ -494,7 +494,7 @@
 
                 @if($total_page > 14)
 
-                    @for ($i= 1; $i <= 10 ; $i++)
+                    @for ($i= 1; $i <= 3 ; $i++)
                     <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
@@ -551,7 +551,7 @@
 
                 @if($total_page > 14)
 
-                    @for ($i= 1; $i <= 10 ; $i++)
+                    @for ($i= 1; $i <= 3 ; $i++)
                     <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/admin/customer?keyword={{ request('keyword') }}&_token={{ request('_token') }}&page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>

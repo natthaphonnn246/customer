@@ -64,7 +64,7 @@
                                         <select class="form-select !text-gray-500" aria-label="Default select example" name="role" id="rightsrole">
 
                                             <option {{$admin_master->role == 0 ? 'selected': '' }} value="0">ไม่ระบุ</option>
-                                            <option {{$admin_master->role == 1 ? 'selected': '' }} value="1">ดูรายงาน</option>
+                                            <option {{$admin_master->role == 1 ? 'selected': '' }} value="1">แอดมิน SAP</option>
                                             @if ($admin_master->user_id == '0000' || $admin_master->user_id == '4494' || $admin_master->user_id == '9000')
                                             <option {{$admin_master->role == 2 ? 'selected': '' }} value="2">แอดมินหลัก</option>
                                             @endif
@@ -100,7 +100,7 @@
 
                                     @elseif($admin_master->role == '1')
 
-                                            <span class="text-red-500">*ลิงก์ทดสอบ (ดูรายงาน) :</span>
+                                            <span class="text-red-500">*ลิงก์ทดสอบ (แอดมิน SAP) :</span>
                                             <input class="form-control !text-gray-600 mt-2" type="text" value="{{ asset('/admin') }}" id="myInput">
                                             <button type="button" onclick="myFunction()" class="bg-green-400 hover:bg-green-500 text-white !rounded-lg px-4 py-1 mt-2">Copy</button>
 

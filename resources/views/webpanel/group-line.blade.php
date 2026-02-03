@@ -35,7 +35,7 @@
             
                     <button
                         type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white rounded-md"
+                        class="bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white !rounded-md"
                     >
                         บันทึก
                     </button>

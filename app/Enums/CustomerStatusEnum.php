@@ -26,4 +26,5 @@ enum CustomerStatusEnum: string
   case Registration = 'ลงทะเบียนใหม่';
   case Completed    = 'ดำเนินการแล้ว';
   case Following    = 'ต้องดำเนินการ';
+  case Closed       = 'ปิดบัญชี';
 }

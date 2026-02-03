@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Redirect;
+use App\Enums\CustomerStatusEnum;
 
 class Customer extends Model
 {
@@ -68,11 +69,13 @@ class Customer extends Model
         //notin code;
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
         // dd($code_notin);
-        $pagination = DB::table('customers')->select(DB::raw('customer_id'))
-                        // ->whereNotIn('customer_code',['0000', '4494'])
-                        ->where('status', 'ลงทะเบียนใหม่')
-                        ->orWhere('status_web', 1)
-                        ->whereNotIn('customer_code',$code_notin)
+        $pagination = DB::table('customers')
+                        ->select('customer_id')
+                        ->where('status', CustomerStatusEnum::Registration->value)
+                        ->whereNotIn('status', [
+                            CustomerStatusEnum::Closed->value
+                        ])
+                        ->whereNotIn('customer_code', $code_notin)
                         ->get();
 
         $count_page = count($pagination);
@@ -82,8 +85,10 @@ class Customer extends Model
         $start = ($perpage * $page) - $perpage;
 
         $customer = DB::table('customers')->select('id', 'slug', 'customer_code', 'customer_name', 'email', 'status', 'status_sap', 'status_web', 'status_update', 'status_vat', 'customer_status', 'purchase', 'created_at')
-                    ->where('status', 'ลงทะเบียนใหม่')
-                    ->orWhere('status_web', 0)
+                    ->where('status', CustomerStatusEnum::Registration->value)
+                    ->whereNotIn('status', [
+                        CustomerStatusEnum::Closed->value
+                    ])
                     ->whereNotIn('customer_code',$code_notin)
                     ->orderBy('id','desc')
                     ->offset($start)

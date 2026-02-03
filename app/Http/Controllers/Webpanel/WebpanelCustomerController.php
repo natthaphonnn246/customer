@@ -1565,7 +1565,10 @@ class WebpanelCustomerController
 
         $user_id_admin = $request->user()->user_id;
 
-        return view('webpanel/customer-detail', compact('customer_view', 'province', 'amphur', 'district', 'admin_area_list', 'admin_area_check', 'sale_area', 'status_waiting', 'status_registration', 'status_alert', 'status_updated', 'user_id_admin'));
+        $updateBy = User::pluck('name', 'user_id');
+        // dd($updateBy);
+
+        return view('webpanel/customer-detail', compact('customer_view', 'province', 'amphur', 'district', 'admin_area_list', 'admin_area_check', 'sale_area', 'status_waiting', 'status_registration', 'status_alert', 'status_updated', 'user_id_admin', 'updateBy'));
     }
 
     /**

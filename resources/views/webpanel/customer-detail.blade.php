@@ -537,7 +537,7 @@
                                     <option {{$customer_view->status == 'รอดำเนินการ' ? 'selected': ''}} value="รอดำเนินการ">รอดำเนินการ</option>
                                     <option {{$customer_view->status== 'ต้องดำเนินการ' ? 'selected': ''}} value="ต้องดำเนินการ">ต้องดำเนินการ</option>
                                     <option {{$customer_view->status == 'ดำเนินการแล้ว' ? 'selected': ''}} value="ดำเนินการแล้ว">ดำเนินการแล้ว</option>
-                                    <option {{$customer_view->status == 'ปิดบัญชี' ? 'selected': ''}} value="ปิดบัญชี">ปิดบัญชี</option>
+                                    <option {{$customer_view->status == 'ปิดบัญชี' ? 'selected': ''}} value="ปิดบัญชี">ปิดบัญชี (แอดมิน SAP ไม่เห็น)</option>
                             
 
                                 </select><br>
@@ -661,6 +661,13 @@
                         <span style="font-size: 16px; font-weight: 500; color:#545454;">ลงทะเบียนโดย</span>
                         <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="" name="" value="{{$customer_view->register_by}}" disabled>
                     </div>
+
+                    <div class="mb-3 my-4 ms-2 mr-2">
+                        <span style="font-size: 16px; font-weight: 500; color:#545454;">อัปเดตข้อมูลล่าสุดโดย</span>
+                        <input style="margin-top:10px; color:rgb(171, 171, 171);" type="text" class="form-control" id="" name="" value="{{ ($updateBy[$customer_view->update_by] ?? '-') . ' (' . $customer_view?->update_by . ')' }}"
+                        disabled>
+                    </div>
+
                     <div class="mb-3 my-4 ms-2 mr-2">
                         <span style="font-size: 16px; font-weight: 500; color:#ff5252;">อัปเดตข้อมูล</span>
                         @if($customer_view->updated_at != '')

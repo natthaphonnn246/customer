@@ -108,7 +108,7 @@
                             <a href="/webpanel/sale"
                                class="flex justify-between px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
                                 เขตการขาย
-                                <span class="text-xs bg-blue-600 px-2 rounded-full">sale</span>
+                                <span class="text-xs bg-blue-600 p-2 rounded-full">sale</span>
                             </a>
                         </li>
                     </ul>

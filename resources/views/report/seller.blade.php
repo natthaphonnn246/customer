@@ -7,7 +7,7 @@
         <h5 class="!text-gray-600 font-semibold ms-6">รายงานขาย</h5>
         <hr class="my-3 !text-gray-400 !border">
 
-        <div class="flex flex-col sm:flex-row justify-start items-stretch gap-4 mx-10">
+        <div class="flex flex-col sm:flex-row justify-start items-stretch gap-2 mx-10">
             {{-- <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a> --}}
             <a href="/webpanel/report/seller/importseller" class="bg-blue-500 hover:bg-blue-600 text-white !no-underline px-4 py-2 !rounded-md" type="submit"  name="">นำเข้าไฟล์</a>
             {{-- @php
