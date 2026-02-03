@@ -130,35 +130,30 @@ class LineController extends Controller
 
         if($lineId) {
 
-            $message = 'เชื่อมต่อไลน์ผ่านเว็บไซต์สำเร็จ';
+            $response = Http::withToken(config('services.line.channel_token'))
+                    ->post('https://api.line.me/v2/bot/message/push', [
+                        'to' => $lineId,
+                        'messages' => [
+                            [
+                                'type' => 'text',
+                                'text' => 'เชื่อมต่อไลน์สำเร็จ',
+                            ],
+                        ],
+                    ]);
 
-            $headers = [
-                'Content-Type: application/json',
-                "Authorization: Bearer {$this->accessToken}",
-            ];
-    
-            $payload = [
-                'to' => $lineId,
-                'messages' => [
-                    [
-                        'type' => 'text',
-                        'text' => $message,
-                    ],
-                ],
-            ];
-            $result = $this->pushMsg($headers, $payload);
-
-          /*   if (!$result['success']) {
-                return response()->json([
-                    'token' => '',
-                    'status' => false,
-                    'message' => 'เชื่อม LINE เรียบร้อย'
+            if ($response->successful()) {
+                Log::info('LINE push message success', [
+                    'line_id' => $lineId,
+                    'status'  => $response->status(),
                 ]);
-            } */
-            if (!$result['success']) {
-                Log::warning('LINE push message failed', $result);
+            } else {
+                Log::warning('LINE push message failed', [
+                    'line_id' => $lineId,
+                    'status'  => $response->status(),
+                    'response'=> $response->json(),
+                ]);
             }
-            
+        
         }
 
         // $liff_token = $line->createToken('liff_token')->plainTextToken;
