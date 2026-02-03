@@ -117,10 +117,6 @@
     
         <script>
             document.addEventListener("DOMContentLoaded", () => {
-            
-                Object.keys(localStorage)
-                    .filter(k => k.startsWith('LIFF_STORE'))
-                    .forEach(k => localStorage.removeItem(k));
 
                 const liffId = "{{ config('services.line.liff_id') }}";
                 const loginButton = document.getElementById('loginLine');
