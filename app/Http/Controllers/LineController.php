@@ -148,13 +148,17 @@ class LineController extends Controller
             ];
             $result = $this->pushMsg($headers, $payload);
 
-            if (!$result['success']) {
+          /*   if (!$result['success']) {
                 return response()->json([
                     'token' => '',
                     'status' => false,
                     'message' => 'เชื่อม LINE เรียบร้อย'
                 ]);
+            } */
+            if (!$result['success']) {
+                Log::warning('LINE push message failed', $result);
             }
+            
         }
 
         // $liff_token = $line->createToken('liff_token')->plainTextToken;
