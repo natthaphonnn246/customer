@@ -12,18 +12,18 @@ class MessageApiService
         $this->endpoint = 'https://api.line.me/v2/bot/message/push';
     }
 
-    public function sendRegisterSuccess(string $lineUserId, string $customer_name, string $register_by): void
+    public function sendRegisterSuccess(string $lineUserId, string $customer_name, string $register_by, string $created_at): void
     {
         Http::withToken(config('services.line.channel_token'))
             ->post($this->endpoint, [
                 'to' => $lineUserId,
                 'messages' => [
-                    $this->registerSuccessFlex($customer_name, $register_by),
+                    $this->registerSuccessFlex($customer_name, $register_by, $created_at),
                 ],
             ]);
     }
 
-    private function registerSuccessFlex(string $customer_name, string $register_by): array
+    private function registerSuccessFlex(string $customer_name, string $register_by, string $created_at): array
     {
         return [
             'type' => 'flex',
@@ -58,6 +58,12 @@ class MessageApiService
                     'layout' => 'vertical',
                     'spacing' => 'md',
                     'contents' => [
+                        [
+                            'type' => 'text',
+                            'text' => "วันที่ : {$created_at}",
+                            'weight' => 'bold',
+                            'size' => 'md',
+                        ],
                         [
                             'type' => 'text',
                             'text' => "ลงทะเบียนโดย : {$register_by}",
@@ -105,18 +111,18 @@ class MessageApiService
             ],
         ];
     }
-    public function sendWebSuccess(string $lineUserId, string $customer_name, string $customer_code, string $password, string $sale_area): void
+    public function sendWebSuccess(string $lineUserId, string $customer_name, string $customer_code, string $password, string $sale_area, string $updated_at): void
     {
         Http::withToken(config('services.line.channel_token'))
             ->post($this->endpoint, [
                 'to' => $lineUserId,
                 'messages' => [
-                    $this->webSuccessFlex($customer_name, $customer_code, $password, $sale_area),
+                    $this->webSuccessFlex($customer_name, $customer_code, $password, $sale_area, $updated_at),
                 ],
             ]);
     }
 
-    private function webSuccessFlex(string $customer_name, string $customer_code, string $password, string $sale_area): array
+    private function webSuccessFlex(string $customer_name, string $customer_code, string $password, string $sale_area, string $updated_at): array
     {
         return [
             'type' => 'flex',
@@ -151,6 +157,12 @@ class MessageApiService
                     'layout' => 'vertical',
                     'spacing' => 'md',
                     'contents' => [
+                        [
+                            'type' => 'text',
+                            'text' => "วันที่ : {$updated_at}",
+                            'weight' => 'bold',
+                            'size' => 'md',
+                        ],
                         [
                             'type' => 'text',
                             'text' => "ชื่อร้าน : {$customer_name}",
@@ -199,7 +211,7 @@ class MessageApiService
         ];
     }
 
-    public function sendSapSuccess(string $lineUserId, string $customer_name, string $customer_code, string $saleArea): void
+    public function sendSapSuccess(string $lineUserId, string $customer_name, string $customer_code, string $saleArea, string $updated_at): void
     {
             // array $lineUserIds
  /*        foreach ($lineUserIds as $lineUserId) {
@@ -229,12 +241,12 @@ class MessageApiService
             ->post($this->endpoint, [
                 'to' => $lineUserId,
                 'messages' => [
-                    $this->sapSuccessFlex($customer_name, $customer_code, $saleArea),
+                    $this->sapSuccessFlex($customer_name, $customer_code, $saleArea, $updated_at),
                 ],
             ]);
     }
 
-    private function sapSuccessFlex(string $customer_name, string $customer_code, string $saleArea): array
+    private function sapSuccessFlex(string $customer_name, string $customer_code, string $saleArea, string $updated_at): array
     {
         return [
             'type' => 'flex',
@@ -269,6 +281,12 @@ class MessageApiService
                     'layout' => 'vertical',
                     'spacing' => 'md',
                     'contents' => [
+                        [
+                            'type' => 'text',
+                            'text' => "วันที่ : {$updated_at}",
+                            'weight' => 'bold',
+                            'size' => 'md',
+                        ],
                         [
                             'type' => 'text',
                             'text' => "ชื่อร้าน : {$customer_name}",

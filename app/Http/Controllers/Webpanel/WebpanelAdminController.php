@@ -897,6 +897,7 @@ class WebpanelAdminController extends Controller
 
         //เช็กสถานะการส่ง Line sap
         $customerModel = Customer::find($customer->id);
+        $updated_at = $customerModel?->updated_at;
 
         if ($customerModel?->sap_send_line === 1) {
             // ส่งไปแล้ว ไม่ต้องส่ง LINE ซ้ำ
@@ -911,7 +912,8 @@ class WebpanelAdminController extends Controller
                 $lineUserId,
                 $customer_name,
                 $customer_code,
-                $saleArea
+                $saleArea,
+                $updated_at
             );
 
             $customerModel?->update([

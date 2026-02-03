@@ -1732,6 +1732,8 @@ class WebpanelCustomerController
 
                     $customerModel = Customer::find($id);
 
+                    $updated_at = $customerModel?->updated_at;
+
                     if($customerModel?->web_send_line === 1) {
                      
                         return redirect('/webpanel/customer/'.$id)->with('status', 'updated_success');
@@ -1744,7 +1746,8 @@ class WebpanelCustomerController
                                 $customer_name, 
                                 $customer_code, 
                                 $password, 
-                                $sale_area
+                                $sale_area,
+                                $updated_at
                             );
 
                             $customerModel?->update([

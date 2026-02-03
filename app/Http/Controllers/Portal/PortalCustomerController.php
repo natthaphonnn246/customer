@@ -395,6 +395,7 @@ class PortalCustomerController
 
            // $status = Customer::findOrFail($id);
            $status = Customer::where('customer_code', $customer_code)->first();
+           $created_at = $status?->created_at;
         //    dd($status->status);
 
            if ($status->status === 'ลงทะเบียนใหม่') {
@@ -409,7 +410,12 @@ class PortalCustomerController
 
                 if ($lineUserId) {
                     app(MessageApiService::class)
-                        ->sendRegisterSuccess($lineUserId, $customer_name,  $register_by);
+                        ->sendRegisterSuccess(
+                            $lineUserId, 
+                            $customer_name,  
+                            $register_by,
+                            $created_at
+                        );
                 }
 
            }
