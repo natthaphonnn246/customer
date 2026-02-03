@@ -296,31 +296,11 @@ class LineController extends Controller
     protected $accessToken;
     public function __construct()
     {
-        $this->accessToken = env('LINE_CHANNEL_ACCESS_TOKEN'); // จะดึงค่าจาก .env
+        $this->accessToken = (config('services.line.channel_token')); // จะดึงค่าจาก .env
     }
 
     public function send($lineId, $message)
     {
-       /*  $headers = [
-            'Content-Type: application/json',
-            "Authorization: Bearer {$this->accessToken}",
-        ]; */
-
-        $headers = [
-            'Content-Type'  => 'application/json',
-            'Authorization' => 'Bearer ' . $this->accessToken,
-        ];
-        
-        /* $payload = [
-            'to' => $lineId,
-            'messages' => [
-                [
-                    'type' => 'text',
-                    'text' => $message,
-                ],
-            ],
-        ]; */
-
         if (is_string($message)) {
             $payload = [
                 'to' => $lineId,
@@ -331,14 +311,12 @@ class LineController extends Controller
                     ],
                 ],
             ];
-
         } else if (is_array($message) && array_is_list($message)) {
             $payload = [
                 'to' => $lineId,
                 'messages' => $message
             ];
-            
-        } else if (is_array($message)) {
+        } else {
             $payload = [
                 'to' => $lineId,
                 'messages' => [
@@ -347,63 +325,18 @@ class LineController extends Controller
             ];
         }
 
-        $this->pushMsg($headers, $payload);
-       
-
+        return $this->pushMsg($payload);
     }
-
-    /**
-     * Send a push message to the LINE Messaging API.
-     *
-     * @param array $headers
-     * @param array $payload
-     * @return bool|string Response from LINE API or false on failure
-     */
-    function pushMsg(array $headers, array $payload)
+    function pushMsg(array $payload)
     {
-        $url = 'https://api.line.me/v2/bot/message/push';
+        $response = Http::withToken($this->accessToken)
+            ->post('https://api.line.me/v2/bot/message/push', $payload);
 
-        $ch = curl_init($url);
-
-        curl_setopt_array($ch, [
-            CURLOPT_POST => true,
-            CURLOPT_HTTPHEADER => $headers,
-            CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_HEADER => false,
-        ]);
-
-        $response = curl_exec($ch);
-
-        if ($response === false) {
-            $error = curl_error($ch);
-            error_log('LINE pushMsg error: ' . $error);
-        }
-
-        /* curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        curl_close($ch); */
-
-        // ดึง HTTP status code
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        curl_close($ch);
-
-        // decode response เป็น array
-        // $responseData = json_decode($response, true);
-        $responseData = is_string($response) ? json_decode($response, true) : null;
-
-           // return ทั้งสถานะและข้อความ
         return [
-            'success' => $httpCode === 200,
-            'http_code' => $httpCode,
-            'response' => $responseData
+            'success'    => $response->successful(),
+            'http_code' => $response->status(),
+            'response'  => $response->json(),
         ];
-
-        // return $response;
-
- 
     }
 
     function example($lineId)
@@ -438,163 +371,6 @@ class LineController extends Controller
         
         return redirect('/profile/line')->with('successfully', 'ส่งข้อความแจ้งเตือนไปยัง LINE สำเร็จ');
 
-    }
-
-    function sendRewards(Request $request)
-    {
-        
-       /*  $guestId = request()->cookie('guest_id');
-
-        $userId = LineAccount::where('line_cookie_id',  $guestId)->first(['line_user_id'])?->line_user_id; */
-        // dd($userId);
-
-        //Line OA : ลงทะเบียนลูกค้าใหม่กับเรา
-
-        if(Auth::check()) {
-
-            $userId = Auth::user()?->line_user_id; 
-
-            if($userId) {
-
-                $flex = [
-                    "type" => "flex",
-                    "altText" => "เอกสารที่ต้องใช้ในการเปิดโค้ด",
-                    "contents" => [
-                        "type" => "bubble",
-                        "size" => "mega",
-                        "header" => [
-                            "type" => "box",
-                            "layout" => "vertical",
-                            "backgroundColor" => "#1DB446",
-                            "paddingAll" => "20px",
-                            "contents" => [
-                                [
-                                    "type" => "text",
-                                    "text" => "เอกสารที่ใช้เปิดโค้ด",
-                                    "weight" => "bold",
-                                    "size" => "lg",
-                                    "color" => "#FFFFFF"
-                                ],
-                                [
-                                    "type" => "text",
-                                    "text" => "กรุณาเตรียมเอกสารและข้อมูลต่อไปนี้",
-                                    "size" => "sm",
-                                    "color" => "#E0FFE7",
-                                    "margin" => "sm"
-                                ]
-                            ]
-                        ],
-                        "body" => [
-                            "type" => "box",
-                            "layout" => "vertical",
-                            "spacing" => "md",
-                            "contents" => [
-                                [
-                                    "type" => "text",
-                                    "text" => "📄 เอกสารที่ต้องใช้",
-                                    "weight" => "bold",
-                                    "size" => "md",
-                                    "margin" => "md"
-                                ],
-                                [
-                                    "type" => "box",
-                                    "layout" => "vertical",
-                                    "margin" => "sm",
-                                    "spacing" => "sm",
-                                    "contents" => [
-                                        [ "type" => "text", "text" => "1. ใบอนุญาตขายยา คลินิก สถานพยาบาล (อัปเดตปีปัจจุบัน)", "wrap" => true, "size" => "sm" ],
-                                        [ "type" => "text", "text" => "2. ใบประกอบวิชาชีพ", "wrap" => true, "size" => "sm" ],
-                                        [ "type" => "text", "text" => "3. สำเนาบัตรประชาชน", "wrap" => true, "size" => "sm" ],
-                                        [ "type" => "text", "text" => "4. ใบ ภ.พ.20 (ถ้ามี)", "wrap" => true, "size" => "sm" ],
-                                        [ "type" => "text", "text" => "5. อีเมล (ถ้ามี)", "wrap" => true, "size" => "sm" ]
-                                    ]
-                                ],
-                
-                                [
-                                    "type" => "separator",
-                                    "margin" => "lg"
-                                ],
-                
-                                [
-                                    "type" => "text",
-                                    "text" => "📌 ข้อมูลสำหรับจัดส่งสินค้า",
-                                    "weight" => "bold",
-                                    "size" => "md",
-                                    "margin" => "lg"
-                                ],
-                                [
-                                    "type" => "box",
-                                    "layout" => "vertical",
-                                    "spacing" => "sm",
-                                    "margin" => "sm",
-                                    "contents" => [
-                                        [ "type" => "text", "text" => "🏠 ที่อยู่จัดส่งสินค้า", "wrap" => true, "size" => "sm" ],
-                                        [ "type" => "text", "text" => "☎️ เบอร์โทรศัพท์ติดต่อ", "wrap" => true, "size" => "sm" ]
-                                        // [ "type" => "text", "text" => "📮 อีเมล (ถ้ามี)", "wrap" => true, "size" => "sm" ]
-                                    ]
-                                ],
-                
-                                [
-                                    "type" => "separator",
-                                    "margin" => "lg"
-                                ],
-                
-                                [
-                                    "type" => "text",
-                                    "text" => "หลังจากส่งเอกสารครบ ไม่เกิน 1 วันทำการ\nทางเราจะแจ้งรายละเอียดการสั่งสินค้าพร้อมกับคูปองส่วนลดสุดพิเศษ 🤩",
-                                    "wrap" => true,
-                                    "size" => "sm",
-                                    "color" => "#444444",
-                                    "margin" => "lg"
-                                ]
-                            ]
-                        ]
-               /*          "footer" => [
-                            "type" => "box",
-                            "layout" => "vertical",
-                            "spacing" => "md",
-                            "paddingAll" => "15px",
-                            "contents" => [
-                                [
-                                    "type" => "button",
-                                    "style" => "primary",
-                                    "color" => "#1DB446",
-                                    "action" => [
-                                        "type" => "message",
-                                        "label" => "ส่งเอกสาร",
-                                        "text" => "ขอส่งเอกสารเปิดโค้ด"
-                                    ]
-                                ],
-                                [
-                                    "type" => "button",
-                                    "style" => "secondary",
-                                    "action" => [
-                                        "type" => "message",
-                                        "label" => "สอบถามเพิ่มเติม",
-                                        "text" => "สอบถามเพิ่มเติม"
-                                    ]
-                                ]
-                            ]
-                        ] */
-                    ]
-                ];
-                
-                $lineId = $userId;
-                $message = $flex;
-                // $message = 'ลงทะเบียนลูกค้าใหม่กับเรา';
-        
-                $this->send($lineId, $message);
-        
-        
-                return response()->json([
-                    'status' => 'successfully_rewards' ,
-                ]);
-
-            }
-
-        }
-
-       
     }
 
     public function loginLine(Request $request) {
