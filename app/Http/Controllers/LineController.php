@@ -157,7 +157,8 @@ class LineController extends Controller
             }
         }
 
-        $liff_token = $line->createToken('liff_token')->plainTextToken;
+        // $liff_token = $line->createToken('liff_token')->plainTextToken;
+        $liff_token = $user->createToken('liff_token')->plainTextToken;
         $line->update(['liff_token' => $liff_token]);
 
         return response()->json([

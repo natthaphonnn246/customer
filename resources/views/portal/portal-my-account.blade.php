@@ -147,7 +147,7 @@
                 // -----------------------------
                 async function connectLine() {
                     try {
-                        if (!liff.isLoggedIn()) {
+                       /*  if (!liff.isLoggedIn()) {
                             console.log("User not logged in LIFF, redirecting...");
                             liff.login({ redirectUri: window.location.href });
                             return;
@@ -157,6 +157,23 @@
 
                         if (!idToken) {
                             Swal.fire({ title: 'เกิดข้อผิดพลาด', text: 'ไม่พบ LINE ID token', icon: 'error' });
+                            return;
+                        } */
+                        if (!liff.isLoggedIn()) {
+                            const cleanUrl = window.location.origin + window.location.pathname;
+                            liff.login({ redirectUri: cleanUrl });
+                            return;
+                        }
+
+                        const idToken = liff.getIDToken();
+                        if (!idToken) {
+                            // clear เฉพาะตอนพัง
+                            Object.keys(localStorage)
+                            .filter(k => k.startsWith('LIFF_STORE'))
+                            .forEach(k => localStorage.removeItem(k));
+
+                            liff.logout();
+                            window.location.reload();
                             return;
                         }
             
