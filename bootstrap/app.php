@@ -34,6 +34,8 @@ use Illuminate\Foundation\Configuration\Middleware;
                                     'allowedType'=> \App\Http\Middleware\CheckTypeUser::class,
                                     'checkMenu'=> \App\Http\Middleware\CheckMenuAdmin::class,
                                     'block.ai' => \App\Http\Middleware\BlockAIAgents::class,
+                                    'area_rights' => \App\Http\Middleware\RightAreaMiddleware::class,
+                                    'role_admin' => \App\Http\Middleware\RoleMiddleware::class,
 
                                 ]);
                             })

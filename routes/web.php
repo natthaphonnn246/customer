@@ -79,13 +79,6 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
     //redirect LineOA
     Route::get('/account/profile', [LineController::class, 'loginLine'])->middleware('auth', 'status','maintenance')->name('portal.account.profile');
 
-    // Route::post('/line/connect', [LineController::class, 'connectLine'])->middleware('status','maintenance')->name('portal.line.connect');
-
-      //dashboard portal charts;
-/*     Route::get('/portal/dashboard', function () {
-        return view('/portal/dashboard');
-    })->middleware('auth', 'status','maintenance', 'checkMenu', 'adminRole'); */
-
     Route::get('/portal/portal-sign/update-amphure', [ProvinceController::class, 'amphure']);
     Route::get('/portal/portal-sign/update-district', [ProvinceController::class, 'district']);
     Route::get('/portal/portal-sign/update-zipcode', [ProvinceController::class, 'zipcode']);

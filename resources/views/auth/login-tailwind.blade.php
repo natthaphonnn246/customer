@@ -228,7 +228,6 @@
                             <img style="width:100%;" src="/profile/cmsvmdrugpng-v2-95.png">
                          </div>
                     </h1>
-                    <hr class="w-full">
                     {{-- <p class="text-center text-gray-500">Version: 2.1</p> --}}
                     <form class="space-y-4 md:space-y-6" method="POST" action="{{ route('login') }}">
                         @csrf

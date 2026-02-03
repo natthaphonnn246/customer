@@ -432,7 +432,16 @@ class LineController extends Controller
 
             $status_alert = $status_waiting + $status_action;
 
-          return match ($user->role) {
+            if ($user->role === 0 && $user->rights_area === 0) {
+                return view('portal.my-account', compact(
+                    'lineAccount',
+                    'user',
+                    'code',
+                    'user_name'
+                ));
+            }
+            
+            return match ($user->role) {
             
                 1 => view('admin.my-account-admin', compact(
                     'lineAccount',
@@ -440,14 +449,7 @@ class LineController extends Controller
                     'code',
                     'user_name'
                 )),
-
-                2 => view('webpanel.my-account', compact(
-                    'lineAccount',
-                    'user',
-                    'code',
-                    'user_name'
-                )),
-
+            
                 0 => view('portal.portal-my-account', compact(
                     'lineAccount',
                     'user',
@@ -457,17 +459,14 @@ class LineController extends Controller
                     'status_all',
                     'status_waiting',
                     'status_action',
+                    'status_action',
                     'status_completed'
-                    
                 )),
+                
+                default => abort(403),
 
-                default => view('portal.my-account', compact(
-                    'lineAccount',
-                    'user',
-                    'code',
-                    'user_name'
-                )),
             };
+            
 
 
        /*      return view('portal/my-account', compact(

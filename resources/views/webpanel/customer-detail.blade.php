@@ -648,7 +648,7 @@
                                     <option {{$customer_view->status_web === 1 ? 'selected': ''}} value="1">ดำเนินการแล้ว</option>
                             </select><br>
 
-                            <span class="block !text-gray-600 font-bold">ส่งข้อความ SAP</span>
+                            <span class="block !text-gray-600 font-bold">ส่งข้อความ WEB</span>
                             <select class="form-select mt-2 !text-gray-400" aria-label="Default select example" name="web_send_line">
                                 <option {{$customer_view->web_send_line === 0 ? 'selected': ''}} value="0">ยังไม่ดำเนินการ</option>
                                 <option {{$customer_view->web_send_line === 1 ? 'selected': ''}} value="1">ดำเนินการแล้ว</option>
