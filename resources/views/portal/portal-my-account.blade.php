@@ -118,6 +118,10 @@
         <script>
             document.addEventListener("DOMContentLoaded", () => {
             
+                Object.keys(localStorage)
+                .filter(k => k.startsWith('LIFF_STORE'))
+                .forEach(k => localStorage.removeItem(k));
+
                 const liffId = "{{ config('services.line.liff_id') }}";
                 const loginButton = document.getElementById('loginLine');
                 const logoutButton = document.getElementById('lineLogout');
@@ -154,6 +158,7 @@
                         }
             
                         const idToken = liff.getIDToken();
+
                         if (!idToken) {
                             Swal.fire({ title: 'เกิดข้อผิดพลาด', text: 'ไม่พบ LINE ID token', icon: 'error' });
                             return;
