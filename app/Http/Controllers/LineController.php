@@ -301,11 +301,16 @@ class LineController extends Controller
 
     public function send($lineId, $message)
     {
-        $headers = [
+       /*  $headers = [
             'Content-Type: application/json',
             "Authorization: Bearer {$this->accessToken}",
-        ];
+        ]; */
 
+        $headers = [
+            'Content-Type'  => 'application/json',
+            'Authorization' => 'Bearer ' . $this->accessToken,
+        ];
+        
         /* $payload = [
             'to' => $lineId,
             'messages' => [
