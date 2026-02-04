@@ -111,18 +111,18 @@ class MessageApiService
             ],
         ];
     }
-    public function sendWebSuccess(string $lineUserId, string $customer_name, string $customer_code, string $password, string $sale_area, string $updated_at): void
+    public function sendWebSuccess(string $lineUserId, string $customer_name, string $customer_code, string $password, string $sale_area): void
     {
         Http::withToken(config('services.line.channel_token'))
             ->post($this->endpoint, [
                 'to' => $lineUserId,
                 'messages' => [
-                    $this->webSuccessFlex($customer_name, $customer_code, $password, $sale_area, $updated_at),
+                    $this->webSuccessFlex($customer_name, $customer_code, $password, $sale_area),
                 ],
             ]);
     }
 
-    private function webSuccessFlex(string $customer_name, string $customer_code, string $password, string $sale_area, string $updated_at): array
+    private function webSuccessFlex(string $customer_name, string $customer_code, string $password, string $sale_area): array
     {
         return [
             'type' => 'flex',
@@ -157,12 +157,12 @@ class MessageApiService
                     'layout' => 'vertical',
                     'spacing' => 'md',
                     'contents' => [
-                        [
+            /*             [
                             'type' => 'text',
                             'text' => "วันที่ : {$updated_at}",
                             'weight' => 'bold',
                             'size' => 'md',
-                        ],
+                        ], */
                         [
                             'type' => 'text',
                             'text' => "ชื่อร้าน : {$customer_name}",

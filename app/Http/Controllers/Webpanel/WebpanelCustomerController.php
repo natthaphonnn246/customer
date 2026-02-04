@@ -1732,7 +1732,7 @@ class WebpanelCustomerController
 
                     $customerModel = Customer::find($id);
 
-                    $updated_at = $customerModel?->updated_at;
+                    // $updated_at = $customerModel?->updated_at;
 
                     if($customerModel?->web_send_line === 1) {
                      
@@ -1746,8 +1746,8 @@ class WebpanelCustomerController
                                 $customer_name, 
                                 $customer_code, 
                                 $password, 
-                                $sale_area,
-                                $updated_at
+                                $sale_area
+                                // $updated_at
                             );
 
                             $customerModel?->update([
