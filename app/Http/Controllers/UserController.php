@@ -24,7 +24,7 @@ Class UserController
     {
         
        //timestamp;
-    date_default_timezone_set("Asia/Bangkok");
+    // date_default_timezone_set("Asia/Bangkok");
     
             if ($request->has('submit_form') == true)
             {
@@ -374,26 +374,27 @@ Class UserController
                 ->where('id', $id)
                 ->update ([
 
-                    'user_code' => $user_code,
-                    'user_id' => $user_code,
-                    'name' => $name,
-                    'role' => $role,
-                    'admin_role' => $admin_role,
-                    'admin_area' => $admin_area,
-                    'rights_area' => $rights_area,
-                    'email' => $email,
-                    'telephone' => $telephone,
-                    'address' => $address,
-                    'province' => $province_row,
-                    'amphur' => $amphur_post,
-                    'district' => $district_post,
-                    'zipcode' => $zipcode_post,
-                    'email_login' => $email_login,
-                    'text_add' => $text_add,
-                    'updated_at' => $update_time,
-                    'allowed_user_status' => $allowed_mtnance,
-                    'purchase_status' => $purchase_status,
-                    'allowed_check_type' =>$allowed_check_type,
+                    'user_code'             => $user_code,
+                    'user_id'               => $user_code,
+                    'name'                  => $name,
+                    'role'                  => $role,
+                    'admin_role'            => $admin_role,
+                    'admin_area'            => $admin_area,
+                    'rights_area'           => $rights_area,
+                    'email'                 => $email,
+                    'telephone'             => $telephone,
+                    'address'               => $address,
+                    'province'              => $province_row,
+                    'amphur'                => $amphur_post,
+                    'district'              => $district_post,
+                    'zipcode'               => $zipcode_post,
+                    'email_login'           => $email_login,
+                    'text_add'              => $text_add,
+                    'updated_at'            => $update_time,
+                    'allowed_user_status'   => $allowed_mtnance,
+                    'purchase_status'       => $purchase_status,
+                    'allowed_check_type'    =>$allowed_check_type,
+                    'allowed_line_connect'  => $request->boolean('allowed_line_connect'),
                 
                 ]);
 

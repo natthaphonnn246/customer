@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('customers', function (Blueprint $table) {
-            if (!Schema::hasColumn('customers', 'slug')) {
-                $table->string('slug')->nullable()->after('id');
-            }
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('allowed_line_connect')->default(false);
         });
-        
     }
 
     /**
@@ -24,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('customers', function (Blueprint $table) {
-            $table->dropColumn('slug');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('allowed_line_connect');
         });
     }
 };

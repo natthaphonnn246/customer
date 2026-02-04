@@ -50,6 +50,7 @@ class User extends Authenticatable
         'status_line',
         'line_logout_admin',
         'line_logout_user',
+        'allowed_line_connect',
     ];
     protected $table = 'users';
     protected $connection = 'mysql';

@@ -9,12 +9,12 @@
 
         <div class="flex flex-col sm:flex-row justify-start items-stretch gap-2 mx-10">
             {{-- <a href="/webpanel/customer/customer-create"  id="admin" class="btn" type="submit"  name="" style="width: 180px; padding: 8px;">เพิ่มลูกค้าใหม่</a> --}}
-            <a href="/webpanel/report/seller/importseller" class="bg-blue-500 hover:bg-blue-600 text-white !no-underline px-4 py-2 !rounded-md" type="submit"  name="">นำเข้าไฟล์</a>
+            <a href="/webpanel/report/seller/importseller" class="bg-blue-500 hover:bg-blue-600 text-white !no-underline px-4 py-2 !rounded-sm" type="submit"  name="">นำเข้าไฟล์</a>
             {{-- @php
                 if($_GET['min_seller'])
             @endphp --}}
-            <a href="/webpanel/report/seller/exportcsv/check?min_seller={{ request('min_seller') ?? ''}}&max_seller={{ request('max_seller') ?? ''}}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}"  class="bg-gray-400 hover:bg-gray-500 text-white !no-underline px-4 py-2 !rounded-md" type="submit">Export CSV</a>
-            <a href="/webpanel/report/seller/exportexcel/check?min_seller={{ request('min_seller') ?? ''}}&max_seller={{ request('max_seller') ?? ''}}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}"  class="bg-gray-400 hover:bg-gray-500 text-white !no-underline px-4 py-2 !rounded-md" type="submit">Export Excel</a>
+            <a href="/webpanel/report/seller/exportcsv/check?min_seller={{ request('min_seller') ?? ''}}&max_seller={{ request('max_seller') ?? ''}}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}"  class="bg-gray-400 hover:bg-gray-500 text-white !no-underline px-4 py-2 !rounded-sm" type="submit">Export CSV</a>
+            <a href="/webpanel/report/seller/exportexcel/check?min_seller={{ request('min_seller') ?? ''}}&max_seller={{ request('max_seller') ?? ''}}&from={{ request('from') ?? ''}}&to={{ request('to') ?? ''}}"  class="bg-gray-400 hover:bg-gray-500 text-white !no-underline px-4 py-2 !rounded-sm" type="submit">Export Excel</a>
     
         </div>
 
@@ -165,7 +165,7 @@
                 <div>
                     <label class="block mb-1 text-base font-medium text-gray-600">เขตการขาย</label>
                     <select name="salearea_seller"
-                            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base text-gray-500
+                            class="form-select w-full rounded-md border border-gray-300 px-3 py-2 text-base !text-gray-500
                                 focus:border-blue-500 focus:ring-blue-500">
                         <option value="">ไม่ระบุ</option>
                         @foreach ($sale_area as $salearea_seller)
@@ -181,7 +181,7 @@
                 <div>
                     <label class="block mb-1 text-base font-medium text-gray-600">แอดมิน</label>
                     <select name="adminarea_seller"
-                            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base text-gray-500
+                            class="form-select w-full rounded-md border border-gray-300 px-3 py-2 text-base !text-gray-500
                                 focus:border-blue-500 focus:ring-blue-500">
                         <option value="">ไม่ระบุ</option>
                         @foreach ($admin_area as $rowarea_seller)
@@ -197,7 +197,7 @@
                 <div>
                     <label class="block mb-1 text-base font-medium text-gray-600">ภูมิศาสตร์</label>
                     <select name="region"
-                            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base text-gray-500
+                            class="form-select w-full rounded-md border border-gray-300 px-3 py-2 text-base !text-gray-500
                                 focus:border-blue-500 focus:ring-blue-500">
                         <option value="">ไม่ระบุ</option>
                         @foreach (['ภาคเหนือ','ภาคกลาง','ภาคตะวันออก','ภาคตะวันออกเฉียงเหนือ','ภาคตะวันตก','ภาคใต้'] as $region)
@@ -213,7 +213,7 @@
                 <div>
                     <label class="block mb-1 text-base font-medium text-gray-600">การจัดส่ง</label>
                     <select name="delivery"
-                            class="w-full rounded-md border border-gray-300 px-3 py-2 text-base text-gray-500
+                            class="form-select w-full rounded-md border border-gray-300 px-3 py-2 text-base !text-gray-500
                                 focus:border-blue-500 focus:ring-blue-500">
                         <option value="">ไม่ระบุ</option>
                         <option value="standard" {{ request('delivery') == 'standard' ? 'selected' : '' }}>ปกติ</option>

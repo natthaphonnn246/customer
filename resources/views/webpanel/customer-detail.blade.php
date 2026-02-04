@@ -57,6 +57,11 @@
                                     
                                     <div class="modal-footer mt-4">
 
+                                        <a href="{{ asset('storage/'.$customer_view->cert_store) }}"
+                                            download
+                                            class="btn btn-danger">
+                                             ดาวน์โหลดภาพ
+                                         </a>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
                                         <button type="submit" name="submit_store" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>
                                         {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
@@ -110,6 +115,11 @@
                                     {{-- <hr class="py-2 mt-2"> --}}
                                     <div class="modal-footer mt-4">
 
+                                        <a href="{{ asset('storage/'.$customer_view->cert_medical) }}"
+                                            download
+                                            class="btn btn-danger">
+                                             ดาวน์โหลดภาพ
+                                         </a>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
                                         <button type="submit" name="submit_medical" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>
                                         {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
@@ -163,6 +173,11 @@
                                     {{-- <hr class="py-2 mt-2"> --}}
                                     <div class="modal-footer mt-4">
 
+                                        <a href="{{ asset('storage/'.$customer_view->cert_commerce) }}"
+                                            download
+                                            class="btn btn-danger">
+                                             ดาวน์โหลดภาพ
+                                         </a>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
                                         <button type="submit" name="submit_commerce" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>
                                         {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
@@ -216,6 +231,11 @@
                                     {{-- <hr class="py-2 mt-2"> --}}
                                     <div class="modal-footer mt-4">
 
+                                        <a href="{{ asset('storage/'.$customer_view->cert_vat) }}"
+                                            download
+                                            class="btn btn-danger">
+                                             ดาวน์โหลดภาพ
+                                         </a>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
                                         <button type="submit" name="submit_vat" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>
                                         {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}
@@ -268,6 +288,11 @@
                                         {{-- <hr class="py-2 mt-2"> --}}
                                         <div class="modal-footer mt-4">
 
+                                            <a href="{{ asset('storage/'.$customer_view->cert_id) }}"
+                                                download
+                                                class="btn btn-danger">
+                                                 ดาวน์โหลดภาพ
+                                             </a>
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
                                             <button type="submit" name="submit_id" class="btn" id="submitUpload" style="margin: 5px;">บันทึก</button>
                                             {{-- <button type="button" class="btn btn-primary">บันทึก</button> --}}

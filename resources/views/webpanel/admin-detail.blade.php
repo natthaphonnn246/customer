@@ -160,6 +160,14 @@
                                         <option  {{$admin_master->allowed_user_status == 1 ? 'selected' : '' }} value="1">ระบุ</option>
                                         
                                     </select>
+
+                                    <p class="mt-4 mb-1">สิทธิ์ในแสดงเมนูตั้งค่าบัญชี <span style="font-size: 12px; color:red;">*ระบุ คือเห็นเมื่อปิดการแสดง</span></p>
+                                    <select class="form-select !text-gray-500" aria-label="Default select example" name="allowed_line_connect">
+
+                                        <option {{$admin_master->allowed_line_connect == 0 ? 'selected' : '' }} value="0">ไม่ระบุ</option>
+                                        <option  {{$admin_master->allowed_line_connect == 1 ? 'selected' : '' }} value="1">ระบุ</option>
+                                        
+                                    </select>
                 
                                     <p class="mt-4 mb-1">อีเมล</p>
                                     <input type="email" class="form-control !text-gray-600" name="email" value="{{$admin_master->email}}" disabled>

@@ -50,12 +50,14 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('*', function ($view) {
             $connectLine = null;
+            $allowedLine = null;
             
             if (Auth::check()) {
+                $allowedLine = Auth::user()->allowed_line_connect;
                 $connectLine = Setting::where('setting_id', 'WS01')->value('connect_line');
 
             }
-            $view->with(compact('connectLine'));
+            $view->with(compact('connectLine', 'allowedLine'));
         });
 
         if (request()->header('x-forwarded-proto') === 'https') {

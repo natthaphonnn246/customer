@@ -144,6 +144,18 @@
             </a>
         </li>
         <hr>
+        @else
+            @if($allowedLine && $allowedLine === 1)
+            <li>
+                <a href="{{ route('portal.account.profile') }}"
+                class="flex items-center gap-2 px-3 py-2 rounded
+                        hover:bg-green-800 !no-underline text-white transition">
+                    <i class="fa-regular fa-solid fa-gear"></i>
+                    ตั้งค่าบัญชี
+                </a>
+            </li>
+            <hr>
+            @endif
         @endif
         <li>
             <a href="/logout"
