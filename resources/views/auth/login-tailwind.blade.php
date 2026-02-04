@@ -221,7 +221,22 @@
 
         <div class="flex flex-col items-center justify-center px-6 py-4 mx-auto md:h-screen lg:py-2" id="bg_login">
   
-            <div class="rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:border-gray-700" id="logintail" style="background-color:rgb(255, 255, 255);">
+            {{-- <div class="rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:border-gray-700" id="logintail" style="background-color:rgb(255, 255, 255);"> --}}
+                <div
+                    id="logintail"
+                    class="
+                        w-full
+                        max-w-sm sm:max-w-md
+                        mx-4 sm:mx-auto
+                        rounded-lg
+                        bg-white
+                        shadow
+                        p-6 sm:p-8
+                        bg-white
+                        dark:border dark:border-gray-700
+                    "
+                >
+
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-center dark:text-white" style="font-weight:500;">
                          <div style="margin-right:60px; margin-left:60px;">
@@ -241,11 +256,16 @@
                         </div>
 
                         <!-- Google reCAPTCHA -->
-                        <ul class="ms-10">
-                            {{-- <div class="g-recaptcha" data-sitekey="6LfCCxkrAAAAAFupTbUe6slwpcWBXUdWLx30dztX" data-callback="enableSubmitbtn"></div> --}}
-                           <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"  data-callback="enableSubmitbtn"></div>
-
+                        <ul class="flex justify-center">
+                            <li>
+                              <div
+                                class="g-recaptcha"
+                                data-sitekey="{{ config('services.recaptcha.site_key') }}"
+                                data-callback="enableSubmitbtn"
+                              ></div>
+                            </li>
                         </ul>
+                          
 
                         <ul class="text-center">
                             {{-- <button type="submit" id="submitBtn" style="width:125px; font-size:16px;">Login</button> --}}
