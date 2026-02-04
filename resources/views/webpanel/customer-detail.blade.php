@@ -43,7 +43,8 @@
                                     {{-- @if ((($customer_view->cert_store)) != '') --}}
                                     @if (!empty($customer_view->cert_store))
                                     
-                                        <img src={{asset("storage/".$customer_view->cert_store)}}?v=<?php echo time(); ?>" 
+                                        <img 
+                                            src="{{ asset('storage/' . $customer_view->cert_store) }}?v={{ time() }}"
                                             id="previewStore" 
                                             style="width: 100%; cursor: pointer;"
                                         />
@@ -102,7 +103,8 @@
                                     {{-- @if ((($customer_view->cert_medical)) != '') --}}
                                     @if (!empty($customer_view->cert_medical))
                                     
-                                        <img src={{asset("storage/".$customer_view->cert_medical)}}?v=<?php echo time(); ?>" 
+                                        <img 
+                                            src="{{ asset('storage/' . $customer_view->cert_medical) }}?v={{ time() }}"
                                             id="previewMedical" 
                                             style="width: 100%; cursor: pointer;"
                                         />
@@ -160,7 +162,8 @@
                                     {{-- @if ((($customer_view->cert_commerce)) != '') --}}
                                     @if (!empty($customer_view->cert_commerce))
                                     
-                                        <img src={{asset("storage/".$customer_view->cert_commerce)}}?v=<?php echo time(); ?>" 
+                                        <img 
+                                            src="{{ asset('storage/' . $customer_view->cert_commerce) }}?v={{ time() }}"
                                             id="previewCommerce" 
                                             style="width: 100%; cursor: pointer;"
                                         />
@@ -218,10 +221,12 @@
                                     {{-- @if ((($customer_view->cert_vat)) != '') --}}
                                     @if (!empty($customer_view->cert_vat))
                                     
-                                        <img src={{asset("storage/".$customer_view->cert_vat)}}?v=<?php echo time(); ?>" 
-                                            id="previewVat" 
-                                            style="width: 100%; cursor: pointer;"
-                                        />
+                                    <img 
+                                        src="{{ asset('storage/' . $customer_view->cert_vat) }}?v={{ time() }}"
+                                        id="previewVat"
+                                        style="width: 100%; cursor: pointer;"
+                                    />
+                                
                                     {{-- {{time()}} --}}
                                     @else
                                     <img src="/profile/image.jpg" width="100%" id="previewVat">
@@ -275,10 +280,12 @@
                                         @csrf
                                         @if (!empty($customer_view->cert_id))
                                         
-                                            <img src={{asset("storage/".$customer_view->cert_id)}}?v=<?php echo time(); ?>" 
-                                                id="previewId" 
-                                                style="width: 100%; cursor: pointer;"
-                                            />
+                                        <img 
+                                            src="{{ asset('storage/' . $customer_view->cert_id) }}?v={{ time() }}"
+                                            id="previewId"
+                                            style="width: 100%; cursor: pointer;"
+                                        />
+                                    
                                         {{-- {{time()}} --}}
                                         @else
                                         <img src="/profile/image.jpg" width="100%" id="previewId">

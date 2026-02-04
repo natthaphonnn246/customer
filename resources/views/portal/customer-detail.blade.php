@@ -101,7 +101,12 @@
                                         @csrf
                                         @if ((($customer_edit->cert_store)) != '')
                                         <div id="protected_image" style="position: relative;">
-                                            <img src={{asset("storage/".$customer_edit->cert_store)}}?v=<?php echo time(); ?>" id="previewStore" style="width: 100%";/>
+                                            <img 
+                                                src="{{ asset('storage/' . $customer_edit->cert_store) }}?v={{ time() }}"
+                                                id="previewStore"
+                                                style="width: 100%"
+                                            />
+
                                         </div>
                                             {{-- {{time()}} --}}
                                         @else
@@ -168,7 +173,11 @@
                                         @csrf
                                         @if ((($customer_edit->cert_medical)) != '')
                                         
-                                            <img src={{asset("storage/".$customer_edit->cert_medical)}}?v=<?php echo time(); ?>" id="previewMedical" style="width: 100%";/>
+                                            <img 
+                                                src="{{ asset('storage/' . $customer_edit->cert_medical) }}?v={{ time() }}"
+                                                id="previewMedical" 
+                                                style="width: 100%"
+                                            />
                                         {{-- {{time()}} --}}
                                         @else
                                         <img src="/profile/image.jpg" width="100%" id="previewMedical">
@@ -231,7 +240,11 @@
                                         @csrf
                                         @if ((($customer_edit->cert_commerce)) != '')
                                         
-                                            <img src={{asset("storage/".$customer_edit->cert_commerce)}}?v=<?php echo time(); ?>" id="previewCommerce" style="width: 100%";/>
+                                            <img 
+                                                src="{{ asset('storage/' . $customer_edit->cert_commerce) }}?v={{ time() }}"
+                                                id="previewCommerce" 
+                                                style="width: 100%"
+                                            />
                                         {{-- {{time()}} --}}
                                         @else
                                         <img src="/profile/image.jpg" width="100%" id="previewCommerce">
@@ -292,7 +305,11 @@
                                         @csrf
                                         @if ((($customer_edit->cert_vat)) != '')
                                         
-                                            <img src={{asset("storage/".$customer_edit->cert_vat)}}?v=<?php echo time(); ?>" id="previewVat" style="width: 100%";/>
+                                            <img 
+                                                 src="{{ asset('storage/' . $customer_edit->cert_vat) }}?v={{ time() }}"
+                                                id="previewVat" 
+                                                style="width: 100%"
+                                            />
                                         {{-- {{time()}} --}}
                                         @else
                                         <img src="/profile/image.jpg" width="100%" id="previewVat">
@@ -353,7 +370,11 @@
                                         @csrf
                                         @if ((($customer_edit->cert_id)) != '')
                                         
-                                            <img src={{asset("storage/".$customer_edit->cert_id)}}?v=<?php echo time(); ?>" id="previewId" style="width: 100%";/>
+                                            <img 
+                                                 src="{{ asset('storage/' . $customer_edit->cert_id) }}?v={{ time() }}"
+                                                id="previewId" 
+                                                style="width: 100%"
+                                            />
                                         {{-- {{time()}} --}}
                                         @else
                                         <img src="/profile/image.jpg" width="100%" id="previewId">
