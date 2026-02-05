@@ -455,7 +455,7 @@
                     </div>
 
                     <div>
-                        <p class="mt-3 mb-1">อำเภอ/แขวง</p>
+                        <p class="mt-3 mb-1">อำเภอ/เขต</p>
                         <select class="form-select mt-2 !text-gray-400" aria-label="Default select example" name="amphur" id="amphures">
                             
                             @if(!isset($amphur))
@@ -472,7 +472,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                        <p class="mt-3 mb-1">ตำบล/เขต</p>
+                        <p class="mt-3 mb-1">ตำบล/แขวง</p>
                         <select class="form-select mt-2 !text-gray-400" aria-label="Default select example" name="district" id="districts">
                             @if(!isset($district))
                             @foreach($district as $row)

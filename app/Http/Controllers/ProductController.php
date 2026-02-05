@@ -2670,7 +2670,8 @@ class ProductController extends Controller
                     $page = isset($cate_id) ? '' : $row_page;
                     $total_page = isset($cate_id) ? 1 : $row_total_page;
                     $start = isset($cate_id) ? 1 : $row_start;
-                    
+                    $currentCateId = $cate_id ?? '';
+
                     return view('product/product-type-khoryor-2', compact(
                         'status_alert',
                         'status_registration', 
@@ -2680,7 +2681,8 @@ class ProductController extends Controller
                         'category',
                         'total_page',
                         'page',
-                        'start'
+                        'start',
+                        'currentCateId'
                     ), ['khor_yor_2' => $allProducts]);
         
     }
@@ -2799,7 +2801,8 @@ class ProductController extends Controller
                     $page = isset($cate_id) ? '' : $row_page;
                     $total_page = isset($cate_id) ? 1 : $row_total_page;
                     $start = isset($cate_id) ? 1 : $row_start;
-                    
+                    $currentCateId = $cate_id ?? '';
+
                     return view('product/product-type-somphor-2', compact(
                         'status_alert',
                         'status_registration', 
@@ -2809,7 +2812,8 @@ class ProductController extends Controller
                         'category',
                         'total_page',
                         'page',
-                        'start'
+                        'start',
+                        'currentCateId'
                     ), ['som_phor_2' => $allProducts]);
         
     }

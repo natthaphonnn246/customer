@@ -2392,6 +2392,7 @@ class PortalCustomerController
                     $page = isset($cate_id) ? '' : $row_page;
                     $total_page = isset($cate_id) ? 1 : $row_total_page;
                     $start = isset($cate_id) ? 1 : $row_start;
+                    $currentCateId = $cate_id ?? '';
                     
                     return view('portal/portal-product-khoryor', compact(
                                 'user_name', 
@@ -2403,7 +2404,8 @@ class PortalCustomerController
                                 'category',
                                 'total_page',
                                 'page',
-                                'start'
+                                'start',
+                                'currentCateId'
                             ), ['khor_yor_2' => $results]);
                 
     }
@@ -2522,7 +2524,8 @@ class PortalCustomerController
                     $page = isset($cate_id) ? '' : $row_page;
                     $total_page = isset($cate_id) ? 1 : $row_total_page;
                     $start = isset($cate_id) ? 1 : $row_start;
-                    
+                    $currentCateId = $cate_id ?? '';
+
                     return view('portal/portal-product-somphor', compact(
                                 'user_name', 
                                 'status_all', 
@@ -2533,7 +2536,8 @@ class PortalCustomerController
                                 'category',
                                 'total_page',
                                 'page',
-                                'start'
+                                'start',
+                                'currentCateId'
                             ), ['somphor_2' => $results]);
         
     }

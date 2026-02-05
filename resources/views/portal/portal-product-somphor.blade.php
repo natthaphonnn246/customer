@@ -67,25 +67,67 @@
                     เลือกร้านค้า
                 </button>
         
-                <div id="dropdownCsv" class="z-10 hidden divide-y divide-gray-100 absolute w-[20%] text-center">
+                <div id="dropdownCsv" class="z-10 hidden divide-y divide-gray-100 absolute md:w-[20%] w-[25%] text-center">
                     <a href="/portal/product-type/khor-yor-2" class="block px-4 py-2 text-base text-white !no-underline bg-gray-800 hover:bg-green-700" id="listCsv">ข.ย.2</a>
                     <a href="/portal/product-type/somphor-2" class="block px-4 py-2 text-base text-white !no-underline bg-gray-800 hover:bg-green-700" id="listCsv">สมุนไพร</a>
                 </div>
 
-
-                <div class="relative">
+                <div class="relative flex w-full mr-4">
+                    
                     <div class="min-h-screen bg-gray-200 flex flex-col w-full">
 
                         <div class="flex items-center justify-between bg-white border-b p-4 shadow-sm">
                             <h3 class="font-bold text-gray-700">ประเภทสมุนไพร</h3>
                         </div>
     
+                        <div class="relative block md:hidden w-72 max-w-md mx-auto my-2">
+                            <select
+                                class="block w-full appearance-none bg-white border border-gray-300
+                                       px-3 py-2 pr-10 rounded-md shadow-sm
+                                       focus:outline-none focus:ring-2 focus:ring-green-500
+                                       focus:border-green-500"
+                                onchange="if (this.value) window.location.href = this.value"
+                            >
+                                <option value="">เลือกหมวดหมู่สินค้า</option>
+                        
+                                <option
+                                    value="{{ url('/portal/product-type/somphor-2') }}"
+                                    {{ empty($currentCateId) ? 'selected' : '' }}
+                                >
+                                    สินค้าทั้งหมด
+                                </option>
+                        
+                                @if(isset($category) && count($category) > 0)
+                                    @foreach($category as $row_cat)
+                                        <option
+                                            value="{{ url('/portal/product-type/somphor-2/' . $row_cat->categories_id) }}"
+                                            {{ $row_cat->categories_id == $currentCateId ? 'selected' : '' }}
+                                        >
+                                            {{ $row_cat->categories_name }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        
+                            <!-- ลูกศร ▼ -->
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                                     viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
                 
                      {{-- <div class="flex h-full"> --}}
                         <div class="flex h-screen overflow-y-auto">
 
                         {{-- <aside class="w-64 bg-gray-100 p-2 border-r fixed top-0 left-0 h-screen overflow-y-auto"> --}}
-                        <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen overflow-y-auto">
+                        <aside
+                            class="hidden md:block
+                                    md:w-52
+                                    lg:w-64
+                                    bg-gray-100 border-r sticky top-0 h-screen overflow-y-auto">
 
                             <h4 class="text-2xl font-bold py-4 ms-6">หมวดหมู่สินค้า</h4>
                         

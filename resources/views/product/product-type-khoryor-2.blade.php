@@ -78,83 +78,130 @@
                     เลือกร้านค้า
                 </button>
         
-                <div id="dropdownCsv" class="z-10 hidden divide-y divide-gray-100 absolute w-[20%] text-center">
+                <div id="dropdownCsv" class="z-10 hidden divide-y divide-gray-100 absolute md:w-[20%] w-[25%] text-center">
                     <a href="/webpanel/report/product-type/khor-yor-2" class="block px-4 py-2 text-base text-white !no-underline bg-gray-800 hover:bg-green-700">ข.ย.2</a>
                     <a href="/webpanel/report/product-type/somphor-2" class="block px-4 py-2 text-base text-white !no-underline bg-gray-800 hover:bg-green-700">สมุนไพร</a>
                 </div>
+               
+
                 <div class="relative flex w-full mr-4">
-                
+                    
                     <div class="min-h-screen bg-gray-200 flex flex-col w-full">
 
-                    <div class="flex items-center justify-between bg-white border-b p-5 shadow-sm">
-                        <h3 class="font-bold text-gray-700">ประเภทร้านค้า (ข.ย.2)</h3>
-                    </div>
-                    
-                     <div class="flex flex-1">
-                
-                        <aside class="w-64 bg-gray-100 p-2 border-r sticky top-0 h-screen overflow-y-auto">
-                            <h4 class="text-2xl font-bold py-4 ms-6">หมวดหมู่สินค้า</h4>
+                        <div class="flex items-center justify-between bg-white border-b p-5 shadow-sm">
+                            <h3 class="font-bold text-gray-700">ประเภทร้านค้า (ข.ย.2)</h3>
+                        </div>
+
+                        <div class="relative block md:hidden w-72 max-w-md mx-auto my-2">
+                            <select
+                                class="block w-full appearance-none bg-white border border-gray-300
+                                       px-3 py-2 pr-10 rounded-md shadow-sm
+                                       focus:outline-none focus:ring-2 focus:ring-green-500
+                                       focus:border-green-500"
+                                onchange="if (this.value) window.location.href = this.value"
+                            >
+                                <option value="">เลือกหมวดหมู่สินค้า</option>
                         
-                            <nav class="space-y-2">
-                                <a href="{{ url('/webpanel/report/product-type/khor-yor-2') }}" 
-                                class="!no-underline block px-4 py-2 rounded-md font-medium hover:bg-green-600 !text-gray-600 hover:!text-white">
+                                <option
+                                    value="{{ url('/webpanel/report/product-type/khor-yor-2') }}"
+                                    {{ empty($currentCateId) ? 'selected' : '' }}
+                                >
                                     สินค้าทั้งหมด
-                                </a>
-                                <hr style="color:#838383;">
+                                </option>
+                        
                                 @if(isset($category) && count($category) > 0)
                                     @foreach($category as $row_cat)
-                                        <a href="{{ url('/webpanel/report/product-type/khor-yor-2/' . $row_cat->categories_id) }}" 
-                                            class="!no-underline block px-4 py-2 rounded-md font-medium hover:bg-green-600 !text-gray-600 hover:!text-white">
+                                        <option
+                                            value="{{ url('/webpanel/report/product-type/khor-yor-2/' . $row_cat->categories_id) }}"
+                                            {{ $row_cat->categories_id == $currentCateId ? 'selected' : '' }}
+                                        >
                                             {{ $row_cat->categories_name }}
-                                        </a>
-                                        <hr style="color:#838383;">
+                                        </option>
                                     @endforeach
-                                @else
-                                    <p class="text-gray-400 italic">ยังไม่มีหมวดหมู่สินค้า</p>
                                 @endif
-                            </nav>
-                        </aside>
- 
-                        <main class="flex-1 p-0 bg-white w-full">
-                            <div class="overflow-x-auto w-full">
-                                <table class="table table-striped table-bordered table-hover" style="width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:2%;">#</th>
-                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">รหัสสินค้า</th>
-                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:20%;">ชื่อสินค้า</th>
-                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ชื่อสามัญทางยา</th>
-                                            <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ประเภทร้านค้า</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if(isset($khor_yor_2) && count($khor_yor_2) > 0) 
-                                        @php 
-                                            // $start = 1;
-                                        @endphp
-                                        
-                                        @foreach($khor_yor_2 as $row)
-                                            <tr class="tr-hover">
-
-                                                <td style="text-align: center; color:#6b6b6b;">{{ $start++ }}</td>
-                                                <td style="text-align: center; color:#6b6b6b;">{{ $row->product_id }}</td>
-                                                <td style="text-align: left; color:#05b46e;">{{ $row->product_name }}</td>
-                                                <td style="text-align: left; color:#6b6b6b;">{{ $row->generic_name }}</td>
-                                                <td style="text-align: center; color:#6b6b6b;">{{ $row->khor_yor_2 == 1 ? 'ข.ย.2':'' }}</td>
-                                            </tr>
-                                        @endforeach
-                                        @else
-                                            <td colspan="5" style="text-align: center; color:#6b6b6b;">ไม่พบสินค้าประเภท ร้านค้า: ข.ย.2</td>
-                                        @endif
-                                    </tbody>
-                                        
-                            </table>
-                
+                            </select>
+                        
+                            <!-- ลูกศร ▼ -->
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                                     viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M19 9l-7 7-7-7" />
+                                </svg>
                             </div>
-                        </main>
+                        </div>
+                        
+                        <div class="flex flex-1">
                 
+                            <aside
+                                class="hidden md:block
+                                        md:w-52
+                                        lg:w-64
+                                        bg-gray-100 border-r sticky top-0 h-screen overflow-y-auto">
+
+
+                                <h4 class="text-2xl font-bold py-4 ms-6">หมวดหมู่สินค้า</h4>
+                            
+                                <nav class="space-y-2">
+                                    <a href="{{ url('/webpanel/report/product-type/khor-yor-2') }}" 
+                                    class="!no-underline block px-4 py-2 rounded-md font-medium hover:bg-green-600 !text-gray-600 hover:!text-white">
+                                        สินค้าทั้งหมด
+                                    </a>
+                                    <hr style="color:#838383;">
+                                    @if(isset($category) && count($category) > 0)
+                                        @foreach($category as $row_cat)
+                                            <a href="{{ url('/webpanel/report/product-type/khor-yor-2/' . $row_cat->categories_id) }}" 
+                                                class="!no-underline block px-4 py-2 rounded-md font-medium hover:bg-green-600 !text-gray-600 hover:!text-white">
+                                                {{ $row_cat->categories_name }}
+                                            </a>
+                                            <hr style="color:#838383;">
+                                        @endforeach
+                                    @else
+                                        <p class="text-gray-400 italic">ยังไม่มีหมวดหมู่สินค้า</p>
+                                    @endif
+                                </nav>
+                            </aside>
+    
+                            <main class="flex-1 p-0 bg-white w-full">
+                                <div class="overflow-x-auto w-full">
+                                    <table class="table table-striped table-bordered table-hover" style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:2%;">#</th>
+                                                <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:5%;">รหัสสินค้า</th>
+                                                <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:20%;">ชื่อสินค้า</th>
+                                                <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ชื่อสามัญทางยา</th>
+                                                <th style="color:#838383; text-align:center; vertical-align:middle; font-weight:500; width:10%;">ประเภทร้านค้า</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(isset($khor_yor_2) && count($khor_yor_2) > 0) 
+                                            @php 
+                                                // $start = 1;
+                                            @endphp
+                                            
+                                            @foreach($khor_yor_2 as $row)
+                                                <tr class="tr-hover">
+
+                                                    <td style="text-align: center; color:#6b6b6b;">{{ $start++ }}</td>
+                                                    <td style="text-align: center; color:#6b6b6b;">{{ $row->product_id }}</td>
+                                                    <td style="text-align: left; color:#05b46e;">{{ $row->product_name }}</td>
+                                                    <td style="text-align: left; color:#6b6b6b;">{{ $row->generic_name }}</td>
+                                                    <td style="text-align: center; color:#6b6b6b;">{{ $row->khor_yor_2 == 1 ? 'ข.ย.2':'' }}</td>
+                                                </tr>
+                                            @endforeach
+                                            @else
+                                                <td colspan="5" style="text-align: center; color:#6b6b6b;">ไม่พบสินค้าประเภท ร้านค้า: ข.ย.2</td>
+                                            @endif
+                                        </tbody>
+                                            
+                                </table>
+                    
+                                </div>
+                            </main>
+                    
+                        </div>
                     </div>
-                </div>
                 </div>
                 
           
