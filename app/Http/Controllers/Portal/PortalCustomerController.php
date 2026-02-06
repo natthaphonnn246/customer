@@ -2353,12 +2353,8 @@ class PortalCustomerController
                                         $results = $results->merge($products);
                                 });
                               
-
-
                     } else {
-
-                        
-                    
+     
                             DB::table('products as p')
                                 ->where('khor_yor_2', 1)
                                 ->select('product_id', 'product_name', 'generic_name', 'khor_yor_2')
@@ -2384,8 +2380,7 @@ class PortalCustomerController
 
                                 // ดึงข้อมูลเฉพาะหน้าที่ต้องการ
                                 $results = $results->slice(($row_page - 1) * $row_perPage, $row_perPage)->values();
-
-              
+ 
                     }
 
                     $perPage = isset($cate_id) ? '' : $row_perPage;
@@ -2481,11 +2476,8 @@ class PortalCustomerController
                                         $results = $results->merge($products);
                                 });
                               
-
-
                     } else {
                         
-                    
                             DB::table('products as p')
                                 ->where('som_phor_2', 1)
                                 ->select(

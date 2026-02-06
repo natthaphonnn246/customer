@@ -2630,8 +2630,6 @@ class ProductController extends Controller
                                         $allProducts = $allProducts->merge($products);
                                 });
                               
-
-
                     } else {
                         
                     
@@ -2662,8 +2660,7 @@ class ProductController extends Controller
 
                                 // ดึงข้อมูลเฉพาะหน้าที่ต้องการ
                                 $allProducts = $allProducts->slice(($row_page - 1) * $row_perPage, $row_perPage)->values();
-                       
-              
+                                 
                     }
 
                     $perPage = isset($cate_id) ? '' : $row_perPage;
@@ -2686,11 +2683,9 @@ class ProductController extends Controller
                     ), ['khor_yor_2' => $allProducts]);
         
     }
-    
     //แบบอนุญาต ร้านค้าสมุนไพร
     public function productTypeSomphor(Request $request)
     {
-
 
         $from = $request->from ?? date('Y-m-d');
         $to   = $request->to ?? date('Y-m-d');
@@ -2758,8 +2753,6 @@ class ProductController extends Controller
                                         $allProducts = $allProducts->merge($products);
                                 });
                               
-
-
                     } else {
                         
                     
@@ -2792,8 +2785,7 @@ class ProductController extends Controller
                                 $row_start = $start = ($row_page - 1) * $row_perPage + 1;
 
                                 // ดึงข้อมูลเฉพาะหน้าที่ต้องการ
-                                $allProducts = $allProducts->slice(($row_page - 1) * $row_perPage, $row_perPage)->values();
-                       
+                                $allProducts = $allProducts->slice(($row_page - 1) * $row_perPage, $row_perPage)->values();                     
               
                     }
 

@@ -12,13 +12,13 @@
             <table class="table table-striped" id="type-table">
                 <thead>
                     <tr>
-                        <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">#</td>
-                        <td scope="col" style="color:#838383; text-align: left; font-weight: 500;">CODE</td>
-                        <td scope="col" style="color:#838383; text-align: left;  font-weight: 500;">อีเมล</td>
-                        <td scope="col" style="color:#838383; text-align: left;  font-weight: 500;">ชื่อ</td>
-                        <td scope="col" style="color:#838383; text-align: left;  font-weight: 500;">เข้าระบบล่าสุด</td>
-                        <td scope="col" style="color:#838383; text-align: left;  font-weight: 500;">IP Address</td>
-                        <td scope="col" style="color:#838383; text-align: left;  font-weight: 500;">สถานะ</td>
+                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">#</td>
+                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">CODE</td>
+                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">อีเมล</td>
+                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">ชื่อ</td>
+                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">เข้าระบบล่าสุด</td>
+                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">IP Address</td>
+                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">สถานะ</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,33 +66,33 @@
                     // console.log('pass');
 
                  
-                        row.innerHTML = `<td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${start++}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.user_id}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.email}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.user_name}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.login_date}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.ip_address}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;"><i class="fa-solid fa-circle" style="color: #03ae3f; font-size:18px;"></i> ออนไลน์</td>`;
+                        row.innerHTML = `<td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${start++}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.user_id}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.email}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.user_name}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.login_date}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.ip_address}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500"><i class="fa-solid fa-circle" style="color: #03ae3f; font-size:18px;"></i> ออนไลน์</td>`;
                     
                    
                 
                 } else if (count_time < 59) {
 
-                    row.innerHTML = `<td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${start++}</td>
-                                        <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.user_id}</td>
-                                        <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.email}</td>
-                                        <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.user_name}</td>
-                                        <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.login_date}</td>
-                                        <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.ip_address}</td>
-                                        <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;"><i class="fa-solid fa-circle" style="color: #ee2c2c; font-size:18px;"></i> ออฟไลน์เมื่อ ${Math.round(count_time)} นาทีที่แล้ว</td>`;
+                    row.innerHTML = `<td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${start++}</td>
+                                        <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.user_id}</td>
+                                        <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.email}</td>
+                                        <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.user_name}</td>
+                                        <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.login_date}</td>
+                                        <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.ip_address}</td>
+                                        <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500"><i class="fa-solid fa-circle" style="color: #ee2c2c; font-size:18px;"></i> ออฟไลน์เมื่อ ${Math.round(count_time)} นาทีที่แล้ว</td>`;
                 } else {
-                    row.innerHTML = `<td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${start++}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.user_id}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.email}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.user_name}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.login_date}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;">${rowd.ip_address}</td>
-                                     <td scope="row" style="color:#9C9C9C; text-align: left; padding: 20px 8px 20px;"><i class="fa-solid fa-circle" style="color: rgb(193, 193, 193); font-size:18px;"></i> ออฟไลน์</td>`;
+                    row.innerHTML = `<td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${start++}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.user_id}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.email}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.user_name}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.login_date}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">${rowd.ip_address}</td>
+                                     <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500"><i class="fa-solid fa-circle" style="color: rgb(193, 193, 193); font-size:18px;"></i> ออฟไลน์</td>`;
 
                 }
                 tableBody.appendChild(row);
