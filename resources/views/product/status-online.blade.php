@@ -8,23 +8,24 @@
         <hr class="my-3 !text-gray-400 !border">
 
         <div class="mx-8 mb-2 overflow-x-auto">
-
-            <table class="table table-striped" id="type-table">
-                <thead>
-                    <tr>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">#</td>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">CODE</td>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">อีเมล</td>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">ชื่อ</td>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">เข้าระบบล่าสุด</td>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">IP Address</td>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">สถานะ</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- JSON Data will be inserted here -->
-                </tbody>
-            </table>
+            <div class="w-full overflow-x-auto">
+                <table class="table table-striped" id="type-table">
+                    <thead>
+                        <tr>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">#</td>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">CODE</td>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">อีเมล</td>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">ชื่อ</td>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">เข้าระบบล่าสุด</td>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">IP Address</td>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">สถานะ</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- JSON Data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="py-2"></div>

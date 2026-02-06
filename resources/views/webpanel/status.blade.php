@@ -7,23 +7,23 @@
         <hr class="my-3 !text-gray-400 !border">
 
         <div class="grid grid-cols-1 gap-4 mx-4 px-2 text-gray-500 overflow-x-auto">
-
-            <table class="table table-striped" id="user-table">
-                <thead>
-                    <tr>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">#</td>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">CODE</td>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">อีเมล</td>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">ชื่อ</td>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">เข้าระบบล่าสุด</td>
-                        <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">สถานะ</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- JSON Data will be inserted here -->
-                </tbody>
-            </table>
-
+            <div class="w-full overflow-x-auto">
+                <table class="table table-striped" id="user-table">
+                    <thead>
+                        <tr>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">#</td>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">CODE</td>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">อีเมล</td>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">ชื่อ</td>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">เข้าระบบล่าสุด</td>
+                            <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">สถานะ</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- JSON Data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
     </div>
 
     {{-- {{$date}} --}}
