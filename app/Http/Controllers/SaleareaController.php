@@ -182,6 +182,7 @@ class SaleareaController extends Controller
                             'sale_area' => $sale_area,
                             'sale_name' => $sale_name,
                             'text_add' => $text_add,
+                            'sale_status' => $request->sale_status,
                             // 'admin_area' => $admin_area,
                         ]);
 

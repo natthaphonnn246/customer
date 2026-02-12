@@ -28,6 +28,12 @@
                                 <p class="mt-4 mb-1">Admin area</p>
                                 <input type="text" class="form-control mt-2 !text-gray-600" name="admin_area" value="{{$salearea->admin_area}}" disabled>
                 
+                                <p class="mt-4 mb-1">สถานะบัญชี</p>
+                                <select name="sale_status" class="form-select !text-gray-600" id="">
+                                    <option @selected($salearea->sale_status) value="0">ปิด</option>
+                                    <option @selected($salearea->sale_status) value="1">เปิด</option>
+                                </select>
+
                                 <label for="exampleFormControlTextarea1" class="form-label !text-gray-500 mt-4 font-bold">เพิ่มเติม</label></label>
                                 <textarea class="form-control mt-1 !text-gray-600" id="exampleFormControlTextarea1" rows="3" name="text_add"> {{$salearea->text_add}}</textarea><br>
 

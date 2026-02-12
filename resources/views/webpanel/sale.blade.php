@@ -23,6 +23,7 @@
                 <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">#</td>
                 <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">Sale area</td>
                 <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">ชื่อพนักงานขาย</td>
+                <td scope="col" class="!text-gray-500 text-center p-3 font-semibold">สถานะบัญชี</td>
                 <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">วันที่สร้าง</td>
                 <td scope="col" class="!text-gray-500 text-left p-3 font-semibold">จัดการ</td>
               </tr>
@@ -47,6 +48,13 @@
                 <td scope="row" class="!text-gray-500 text-left p-3">{{$start++}}</td>
                 <td scope="row" class="!text-gray-500 text-left p-3">{{$sale_area}}</td>
                 <td scope="row" class="!text-gray-500 text-left p-3">{{$sale_name}}</td>
+                <td scope="row" class="!text-gray-500 text-center p-3">
+                    @if($row->sale_status)
+                    <i class="fa-solid fa-circle text-green-500 text-xl"></i>
+                    @else
+                    <i class="fa-solid fa-circle text-red-500 text-xl"></i>
+                    @endif
+                </td>
                 <td scope="row" class="!text-gray-500 text-left p-3">{{$created_at}}</td>
                 <td class="text-gray-500 text-left p-3">
                     <div class="flex flex-col sm:flex-row gap-2 sm:items-center">

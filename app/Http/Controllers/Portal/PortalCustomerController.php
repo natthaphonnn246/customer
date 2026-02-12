@@ -155,6 +155,7 @@ class PortalCustomerController
             // dd($customer_tb);
 
             $sale_area = Salearea::select('sale_area', 'sale_name')
+                        ->where('sale_status', true)
                         ->orderBy('sale_area', 'asc')
                         ->get();
 
@@ -168,7 +169,7 @@ class PortalCustomerController
     public function portalSign(Request $request)
     {
             $code = $request->user()->user_code;
-        
+
             $user_name = User::select('name', 'admin_area','user_code')->where('user_code', $code)->first();
 
             // dd($user_name->name);

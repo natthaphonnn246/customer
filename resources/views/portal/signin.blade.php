@@ -199,7 +199,7 @@
                                 @endif
                                 </select><br>
                             
-                          {{--   <span>พนักงานขาย/เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
+                            <span>พนักงานขาย/เขตการขาย</span> <span style="font-size: 12px; color:red;">*จำเป็นต้องระบุ</span>
                                 <select class="form-select" style="margin-top:10px; color: grey;" aria-label="Default select example" name="sale_area">
                                 <option selected value="ไม่ระบุ"> ไม่ระบุ </option>
                                 
@@ -208,7 +208,7 @@
                                     <option value="{{$row_sale_area->sale_area}}">{{$row_sale_area->sale_area.' '.'(' .$row_sale_area->sale_name.')'}}</option>
                                     @endforeach
                                 @endif
-                                </select> --}}
+                            </select>
 
                     </div>
                 
