@@ -308,34 +308,38 @@
                     <hr class="mt-2 mb-2">
 
                     {{-- Logout --}}
+                    
                     <li>
-                        <a href="/logout"
-                            id="logout"
+                        <a href="#"
+                            id="logout-btn"
                             class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-800 text-white !no-underline">
                             <i class="fa-solid fa-power-off"></i>
                             <span>ออกจากระบบ</span>
                         </a>
+                    
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                            @csrf
+                        </form>
                     </li>
-
+                    
                     <script>
-                        document.getElementById('logout').addEventListener('click', function(event) {
-                        event.preventDefault();
-                        Swal.fire({
-                            title: 'ออกจากระบบใช่หรือไม่?',
-                            text: "กรุณายืนยัน",
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'ออกจากระบบ',
-                            cancelButtonText: 'ยกเลิก'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = "/logout";
-                            }
+                        document.getElementById('logout-btn').addEventListener('click', function(event) {
+                            event.preventDefault();
+                        
+                            Swal.fire({
+                                title: 'ออกจากระบบใช่หรือไม่?',
+                                text: "กรุณายืนยัน",
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'ออกจากระบบ',
+                                cancelButtonText: 'ยกเลิก'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    document.getElementById('logout-form').submit();
+                                }
+                            });
                         });
-                        });
-                    </script>
+                    </script> 
 
                 </ul>
 

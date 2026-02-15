@@ -263,7 +263,7 @@
         <li>
             <a href="/logout"
                class="flex items-center gap-2 px-3 py-2 rounded
-                      hover:bg-orange-800 text-white !no-underline transition">
+                      hover:bg-orange-800 !no-underline text-white transition">
                 <i class="fa-solid fa-power-off"></i>
                 ออกจากระบบ
             </a>
