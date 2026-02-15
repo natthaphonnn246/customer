@@ -314,7 +314,7 @@
                         </div>
                     
     
-                <form action="/webpanel/customer-detail/update/{{$customer_view->id}}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('webpanel.customer.update', $customer_view?->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 

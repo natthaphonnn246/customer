@@ -207,7 +207,7 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
 
         Route::post('/webpanel/customer-create/insert', [WebpanelCustomerController::class, 'create']);
         //webpanel customer edit view;
-        Route::get('/webpanel/customer/{id}', [WebpanelCustomerController::class, 'edit']);
+        Route::get('/webpanel/customer/{id}', [WebpanelCustomerController::class, 'edit'])->name('webpanel.customer.edit');
         //webpanel uploade image;
         Route::post('/webpanel/customer-detail/upload-store/{id}', [WebpanelCustomerController::class, 'certStore']);
         Route::post('/webpanel/customer-detail/upload-medical/{id}', [WebpanelCustomerController::class, 'certMedical']);
@@ -519,16 +519,7 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
     //other-purchase (Line, telephone);
     Route::get('/webpanel/customer/order/other-purchase', [WebpanelCustomerController::class, 'otherPurchase'])->middleware('auth', 'role','status', 'verified');
 
-    //check-customer-type;
-    // Route::get('/webpanel/customer/status/{status_check}', [WebpanelCustomerController::class, 'indexStatus'])->middleware('auth', 'role','status', 'verified');
-
-    //webpanel customer update;
-    // Route::match(['POST', 'HEAD'],'/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware('auth', 'role','status', 'verified');
-    // Route::post('/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware('auth', 'role','status', 'verified');
-
-    // Route::match(['GET', 'POST'], '/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware(['auth', 'role', 'status', 'verified']);
-
-    Route::put('/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware(['auth', 'role', 'status', 'verified']);
+    Route::put('/webpanel/customer-detail/update/{id}', [WebpanelCustomerController::class, 'update'])->middleware(['auth', 'role', 'status', 'verified'])->name('webpanel.customer.update');
 
     Route::get('/portal/signin/update-amphure', [ProvinceController::class, 'amphure']);
     Route::get('/portal/signin/update-district', [ProvinceController::class, 'district']);

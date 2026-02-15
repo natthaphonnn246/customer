@@ -759,7 +759,7 @@
 
                         <td scope="row" class="text-gray-400 text-left px-3 py-4 !text-gray-500">
                             <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
-                                <a href="/webpanel/customer/{{$id}}" id="edit"><i class="fa-regular fa-eye"></i></a>
+                                <a href="{{ route('webpanel.customer.edit',$id) }}" id="edit"><i class="fa-regular fa-eye"></i></a>
                                 {{-- <a href="/webpanel/customer/delete/{{$user_code}}" id="trash"><i class="fa-regular fa-trash-can"></i></a> --}}
                                 <button class="trash-customer" type="submit" id="trash{{$id}}"><i class="fa-regular fa-trash-can"></i></button>
                             </div>

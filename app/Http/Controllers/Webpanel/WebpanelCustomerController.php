@@ -1755,13 +1755,13 @@ class WebpanelCustomerController
                             ]);
                     }
                     // echo 'success';
-                    return redirect('/webpanel/customer/'.$id)->with('status', 'updated_success');
+                    return redirect()->route('webpanel.customer.edit',$id)->with('status', 'updated_success');
                 
                 }
                 else {
 
                     // echo 'fail';
-                    return redirect('/webpanel/customer/'.$id)->with('status', 'updated_fail');
+                    return redirect()->route('webpanel.customer.edit',$id)->with('status', 'updated_fail');
                 }
             
     }

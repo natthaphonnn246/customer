@@ -48,6 +48,18 @@
     {{-- <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script> --}}
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+
+    .sidebar-scroll::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+        background: #4b5563;
+        border-radius: 10px;
+    }
+    </style>
+
     @stack('styles')
 </head>
 
@@ -61,7 +73,7 @@
         :status-updated="$status_updated ?? 0"
     >
         <x-slot name="profile">
-            <img src="/profile/user.png"
+            <img src="/profile/doraemon.jpg"
                 class="w-8 h-8 rounded-full"
                 alt="User">
         </x-slot>
