@@ -51,9 +51,13 @@
     // Route::get('/', function() { return view('auth.login-tailwind');})->name('login');
 
 
-    Route::get('/', function () {
+  /*   Route::get('/', function () {
         return view('auth.login-tailwind');
-    });
+    })->name('login'); */
+
+    Route::get('/', function () {
+        return redirect()->route('login');
+    });    
 
     //recaptcah v-2;
     // Route::post('/', [RecaptchaV2::class, 'reCaptcha']);

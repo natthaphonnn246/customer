@@ -35,7 +35,7 @@ class CheckTypeUser
                 }
 
                 Auth::logout();
-                return redirect('/login')->with('error_purchase', 'คุณไม่มีสิทธิ์เข้าถึง');
+                return redirect()->route('login')->with('error_purchase', 'คุณไม่มีสิทธิ์เข้าถึง');
             }
         }
 

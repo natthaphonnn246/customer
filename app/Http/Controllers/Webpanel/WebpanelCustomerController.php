@@ -1576,6 +1576,8 @@ class WebpanelCustomerController
      */
     public function update(Request $request, $id)
     {
+        // dd(request()->method());
+
 
 /*         if ($request->method() === 'HEAD') {
             return response()->noContent(); // หรือ 200 OK โดยไม่ทำอะไร

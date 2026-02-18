@@ -40,7 +40,7 @@ class MaintenanceStatus
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')
-            ->with('error_active', 'กรุณาติดต่อผู้ดูแล');
+        return redirect()->route('login')
+            ->with('maintain_active', 'ปิดปรับปรุงระบบ');
     }
 }

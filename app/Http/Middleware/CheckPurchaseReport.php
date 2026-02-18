@@ -19,7 +19,7 @@ class CheckPurchaseReport
         if (Auth::check() && Auth::user()->purchase_status === 0) {
             Auth::logout();
 
-            return redirect('/login')->with('error_purchase', 'คุณไม่มีสิทธิ์เข้าถึง');
+            return redirect()->route('login')->with('error_purchase', 'คุณไม่มีสิทธิ์เข้าถึง');
         }
 
         return $next($request);

@@ -31,7 +31,7 @@ class CustomerDetailCheck
             Auth::guard('web')->logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
-                return redirect('/')->with('error_check', 'กรุณาติดต่อผู้ดูแล');
+                return redirect()->route('login')->with('error_check', 'กรุณาติดต่อผู้ดูแล');
         }
 
 
@@ -40,7 +40,7 @@ class CustomerDetailCheck
             Auth::guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return redirect('/')->with('error_check', 'กรุณาติดต่อผู้ดูแล');
+            return redirect()->route('login')->with('error_check', 'กรุณาติดต่อผู้ดูแล');
 
         }
         

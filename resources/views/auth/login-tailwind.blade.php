@@ -376,8 +376,35 @@
                         <script>
                         document.addEventListener("DOMContentLoaded", function () {
                             Swal.fire({
-                                title: "⚠️ ปิดปรับปรุงระบบ",
+                                title: "⚠️ เกิดข้อผิดพลาด",
                                 html: "<p style='font-size:16px;'>{{ session('error_active') }}</p>",
+                                icon: "warning",
+                                confirmButtonText: "ตกลง",
+                                customClass: {
+                                    popup: "rounded-lg shadow-lg p-6",
+                                    title: "text-2xl font-bold",
+                                    confirmButton: "bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+                                },
+                                width: 400,
+                                padding: "1.5em",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        });
+                        </script>
+                        @endif
+
+                        @if (session('maintain_active') == 'ปิดปรับปรุงระบบ')
+                        
+                        <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            Swal.fire({
+                                title: "⚠️ ปิดปรับปรุงระบบ",
+                                html: "<p style='font-size:16px;'>{{ session('maintain_active') }}</p>",
                                 icon: "warning",
                                 confirmButtonText: "ตกลง",
                                 customClass: {

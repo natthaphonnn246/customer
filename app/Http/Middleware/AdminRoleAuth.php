@@ -26,7 +26,7 @@ class AdminRoleAuth
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
 
-                return redirect('/');
+                return redirect()->route('login');
             }
 
             return $next($request);
@@ -38,7 +38,7 @@ class AdminRoleAuth
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect('/');
+            return redirect()->route('login');
         }
 
         return $next($request);

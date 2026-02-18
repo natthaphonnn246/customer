@@ -15,7 +15,7 @@ class RoleAuth
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+/*     public function handle(Request $request, Closure $next): Response
     {
 
         //test;
@@ -61,24 +61,33 @@ class RoleAuth
             return redirect('/')->with('error_active', 'กรุณาติดต่อผู้ดูแล');
         }
 
-      /*   Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/')->with('error_active', 'กรุณาติดต่อผู้ดูแล'); */
-        
-       /*  if (Auth::user()->role == 2) 
-        {
+    } */
 
+    public function handle(Request $request, Closure $next): Response
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        $allowedIds = ['0000', '4494', '9000'];
+
+        if (
+            ($user->admin_role === 1 || $user->role === 2) &&
+            in_array($user->user_id, $allowedIds)
+        ) {
             return $next($request);
         }
-        else {
-            // return back();
 
-            // return logout;
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            return redirect('/')->with('error_active', 'กรุณาติดต่อผู้ดูแล');
-        } */
+        // ล้าง session
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    
+        return redirect()->route('login')
+            ->with('error_active', 'กรุณาติดต่อผู้ดูแล');
     }
+
 }

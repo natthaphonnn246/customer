@@ -12,7 +12,7 @@ class RightAreaMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            return redirect('/signin');
+            return redirect()->route('portal.sign');
         }
 
         if (Auth::user()->rights_area !== 1) {

@@ -30,7 +30,7 @@ class UserRoleAuth
                 Auth::guard('web')->logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
-                return redirect('/');
+                return redirect()->route('login');
             }
         }
         
@@ -43,7 +43,7 @@ class UserRoleAuth
             Auth::guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return redirect('/');
+            return redirect()->route('login');
             
         }
 }
