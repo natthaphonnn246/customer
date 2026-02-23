@@ -12,7 +12,9 @@
         store: false,
         report: false,
         product: false,
-        alert: false
+        alert: false,
+        promotion: false,
+        ordering: false
     }"
 >
 
@@ -244,160 +246,234 @@
                     </li>
                     <hr class="mt-2 mb-2">
 
-                    {{-- Alert --}}
-                    <li x-data="{ alert: false }">
-                        <button
-                            @click="alert = !alert"
-                            class="flex items-center w-full gap-3 px-3 py-2 !rounded-lg hover:bg-orange-800"
-                        >
-                            <i class="fa-regular fa-bell"></i>
-                            <span class="flex-1 text-left">แจ้งเตือน</span>
-                            <p class="text-xs bg-red-600 px-2 rounded-full items-center">
-                                {{ $statusAlert }}
-                            </p>
-                        </button>
-                    
-                        <ul
-                            x-ref="alertMenu"
-                            class="mt-1 space-y-1 text-start overflow-hidden transition-all duration-300"
-                            :style="alert
-                                ? 'max-height:' + $refs.alertMenu.scrollHeight + 'px'
-                                : 'max-height:0px'"
-                        >
-                            <li>
-                                <a href="/webpanel/customer/status/waiting"
-                                class="flex justify-between px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
-                                    <span>รอดำเนินการ</span>
-                                    <p class="text-center text-xs bg-blue-600 px-2 rounded-full">
-                                        {{ $statusWaiting }}
-                                    </p>
-                                </a>
-                            </li>
-                    
-                            <li>
-                                <a href="/webpanel/customer/status/new_registration"
-                                class="flex justify-between px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
-                                    <span>ลงทะเบียนใหม่</span>
-                                    <p class="text-xs bg-cyan-600 px-2 rounded-full">
-                                        {{ $statusRegistration }}
-                                    </p>
-                                </a>
-                            </li>
-                    
-                            <li>
-                                <a href="/webpanel/customer/status/latest_update"
-                                class="flex justify-between px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
-                                    <span>อัปเดตข้อมูล</span>
-                                    <p class="text-xs bg-rose-600 px-2 rounded-full">
-                                        {{ $statusUpdated }}
-                                    </p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <hr class="mt-2 mb-2">
+                    {{-- product --}}
+                    <li x-data="{ promotion: false }">
+                    <button
+                        @click="promotion = !promotion"
+                        class="flex items-center w-full gap-3 px-3 py-2 !rounded-lg hover:bg-orange-800"
+                    >
+                        <i class="fa-solid fa-percent"></i>
+                        <span class="flex-1 text-left">โปรโมชั่น</span>
+                        <i
+                            class="fa-solid text-xs transition-transform duration-300"
+                            :class="promotion ? 'fa-minus rotate-180' : 'fa-plus'"
+                        ></i>
+                    </button>
+                
+                    <ul
+                        x-ref="submenu"
+                        class="mt-1 space-y-1 text-start overflow-hidden transition-all duration-300"
+                        :style="promotion
+                            ? 'max-height:' + $refs.submenu.scrollHeight + 'px'
+                            : 'max-height:0px'"
+                    >
+                        <li>
+                            <a href="/webpanel/promotion-management"
+                            class="block px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
+                                จัดการ
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/webpanel/promotion-view"
+                            class="block px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
+                                สร้างโปรโมชั่น
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/webpanel/report/status-type"
+                            class="block px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
+                                สถานะการใช้งาน
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <hr class="mt-2 mb-2">
 
-                    {{-- setting --}}
-                    <li>
-                        <a href="/webpanel/setting"
-                        class="flex items-center gap-3 px-3 py-2 rounded-lg text-white hover:bg-orange-800 !no-underline">
-                            <i class="fa-solid fa-solid fa-gear"></i>
-                            <span>ตั้งค่าระบบ</span>
-                        </a>
-                    </li>
-                    <hr class="mt-2 mb-2">
+                   {{-- ordering --}}
+                   <li x-data="{ ordering: false }">
+                    <button
+                        @click="ordering = !ordering"
+                        class="flex items-center w-full gap-3 px-3 py-2 !rounded-lg hover:bg-orange-800"
+                    >
+                        <i class="fa-solid fa-basket-shopping"></i>
+                        <span class="flex-1 text-left">สั่งสินค้า</span>
+                        <i
+                            class="fa-solid text-xs transition-transform duration-300"
+                            :class="ordering ? 'fa-minus rotate-180' : 'fa-plus'"
+                        ></i>
+                    </button>
+                
+                    <ul
+                        x-ref="submenu"
+                        class="mt-1 space-y-1 text-start overflow-hidden transition-all duration-300"
+                        :style="ordering
+                            ? 'max-height:' + $refs.submenu.scrollHeight + 'px'
+                            : 'max-height:0px'"
+                    >
+                        <li>
+                            <a href="/webpanel/ordering"
+                            class="block px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
+                                สร้างออเดอร์ใหม่
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <hr class="mt-2 mb-2">
 
-                    {{-- Logout --}}
+                {{-- Alert --}}
+                <li x-data="{ alert: false }">
+                    <button
+                        @click="alert = !alert"
+                        class="flex items-center w-full gap-3 px-3 py-2 !rounded-lg hover:bg-orange-800"
+                    >
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="flex-1 text-left">แจ้งเตือน</span>
+                        <p class="text-xs bg-red-600 px-2 rounded-full items-center">
+                            {{ $statusAlert }}
+                        </p>
+                    </button>
+                
+                    <ul
+                        x-ref="alertMenu"
+                        class="mt-1 space-y-1 text-start overflow-hidden transition-all duration-300"
+                        :style="alert
+                            ? 'max-height:' + $refs.alertMenu.scrollHeight + 'px'
+                            : 'max-height:0px'"
+                    >
+                        <li>
+                            <a href="/webpanel/customer/status/waiting"
+                            class="flex justify-between px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
+                                <span>รอดำเนินการ</span>
+                                <p class="text-center text-xs bg-blue-600 px-2 rounded-full">
+                                    {{ $statusWaiting }}
+                                </p>
+                            </a>
+                        </li>
+                
+                        <li>
+                            <a href="/webpanel/customer/status/new_registration"
+                            class="flex justify-between px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
+                                <span>ลงทะเบียนใหม่</span>
+                                <p class="text-xs bg-cyan-600 px-2 rounded-full">
+                                    {{ $statusRegistration }}
+                                </p>
+                            </a>
+                        </li>
+                
+                        <li>
+                            <a href="/webpanel/customer/status/latest_update"
+                            class="flex justify-between px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
+                                <span>อัปเดตข้อมูล</span>
+                                <p class="text-xs bg-rose-600 px-2 rounded-full">
+                                    {{ $statusUpdated }}
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <hr class="mt-2 mb-2">
+
+                {{-- setting --}}
+                <li>
+                    <a href="/webpanel/setting"
+                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-white hover:bg-orange-800 !no-underline">
+                        <i class="fa-solid fa-solid fa-gear"></i>
+                        <span>ตั้งค่าระบบ</span>
+                    </a>
+                </li>
+                <hr class="mt-2 mb-2">
+
+                {{-- Logout --}}
+                
+                <li>
+                    <a href="#"
+                        id="logout-btn"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-800 text-white !no-underline">
+                        <i class="fa-solid fa-power-off"></i>
+                        <span>ออกจากระบบ</span>
+                    </a>
+                
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                        @csrf
+                    </form>
+                </li>
+                
+                <script>
+                    document.getElementById('logout-btn').addEventListener('click', function(event) {
+                        event.preventDefault();
                     
-                    <li>
-                        <a href="#"
-                            id="logout-btn"
-                            class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-800 text-white !no-underline">
-                            <i class="fa-solid fa-power-off"></i>
-                            <span>ออกจากระบบ</span>
-                        </a>
-                    
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-                            @csrf
-                        </form>
-                    </li>
-                    
-                    <script>
-                        document.getElementById('logout-btn').addEventListener('click', function(event) {
-                            event.preventDefault();
-                        
-                            Swal.fire({
-                                title: 'ออกจากระบบใช่หรือไม่?',
-                                text: "กรุณายืนยัน",
-                                icon: 'question',
-                                showCancelButton: true,
-                                confirmButtonText: 'ออกจากระบบ',
-                                cancelButtonText: 'ยกเลิก'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    document.getElementById('logout-form').submit();
-                                }
-                            });
+                        Swal.fire({
+                            title: 'ออกจากระบบใช่หรือไม่?',
+                            text: "กรุณายืนยัน",
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'ออกจากระบบ',
+                            cancelButtonText: 'ยกเลิก'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById('logout-form').submit();
+                            }
                         });
-                    </script> 
+                    });
+                </script> 
 
-                </ul>
+            </ul>
 
-                <div
-                    x-data="{ open: true }"
-                    x-show="open"
-                    x-transition
-                    class="mt-6 rounded-xl !bg-red-900/50 p-4 text-white shadow-lg mx-3"
-                    role="alert"
-                >
-                    {{-- Header --}}
-                    <div class="flex items-center mb-4">
-                        <span class="text-xm font-semibold bg-red-800 px-3 mx-auto py-1 rounded-full">
-                            แจ้งเตือนระบบ
+            <div
+                x-data="{ open: true }"
+                x-show="open"
+                x-transition
+                class="mt-6 rounded-xl !bg-red-900/50 p-4 text-white shadow-lg mx-3"
+                role="alert"
+            >
+                {{-- Header --}}
+                <div class="flex items-center mb-4">
+                    <span class="text-xm font-semibold bg-red-800 px-3 mx-auto py-1 rounded-full">
+                        แจ้งเตือนระบบ
+                    </span>
+
+                    <button
+                        @click="open = false"
+                        class="ml-auto flex h-7 w-7 items-center justify-center !rounded-full hover:bg-white/30 transition"
+                        aria-label="Close"
+                    >
+                        ✕
+                    </button>
+                </div>
+
+                {{-- Alert list --}}
+                <div class="space-y-3 text-sm">
+
+                    {{-- อัปเดตใหม่ --}}
+                    <a
+                        href="/webpanel/customer/status/latest_update"
+                        class="flex items-center justify-between rounded-lg bg-white/10 px-3 py-2 hover:bg-red-800 !no-underline transition"
+                    >
+                        <span class="flex items-center gap-2 text-base text-white">
+                            อัปเดต
+                            <span class="text-xs bg-yellow-400 text-black px-2 py-0.5 rounded-full">
+                                NEW
+                            </span>
                         </span>
 
-                        <button
-                            @click="open = false"
-                            class="ml-auto flex h-7 w-7 items-center justify-center !rounded-full hover:bg-white/30 transition"
-                            aria-label="Close"
-                        >
-                            ✕
-                        </button>
-                    </div>
+                        <span class="text-xs font-semibold bg-red-700 px-2 py-1 rounded-full text-white">
+                            {{ $statusUpdated }}
+                        </span>
+                    </a>
 
-                    {{-- Alert list --}}
-                    <div class="space-y-3 text-sm">
+                    {{-- ลงทะเบียนใหม่ --}}
+                    <a
+                        href="/webpanel/customer/status/new_registration"
+                        class="flex items-center justify-between rounded-lg bg-white/10 px-3 py-2 hover:bg-red-800 !no-underline transition"
+                    >
+                        <span class="text-base text-white">
+                            ลงทะเบียนใหม่
+                        </span>
 
-                        {{-- อัปเดตใหม่ --}}
-                        <a
-                            href="/webpanel/customer/status/latest_update"
-                            class="flex items-center justify-between rounded-lg bg-white/10 px-3 py-2 hover:bg-red-800 !no-underline transition"
-                        >
-                            <span class="flex items-center gap-2 text-base text-white">
-                                อัปเดต
-                                <span class="text-xs bg-yellow-400 text-black px-2 py-0.5 rounded-full">
-                                    NEW
-                                </span>
-                            </span>
-
-                            <span class="text-xs font-semibold bg-red-700 px-2 py-1 rounded-full text-white">
-                                {{ $statusUpdated }}
-                            </span>
-                        </a>
-
-                        {{-- ลงทะเบียนใหม่ --}}
-                        <a
-                            href="/webpanel/customer/status/new_registration"
-                            class="flex items-center justify-between rounded-lg bg-white/10 px-3 py-2 hover:bg-red-800 !no-underline transition"
-                        >
-                            <span class="text-base text-white">
-                                ลงทะเบียนใหม่
-                            </span>
-
-                            <span class="text-xs font-semibold bg-blue-700 px-2 py-1 rounded-full text-white">
-                                {{ $statusRegistration }}
-                            </span>
-                        </a>
+                        <span class="text-xs font-semibold bg-blue-700 px-2 py-1 rounded-full text-white">
+                            {{ $statusRegistration }}
+                        </span>
+                    </a>
 
                     </div>
 

@@ -29,7 +29,7 @@ class PurchaseController extends Controller
     {
         try {
             $keyword = $request->query('q', '');
-            $customerCode = trim($request->query('code')); // ไม่ต้องลบ quote
+            $customerCode = trim($request->query('code', ''));
     
             // ดึงข้อมูลลูกค้า
             $customer = Customer::where('customer_code', $customerCode)->first();

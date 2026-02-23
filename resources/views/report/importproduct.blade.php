@@ -112,8 +112,7 @@
                                         name="keyword"
                                         placeholder="รหัสสินค้า | ชื่อสินค้า"
                                         class="block w-full rounded-lg border border-gray-300 bg-white
-                                               px-4 py-3 pl-10 text-sm text-gray-900
-                                               focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                                               px-4 py-3 pl-10 text-sm text-gray-900"
                                     />
                         
                                     <button

@@ -46,7 +46,7 @@
     use App\Http\Controllers\ProductTypeController;
     use App\Http\Controllers\PurchaseController;
     use App\Http\Controllers\LineController;
-
+    use App\Http\Controllers\PromotionController;
 
     // Route::get('/', function() { return view('auth.login-tailwind');})->name('login');
 
@@ -178,14 +178,31 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
 
 
         // Route::get('/purchase/ordering/product/{code}', [PurchaseController::class, 'findProduct']);
-        Route::get('/purchase/ordering/product-search', [PurchaseController::class, 'productSearch']);
-        Route::get('/purchase/ordering/customer', [PurchaseController::class, 'searchCustomer']); 
+        // Route::get('/purchase/ordering/product-search', [PurchaseController::class, 'productSearch']);
+        // Route::get('/purchase/ordering/customer', [PurchaseController::class, 'searchCustomer']); 
+
+        Route::name('webpanel.')->prefix('webpanel')->group(function () {
+            Route::name('ordering.')->prefix('ordering')->group(function () {
+
+                Route::get('/', [OrderingController::class, 'index'])->name('index');
+                Route::get('/product-search', [OrderingController::class, 'productSearch'])->name('product.search');
+                Route::get('/customer-search', [OrderingController::class, 'searchCustomer'])->name('customer.search');
+                Route::get('/latest-header', [OrderingController::class, 'getLatestDraftPO'])->name('lastest.header');
+                Route::post('/create-header/new', [OrderingController::class, 'createHeaderPo'])->name('create.header.new');
+                Route::post('/update/save-draft', [OrderingController::class, 'saveDraft'])->name('save.draft');
+                Route::post('/view/item', [OrderingController::class, 'viewItem'])->name('view.item');
+                Route::get('/view/{order}', [OrderingController::class, 'viewDraft'])->name('view');
+            });
+        });
+        
+         
         Route::post('/purchase/ordering/save-po', [OrderingController::class, 'store']);
         Route::post('/purchase/ordering/create-draft', [OrderingController::class, 'createDraft']);
-        Route::get('/purchase/ordering/latest-draft-po', [OrderingController::class, 'getLatestDraftPO']);
+        // Route::get('/purchase/ordering/latest-draft-po', [OrderingController::class, 'getLatestDraftPO']);
         Route::post('/purchase/ordering/confirm', [OrderingController::class, 'confirm']);
-        Route::post('/purchase/ordering/save-item', [OrderingController::class, 'saveItem']);
-        Route::get('/webpanel/purchase/ordering', [OrderingController::class, 'edit']);
+        // Route::post('/purchase/ordering/save-item', [OrderingController::class, 'saveItem']);
+        // Route::get('/webpanel/purchase/ordering', [OrderingController::class, 'edit']);
+        // Route::get('/webpanel/purchase/ordering', [OrderingController::class, 'edit']);
         Route::get('/purchase/ordering/check-product', [OrderingController::class,'checkProduct']);
 
 
@@ -672,6 +689,58 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
         ->middleware('auth','userRole', 'status', 'verified' , 'adminArea','maintenance', 'rights_area', 'checkMenu');
 });
 
+    //webpanel-promotion
+    Route::name('webpanel.promotion.')->prefix('webpanel')->middleware('auth', 'role','status', 'verified')->group(function () {
+
+
+        Route::name('product.')->prefix('promotion-view')->group(function () {
+
+            Route::get('/', [PromotionController::class, 'view'])->name('view');
+
+            // api
+            Route::get('/draft', [PromotionController::class, 'viewDraft'])->name('view.draft');
+
+            // หน้าเว็บ
+            Route::get('/product-slow', [PromotionController::class, 'viewDeadStock'])
+            ->name('slow.view');
+
+            Route::get('/edit/{id}', [PromotionController::class, 'addEdit'])
+            ->name('product.edit');
+
+            // API
+            Route::get('/product-slow/data', [PromotionController::class, 'deadStock'])
+            ->name('slow.data');
+
+            //API item
+            Route::post('/product-slow/item', [PromotionController::class, 'viewItem'])
+            ->name('slow.item');
+
+            Route::post('/edit/update/{productId}', [PromotionController::class, 'addEditUpdate'])
+            ->name('product.edit.update');
+
+            Route::post('/confirm/order/{orderId}', [PromotionController::class, 'confirmPo'])
+            ->name('confirm.order');
+
+            Route::delete('/item/destroy/{id}', [PromotionController::class, 'destroy']);
+
+        });
+
+        Route::get('/promotion-management', [PromotionController::class, 'index'])
+        ->name('management');
+
+        Route::get('/order-id', [PromotionController::class, 'editCheck'])
+        ->name('order.id');
+
+        Route::post('/product-slow/add', [PromotionController::class, 'addProduct'])
+        ->name('product.add');
+
+        //สร้างหัว PO
+        Route::post('/create-po/new', [PromotionController::class, 'createHeaderPo'])
+        ->name('create.po');
+
+    });
+
+    Route::post('/po/{id}/confirm', [PromotionController::class, 'confirmPo'])->name('po.confirm');
 
     Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

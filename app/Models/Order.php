@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
-    protected $table = 'orders_tb';
+    protected $table = 'orders';
 
     protected $fillable = [
         'po_number',
@@ -18,6 +18,7 @@ class Order extends Model
         'status',
         'total_amount',
         'created_by',
+        'created_by_name',
     ];
 
     protected $casts = [
@@ -30,7 +31,7 @@ class Order extends Model
      */
     public function items(): HasMany
     {
-        return $this->hasMany(Ordering::class, 'order_id');
+        return $this->hasMany(OrderingItem::class, 'order_id');
     }
 
     public function customer()

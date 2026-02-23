@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Ordering extends Model
+class OrderingItem extends Model
 {
-    protected $table = 'orderings_tb';
+    protected $table = 'ordering_items';
 
     protected $fillable = [
         'order_id',
