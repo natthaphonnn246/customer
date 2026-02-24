@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderingItem;
 use App\Models\Product;
 use App\Models\Customer;
+use App\Services\OrderingService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
@@ -33,8 +34,27 @@ class OrderingController extends Controller
                     ->where('status', 'draft')
                     ->latest('id')
                     ->value('id');
-
+        // dd($countOrder);
         return view('webpanel.ordering-new', compact('orderId'));
+    }
+    public function countOrder()
+    {
+
+        $userId = $this->userId();
+
+        $orderId = Order::where('created_by', $userId)
+                    ->where('status', 'draft')
+                    ->latest('id')
+                    ->value('id');
+
+        $countOrder = OrderingItem::where('order_id', $orderId)
+                    ->where('status', 'draft')
+                    ->whereHas('order', function ($q) {
+                        $q->where('status', 'draft');
+                    })
+                    ->count();
+
+        return response()->json(['countOrder' => $countOrder]);
     }
     public function searchCustomer(Request $request)
     {
@@ -109,21 +129,116 @@ class OrderingController extends Controller
             return response()->json(['error'=>$e->getMessage()], 500);
         }
     }
-    // Save PO
-    public function savePO(Request $request)
+    
+    public function cancelItem(Request $request)
     {
-        $data = $request->validate([
-            'po_number' => 'required|string',
-            'customer_id' => 'required|string',
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|string',
-            'items.*.qty' => 'required|numeric|min:0',
-            'items.*.amount' => 'required|numeric|min:0',
-        ]);
-
-        // ตัวอย่างบันทึก (ปรับตาม model ของคุณ)
-        // PO::create($data);
-
+        $userId = $this->userId();
+        $userName = $this->userName();
+    
+        $orderId = $request->order_id;
+        $productCode = $request->product_code;
+    
+        $item = OrderingItem::where('order_id', $orderId)
+            ->where('product_code', $productCode)
+            ->where('status', '!=', 'cancel')
+            ->first();
+    
+        if (!$item) {
+            return response()->json(['message' => 'Item not found'], 404);
+        }
+    
+        DB::transaction(function () use ($item, $userId, $userName, $request) {
+    
+            // lock กันยิงซ้ำ
+            $item->lockForUpdate();
+    
+            // update item
+            $item->update([
+                'status' => 'cancel',
+                'cancel_by' => $userId,
+                'cancel_by_name' => $userName ?? null,
+                'cancelled_at' => now()
+            ]);
+    
+            // history
+            DB::table('ordering_item_cancels')->insert([
+                'ordering_item_id' => $item->id,
+                'product_code' => $item->product_code,
+                'product_name' => $item->product_name,
+                'price' => $item->price,
+                'qty' => $item->qty,
+                'total' => $item->total_price,
+                'cancel_by' => $userId,
+                'cancel_by_name' => $userName ?? null,
+                'ip' => request()->ip(),
+                'cancel_reason' => $request->reason,
+                'created_at' => now(),
+            ]);
+        });
+    
+        return response()->json(['success' => true]);
+    }
+    public function cancelItemAll(Request $request)
+    {
+        $userId = $this->userId();
+        $userName = $this->userName();
+        $orderId = $request->order_id;
+    
+        $order = Order::where('id', $orderId)
+            ->where('status', '!=', 'cancel')
+            ->first();
+    
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+    
+        DB::transaction(function () use ($orderId, $userId, $userName, $request, $order) {
+    
+            $items = OrderingItem::where('order_id', $orderId)
+                    ->where('status', '!=', 'cancel')
+                    ->lockForUpdate()
+                    ->get();
+    
+            // update order
+            $order->update([
+                'status' => 'cancel',
+                'cancel_by' => $userId,
+                'cancel_by_name' => $userName ?? null,
+                'cancelled_at' => now()
+            ]);
+    
+            // update items
+            OrderingItem::where('order_id', $orderId)
+                            ->where('status', '!=', 'cancel')
+                            ->update([
+                                'status' => 'cancel',
+                                'cancel_by' => $userId,
+                                'cancel_by_name' => $userName ?? null,
+                                'cancelled_at' => now()
+                            ]);
+    
+            // history
+            $insertData = [];
+    
+            foreach ($items as $row) {
+                $insertData[] = [
+                    'ordering_item_id' => $row->order_id,
+                    'product_code' => $row->product_code,
+                    'product_name' => $row->product_name,
+                    'price' => $row->price,
+                    'qty' => $row->qty,
+                    'total' => $row->total_price,
+                    'cancel_by' => $userId,
+                    'cancel_by_name' => $userName ?? null,
+                    'ip' => request()->ip(),
+                    'cancel_reason' => $request->reason,
+                    'created_at' => now(),
+                ];
+            }
+    
+            DB::table('ordering_item_cancels')->insert($insertData);
+        });
+    
         return response()->json(['success' => true]);
     }
 
@@ -237,6 +352,8 @@ class OrderingController extends Controller
                 continue;
             }
 
+            $product = Product::where('product_id', $item['product_code'])->first();
+
             OrderingItem::updateOrCreate(
                 [
                     'order_id' => $request->order_id,
@@ -244,10 +361,13 @@ class OrderingController extends Controller
                 ],
                 [
                     'product_name' => $item['product_name'] ?? null,
+                    'status' => 'draft',
                     'qty' => $item['qty'],
+                    'unit' => $product->unit ?? null,
                     'price' => $item['price'],
                     'total_price' => $item['total_price'] ?? 0,
                     'reserve' => $item['reserve'] ?? false,
+                    'created_at' => now(),
                 ]
             );
         }
@@ -259,12 +379,59 @@ class OrderingController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function confirm(Request $request)
+    public function confirmOrdering(OrderingService $orderingService, Request $request)
     {
-        Order::where('id', $request->order_id)
-            ->update(['status' => 'confirmed']);
+        $orderId = $request->order_id;
+
+        return DB::transaction(function () use ( $orderingService,  $orderId) {
+
+            $order = DB::table('orders')
+                    ->where('id', $orderId)
+                    ->lockForUpdate()
+                    ->first();
+        
+            if (!$order) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order not found'
+                ], 404);
+            }
+        
+            if ($order->po_number) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order นี้ถูกยืนยันแล้ว'
+                ]);
+            }
+        
+            // generate PO
+            $po = $orderingService->generate();
+        
+            DB::table('orders')
+                ->where('id', $orderId)
+                ->update([
+                    'po_number'  => $po,
+                    'status'     => 'confirmed',
+                    'order_date' => now(),
+                    'updated_at' => now(),
+                ]);
+
+            DB::table('ordering_items')
+                ->where('order_id', $orderId)
+                ->update([
+                    'status'        => 'confirmed',
+                    'ordering_date' => now()
+                ]);
+
 
         return response()->json(['success' => true]);
+
+        });
+        // Order::where('id', $request->order_id)
+        //     ->update([
+        //         'po_number' => '',
+        //         'status' => 'confirmed'
+        //     ]);
     }
     public function viewDraft(Order $order)
     {
@@ -280,6 +447,7 @@ class OrderingController extends Controller
         $items = OrderingItem::where('order_id', $order->id)
                 ->whereNotNull('product_code')
                 ->where('product_code', '!=', 'undefined')
+                ->where('status', '=', 'draft')
                 ->get()
                 ->map(function ($row) {
                     return [
@@ -303,7 +471,6 @@ class OrderingController extends Controller
 
     }
 
-    
     public function checkProduct(Request $request)
     {
         $request->validate([

@@ -19,6 +19,11 @@ class OrderingItem extends Model
         'total_price',
         'remark',
         'reserve',
+        'ordering_date',
+        'cancel_by',
+        'cancel_by_name',
+        'cancelled_at',
+        'status'
     ];
 
     protected $casts = [

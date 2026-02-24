@@ -17,12 +17,12 @@
                     id="customerSearch"
                     class="border !border-gray-300 p-2 rounded w-full disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:opacity-70"
                     placeholder="ชื่อร้านค้า | Code"
-                    {{ !empty($orderId) ? 'disabled' : '' }}
+                    {{ empty($orderId) ? 'disabled' : '' }}
                 >
                 <div id="customerDropdown" class="absolute bg-white border w-full shadow rounded z-10 max-h-48 overflow-auto hidden"></div>
             </div>
 
-            @if(!empty($orderId))
+            @if(empty($orderId))
             <span class="text-green-500 mb-4 font-medium">หมายเหตุ: คุณได้เลือกร้านค้าแล้ว</span>
             @else
             <span class="text-red-500 mb-4 font-medium">หมายเหตุ: กรุณาเลือกร้านค้าก่อน</span>
@@ -128,7 +128,7 @@
                 
                     <tbody id="productTableBody">
                     </tbody>
-                
+
                     <tfoot>
                         <tr>
                             <td colspan="6" class="p-2 text-center font-bold">ยอดรวม</td>
@@ -138,10 +138,30 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="">
-                <button id="saveBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded my-4">บันทึกออเดอร์</button>
-            </div>
+       @php
+           $countOrder = 1;
+       @endphp
+            <div class="flex gap-2">
+                <button 
+                    id="btnSaveProduct"
+                    class="text-white px-3 py-2 !rounded-md mt-4 btn-save bg-blue-300 cursor-not-allowed"
+                    data-order-id="{{ $orderId }}"
+                    disabled
+                >
+                    บันทึกออเดอร์
+                </button>
 
+                <button 
+                    id="btnCancelledProduct"
+                    class="text-white px-3 py-2 !rounded-md mt-4 btn-cancelled bg-red-300 cursor-not-allowed"
+                    data-order-id="{{ $orderId }}"
+                    disabled
+                >
+                    ยกเลิกออเดอร์
+                </button>
+            </div>
+            <hr>
+            <span class="block mb-3 font-bold text-red-500">หมายเหตุ: หากกดบันทึกหรือยกเลิกออเดอร์แล้ว จะไม่สามารถกลับไปแก้ไขได้ กรุณาตรวจสอบข้อมูลก่อน</span>
             <!-- view item -->
             <div id="itemView"
                 class="fixed inset-0 bg-black/50 flex items-center justify-center
@@ -161,45 +181,45 @@
                         <div class="mb-3">
                             <label class="text-base text-gray-500 font-medium mb-1">รหัสสินค้า</label>
                             <input type="text" id="item_product_id"
-                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" readonly>
+                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
                         </div>
                 
                         <div class="mb-3">
                             <label class="text-base text-gray-500 font-medium mb-1">ชื่อสินค้า</label>
                             <input type="text" id="item_product_name"
-                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" readonly>
+                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
                         </div>
 
                         <div class="mb-3">
                             <label class="text-base text-gray-500 font-medium mb-1">ชื่อสามัญทางยา</label>
                             <input type="text" id="item_generic_name"
-                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" readonly>
+                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
                         </div>
 
                         <div class="mb-3">
                             <label class="text-base text-gray-500 font-medium mb-1">ข้อบ่งใช้</label>
                             <input type="text" id="item_category"
-                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" readonly>
+                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
                         </div>
 
                         <div class="grid grid-cols-2 gap-3">
                             <div class="mb-3">
                                 <label class="text-base text-gray-500 font-medium mb-1">สต๊อก</label>
                                 <input type="text" id="item_stock_qty"
-                                    class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" readonly>
+                                    class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
                             </div>
             
                             <div class="mb-3">
                                 <label class="text-base text-gray-500 font-medium mb-1">หน่วยสินค้า</label>
                                 <input type="text" id="item_unit"
-                                    class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" readonly>
+                                    class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="text-base text-gray-500 font-medium mb-1">หมายเหตุ</label>
                             <input type="text" id=""
-                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" readonly>
+                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
                         </div>
 
                         <!-- Buttons -->
@@ -230,6 +250,72 @@
                 let itemDrafts = [];
                 let saveTimeout;
             
+                document.addEventListener('click', function(e) {
+                    if (e.target.closest('.btn-view')) {
+                        const btn = e.target.closest('.btn-view');
+                        const id = btn.dataset.id;
+                        const name = btn.dataset.name;
+
+                        modalItem(id, name);
+                    }
+
+                    if (e.target.closest('.btn-save')) {
+                        const btnS = e.target.closest('.btn-save');
+                        const id = btnS.dataset.orderId;
+
+                        saveOrdering(id);
+                    }
+                });
+
+                //แสดงปุ่ม btnsave
+                function btnCountOrder(countOrder) {
+                    // console.log(countOrder);
+                    const btnSaveP = document.getElementById('btnSaveProduct');
+                    const btnCancelled = document.getElementById('btnCancelledProduct');
+                    // console.log(btn);
+                    if (!btnSaveP || !btnCancelled) return;
+                    
+                    // console.log(btnCancelled);
+
+                    if (countOrder > 0) {
+                        btnSaveP.disabled = false;
+                        btnSaveP.classList.remove('bg-blue-300', 'cursor-not-allowed');
+                        btnSaveP.classList.add('bg-blue-500', 'hover:bg-blue-600');
+
+                        btnCancelled.disabled = false;
+                        btnCancelled.classList.remove('bg-red-300', 'cursor-not-allowed');
+                        btnCancelled.classList.add('bg-red-400', 'hover:bg-red-500');
+
+                    } else {
+                        btnSaveP.disabled = true;
+                        btnSaveP.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                        btnSaveP.classList.add('bg-blue-300', 'cursor-not-allowed');
+
+                        btnCancelled.disabled = true;
+                        btnCancelled.classList.add('bg-red-300', 'cursor-not-allowed');
+                        btnCancelled.classList.remove('bg-red-400', 'hover:bg-red-500');
+                    }
+                }
+                //เช็กจำนวน ให้ปุ่มบันทึกทำงาน
+                fetch(`{{ route('webpanel.ordering.count.order') }}`, {
+                     credentials: 'same-origin'
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        btnCountOrder(parseInt(data.countOrder) || 0);
+                    });
+ 
+                let currentCount = 0; // เก็บค่า global หรือ scope ที่เข้าถึงได้
+
+                function loadCount() {
+                    fetch(`{{ route('webpanel.ordering.count.order') }}`)
+                    .then(res => res.json())
+                    .then(resdata => {
+                        currentCount = parseInt(resdata.countOrder) || 0;
+                        btnCountOrder(currentCount);
+                    });
+
+                }
                 // =========================
                 // โหลด customer ล่าสุด
                 // =========================
@@ -318,7 +404,7 @@
                             </button>
                             <button 
                                 class="bg-red-500 hover:bg-red-600 text-white px-2.5 py-1.5 rounded deleteBtn"
-                                data-id="${item.product_id}">
+                                data-id="${item.product_code}">
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
                         </td>
@@ -570,7 +656,7 @@
             
                     const tr = document.createElement('tr');
                     tr.setAttribute('data-id', item.product_id);
-                    console.log(itemDrafts);
+                    // console.log(itemDrafts);
                     tr.innerHTML = `
                         <td class="border p-2 text-center">${index++}</td>
                         <td class="border p-2 text-center">${item.product_id}</td>
@@ -621,7 +707,7 @@
                         qtyInput.select();
                     }, 0);
                 }
-            
+
                 // EVENT ROW
 
                 function bindRowEvents(tr) {
@@ -642,10 +728,22 @@
                         if (e.key === 'Enter') {
                             e.preventDefault();
 
-                            const input = document.getElementById('searchProduct');
+                            //อัปเดตปุ่ม
+                            fetch(`{{ route('webpanel.ordering.count.order') }}`, {
+                                credentials: 'same-origin'
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                const countOrder = parseInt(data.countOrder) || 0;
+                                btnCountOrder(countOrder);
+                                // console.log(countOrder);
+                            })
+                            .catch(err => console.error(err));
 
+                            const input = document.getElementById('searchProduct');
                             input.focus();     //กลับไปช่องค้นหา
                             input.select();    //พิมพ์ทับได้เลย
+                            
                         }
                     });
 
@@ -756,19 +854,129 @@
             
                     totalEl.textContent = sum.toFixed(2);
                 }
+
+                // Cancel item change status cancel
+                document.addEventListener('click', function(e) {
+
+                    if(e.target.closest('.deleteBtn')) {
+                        const btnCan = e.target.closest('.deleteBtn');
+                        const productIdCancel = btnCan.dataset.id;
+                        const orderIdCancel = orderId;
+
+                        // console.log(productIdC + orderIdCan);
+                        cancelItem(productIdCancel, orderIdCancel)
+               
+                    }
+                  
+                });
+                
+                function cancelItem(productIdCancel, orderIdCancel) {
+
+                    if (!productIdCancel || !orderIdCancel) {
+                        console.warn('productId หรือ orderId ยังไม่มา');
+                        return;
+                    }
+
+                    fetch(`{{ route('webpanel.ordering.cancel.item') }}`, {
+                        method: 'POST',
+                        headers: {
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            "Accept": "application/json",
+                            "Content-Type": "application/json" 
+                        },
+                        body: JSON.stringify({
+                            product_code: productIdCancel,
+                            order_id: orderIdCancel
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        if (data.success) {
+                            currentCount = Math.max(0, currentCount - 1);
+                            btnCountOrder(currentCount);
+                            // console.log(currentCount);
+                        }
+
+                    })
+                    .catch(err => console.error(err));
+                }  
+
+                // Cancel item change status cancel
+                document.addEventListener('click', function(e) {
+
+                    if(e.target.closest('.btn-cancelled')) {
+                        const btnCancel = e.target.closest('.btn-cancelled');
+                        const cancelOrder = orderId;
+
+                        // console.log(productIdC + orderIdCan);
+                        cancelItemAll(cancelOrder)
+                    }
+                });
+
+                function cancelItemAll(cancelOrder) {
+                    // console.log(orderAllCancel);
+                    if (!cancelOrder) {
+                        console.warn('orderId ยังไม่มา');
+                        return;
+                    }
+
+                    fetch(`{{ route('webpanel.ordering.cancel.item.all') }}`, {
+                        method: 'POST',
+                        headers: {
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            "Accept": "application/json",
+                            "Content-Type": "application/json" 
+                        },
+                        body: JSON.stringify({
+
+                            order_id: cancelOrder
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        if (data.success) {
+                            fetch(`{{ route('webpanel.ordering.count.order') }}`, {
+                                    credentials: 'same-origin'
+                                })
+                                .then(res => res.json())
+                                .then(resdata => {
+                                    const countOrder = parseInt(resdata.countOrder) || 0;
+                                    currentCount = countOrder;
+                                    btnCountOrder(currentCount);
+                                });
+                            }
+
+                    })
+                    .catch(err => console.error(err));
+                }
             
             });
 
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.btn-view')) {
-                    const btn = e.target.closest('.btn-view');
-                    const id = btn.dataset.id;
-                    const name = btn.dataset.name;
+            //ย้ายไปด้านบน js อ่านไฟล์บนลงล่าง
+            // document.addEventListener('click', function(e) {
+            //     if (e.target.closest('.btn-view')) {
+            //         const btn = e.target.closest('.btn-view');
+            //         const id = btn.dataset.id;
+            //         const name = btn.dataset.name;
 
-                    modalItem(id, name);
-                }
-                
-            });
+            //         modalItem(id, name);
+            //     }
+
+            //     if (e.target.closest('.btn-save')) {
+            //         const btnS = e.target.closest('.btn-save');
+            //         const id = btnS.dataset.orderId;
+
+            //         const items = collectTableData();
+
+            //         saveOrdering({
+            //             items: items,
+            //             orderId: id
+            //         });
+            //     }
+              
+            // });
 
             function openModal() {
                 const modal = document.getElementById('itemView');
@@ -827,6 +1035,73 @@
                 })
                 .catch(err => console.error(err));
             }
+
+            //saveOrdering
+            function saveOrdering(id) {
+                // console.log(id);
+
+                const poId = id;
+
+                if (!poId) {
+                        console.warn('orderId ยังไม่มา');
+                        return;
+                    }
+
+                    fetch(`{{ route('webpanel.ordering.confirmed.save') }}`, {
+                        method: 'POST',
+                        headers: {
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            "Accept": "application/json",
+                            "Content-Type": "application/json" 
+                        },
+                        body: JSON.stringify({
+                            order_id: poId,
+                            // items: data
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        // console.log('saved', result);
+
+                        if (data.success === true) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'สำเร็จ',
+                                text: 'บันทึกข้อมูลเรียบร้อย',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            setTimeout(() => {
+                                window.location.href = "{{ route('webpanel.ordering.index') }}";
+                            }, 1200);
+
+                            } else {
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ล้มเหลว',
+                                text: data.message ?? 'เกิดข้อผิดพลาด',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            setTimeout(() => {
+                                window.location.href = "{{ route('webpanel.ordering.index') }}";
+                            }, 1200);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('saveDraft error:', err);
+                    });
+                
+            }
+    
         </script>
     
 @endsection

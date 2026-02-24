@@ -23,6 +23,8 @@ class OrderingService
                 DB::table('order_sequences')->insert([
                     'date' => $today,
                     'last_number' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
                 $run = 1;
             } else {
@@ -32,7 +34,9 @@ class OrderingService
                 DB::table('order_sequences')
                     ->where('date', $today)
                     ->update([
-                        'last_number' => $run
+                        'last_number' => $run,
+                        'created_at' => now(),
+                        'updated_at' => now(),
                     ]);
             }
 

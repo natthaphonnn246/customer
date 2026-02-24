@@ -19,6 +19,10 @@ class Order extends Model
         'total_amount',
         'created_by',
         'created_by_name',
+        'order_date',
+        'cancel_by',
+        'cancel_by_name',
+        'cancelled_at',
     ];
 
     protected $casts = [

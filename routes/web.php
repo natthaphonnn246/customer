@@ -185,12 +185,16 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
             Route::name('ordering.')->prefix('ordering')->group(function () {
 
                 Route::get('/', [OrderingController::class, 'index'])->name('index');
+                Route::get('/count-order', [OrderingController::class, 'countOrder'])->name('count.order');
                 Route::get('/product-search', [OrderingController::class, 'productSearch'])->name('product.search');
                 Route::get('/customer-search', [OrderingController::class, 'searchCustomer'])->name('customer.search');
                 Route::get('/latest-header', [OrderingController::class, 'getLatestDraftPO'])->name('lastest.header');
                 Route::post('/create-header/new', [OrderingController::class, 'createHeaderPo'])->name('create.header.new');
                 Route::post('/update/save-draft', [OrderingController::class, 'saveDraft'])->name('save.draft');
+                Route::post('/confirmed/save-po', [OrderingController::class, 'confirmOrdering'])->name('confirmed.save');
                 Route::post('/view/item', [OrderingController::class, 'viewItem'])->name('view.item');
+                Route::post('/cancel/item', [OrderingController::class, 'cancelItem'])->name('cancel.item');
+                Route::post('/cancel/item-all', [OrderingController::class, 'cancelItemAll'])->name('cancel.item.all');
                 Route::get('/view/{order}', [OrderingController::class, 'viewDraft'])->name('view');
             });
         });
