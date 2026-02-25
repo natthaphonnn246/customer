@@ -44,4 +44,9 @@ class Order extends Model
         // 'customer_code' คือ foreign key ของ order -> customer
     }
 
+    public function orderingItems()
+    {
+        return $this->hasMany(OrderingItem::class, 'order_id');
+    }
+
 }

@@ -39,20 +39,20 @@ class OrderingController extends Controller
     }
     public function countOrder()
     {
-
         $userId = $this->userId();
 
         $orderId = Order::where('created_by', $userId)
-                    ->where('status', 'draft')
-                    ->latest('id')
-                    ->value('id');
+            ->where('status', 'draft')
+            ->latest('id')
+            ->value('id');
+
+        if (!$orderId) {
+            return response()->json(['countOrder' => 0]);
+        }
 
         $countOrder = OrderingItem::where('order_id', $orderId)
-                    ->where('status', 'draft')
-                    ->whereHas('order', function ($q) {
-                        $q->where('status', 'draft');
-                    })
-                    ->count();
+            ->where('status', 'draft')
+            ->count();
 
         return response()->json(['countOrder' => $countOrder]);
     }
@@ -372,11 +372,18 @@ class OrderingController extends Controller
             );
         }
 
+        $countOrder = OrderingItem::where('order_id', $request->order_id)
+                        ->where('status', 'draft')
+                        ->count();
+
         Order::where('id', $request->order_id)->update([
             'total_amount' => OrderingItem::where('order_id', $request->order_id)->sum('total_price')
         ]);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'countOrderItem' => $countOrder
+        ]);
     }
 
     public function confirmOrdering(OrderingService $orderingService, Request $request)

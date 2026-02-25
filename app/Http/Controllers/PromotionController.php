@@ -337,6 +337,15 @@ class PromotionController extends Controller
 
         return response()->json(['status' => 'success']);
     }
-
-
+    //special-deal
+    public function specialDeal($id)
+    {
+        $item = product::FindOrFail($id);
+        return view('product.special-deal', compact('item'));
+    }
+    public function specialPrice($id)
+    {
+        $item = product::FindOrFail($id);
+        return view('product.special-price', compact('item'));
+    }
 }

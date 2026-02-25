@@ -3,10 +3,10 @@
 
     {{-- Prev --}}
     @if ($paginator->onFirstPage())
-        <span class="px-3 py-1 bg-gray-300 rounded">Prev</span>
+        <span class="px-3 py-1 bg-gray-300 rounded !no-underline">Prev</span>
     @else
         <a href="{{ $paginator->previousPageUrl() }}"
-           class="px-3 py-1 bg-blue-500 text-white rounded">Prev</a>
+           class="px-3 py-1 bg-blue-500 text-white rounded !no-underline">Prev</a>
     @endif
 
     @php
@@ -18,7 +18,7 @@
     @for ($i = max(1, $current - 1); $i <= min($last, $current + 1); $i++)
         <a href="{{ $paginator->url($i) }}"
            class="px-3 py-1 rounded 
-           {{ $i == $current ? 'bg-blue-600 text-white' : 'bg-gray-200' }}">
+           {{ $i == $current ? 'bg-blue-600 text-white !no-underline' : 'bg-gray-200 !no-underline' }}">
             {{ $i }}
         </a>
     @endfor
@@ -29,7 +29,7 @@
 
         @for ($i = $last - 1; $i <= $last; $i++)
             <a href="{{ $paginator->url($i) }}"
-               class="px-3 py-1 bg-gray-200 rounded">
+               class="px-3 py-1 bg-gray-200 rounded !no-underline">
                 {{ $i }}
             </a>
         @endfor
@@ -38,9 +38,9 @@
     {{-- Next --}}
     @if ($paginator->hasMorePages())
         <a href="{{ $paginator->nextPageUrl() }}"
-           class="px-3 py-1 bg-blue-500 text-white rounded">Next</a>
+           class="px-3 py-1 bg-blue-500 text-white rounded !no-underline">Next</a>
     @else
-        <span class="px-3 py-1 bg-gray-300 rounded">Next</span>
+        <span class="px-3 py-1 bg-gray-300 rounded !no-underline">Next</span>
     @endif
 
 </div>

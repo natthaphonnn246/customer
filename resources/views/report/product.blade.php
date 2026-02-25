@@ -235,7 +235,7 @@
 
                 </table>
             </div>
-    
+            
         @if($total_page > 0)
                 @if(request()->filled('from') && request()->filled('to')) <!-- ปลอดภัยกว่า -->
                     <div class="ms-6">

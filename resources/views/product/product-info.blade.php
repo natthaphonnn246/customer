@@ -2,10 +2,10 @@
 @section('content')
 
             <div class="py-2"></div>
-            <h5 class="ms-6 !text-gray-600" style="color: #8E8E8E;"><a href="/webpanel/report/product/importproduct" class="!no-underline">ย้อนกลับ</a> | รายละเอียดสินค้า</h5>
+            <h5 class="ms-6 !text-gray-600" style="color: #8E8E8E;"><a href="/webpanel/product" class="!no-underline">ย้อนกลับ</a> | รายละเอียดสินค้า</h5>
             <hr class="my-3 !text-gray-400 !border">
 
-            <div class="ms-8" style="text-align: left; margin-top: 10px;">
+            <div class="ms-6" style="text-align: left; margin-top: 10px;">
                 <span class="text-gray-600 font-bold text-base">รายละเอียดสินค้า</span>
             </div>
 
@@ -17,7 +17,7 @@
             @csrf
             @method('PUT')
 
-                <div class="grid grid-cols-1 md:grid-cols-2 mx-8 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 mx-4 gap-4">
                     <div class="mb-4">
 
                         <span class="text-gray-500">รหัสสินค้า</span>
@@ -60,6 +60,7 @@
                             <span class="block text-gray-500 mt-3">ระดับราคา 5</span>
                             <input class="border w-full py-2 px-2 mt-1 rounded-md text-gray-400" type="text" name="price_5" value="{{ $product_all?->price_5 }}">
                         </div>
+
                     </div>
 
                     <div>
@@ -128,41 +129,42 @@
 
                         </script>
                    
-                    <div class="border rounded-md p-4 mt-3">
-                            <p class="text-gray-500 font-bold text-xl">แบบอนุญาตขายยา</p>
-            
-                            <span class="block text-gray-500 mt-2">แบบ ข.ย.1</span>
-                            <select class="form-select mt-1 !text-gray-400" aria-label="Default select example" name="khor_yor_1">
-                        
-                                <option {{ $product_all?->khor_yor_1 == '0' ? 'selected' : '' }} value="0">ปิด</option>
-                                <option {{ $product_all?->khor_yor_1 == '1' ? 'selected' : '' }} value="1">เปิด</option>
-
-                            </select>
+                            <div class="border rounded-md p-4 mt-3">
+                                <p class="text-gray-500 font-bold text-xl">แบบอนุญาตขายยา</p>
+                
+                                <span class="block text-gray-500 mt-2">แบบ ข.ย.1</span>
+                                <select class="form-select mt-1 !text-gray-400" aria-label="Default select example" name="khor_yor_1">
                             
-                            <span class="block mt-2 text-gray-500">แบบ ข.ย.2</span>
-                            <select class="form-select mt-1 !text-gray-400" aria-label="Default select example" name="khor_yor_2">
-                        
-                                <option {{ $product_all?->khor_yor_2 == '0' ? 'selected' : '' }} value="0">ปิด</option>
-                                <option {{ $product_all?->khor_yor_2 == '1' ? 'selected' : '' }} value="1">เปิด</option>
+                                    <option {{ $product_all?->khor_yor_1 == '0' ? 'selected' : '' }} value="0">ปิด</option>
+                                    <option {{ $product_all?->khor_yor_1 == '1' ? 'selected' : '' }} value="1">เปิด</option>
 
-                            </select>
+                                </select>
+                                
+                                <span class="block mt-2 text-gray-500">แบบ ข.ย.2</span>
+                                <select class="form-select mt-1 !text-gray-400" aria-label="Default select example" name="khor_yor_2">
                             
-                            <span class="block mt-2 text-gray-500">แบบ สมพ.2</span>
-                            <select class="form-select mt-1 !text-gray-400" aria-label="Default select example" name="som_phor_2">
-                        
-                                <option {{ $product_all?->som_phor_2 == '0' ? 'selected' : '' }} value="0">ปิด</option>
-                                <option {{ $product_all?->som_phor_2 == '1' ? 'selected' : '' }} value="1">เปิด</option>
+                                    <option {{ $product_all?->khor_yor_2 == '0' ? 'selected' : '' }} value="0">ปิด</option>
+                                    <option {{ $product_all?->khor_yor_2 == '1' ? 'selected' : '' }} value="1">เปิด</option>
 
-                            </select>
-                    
-                            <span class="block mt-2 text-gray-500">คลินิกยา/สถานพยาบาล</span>
-                            <select class="form-select mt-1 !text-gray-400"  aria-label="Default select example" name="clinic">
-                        
-                                <option {{ $product_all?->clinic == '0' ? 'selected' : '' }} value="0">ปิด</option>
-                                <option {{ $product_all?->clinic == '1' ? 'selected' : '' }} value="1">เปิด</option>
+                                </select>
+                                
+                                <span class="block mt-2 text-gray-500">แบบ สมพ.2</span>
+                                <select class="form-select mt-1 !text-gray-400" aria-label="Default select example" name="som_phor_2">
+                            
+                                    <option {{ $product_all?->som_phor_2 == '0' ? 'selected' : '' }} value="0">ปิด</option>
+                                    <option {{ $product_all?->som_phor_2 == '1' ? 'selected' : '' }} value="1">เปิด</option>
 
-                            </select>
-                        </div>
+                                </select>
+                        
+                                <span class="block mt-2 text-gray-500">คลินิกยา/สถานพยาบาล</span>
+                                <select class="form-select mt-1 !text-gray-400"  aria-label="Default select example" name="clinic">
+                            
+                                    <option {{ $product_all?->clinic == '0' ? 'selected' : '' }} value="0">ปิด</option>
+                                    <option {{ $product_all?->clinic == '1' ? 'selected' : '' }} value="1">เปิด</option>
+
+                                </select>
+                            </div>
+                     
 
                         <div style="text-align:right;">
                             <button type="submit" id="updateForm" name="submit_update" class="btn my-4" style="border:none; width: 100px; color: white; padding: 10px;">บันทึก</button>

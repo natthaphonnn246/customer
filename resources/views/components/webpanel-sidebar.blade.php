@@ -225,19 +225,25 @@
                                 : 'max-height:0px'"
                         >
                             <li>
-                                <a href="/webpanel/report/product-type"
+                                <a href="/webpanel/product"
+                                class="block px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
+                                    สินค้าของเรา
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/webpanel/product-type"
                                 class="block px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
                                     แบบอนุญาตขายยา
                                 </a>
                             </li>
                             <li>
-                                <a href="/webpanel/report/product/limited-sales"
+                                <a href="/webpanel/product/limited-sales"
                                 class="block px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
                                     สินค้าจำกัดการขาย
                                 </a>
                             </li>
                             <li>
-                                <a href="/webpanel/report/status-type"
+                                <a href="/webpanel/status-type"
                                 class="block px-3 py-2 hover:bg-orange-800 rounded-lg text-white !no-underline">
                                     สถานะการใช้งาน
                                 </a>

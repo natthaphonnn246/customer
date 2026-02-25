@@ -28,8 +28,6 @@ class ProductController extends Controller
     public function index(Request $request)
     {
 
-        date_default_timezone_set("Asia/Bangkok");
-
         $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
         $status_waiting = Customer::where('status', 'รอดำเนินการ')
@@ -786,48 +784,133 @@ class ProductController extends Controller
                                                     ));
 
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function productAll(Request $request)
     {
-        //
+        //notin code;
+
+        $keyword = $request->keyword;
+        // dd($keyword);
+
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
+
+         //menu alert;
+         $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+
+        $user_id_admin = $request->user()->user_id;
+
+        $page = $request->page;
+        if ($page) {
+            $page = $request->page;
+        } else {
+            $page = 1;
+        }
+
+        if(!empty($keyword)) {
+
+            $pagination = Product::where('product_id', 'Like', "%{$keyword}%")
+                                    ->orWhere('product_name', 'Like', "%{$keyword}%")
+                                    ->get();
+
+            $count_page = count($pagination);
+            // dd($count_page);
+    
+            $perpage = 10;
+            $total_page = ceil($count_page / $perpage);
+            $start = ($perpage * $page) - $perpage;
+
+            $product_all = Product::where('product_id', 'Like', "%{$keyword}%")
+                                    ->orWhere('product_name', 'Like', "%{$keyword}%")
+                                    // ->offset($start)
+                                    // ->limit($perpage)
+                                    // ->get();
+                                    ->paginate($perpage)->withQueryString();
+
+        } else {
+
+            $pagination = Product::get();
+            $count_page = count($pagination);
+            // dd($count_page);
+    
+            $perpage = 10;
+            $total_page = ceil($count_page / $perpage);
+            $start = ($perpage * $page) - $perpage;
+
+            // $product_all = Product::offset($start)
+            //                         ->limit($perpage)
+            //                         ->get();
+            $product_all = Product::paginate($perpage)->withQueryString();
+        }
+
+        return view('product.product', compact(
+                                                    'status_alert', 
+                                                    'status_waiting', 
+                                                    'status_updated', 
+                                                    'status_registration', 
+                                                    'user_id_admin',
+                                                    'product_all',
+                                                    'total_page',
+                                                    'page',
+                                                    'start',
+                                                ));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function productEdit (Request $request)
     {
-        //
-    }
+     
+        $id = $request->id;
+        // dd($id);
 
-    /**
-     * Display the specified resource.
-     */
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
-    {
-        //
-    }
+        $code_notin = ['0000', '4494', '7787', '9000', '9001', '9002', '9003', '9004', '9005', '9006', '9007', '9008', '9009', '9010', '9011'];
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Product $product)
-    {
-        //
-    }
+         //menu alert;
+         $status_waiting = Customer::where('status', 'รอดำเนินการ')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
+        $status_updated = Customer::where('status_update', 'updated')
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_registration = Customer::where('status', 'ลงทะเบียนใหม่')
+                                    // ->whereNotIn('customer_id', ['0000', '4494', '7787', '9000'])
+                                    ->whereNotIn('customer_id', $code_notin)
+                                    ->count();
+
+        $status_alert = $status_waiting + $status_updated;
+
+
+        $user_id_admin = $request->user()->user_id;
+
+        if(!empty($id)) {
+
+            $product_all = Product::where('id', $id)->first();
+            $category = DB::table('categories')->orderBy('categories_id', 'asc')->get();
+            $subcategory = DB::table('subcategories')->orderBy('subcategories_id', 'asc')->get();
+        }
+
+        return view('product.product-info', compact(
+                                                    'status_alert', 
+                                                    'status_waiting', 
+                                                    'status_updated', 
+                                                    'status_registration', 
+                                                    'user_id_admin',
+                                                    'product_all',
+                                                    'category',
+                                                    'subcategory'
+                                                ));
     }
 
     public function import(Request $request)
@@ -880,9 +963,10 @@ class ProductController extends Controller
 
             $product_all = Product::where('product_id', 'Like', "%{$keyword}%")
                                     ->orWhere('product_name', 'Like', "%{$keyword}%")
-                                    ->offset($start)
-                                    ->limit($perpage)
-                                    ->get();
+                                    // ->offset($start)
+                                    // ->limit($perpage)
+                                    // ->get();
+                                    ->paginate($perpage)->withQueryString();
 
         } else {
 
@@ -894,12 +978,13 @@ class ProductController extends Controller
             $total_page = ceil($count_page / $perpage);
             $start = ($perpage * $page) - $perpage;
 
-            $product_all = Product::offset($start)
-                                    ->limit($perpage)
-                                    ->get();
+            // $product_all = Product::offset($start)
+            //                         ->limit($perpage)
+            //                         ->get();
+            $product_all = Product::paginate($perpage)->withQueryString();
         }
 
-        return view('/report/importproduct', compact(
+        return view('report.importproduct', compact(
                                                     'status_alert', 
                                                     'status_waiting', 
                                                     'status_updated', 
@@ -946,7 +1031,7 @@ class ProductController extends Controller
             $subcategory = DB::table('subcategories')->orderBy('subcategories_id', 'asc')->get();
         }
 
-        return view('/report/product-info', compact(
+        return view('report.product-info', compact(
                                                     'status_alert', 
                                                     'status_waiting', 
                                                     'status_updated', 
@@ -1403,10 +1488,10 @@ class ProductController extends Controller
 
             if($id == $check_id?->id) {
 
-                return redirect ('/webpanel/report/product/importproduct/'.$id)->with('updated_id', 'updated_success');
+                return redirect()->back()->with('updated_id', 'updated_success');
 
             } else {
-                return redirect ('/webpanel/report/product/importproduct/'.$id)->with('fail_id', 'error');
+                return redirect()->back()->with('fail_id', 'error');
             }
         }
     }

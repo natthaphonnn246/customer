@@ -17,12 +17,12 @@
                     id="customerSearch"
                     class="border !border-gray-300 p-2 rounded w-full disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:opacity-70"
                     placeholder="ชื่อร้านค้า | Code"
-                    {{ empty($orderId) ? 'disabled' : '' }}
+                    {{ !empty($orderId) ? 'disabled' : '' }}
                 >
                 <div id="customerDropdown" class="absolute bg-white border w-full shadow rounded z-10 max-h-48 overflow-auto hidden"></div>
             </div>
 
-            @if(empty($orderId))
+            @if(!empty($orderId))
             <span class="text-green-500 mb-4 font-medium">หมายเหตุ: คุณได้เลือกร้านค้าแล้ว</span>
             @else
             <span class="text-red-500 mb-4 font-medium">หมายเหตุ: กรุณาเลือกร้านค้าก่อน</span>
@@ -297,25 +297,31 @@
                     }
                 }
                 //เช็กจำนวน ให้ปุ่มบันทึกทำงาน
-                fetch(`{{ route('webpanel.ordering.count.order') }}`, {
-                     credentials: 'same-origin'
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        btnCountOrder(parseInt(data.countOrder) || 0);
-                    });
+                // fetch(`{{ route('webpanel.ordering.count.order') }}`, {
+                //      credentials: 'same-origin'
+                //     })
+                //     .then(res => res.json())
+                //     .then(data => {
+                //         btnCountOrder(parseInt(data.countOrder) || 0);
+                //     });
  
-                let currentCount = 0; // เก็บค่า global หรือ scope ที่เข้าถึงได้
+                let currentCount = 0;
 
-                function loadCount() {
-                    fetch(`{{ route('webpanel.ordering.count.order') }}`)
-                    .then(res => res.json())
-                    .then(resdata => {
-                        currentCount = parseInt(resdata.countOrder) || 0;
-                        btnCountOrder(currentCount);
-                    });
+                async function loadCount() {
+                    const res = await fetch(`{{ route('webpanel.ordering.count.order') }}`);
+                    const resdata = await res.json();
 
+                    currentCount = resdata.countOrder;
+
+                    return parseInt(currentCount) || 0;
                 }
+                //ใช้ async เพื่อรอให้ fecth ก่อน
+                (async () => {
+                    const countOrder = await loadCount();
+                    btnCountOrder(countOrder);
+                    // console.log(countOrder);
+                })();
+
                 // =========================
                 // โหลด customer ล่าสุด
                 // =========================
@@ -501,7 +507,8 @@
                             title: "สำเร็จ",
                             text: "คุณได้เลือกร้าน: " + data.order.customer_name,
                             icon: "success",
-                            confirmButtonColor: "#2DCC61",
+                            width: 400,
+                            // confirmButtonColor: "#2DCC61",
                             confirmButtonText: "รับทราบ"
                         }).then((result) => {
                             if (result.isConfirmed) {
@@ -635,6 +642,7 @@
                             title: "สินค้าซ้ำ",
                             text: item.product_name,
                             icon: "warning",
+                            width: 400,
                             // confirmButtonColor: "#2DCC61",
                             confirmButtonText: "รับทราบ"
                         })
@@ -708,7 +716,8 @@
                     }, 0);
                 }
 
-                // EVENT ROW
+                // Check countOrder
+                let countOrderFirstUpdate = '';
 
                 function bindRowEvents(tr) {
             
@@ -729,7 +738,7 @@
                             e.preventDefault();
 
                             //อัปเดตปุ่ม
-                            fetch(`{{ route('webpanel.ordering.count.order') }}`, {
+                           /*  fetch(`{{ route('webpanel.ordering.count.order') }}`, {
                                 credentials: 'same-origin'
                             })
                             .then(res => res.json())
@@ -738,7 +747,10 @@
                                 btnCountOrder(countOrder);
                                 // console.log(countOrder);
                             })
-                            .catch(err => console.error(err));
+                            .catch(err => console.error(err)); */
+
+                            btnCountOrder(countOrderFirstUpdate);
+                 
 
                             const input = document.getElementById('searchProduct');
                             input.focus();     //กลับไปช่องค้นหา
@@ -839,6 +851,11 @@
                     .then(res => res.json())
                     .then(result => {
                         // console.log('saved', result);
+                        // console.log(result.countOrderItem);
+                        if(result.success) {
+                            countOrderFirstUpdate = result.countOrderItem;
+                        }
+                
                     })
                     .catch(err => {
                         console.error('saveDraft error:', err);
@@ -946,6 +963,41 @@
                                     currentCount = countOrder;
                                     btnCountOrder(currentCount);
                                 });
+                            }
+
+                            if (data.success === true) {
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'สำเร็จ',
+                                    text: 'ยกเลิกข้อมูลสำเร็จ',
+                                    width: 400,
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+
+                                setTimeout(() => {
+                                    window.location.href = "{{ route('webpanel.ordering.index') }}";
+                                }, 1200);
+
+                                } else {
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'ล้มเหลว',
+                                    text: data.message ?? 'เกิดข้อผิดพลาด',
+                                    width: 300,
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+
+                                setTimeout(() => {
+                                    window.location.href = "{{ route('webpanel.ordering.index') }}";
+                                }, 1200);
                             }
 
                     })
@@ -1069,6 +1121,7 @@
                                 icon: 'success',
                                 title: 'สำเร็จ',
                                 text: 'บันทึกข้อมูลเรียบร้อย',
+                                width: 400,
                                 allowOutsideClick: false,
                                 didOpen: () => {
                                     Swal.showLoading();
@@ -1085,6 +1138,7 @@
                                 icon: 'error',
                                 title: 'ล้มเหลว',
                                 text: data.message ?? 'เกิดข้อผิดพลาด',
+                                width: 400,
                                 allowOutsideClick: false,
                                 didOpen: () => {
                                     Swal.showLoading();

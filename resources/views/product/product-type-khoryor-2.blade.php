@@ -17,7 +17,7 @@
         <div class="mx-8">
 
             <div>
-                <form class="w-full mt-2" method="get" action="/webpanel/report/product-type/khor-yor-2">
+                <form class="w-full mt-2" method="get" action="/webpanel/product-type/khor-yor-2">
                     <div class="ms-2 my-2">
                         <span>ค้นหาสินค้า : </span>
                     </div>
@@ -79,8 +79,8 @@
                 </button>
         
                 <div id="dropdownCsv" class="z-10 hidden divide-y divide-gray-100 absolute md:w-[20%] w-[25%] text-center">
-                    <a href="/webpanel/report/product-type/khor-yor-2" class="block px-4 py-2 text-base text-white !no-underline bg-gray-800 hover:bg-green-700">ข.ย.2</a>
-                    <a href="/webpanel/report/product-type/somphor-2" class="block px-4 py-2 text-base text-white !no-underline bg-gray-800 hover:bg-green-700">สมุนไพร</a>
+                    <a href="/webpanel/product-type/khor-yor-2" class="block px-4 py-2 text-base text-white !no-underline bg-gray-800 hover:bg-green-700">ข.ย.2</a>
+                    <a href="/webpanel/product-type/somphor-2" class="block px-4 py-2 text-base text-white !no-underline bg-gray-800 hover:bg-green-700">สมุนไพร</a>
                 </div>
                
 
@@ -103,7 +103,7 @@
                                 <option value="">เลือกหมวดหมู่สินค้า</option>
                         
                                 <option
-                                    value="{{ url('/webpanel/report/product-type/khor-yor-2') }}"
+                                    value="{{ url('/webpanel/product-type/khor-yor-2') }}"
                                     {{ empty($currentCateId) ? 'selected' : '' }}
                                 >
                                     สินค้าทั้งหมด
@@ -112,7 +112,7 @@
                                 @if(isset($category) && count($category) > 0)
                                     @foreach($category as $row_cat)
                                         <option
-                                            value="{{ url('/webpanel/report/product-type/khor-yor-2/' . $row_cat->categories_id) }}"
+                                            value="{{ url('/webpanel/product-type/khor-yor-2/' . $row_cat->categories_id) }}"
                                             {{ $row_cat->categories_id == $currentCateId ? 'selected' : '' }}
                                         >
                                             {{ $row_cat->categories_name }}
@@ -143,14 +143,14 @@
                                 <h4 class="text-2xl font-bold py-4 ms-6">หมวดหมู่สินค้า</h4>
                             
                                 <nav class="space-y-2">
-                                    <a href="{{ url('/webpanel/report/product-type/khor-yor-2') }}" 
+                                    <a href="{{ url('/webpanel/product-type/khor-yor-2') }}" 
                                     class="!no-underline block px-4 py-2 rounded-md font-medium hover:bg-green-600 !text-gray-600 hover:!text-white">
                                         สินค้าทั้งหมด
                                     </a>
                                     <hr style="color:#838383;">
                                     @if(isset($category) && count($category) > 0)
                                         @foreach($category as $row_cat)
-                                            <a href="{{ url('/webpanel/report/product-type/khor-yor-2/' . $row_cat->categories_id) }}" 
+                                            <a href="{{ url('/webpanel/product-type/khor-yor-2/' . $row_cat->categories_id) }}" 
                                                 class="!no-underline block px-4 py-2 rounded-md font-medium hover:bg-green-600 !text-gray-600 hover:!text-white">
                                                 {{ $row_cat->categories_name }}
                                             </a>
@@ -218,11 +218,11 @@
             <li class="page-item">
 
             @if ($page == 1)
-                <a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page=<?=1 ; ?>" aria-label="Previous">
+                <a class="page-link" href="/webpanel/product-type/khor-yor-2?page=<?=1 ; ?>" aria-label="Previous">
                 <span aria-hidden="true">Previous</span>
                 </a>
             @else
-                <a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page=<?= $page-1 ; ?>" aria-label="Previous">
+                <a class="page-link" href="/webpanel/product-type/khor-yor-2?page=<?= $page-1 ; ?>" aria-label="Previous">
                 <span aria-hidden="true">Previous</span>
                 </a>
             @endif
@@ -231,16 +231,16 @@
                 @if($total_page > 14)
 
                     @for ($i= 1; $i <= 3 ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                     <li class="page-item"><a class="page-link">...</a></li>
                     @for ($i= $total_page-1; $i <= $total_page ; $i++)
-                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>"><a class="page-link" href="/webpanel/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
 
                 @else
                     @for ($i= 1; $i <= $total_page ; $i++)
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ; ?>" ><a class="page-link" href="/webpanel/product-type/khor-yor-2?page={{ $i }}">{{ $i }}</a></li>
                     @endfor
                 
                 @endif
@@ -248,11 +248,11 @@
             <li class="page-item">
             
             @if ($page == $total_page)
-                <a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page={{ $page }}" aria-label="Next">
+                <a class="page-link" href="/webpanel/product-type/khor-yor-2?page={{ $page }}" aria-label="Next">
                 <span aria-hidden="true">next</span>
                 </a>
             @else
-                <a class="page-link" href="/webpanel/report/product-type/khor-yor-2?page={{ $page + 1 }}" aria-label="Next">
+                <a class="page-link" href="/webpanel/product-type/khor-yor-2?page={{ $page + 1 }}" aria-label="Next">
                 <span aria-hidden="true">next</span>
                 </a>
             @endif

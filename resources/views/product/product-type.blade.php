@@ -12,14 +12,14 @@
         </div>
 
         <div class="flex justify-center">
-            <a href="/webpanel/report/product-type/khor-yor-2"
+            <a href="/webpanel/product-type/khor-yor-2"
             class="mb-8 !no-underline py-4 text-white font-semibold text-xl rounded-lg bg-blue-500 hover:bg-blue-600 w-[40%] transition duration-300 text-center">
             ข.ย.2
             </a>
         </div>
 
         <div class="flex justify-center">
-            <a href="/webpanel/report/product-type/somphor-2"
+            <a href="/webpanel/product-type/somphor-2"
                class="mb-8 !no-underline py-4 text-white font-semibold text-xl rounded-lg bg-blue-500 hover:bg-blue-600 w-[40%] transition duration-300 text-center">
                 สมุนไพร
             </a>
