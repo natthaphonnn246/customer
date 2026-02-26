@@ -10,6 +10,7 @@ class OrderingItem extends Model
     protected $table = 'ordering_items';
 
     protected $fillable = [
+        'product_id',
         'order_id',
         'product_code',
         'product_name',
@@ -35,5 +36,9 @@ class OrderingItem extends Model
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+    public function specialDeal()
+    {
+        return $this->hasOne(SpecialDeal::class, 'product_id', 'product_id');
     }
 }

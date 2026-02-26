@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderingItem;
 use App\Models\Product;
 use App\Models\Customer;
+use App\Models\SpecialDeal;
 use App\Services\OrderingService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -92,13 +93,13 @@ class OrderingController extends Controller
             ];
     
             $flagColumn = $typeMap[$customerType] ?? null;
-    
             // Query product
             $productsQuery = Product::query()
                             ->where(function($q) use ($keyword){
                                 $q->where('product_id', 'LIKE', "%{$keyword}%")
                                 ->orWhere('product_name', 'LIKE', "%{$keyword}%");
                             })
+                            ->withExists(['specialDeal as has_special_deal']) 
                             ->limit(20);
     
             // ตรวจสอบ column ก่อน filter
@@ -114,6 +115,7 @@ class OrderingController extends Controller
                         'product_name' => $p->product_name,
                         'unit' => $p->unit,
                         'price' => $p->{$priceColumn} ?? $p->price_1,
+                        'has_special_deal' => (bool) $p->has_special_deal,
                     ];
                 });
     
@@ -136,10 +138,10 @@ class OrderingController extends Controller
         $userName = $this->userName();
     
         $orderId = $request->order_id;
-        $productCode = $request->product_code;
+        $productCode = $request->product_id;
     
         $item = OrderingItem::where('order_id', $orderId)
-            ->where('product_code', $productCode)
+            ->where('product_id', $productCode)
             ->where('status', '!=', 'cancel')
             ->first();
     
@@ -163,6 +165,7 @@ class OrderingController extends Controller
             // history
             DB::table('ordering_item_cancels')->insert([
                 'ordering_item_id' => $item->id,
+                'product_id'       => $item->product_id,
                 'product_code' => $item->product_code,
                 'product_name' => $item->product_name,
                 'price' => $item->price,
@@ -185,8 +188,8 @@ class OrderingController extends Controller
         $orderId = $request->order_id;
     
         $order = Order::where('id', $orderId)
-            ->where('status', '!=', 'cancel')
-            ->first();
+                ->where('status', '!=', 'cancel')
+                ->first();
     
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
@@ -223,6 +226,7 @@ class OrderingController extends Controller
             foreach ($items as $row) {
                 $insertData[] = [
                     'ordering_item_id' => $row->order_id,
+                    'product_id'       => $row->product_id,
                     'product_code' => $row->product_code,
                     'product_name' => $row->product_name,
                     'price' => $row->price,
@@ -360,6 +364,7 @@ class OrderingController extends Controller
                     'product_code' => $item['product_code'],
                 ],
                 [
+                    'product_id'  => $product->id,
                     'product_name' => $item['product_name'] ?? null,
                     'status' => 'draft',
                     'qty' => $item['qty'],
@@ -455,10 +460,12 @@ class OrderingController extends Controller
                 ->whereNotNull('product_code')
                 ->where('product_code', '!=', 'undefined')
                 ->where('status', '=', 'draft')
+                ->withExists(['specialDeal as has_special_deal']) 
                 ->get()
                 ->map(function ($row) {
                     return [
                         // ให้ key ตรงกับ JS
+                        'product_id'   => $row->product_id,
                         'product_code' => $row->product_code,
                         'name'         => $row->product_name ?? '',
                         'unit'         => $row->unit ?? '',
@@ -467,6 +474,7 @@ class OrderingController extends Controller
                         'total_price'  => $row->total_price ?? 0,
                         'remark'       => $row->remark ?? '',
                         'reserve'      => (bool) $row->reserve,
+                        'special_deal'  => (bool) $row->has_special_deal,
                     ];
                 });
     
@@ -478,27 +486,41 @@ class OrderingController extends Controller
 
     }
 
-    public function checkProduct(Request $request)
-    {
-        $request->validate([
-            'order_id' => 'required|exists:orders_tb,id',
-            'product_code' => 'required|string'
-        ]);
+    // public function checkProduct(Request $request)
+    // {
+    //     $request->validate([
+    //         'order_id' => 'required|exists:orders_tb,id',
+    //         'product_code' => 'required|string'
+    //     ]);
 
-        $exists = OrderingItem::where('order_id', $request->order_id)
-                        ->where('product_code', $request->product_code)
-                        ->exists();
+    //     $exists = OrderingItem::where('order_id', $request->order_id)
+    //                     ->where('product_code', $request->product_code)
+    //                     ->exists();
 
-        return response()->json(['exists' => $exists]);
-    }
+    //     return response()->json(['exists' => $exists]);
+    // }
     public function viewItem (Request $request)
     {
         $id = $request->id;
-        $item = Product::where('product_id', $id)
-                    ->join('subcategories', 'products.sub_category', '=', 'subcategories.subcategories_id')
-                    ->select('products.*', 'subcategories.subcategories_name')
-                    ->first();
+        $item = Product::query()
+                ->leftJoin('subcategories', 'products.sub_category', '=', 'subcategories.subcategories_id')
+                ->where('products.id', $id)
+                ->select('products.*', 'subcategories.subcategories_name')
+                ->first();
         
+        return response()->json(['item' => $item]);
+    }
+    public function viewSpecialDeal($idSpecial) 
+    {
+        $p = Product::with('specialDeal')
+            ->where('id', $idSpecial)
+            ->first();
+
+        $item = [
+                    'product_code' => $p->specialDeal?->product_code,
+                    'product_name' => $p->specialDeal?->product_name,
+                ];
+
         return response()->json(['item' => $item]);
     }
     

@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\PromotionItems;
 use App\Models\PromotionOrders;
 use App\Models\ReportSeller;
+use App\Models\SpecialDeal;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,10 @@ use Illuminate\Database\Query\JoinClause;
 
 class PromotionController extends Controller
 {
+    protected function userId(): ?int
+    {
+        return Auth::id();
+    }
     public function index(Request $request)
     {
         return view('webpanel.promotion-management');
@@ -338,11 +343,69 @@ class PromotionController extends Controller
         return response()->json(['status' => 'success']);
     }
     //special-deal
-    public function specialDeal($id)
+    public function indexDeal($id)
     {
-        $item = product::FindOrFail($id);
-        return view('product.special-deal', compact('item'));
+        $item = Product::findOrFail($id);
+        // dd($item);
+
+        $itemDeal = SpecialDeal::where('product_id', $id)->get();
+
+        return view('product.special-deal', compact(
+                                            'item',
+                                            'itemDeal'
+                                        ));
     }
+    public function createDeal(Request $request, $id)
+    {
+        $userId = $this->userId();
+        $product = Product::findOrFail($id);
+
+        $request->validate([
+                'qty_pack' => 'required|numeric|min:1',
+                'price' => 'required|numeric|min:1',
+                'stock_pack' => 'nullable|numeric|min:0',
+            ]);
+
+        DB::transaction(function () use ($product, $userId, $request) {
+
+                SpecialDeal::create(
+                    [
+                        'product_id'    => $product->id,
+                        'product_code'  => $product->product_id,
+                        'product_name'  => $product->product_name,
+                        'qty_pack'      => $request->qty_pack,
+                        'price'         => $request->price,
+                        'stock_pack'    => $request->stock_pack ?? 0,
+                        'created_by_id' => $userId,
+                        'ip'            => $request->ip(),
+                    ]
+                );
+
+        });
+
+        return back()->with('success', 'บันทึกเรียบร้อย');
+    } 
+    public function updateDeal(Request $request, $id)
+    {
+        $userId = $this->userId();
+
+        $deal = SpecialDeal::where('id', $id)->first();
+        
+        $deal->update([
+            'qty_pack'      => $request->qty_pack,
+            'price'         => $request->price,
+            'stock_pack'    => $request->stock_pack,
+            'is_active'     => $request->is_active,
+            'created_by_id' => $userId,
+            // 'updated_at'    => now(),
+        ]);
+    
+        return back()->with('success', 'อัปเดตสำเร็จ');
+    }
+    public function destroyDeal ($id)
+    {
+        return response()->json(['success' => true]);
+    }    
     public function specialPrice($id)
     {
         $item = product::FindOrFail($id);

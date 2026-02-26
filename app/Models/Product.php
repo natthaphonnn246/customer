@@ -9,6 +9,7 @@ class Product extends Model
 {
     protected $fillable = [
 
+        'id',
         'product_id',
         'product_name',
         'generic_name',
@@ -35,4 +36,9 @@ class Product extends Model
 
     protected $table = 'products';
     protected $connection = 'mysql';
+
+    public function specialDeal()
+    {
+        return $this->hasOne(SpecialDeal::class, 'product_id', 'id');
+    }
 }

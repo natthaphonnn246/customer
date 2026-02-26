@@ -122,7 +122,7 @@
                             <th class="p-2 border text-center">จำนวน</th>
                             <th class="p-2 border text-center">ราคารวม</th>
                             <th class="p-2 border text-center">จอง</th>
-                            <th class="p-2 border text-center">ลบ</th>
+                            <th class="p-2 border text-center">จัดการ</th>
                         </tr>
                     </thead>
                 
@@ -204,7 +204,7 @@
 
                         <div class="grid grid-cols-2 gap-3">
                             <div class="mb-3">
-                                <label class="text-base text-gray-500 font-medium mb-1">สต๊อก</label>
+                                <label class="text-base text-gray-500 font-medium mb-1">Stock</label>
                                 <input type="text" id="item_stock_qty"
                                     class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
                             </div>
@@ -227,6 +227,77 @@
                             <button onclick="closeModal()"
                                 class="px-4 py-2 bg-red-400 text-white !rounded-md hover:bg-red-500">
                                ปิด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- view item special deal-->
+            <div id="itemSpecialDeal"
+                class="fixed inset-0 bg-black/50 flex items-center justify-center
+                opacity-0 pointer-events-none transition duration-300">
+
+                <div id="modalContentDeal"
+                    class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden
+                    transform -translate-y-20 opacity-0
+                    transition-all duration-400 ease-out">
+            
+                    <div class="bg-gray-800 text-white px-4 py-3">
+                        <span class="block text-xl text-center mt-2">รายละเอียดสินค้า</span>
+                    </div>
+        
+                    <!-- Product -->
+                    <div class="mx-4 mt-3 mb-4">
+                        <div class="mb-3">
+                            <label class="text-base text-gray-500 font-medium mb-1">รหัสสินค้า</label>
+                            <input type="text" id="deal_product_code"
+                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
+                        </div>
+                
+                        <div class="mb-3">
+                            <label class="text-base text-gray-500 font-medium mb-1">ชื่อสินค้า</label>
+                            <input type="text" id="deal_product_name"
+                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-base text-gray-500 font-medium mb-1">ชื่อสามัญทางยา</label>
+                            <input type="text" id="item_generic_name"
+                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-base text-gray-500 font-medium mb-1">ข้อบ่งใช้</label>
+                            <input type="text" id="item_category"
+                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="mb-3">
+                                <label class="text-base text-gray-500 font-medium mb-1">สต๊อก</label>
+                                <input type="text" id="item_stock_qty"
+                                    class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
+                            </div>
+            
+                            <div class="mb-3">
+                                <label class="text-base text-gray-500 font-medium mb-1">หน่วยสินค้า</label>
+                                <input type="text" id="item_unit"
+                                    class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-base text-gray-500 font-medium mb-1">หมายเหตุ</label>
+                            <input type="text" id=""
+                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="flex justify-end gap-2 mt-3">
+                            <button onclick="closeModalDeal()"
+                                class="px-4 py-2 bg-red-400 text-white !rounded-md hover:bg-red-500">
+                                ปิด
                             </button>
                         </div>
                     </div>
@@ -264,6 +335,13 @@
                         const id = btnS.dataset.orderId;
 
                         saveOrdering(id);
+                    }
+
+                    if (e.target.closest('.btn-deal')) {
+                        const btnDeal = e.target.closest('.btn-deal');
+                        const idSpecial = btnDeal.dataset.id;
+                        // console.log(idSpecialDeal);
+                        viewSpecialDeal(idSpecial);
                     }
                 });
 
@@ -372,7 +450,7 @@
                 .catch(err => {
                     console.error('Fetch error:', err);
                 });
-
+                // ${item.special_deal ? '<span class="!badge font-bold !text-red-500 !text-base">(ดีลพิเศษ)</span>' : ''}
                 function renderDraftItems() {
 
                 itemDrafts.forEach(item => {
@@ -401,16 +479,31 @@
                             <input type="checkbox" class="reserveInput accent-red-500 w-4 h-4"
                                 ${item.reserve ? 'checked' : ''}>
                         </td>
+                          
                         <td class="border p-2 text-center">
                              <button 
+                                class="relative items-center gap-1 bg-sky-400 hover:bg-sky-500 text-white px-2.5 py-1.5 !rounded-md shadow-sm transition disabled:bg-gray-300 disabled:cursor-not-allowed btn-deal"
+                                data-id="${item.product_id}"
+                                ${item.special_deal ? '' : 'disabled'}
+                            >
+                                <i class="fa-solid fa-tags"></i>
+                                <span></span>
+
+                                ${item.special_deal ? `
+                                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-1.5 rounded-full">
+                                        🔥
+                                    </span>
+                                ` : ''}
+                            </button>
+                             <button 
                                 class="bg-blue-500 hover:bg-blue-600 text-white px-2.5 py-1.5 rounded btn-view"
-                                data-id="${item.product_code}"
+                                data-id="${item.product_id}"
                                 data-name="${item.name}">
                                 <i class="fa-regular fa-eye"></i>
                             </button>
                             <button 
-                                class="bg-red-500 hover:bg-red-600 text-white px-2.5 py-1.5 rounded deleteBtn"
-                                data-id="${item.product_code}">
+                                class="bg-red-400 hover:bg-red-500 text-white px-2.5 py-1.5 rounded deleteBtn"
+                                data-id="${item.product_id}">
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
                         </td>
@@ -547,9 +640,15 @@
             
                         data.forEach(item => {
 
+                            // console.log(item.has_special_deal);
+                            const showSpecial = item.has_special_deal;
                             const div = document.createElement('div');
+
                             div.className = 'p-2 hover:bg-gray-100 cursor-pointer';
-                            div.textContent = `${item.product_id} - ${item.product_name}`;
+                            div.innerHTML = `
+                            ${item.product_id} - ${item.product_name}
+                            ${showSpecial ? '<span class="!badge !text-white !text-base bg-red-500 px-2 py-1 !rounded-md">ดีลพิเศษ</span>' : ''}
+                            `;
             
                             div.addEventListener('click', () => {
                                 selectItem(item);
@@ -651,7 +750,7 @@
 
                         setTimeout(() => {
                             checkProduct.classList.remove('bg-yellow-200');
-                        }, 5000);
+                        }, 2000);
 
                         const qtyInput = checkProduct.querySelector('.qtyInput');
 
@@ -661,7 +760,7 @@
 
                         return;
                     }
-            
+                    // ${item.has_special_deal ? '<span class="!badge font-bold !text-red-500 !text-base">(ดีลพิเศษ)</span>' : ''}
                     const tr = document.createElement('tr');
                     tr.setAttribute('data-id', item.product_id);
                     // console.log(itemDrafts);
@@ -684,6 +783,20 @@
                         <td class="border p-2 text-center total">0</td>
                         <td class="border p-2 text-center"><input type="checkbox" class="reserveInput accent-red-500 w-4 h-4"></td>
                         <td class="border p-2 text-center">
+                                <button 
+                                class="relative items-center gap-1 bg-sky-400 hover:bg-sky-500 text-white px-2.5 py-1.5 !rounded-md shadow-sm transition disabled:bg-gray-300 disabled:cursor-not-allowed btn-deal"
+                                data-id="${item.product_id}"
+                                ${item.has_special_deal ? '' : 'disabled'}
+                                >
+                                <i class="fa-solid fa-tags"></i>
+                                <span></span>
+
+                                ${item.has_special_deal ? `
+                                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-1.5 rounded-full">
+                                        🔥
+                                    </span>
+                                ` : ''}
+                            </button>
                              <button 
                                 class="bg-blue-500 hover:bg-blue-600 text-white px-2.5 py-1.5 rounded btn-view"
                                 data-id="${item.product_id}"
@@ -691,7 +804,7 @@
                                 <i class="fa-regular fa-eye"></i>
                             </button>
                             <button 
-                                class="bg-red-500 hover:bg-red-600 text-white px-2.5 py-1.5 rounded deleteBtn"
+                                class="bg-red-400 hover:bg-red-500 text-white px-2.5 py-1.5 rounded deleteBtn"
                                 data-id="${item.product_id}">
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
@@ -902,7 +1015,7 @@
                             "Content-Type": "application/json" 
                         },
                         body: JSON.stringify({
-                            product_code: productIdCancel,
+                            product_id: productIdCancel,
                             order_id: orderIdCancel
                         })
                     })
@@ -1067,6 +1180,8 @@
                 .then(res => res.json())
                 .then(data => {
 
+                    // console.log(data.item);
+
                     if (!data.item) {
                         console.warn('No data');
                         return;
@@ -1155,6 +1270,51 @@
                     });
                 
             }
+
+            function viewSpecialDeal(idSpecial) {
+                const modal = document.getElementById('itemSpecialDeal');
+                const content = document.getElementById('modalContentDeal');
+
+                modal.classList.remove('pointer-events-none');
+                modal.classList.add('opacity-100');
+
+                content.classList.remove('-translate-y-10', 'opacity-0');
+                content.classList.add('translate-y-0', 'opacity-100');
+
+                fetch(`/webpanel/ordering/view/special-deal/${idSpecial}`, {
+                    credentials: 'same-origin'
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Network response error');
+                    return res.json();
+                })
+                .then(data => {
+                    // console.log(data);
+                    document.getElementById('deal_product_code').value = data.item.product_code ?? '';
+                    document.getElementById('deal_product_name').value = data.item.product_name ?? '';
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                });
+            }
+
+            function closeModalDeal() {
+                 const modal = document.getElementById('itemSpecialDeal');
+                 const content = document.getElementById('modalContentDeal');
+
+                 content.classList.remove('translate-y-0', 'opacity-100');
+                 content.classList.add('-translate-y-10', 'opacity-0');
+
+                 modal.classList.remove('opacity-100');
+
+                 setTimeout(() => {
+                     modal.classList.add('pointer-events-none');
+                 }, 300);
+            }
+
+            // function viewSpecialDeal(idSpecialDeal) {
+
+            // }
     
         </script>
     

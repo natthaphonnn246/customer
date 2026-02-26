@@ -109,6 +109,7 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
                 Route::post('/cancel/item', [OrderingController::class, 'cancelItem'])->name('cancel.item');
                 Route::post('/cancel/item-all', [OrderingController::class, 'cancelItemAll'])->name('cancel.item.all');
                 Route::get('/view/{order}', [OrderingController::class, 'viewDraft'])->name('view');
+                Route::get('/view/special-deal/{order}', [OrderingController::class, 'viewSpecialDeal'])->name('view.special.deal');
             });
         });
         
@@ -250,9 +251,12 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
         //product
         Route::name('webpanel.product.')->prefix('webpanel/product')->group(function () {
             Route::get('/', [ProductController::class, 'productAll'])->name('index');
-            Route::get('/{id}/special-deal', [PromotionController::class, 'specialDeal'])->name('special.deal');
+            Route::get('/{id}/special-deal', [PromotionController::class, 'indexDeal'])->name('special.deal');
             Route::get('/{id}/special-price', [PromotionController::class, 'specialPrice'])->name('special.price');
             Route::get('/{id}', [ProductController::class, 'productEdit'])->name('item.edit');
+            Route::post('/create/deal/{id}', [PromotionController::class, 'createDeal'])->name('create.deal');
+            Route::post('/update/deal/{id}', [PromotionController::class, 'updateDeal'])->name('update.deal');
+            Route::get('/destroy/deal/{id}', [PromotionController::class, 'destroyDeal'])->name('destroy.deal');
         });
         //report product-type (แบบ ข.ย.)
         Route::get('/webpanel/product-type', [ProductController::class, 'indexType']);
