@@ -62,6 +62,18 @@ return [
             ]) : [],
         ],
 
+        //db-2
+        // 'mysql2' => [
+        //     'driver' => 'mysql',
+        //     'host' => env('DB2_HOST', '150.95.80.167'),
+        //     'port' => env('DB2_PORT', '3306'),
+        //     'database' => env('DB2_DATABASE', 'vmdrug_customer'),
+        //     'username' => env('DB2_USERNAME', 'root'),
+        //     'password' => env('DB2_PASSWORD', 'Wdc92-22-2@!'),
+        //     'charset' => 'utf8mb4',
+        //     'collation' => 'utf8mb4_unicode_ci',
+        // ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
@@ -111,6 +123,7 @@ return [
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
+        
 
     ],
 

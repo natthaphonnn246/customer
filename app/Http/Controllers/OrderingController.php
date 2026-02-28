@@ -94,12 +94,21 @@ class OrderingController extends Controller
     
             $flagColumn = $typeMap[$customerType] ?? null;
             // Query product
-            $productsQuery = Product::query()
+     /*        $productsQuery = Product::query()
                             ->where(function($q) use ($keyword){
                                 $q->where('product_id', 'LIKE', "%{$keyword}%")
                                 ->orWhere('product_name', 'LIKE', "%{$keyword}%");
                             })
                             ->withExists(['specialDeal as has_special_deal']) 
+                            ->limit(20); */
+            $productsQuery = Product::withExists([
+                                'specialDeal as has_special_deal' => function($q) {
+                                    $q->where('is_active', true);
+                                }
+                            ]) 
+                            ->where('product_id', 'LIKE', "%{$keyword}%")
+                            ->orWhere('product_name', 'LIKE', "%{$keyword}%")
+                            // ->withExists(['specialDeal as has_special_deal']) 
                             ->limit(20);
     
             // ตรวจสอบ column ก่อน filter
@@ -159,7 +168,8 @@ class OrderingController extends Controller
                 'status' => 'cancel',
                 'cancel_by' => $userId,
                 'cancel_by_name' => $userName ?? null,
-                'cancelled_at' => now()
+                'cancelled_at' => now(),
+                'remark'       => null
             ]);
     
             // history
@@ -207,7 +217,7 @@ class OrderingController extends Controller
                 'status' => 'cancel',
                 'cancel_by' => $userId,
                 'cancel_by_name' => $userName ?? null,
-                'cancelled_at' => now()
+                'cancelled_at' => now(),
             ]);
     
             // update items
@@ -217,7 +227,8 @@ class OrderingController extends Controller
                                 'status' => 'cancel',
                                 'cancel_by' => $userId,
                                 'cancel_by_name' => $userName ?? null,
-                                'cancelled_at' => now()
+                                'cancelled_at' => now(),
+                                'remark'       => null
                             ]);
     
             // history
@@ -460,7 +471,9 @@ class OrderingController extends Controller
                 ->whereNotNull('product_code')
                 ->where('product_code', '!=', 'undefined')
                 ->where('status', '=', 'draft')
-                ->withExists(['specialDeal as has_special_deal']) 
+                ->withExists(['specialDeal as has_special_deal' => function ($q) {
+                    $q->where('is_active', true);
+                }]) 
                 ->get()
                 ->map(function ($row) {
                     return [
@@ -474,7 +487,8 @@ class OrderingController extends Controller
                         'total_price'  => $row->total_price ?? 0,
                         'remark'       => $row->remark ?? '',
                         'reserve'      => (bool) $row->reserve,
-                        'special_deal'  => (bool) $row->has_special_deal,
+                        'special_deal' => (bool) $row->has_special_deal,
+                        'remark'       => $row->remark
                     ];
                 });
     
@@ -512,16 +526,59 @@ class OrderingController extends Controller
     }
     public function viewSpecialDeal($idSpecial) 
     {
-        $p = Product::with('specialDeal')
-            ->where('id', $idSpecial)
-            ->first();
+        $p = SpecialDeal::with('product')
+            ->where('product_id', $idSpecial)
+            ->where('is_active', true)
+            ->get();
 
-        $item = [
-                    'product_code' => $p->specialDeal?->product_code,
-                    'product_name' => $p->specialDeal?->product_name,
-                ];
+        $q = SpecialDeal::with('product')
+                ->where('product_id', $idSpecial)
+                ->where('is_active', true)
+                ->first();
 
-        return response()->json(['item' => $item]);
+        $title = [
+                     'product_code' => $q?->product_code,
+                     'product_name' => $q?->product_name,
+
+                 ];
+
+        return response()->json([
+                                    'items' => $p,
+                                    'title' => $title
+                                ]);
+    }
+    public function addSpecialDeal(Request $request)
+    {
+        $product_id = $request->product_id; // id ของ product
+        $order_id   = $request->order_id; // order id
+        $id_special = $request->id_special; //id ของ special
+
+        $product = Product::where('id', $product_id)->first();
+        $special = SpecialDeal::where('id', $id_special)->first();
+
+        OrderingItem::updateOrCreate(
+            [
+                'order_id' => $order_id,
+                'product_code' => $product->product_id,
+            ],
+            [
+                'product_id'  => $product->id,
+                'product_name' => '(ดีลพิเศษ) '.$product->product_name ?? null,
+                'status' => 'draft',
+                'qty' => $special->qty_pack,
+                'unit' => $special->unit ?? null,
+                'price' => 0,
+                'total_price' => $special->price ?? 0,
+                'reserve' => $item['reserve'] ?? false,
+                'created_at' => now(),
+                'remark'    => 'special_deal'
+            ]
+        );
+        
+        return response()->json([
+                                    'success' => true,
+                                    'itemId' => $product_id
+                                ]);
     }
     
 }

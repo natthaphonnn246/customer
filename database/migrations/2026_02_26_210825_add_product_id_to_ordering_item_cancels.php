@@ -28,3 +28,13 @@ return new class extends Migration
         });
     }
 };
+// return new class extends Migration {
+//     protected $connection = 'mysql2'; //ตัวกำหนด DB
+
+//     public function up(): void
+//     {
+//         Schema::table('vmdrug_customer', function (Blueprint $table) {
+//             $table->string('test')->nullable();
+//         });
+//     }
+// };

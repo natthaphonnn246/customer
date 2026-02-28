@@ -233,74 +233,43 @@
                 </div>
             </div>
 
-            <!-- view item special deal-->
-            <div id="itemSpecialDeal"
+            {{-- <!-- view item special deal-->itemSpecialDeal --}}
+            <div 
+                id="itemSpecialDeal" 
                 class="fixed inset-0 bg-black/50 flex items-center justify-center
                 opacity-0 pointer-events-none transition duration-300">
 
-                <div id="modalContentDeal"
-                    class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden
+                <div 
+                    id="modalContentDeal"
+                    class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden p-4
                     transform -translate-y-20 opacity-0
                     transition-all duration-400 ease-out">
-            
-                    <div class="bg-gray-800 text-white px-4 py-3">
-                        <span class="block text-xl text-center mt-2">รายละเอียดสินค้า</span>
+
+                    <div class="ms-2 mb-4">
+                        <span class="block font-bold">รหัสสินค้า: <span id="deal_product_code"></span></span>
+                        <span class="block font-bold">ชื่อสินค้า: <span id="deal_product_name"></span></span>
+
                     </div>
-        
-                    <!-- Product -->
-                    <div class="mx-4 mt-3 mb-4">
-                        <div class="mb-3">
-                            <label class="text-base text-gray-500 font-medium mb-1">รหัสสินค้า</label>
-                            <input type="text" id="deal_product_code"
-                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
-                        </div>
-                
-                        <div class="mb-3">
-                            <label class="text-base text-gray-500 font-medium mb-1">ชื่อสินค้า</label>
-                            <input type="text" id="deal_product_name"
-                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="text-base text-gray-500 font-medium mb-1">ชื่อสามัญทางยา</label>
-                            <input type="text" id="item_generic_name"
-                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="text-base text-gray-500 font-medium mb-1">ข้อบ่งใช้</label>
-                            <input type="text" id="item_category"
-                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="mb-3">
-                                <label class="text-base text-gray-500 font-medium mb-1">สต๊อก</label>
-                                <input type="text" id="item_stock_qty"
-                                    class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
-                            </div>
-            
-                            <div class="mb-3">
-                                <label class="text-base text-gray-500 font-medium mb-1">หน่วยสินค้า</label>
-                                <input type="text" id="item_unit"
-                                    class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="text-base text-gray-500 font-medium mb-1">หมายเหตุ</label>
-                            <input type="text" id=""
-                                class="w-full border p-2 rounded-lg bg-gray-100 text-gray-400" disabled>
-                        </div>
-
-                        <!-- Buttons -->
-                        <div class="flex justify-end gap-2 mt-3">
-                            <button onclick="closeModalDeal()"
-                                class="px-4 py-2 bg-red-400 text-white !rounded-md hover:bg-red-500">
-                                ปิด
-                            </button>
-                        </div>
+                    
+                    <div 
+                        id="deal_list"
+                        class="max-h-[60vh] overflow-y-auto space-y-3 pr-1 border rounded-md p-4"
+                        >
                     </div>
+
+                    <div class="flex justify-end gap-2 mt-3">
+                        <button 
+                            onclick="location.reload()"
+                            class="w-full bg-gray-400 text-white py-2 !rounded-md hover:bg-gray-500"
+                        >
+                            ถ้าไม่มีข้อมูล กรุณารีเฟรช 1 ครั้ง
+                        </button>
+                        <button onclick="closeModalDeal()"
+                            class="px-4 py-2 bg-red-400 text-white !rounded-md hover:bg-red-500">
+                           ปิด
+                        </button>
+                    </div>
+    
                 </div>
             </div>
         </div>
@@ -340,7 +309,7 @@
                     if (e.target.closest('.btn-deal')) {
                         const btnDeal = e.target.closest('.btn-deal');
                         const idSpecial = btnDeal.dataset.id;
-                        // console.log(idSpecialDeal);
+     
                         viewSpecialDeal(idSpecial);
                     }
                 });
@@ -471,7 +440,11 @@
                                     focus:outline-none 
                                     focus:ring-2
                                     focus:ring-yellow-400 
-                                    focus:bg-yellow-50"
+                                    focus:bg-yellow-50
+                                    ${item.special_deal && item.remark == 'special_deal' && 'bg-gray-200 disabled:cursor-not-allowed'}
+                                    "
+                                    ${item.special_deal && item.remark == 'special_deal' && 'disabled'}
+                                    
                                 >
                         </td>
                         <td class="border p-2 text-center total">${item.total_price}</td>
@@ -703,6 +676,7 @@
                         if (currentIndex >= 0) {
                             items[currentIndex].click();
                         }
+             
                     }
                 });
 
@@ -783,7 +757,7 @@
                         <td class="border p-2 text-center total">0</td>
                         <td class="border p-2 text-center"><input type="checkbox" class="reserveInput accent-red-500 w-4 h-4"></td>
                         <td class="border p-2 text-center">
-                                <button 
+                            <button
                                 class="relative items-center gap-1 bg-sky-400 hover:bg-sky-500 text-white px-2.5 py-1.5 !rounded-md shadow-sm transition disabled:bg-gray-300 disabled:cursor-not-allowed btn-deal"
                                 data-id="${item.product_id}"
                                 ${item.has_special_deal ? '' : 'disabled'}
@@ -863,7 +837,6 @@
                             .catch(err => console.error(err)); */
 
                             btnCountOrder(countOrderFirstUpdate);
-                 
 
                             const input = document.getElementById('searchProduct');
                             input.focus();     //กลับไปช่องค้นหา
@@ -1272,9 +1245,17 @@
             }
 
             function viewSpecialDeal(idSpecial) {
+
+                // console.log(idSpecial);
                 const modal = document.getElementById('itemSpecialDeal');
+                
                 const content = document.getElementById('modalContentDeal');
 
+                const container = document.getElementById('deal_list');
+                if (!container) return;
+
+                container.innerHTML = '';
+                
                 modal.classList.remove('pointer-events-none');
                 modal.classList.add('opacity-100');
 
@@ -1289,9 +1270,66 @@
                     return res.json();
                 })
                 .then(data => {
-                    // console.log(data);
-                    document.getElementById('deal_product_code').value = data.item.product_code ?? '';
-                    document.getElementById('deal_product_name').value = data.item.product_name ?? '';
+   
+                    const container = document.getElementById('deal_list');
+
+                    document.getElementById('deal_product_code').textContent = data.title.product_code ?? '';
+                    document.getElementById('deal_product_name').textContent = data.title.product_name ?? '';
+
+                    data.items.forEach(item => {
+
+                        const avg = item.price / item.qty_pack;
+                        // const idSpecial = item.id;
+                        // console.log(idSpecial);
+
+                        const formattedAvg = avg.toLocaleString('th-TH', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+
+                        const formattedPrice = Number(item.price).toLocaleString('th-TH');
+
+                        const html = `
+                            <div class="border-2 border-purple-400 rounded-xl p-4 shadow-sm bg-white mt-2">
+
+                                <!-- จำนวน -->
+                                <div class="flex items-center justify-center gap-2 mb-2">
+                                    <span>จำนวน</span>
+                                    <span class="text-xl font-bold">${item.qty_pack}</span>
+                                    <span>ชิ้น</span>
+                                </div>
+
+                                <!-- ราคา -->
+                                <div class="flex items-center justify-center gap-2 mb-3">
+                                    <span>ราคา</span>
+                                    <span class="text-xl font-bold text-purple-600">${formattedPrice}</span>
+                                    <span>บาท</span>
+                                </div>
+
+                                <!-- เฉลี่ย -->
+                                <div class="bg-purple-50 border rounded-xl p-3 text-center mb-4">
+                                    <div class="text-sm text-purple-400 font-bold">เฉลี่ยต่อชิ้น</div>
+                                    <div class="text-lg font-semibold text-purple-700">
+                                        ${formattedAvg} บาท
+                                    </div>
+                                </div>
+
+                                <!-- ปุ่ม -->
+                                <button 
+                                    class="w-full bg-purple-500 text-white py-2 !rounded-md hover:bg-purple-600 select-deal"
+                                    data-product-id="${item.product_id}"
+                                    data-price="${item.price}"
+                                    data-qty="${item.qty_pack}"
+                                    data-id ="${item.id}"
+                                >
+                                    เลือกดีลนี้
+                                </button>
+                            </div>
+                        `;
+
+                        container.insertAdjacentHTML('beforeend', html);
+                    });
+              
                 })
                 .catch(err => {
                     console.error('Error:', err);
@@ -1309,8 +1347,85 @@
 
                  setTimeout(() => {
                      modal.classList.add('pointer-events-none');
+                    //  window.location.reload();
+                    //  location.reload();
                  }, 300);
             }
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('select-deal')) {
+
+                    const price = e.target.dataset.price;
+                    const qty = e.target.dataset.qty;
+                    const productId = e.target.dataset.productId;
+                    const idSpecial = e.target.dataset.id;
+                    const orderIdSpecial = {{ $orderId }};
+                    // console.log(orderIdSpecial);
+                    // console.log(productId);
+                    // console.log(idSpecial);
+
+                    if (!productId) {
+                            console.warn('productId ยังไม่มา');
+                            return;
+                        }
+
+                        fetch(`{{ route('webpanel.ordering.add.special.deal') }}`, {
+                            method: 'POST',
+                            headers: {
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                                "Accept": "application/json",
+                                "Content-Type": "application/json" 
+                            },
+                            body: JSON.stringify({
+                                product_id: productId,
+                                order_id  : orderIdSpecial,
+                                id_special: idSpecial
+
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log(data);
+
+                            if (data.success === true) {
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'สำเร็จ',
+                                    text: 'เพิ่มดีลเรียบร้อย',
+                                    width: 400,
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+
+                                setTimeout(() => {
+                                    window.location.href = "{{ route('webpanel.ordering.index') }}";
+                                }, 1200);
+
+                                } else {
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'ล้มเหลว',
+                                    text: data.message ?? 'เกิดข้อผิดพลาด',
+                                    width: 400,
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+
+                                setTimeout(() => {
+                                    window.location.href = "{{ route('webpanel.ordering.index') }}";
+                                }, 1200);
+                            }
+                        })
+                        .catch(err => {
+                            console.error('saveDeal error:', err);
+                        });
+                }
+            });
 
             // function viewSpecialDeal(idSpecialDeal) {
 

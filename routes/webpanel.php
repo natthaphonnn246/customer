@@ -47,7 +47,10 @@
     use App\Http\Controllers\PurchaseController;
     use App\Http\Controllers\LineController;
     use App\Http\Controllers\PromotionController;
+    use App\Http\Controllers\TestDatabaseController;
 
+// test db
+Route::get('/test-db', [TestDatabaseController::class, 'test']);
 Route::middleware('statusOnline', 'block.ai')->group(function (){
 
     //redirect LineOA
@@ -108,6 +111,7 @@ Route::middleware('statusOnline', 'block.ai')->group(function (){
                 Route::post('/view/item', [OrderingController::class, 'viewItem'])->name('view.item');
                 Route::post('/cancel/item', [OrderingController::class, 'cancelItem'])->name('cancel.item');
                 Route::post('/cancel/item-all', [OrderingController::class, 'cancelItemAll'])->name('cancel.item.all');
+                Route::post('/add/special-deal', [OrderingController::class, 'addSpecialDeal'])->name('add.special.deal');
                 Route::get('/view/{order}', [OrderingController::class, 'viewDraft'])->name('view');
                 Route::get('/view/special-deal/{order}', [OrderingController::class, 'viewSpecialDeal'])->name('view.special.deal');
             });
